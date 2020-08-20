@@ -10,7 +10,7 @@
         
     </style>
 </head>
-<body>
+<body onload="Page()">
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="border-bottom: 3px solid #ff4400;background-color: #060040;">
             <a class="navbar-brand" asp-controller="Home" asp-action="Index"><strong><span>Contador</span><span style="color: #ff4400;">com</span><span>vc</span></strong></a>
@@ -72,7 +72,7 @@
     </header>
     <div class="bread">
         <div class="bread_page" id="bread_page">
-            <p>Home</p>
+            <p>@ViewData["bread"]</p>
         </div>
         <div class="bread_menu" id="bread_menu">
             <svg width="2em" height="1.5em" viewBox="0 0 16 16" class="bi bi-three-dots-vertical" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -94,6 +94,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
+    @RenderSection("Scripts", required: false)   
 </body>
 </html>
