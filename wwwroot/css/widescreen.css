@@ -1,0 +1,45 @@
+﻿html,
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+.bread {
+    width: 100%;
+    height: 35px;
+    background-color: #ffe699;
+    margin-bottom: 15px;
+    /*border-bottom: 1px solid orange;*/
+    position: fixed;
+    top: 57px;
+}
+
+.bread_page {
+    float: left;
+    height: 35px;
+    line-height: 35px;
+    padding-left: 10px;
+    font-family: sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    color: darkblue;
+}
+
+.bread_menu {
+    float: right;
+    height: 35px;
+    width: 32px;
+    text-align: center;
+    padding-top: 5px;
+    cursor: pointer;
+}
+
+.drawer {
+    width: 350px;
+    height: 100vh;
+    background-color: #ffe699;
+    position: fixed;
+    top: 92px;
+    padding: 10px;
+    box-shadow: -6px 0px 5px rgba(128, 128, 128, 0.5);
+}
