@@ -1,0 +1,24 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    if (@ViewData["bread"] != null)
+    {
+        if (@ViewData["bread"].ToString().Equals("Conta a Pagar"))
+        {
+            <div class="row">
+                <h1>Meu Drawer personalizado</h1>
+                <input type="text" class="input-group" />
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <h4>Outra página</h4>
+            </div>
+        }
+    }
+
+}
+

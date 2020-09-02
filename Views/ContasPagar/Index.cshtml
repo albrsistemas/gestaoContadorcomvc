@@ -5,162 +5,118 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<table style="width: 100%;">
-    <tbody>
-        <tr>
-            <td>
-                <table style="width: 100%" class="tableLine">
-                    <tbody>
-                        <tr>
-                            <td rowspan="3" style="width: 2%; text-align:center;"><label class="labelTable" for="cb_line_1"><input id="cb_line_1" type="checkbox" class="custom-checkbox" /></label></td>
-                            <td colspan="2" style="padding-left: 10px; text-align: left">25/08/2020</td>
-                            <td colspan="2" style="text-align:right; padding-right: 10px;">R$ 15.365,20</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="width:auto; padding-left: 10px; text-align: left">Parcela Original</td>
-                            <td colspan="2" style="text-align:right;padding-right:10px; width:auto">
-                                <span style="color:darkorange">Em Aberto</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="text-align: left; padding-left: 10px;">Brasil comércio de bebidas ltda</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <table style="width: 100%" class="tableLine">
-                    <tbody>
-                        <tr>
-                            <td rowspan="3" style="width: 2%; text-align:center;"><label class="labelTable" for="cb_line_2"><input id="cb_line_2" type="checkbox" class="custom-checkbox" /></label></td>
-                            <td colspan="2" style="padding-left: 10px; text-align: left">05/08/2020</td>
-                            <td colspan="2" style="text-align:right; padding-right: 10px;">R$ 15.365,20</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="width:auto; padding-left: 10px; text-align: left">Parcela Original</td>
-                            <td colspan="2" style="text-align:right;padding-right:10px; width:auto">
-                                <span style="color:green">Paga</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="text-align: left; padding-left: 10px;">Brasil comércio de bebidas ltda</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <table style="width: 100%" class="tableLine">
-                    <tbody>
-                        <tr>
-                            <td rowspan="3" style="width: 2%; text-align:center;"><label class="labelTable" for="cb_line_2"><input id="cb_line_2" type="checkbox" class="custom-checkbox" /></label></td>
-                            <td colspan="2" style="padding-left: 10px; text-align: left">10/08/2020</td>
-                            <td colspan="2" style="text-align:right; padding-right: 10px;">R$ 15.365,20</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="width:auto; padding-left: 10px; text-align: left"><a id="50" data-toggle="modal" data-target="#ModalLongoExemplo">Parcela de Agrupamento</a></td>
-                            <td colspan="2" style="text-align:right;padding-right:10px; width:auto">
-                                <span style="color:red">Vencida</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="text-align: left; padding-left: 10px;">Brasil comércio de bebidas ltda</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-    </tbody>
-</table>
+@{
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#home">Hoje</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#menu1">Atrasadas</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#menu2">Próximas</a>
+        </li>
+    </ul>
 
-<!--Modal de detalhamento das parcelas agrupadas-->
-<div class="modal fade" id="ModalLongoExemplo" tabindex="-1" role="dialog" aria-labelledby="TituloModalLongoExemplo" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="TituloModalLongoExemplo">Parcelas Agrupadas</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <table style="width: 100%;">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <table style="width: 100%" class="tableLine">
-                                    <tbody>
-                                        <tr>
-                                            <td rowspan="3" style="width: 2%; text-align:center;"><label class="labelTable" for="cb_line_1"><input id="cb_line_1" type="checkbox" class="custom-checkbox" /></label></td>
-                                            <td colspan="2" style="padding-left: 10px; text-align: left">25/08/2020</td>
-                                            <td colspan="2" style="text-align:right; padding-right: 10px;">R$ 15.365,20</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" style="width:auto; padding-left: 10px; text-align: left">Parcela Original</td>
-                                            <td colspan="2" style="text-align:right;padding-right:10px; width:auto">
-                                                <span style="color:darkorange">Em Aberto</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="4" style="text-align: left; padding-left: 10px;">Brasil comércio de bebidas ltda</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <table style="width: 100%" class="tableLine">
-                                    <tbody>
-                                        <tr>
-                                            <td rowspan="3" style="width: 2%; text-align:center;"><label class="labelTable" for="cb_line_2"><input id="cb_line_2" type="checkbox" class="custom-checkbox" /></label></td>
-                                            <td colspan="2" style="padding-left: 10px; text-align: left">05/08/2020</td>
-                                            <td colspan="2" style="text-align:right; padding-right: 10px;">R$ 15.365,20</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" style="width:auto; padding-left: 10px; text-align: left">Parcela Original</td>
-                                            <td colspan="2" style="text-align:right;padding-right:10px; width:auto">
-                                                <span style="color:green">Paga</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="4" style="text-align: left; padding-left: 10px;">Brasil comércio de bebidas ltda</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <table style="width: 100%" class="tableLine">
-                                    <tbody>
-                                        <tr>
-                                            <td rowspan="3" style="width: 2%; text-align:center;"><label class="labelTable" for="cb_line_2"><input id="cb_line_2" type="checkbox" class="custom-checkbox" /></label></td>
-                                            <td colspan="2" style="padding-left: 10px; text-align: left">10/08/2020</td>
-                                            <td colspan="2" style="text-align:right; padding-right: 10px;">R$ 15.365,20</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" style="width:auto; padding-left: 10px; text-align: left"><a id="50" data-toggle="modal" data-target="#ModalLongoExemplo">Parcela de Agrupamento</a></td>
-                                            <td colspan="2" style="text-align:right;padding-right:10px; width:auto">
-                                                <span style="color:red">Vencida</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="4" style="text-align: left; padding-left: 10px;">Brasil comércio de bebidas ltda</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>                
-            </div>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane container active" id="home">            
+            <h3>Parcelas com vencimento para hoje</h3>
+            @for (var c = 0; c < 15; c++)
+            {
+                <div class="row align-items-center listCompras" style="border: 1px solid #808080; margin-bottom: 5px;margin: 1px;text-align:center">
+                    <div class="col-2 col-md-1">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1"></label>
+                        </div>
+                    </div>
+                    <div class="col-10 col-md-11">
+                            <div class="row" style="margin-bottom: 5px;margin: 1px;text-align:center">
+                            <div class="col-12 col-md-12" style="text-align:left">
+                                Brasil comércio de bebidas ltda
+                            </div>
+                            <div class="col-6 col-md-2">
+                                21/08/2020
+                            </div>
+                            <div class="col-6 col-md-2">
+                                R$ 15.835,63
+                            </div>
+                            <div class="col-6 col-md-2">
+                                Original
+                            </div>
+                            <div class="col-6 col-md-2">
+                                Cartão Crédito
+                            </div>
+                            <div class="col-6 col-md-2">
+                                Em Aberto
+                            </div>
+                            <div class="col-6 col-md-2">
+                                Pagar
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+            }
+        </div>
+        <div class="tab-pane container fade" id="menu1">            
+            <h3>Parcelas em atraso</h3>
+            @for (var c = 0; c < 2; c++)
+            {
+                <div class="row align-items-center listCompras" style="border: 1px solid #808080; margin-bottom: 5px;margin: 1px;text-align:center">
+                    <div class="col-12 col-md-12" style="text-align:left">
+                        Brasil comércio de bebidas ltda
+                    </div>
+                    <div class="col-6 col-md-2">
+                        21/08/2020
+                    </div>
+                    <div class="col-6 col-md-2">
+                        R$ 15.835,63
+                    </div>
+                    <div class="col-6 col-md-2">
+                        Original
+                    </div>
+                    <div class="col-6 col-md-2">
+                        Cartão de Crédito
+                    </div>
+                    <div class="col-6 col-md-2">
+                        Em Aberto
+                    </div>
+                    <div class="col-6 col-md-2">
+                        Pagar
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="tab-pane container fade" id="menu2">
+            <h3>Parcelas com vencimento próximo</h3>
+            @for (var c = 0; c < 10; c++)
+            {
+                <div class="row listCompras" style="border: 1px solid #808080; margin-bottom: 5px;margin: 1px;text-align:center">
+                    <div class="col-12 col-md-12" style="text-align:left">
+                        Brasil comércio de bebidas ltda
+                    </div>
+                    <div class="col-6 col-md-2">
+                        21/08/2020
+                    </div>
+                    <div class="col-6 col-md-2">
+                        R$ 15.835,63
+                    </div>
+                    <div class="col-6 col-md-2">
+                        Original
+                    </div>
+                    <div class="col-6 col-md-2">
+                        Cartão de Crédito
+                    </div>
+                    <div class="col-6 col-md-2">
+                        Em Aberto
+                    </div>
+                    <div class="col-6 col-md-2">
+                        Pagar
+                    </div>
+                </div>
+            }
         </div>
     </div>
-</div>
+}

@@ -13,7 +13,7 @@ body {
     margin-bottom: 15px;
     /*border-bottom: 1px solid orange;*/
     position: fixed;
-    top: 57px;
+    top: 57px;    
 }
 
 .bread_page {
@@ -67,6 +67,11 @@ body {
     margin: 0 auto;
     cursor: pointer;
 }
+
+.listCompras{
+    border: 1px solid black;
+}
+    
 
 
 @media (min-width: 768px) {

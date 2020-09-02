@@ -1,0 +1,127 @@
+﻿@model gestaoContadorcomvc.Models.Autenticacao.Registro
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            margin: 0px;
+            background-image: url('/Imagens/background.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        .container {
+            width: 100vw;
+            height: auto;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .box {
+            width: 500px;
+            height: auto;
+            background: #fff;
+            padding-bottom: 15px;
+            margin-bottom: 10px;
+        }
+
+            .box input:hover {
+                color: #495057;
+                background-color: #fff;
+                border-color: #80bdff;
+                outline: 0;
+                box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+            }
+
+        .faixa {
+            width: 100%;
+            height: 35px;
+            border-bottom: 3px solid #ff4400;
+            background-color: #060040;
+        }
+
+        .registro {
+            text-align: center;
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 40px;
+            margin-top: 35px;
+            margin-bottom: 40px;
+        }
+
+        .botao {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form asp-action="Registro" autocomplete="off" class="box">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="faixa"></div>
+            <div class="container-fluid">
+                <h1 class="registro">Registro</h1>
+                <fieldset>
+                    <legend>Dados da conta</legend>
+                    <div class="form-group">
+                        <input asp-for="conta_dcto" class="form-control" placeholder="CNPJ" />
+                        <span asp-validation-for="conta_dcto" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="conta_email" class="form-control" placeholder="E-mail" />
+                        <span asp-validation-for="conta_email" class="text-danger"></span>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Dados do usuário da conta</legend>
+                    <div class="form-group">
+                        <input asp-for="usuario_nome" class="form-control" placeholder="Nome completo" />
+                        <span asp-validation-for="usuario_nome" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="usuario_dcto" class="form-control" placeholder="CPF" />
+                        <span asp-validation-for="usuario_dcto" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="usuario_user" class="form-control" placeholder="Usuário para acesso a conta" />
+                        <span asp-validation-for="usuario_user" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="usuario_senha" class="form-control" placeholder="Senha" />
+                        <span asp-validation-for="usuario_senha" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="confirmaSenha" class="form-control" placeholder="Confirmação de senha" />
+                        <span asp-validation-for="confirmaSenha" class="text-danger"></span>
+                    </div>
+                </fieldset>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-info botao">Criar conta</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+</body>
+</html>

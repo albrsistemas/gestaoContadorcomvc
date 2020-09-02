@@ -1,0 +1,96 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            margin: 0px;
+            background-image: url('/Imagens/background.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center
+        }
+
+        .box {
+            width: 300px;
+            height: 390px;
+            background: #fff;
+            text-align: center;
+        }
+        .box input{
+            text-align: center;
+        }
+        .box input:hover{
+            color: #495057;
+            background-color: #fff;
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+        .faixa {
+            width: 100%;
+            height: 35px;
+            border-bottom: 3px solid #ff4400;
+            background-color: #060040;
+        }
+
+        .login {
+            text-align: center;
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 40px;
+            margin-top: 35px;
+            margin-bottom: 40px;
+        }
+        .botao{
+            width: 100%;
+            margin-top: 10px;
+        }
+        .criarConta{
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form class="box" autocomplete="off" asp-action="Login">
+            <div class="faixa"></div>
+            <div class="container-fluid">
+                <h1 class="login">Login</h1>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuário">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha">
+                </div>
+                @{
+                    if (TempData["errorLogin"] != null)
+                    {
+                        <span class="text-danger">@TempData["errorLogin"].ToString()</span>
+                    }
+                }
+                
+                <button type="submit" class="btn btn-info botao">Entrar</button>
+                <p class="criarConta">Não é registrado? <a asp-controller="Conta" asp-action="Registro">Cria sua conta</a></p>
+            </div>            
+        </form>        
+    </div>    
+</body>
+</html>
