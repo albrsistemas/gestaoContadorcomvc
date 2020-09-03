@@ -34,7 +34,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
 
         public string usuario_email { get; set; }
 
-        public string usuario_perfil { get; set; }
+        public string Role { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -79,7 +79,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                         user.usuario_nome = leitor["usuario_nome"].ToString();
                         user.usuario_dcto = leitor["usuario_dcto"].ToString();
                         user.usuario_email = leitor["usuario_email"].ToString();
-                        user.usuario_perfil = leitor["usuario_perfil"].ToString();
+                        user.Role = leitor["Role"].ToString();
                     }
                 }
                 else
