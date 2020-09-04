@@ -1,0 +1,67 @@
+﻿@model gestaoContadorcomvc.Models.Autenticacao.Usuario
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h1>Index</h1>
+
+<h4>Usuario</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="usuario_id" class="control-label"></label>
+                <input asp-for="usuario_id" class="form-control" />
+                <span asp-validation-for="usuario_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="usuario_conta_id" class="control-label"></label>
+                <input asp-for="usuario_conta_id" class="form-control" />
+                <span asp-validation-for="usuario_conta_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="usuario_nome" class="control-label"></label>
+                <input asp-for="usuario_nome" class="form-control" />
+                <span asp-validation-for="usuario_nome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="usuario_dcto" class="control-label"></label>
+                <input asp-for="usuario_dcto" class="form-control" />
+                <span asp-validation-for="usuario_dcto" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="usuario_user" class="control-label"></label>
+                <input asp-for="usuario_user" class="form-control" />
+                <span asp-validation-for="usuario_user" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="usuario_senha" class="control-label"></label>
+                <input asp-for="usuario_senha" class="form-control" />
+                <span asp-validation-for="usuario_senha" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="usuario_email" class="control-label"></label>
+                <input asp-for="usuario_email" class="form-control" />
+                <span asp-validation-for="usuario_email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Role" class="control-label"></label>
+                <input asp-for="Role" class="form-control" />
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

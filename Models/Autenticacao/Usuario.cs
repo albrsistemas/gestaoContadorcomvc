@@ -1,4 +1,5 @@
 ﻿using gestaoContadorcomvc.Models.SoftwareHouse;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System;
@@ -19,9 +20,11 @@ namespace gestaoContadorcomvc.Models.Autenticacao
 
         [Required(ErrorMessage = "O nome é obrigatório.")]
 
+        [Display(Name = "Nome")]
         public string usuario_nome { get; set; }
 
         [Required]
+        [Display(Name = "CPF")]
         public string usuario_dcto { get; set; }
 
         [Required]
@@ -32,9 +35,11 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         [Display(Name = "usuario_senha")]
         public string usuario_senha { get; set; }
 
+        [Display(Name = "E-mail")]
         public string usuario_email { get; set; }
 
         public string Role { get; set; }
+        public List<Permissao> permissoes { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -103,10 +108,6 @@ namespace gestaoContadorcomvc.Models.Autenticacao
 
             return user;
         }
-
-
-
-
     }
 
     

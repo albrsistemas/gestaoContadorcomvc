@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using gestaoContadorcomvc.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace gestaoContadorcomvc
 {
@@ -31,7 +33,7 @@ namespace gestaoContadorcomvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews();   
 
             //Configuração para uso de autenticação por token jwtbearer
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
@@ -53,12 +55,19 @@ namespace gestaoContadorcomvc
                 };
             });
 
+            //Habilitando projeto utilzar navegação segura ssl (precisar estar com certificado instalado na hospedagem).
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+                options.HttpsPort = 443;
+            });
+
             services.AddRazorPages().AddRazorRuntimeCompilation(); //Atualizar navegador em tempo execução dev.
 
             services.AddDistributedMemoryCache(); //necessário para implementação de sessão
             services.AddSession(options => //necessário para implementação de sessão
             {
-                options.Cookie.Name = "cvc.Sesseion";
+                options.Cookie.Name = "cvc.Session";
                 options.IdleTimeout = TimeSpan.FromHours(2);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;                

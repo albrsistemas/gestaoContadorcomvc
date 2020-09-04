@@ -1,6 +1,8 @@
 ﻿using System;
 using gestaoContadorcomvc.Models.Autenticacao;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Routing;
 
 namespace gestaoContadorcomvc.Filtros
 {
@@ -10,10 +12,10 @@ namespace gestaoContadorcomvc.Filtros
         {
             //Código :  antes que a action executa 
             var user = context.HttpContext.Session.GetObjectFromJson<Usuario>("user");
-
+            
             if (user == null)
             {
-                context.HttpContext.Response.Redirect("/Conta/Login");
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary{{ "controller", "Conta" },{ "action", "login" }});
             }
         }
         public void OnActionExecuted(ActionExecutedContext context)

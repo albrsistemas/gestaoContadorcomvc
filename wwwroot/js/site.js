@@ -1,11 +1,4 @@
-﻿//Funcionamento do Drawer
-let btn = document.getElementById('bread_menu');
-btn.addEventListener('click', function () {
-    let drawer = document.getElementById('drawer');
-    (drawer.style.right === '0px') ? (drawer.style.right = '-350px') : (drawer.style.right = '0px');
-});
-
-//Onload página layout
+﻿//Onload página layout
 function Page() {
 
     //Renderizando as informações do Drawer conforme a página específica:
@@ -29,5 +22,16 @@ function ValidaRegistro(id) {
     if (id == "pj") {
         document.getElementById()
     }
+}
 
+function openNav(local) {
+    var estado = document.getElementById("mySidenav").style.width;   
+    
+    if (estado != "250px") {
+        document.getElementById("mySidenav").style.width = "250px";
+        document.getElementById("corpo").style.marginLeft = "250px";
+    } else {
+        document.getElementById("mySidenav").style.width = "0";
+        document.getElementById("corpo").style.marginLeft = "0";
+    }
 }

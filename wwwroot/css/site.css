@@ -71,7 +71,11 @@ body {
 .listCompras{
     border: 1px solid black;
 }
-    
+
+.hrLine {
+    background-color: #ff4400;
+}
+
 
 
 @media (min-width: 768px) {

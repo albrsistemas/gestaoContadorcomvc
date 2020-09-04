@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using gestaoContadorcomvc.Models.Autenticacao;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -114,9 +115,6 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             bool existe = registro.dctoExiste(conta_dcto);
 
             return Json(!existe);
-        }
-
-
-
+        }    
     }
 }
