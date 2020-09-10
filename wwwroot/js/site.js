@@ -35,3 +35,12 @@ function openNav(local) {
         document.getElementById("corpo").style.marginLeft = "0";
     }
 }
+
+function boxAccordionToggle(id) {
+    var status = document.getElementById(id).parentElement.children[1].style.display;
+    if (status == "" || status == null || status == "block") {
+        document.getElementById(id).parentElement.children[1].style.display = "none";
+    } else {
+        document.getElementById(id).parentElement.children[1].style.display = "block";
+    }
+}

@@ -2,12 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <SignAssembly>false</SignAssembly>
+    <StartupObject>gestaoContadorcomvc.Program</StartupObject>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="wwwroot\css\smallscreen.css" />
-    <Content Remove="wwwroot\css\widescreen.css" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Dapper.Contrib" Version="2.0.35" />
@@ -20,11 +17,5 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="MySql.Data" Version="8.0.21" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\GE\" />
-  </ItemGroup>
-
-
 
 </Project>

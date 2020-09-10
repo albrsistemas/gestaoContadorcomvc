@@ -1,7 +1,4 @@
-﻿@using gestaoContadorcomvc.Models
-@model gestaoContadorcomvc.Models.Autenticacao.Usuario
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="utf-8" />
@@ -63,8 +60,8 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNavDropdown" style="background-color: #060040;" data-url="@Url.Action(action: "menu", controller: "Menu")">
-               
+            <div class="collapse navbar-collapse" id="navbarNavDropdown" style="background-color: #060040;">
+               @await Component.InvokeAsync("Menu")
             </div>
         </nav>
     </header>
@@ -91,15 +88,7 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        $(document).ready(function () {
-            (function () {
-                var url = $("#navbarNavDropdown").data("url");
-                $("#navbarNavDropdown").load(url);
-            })();
-        });
-    </script>
+    <script src="~/js/site.js" asp-append-version="true"></script>   
     @RenderSection("Scripts", required: false)
 </body>
 </html>

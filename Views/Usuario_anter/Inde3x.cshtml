@@ -1,0 +1,84 @@
+﻿@model IEnumerable<gestaoContadorcomvc.Models.Autenticacao.Usuario>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.usuario_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.usuario_conta_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.usuario_nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.usuario_dcto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.usuario_user)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.usuario_senha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.usuario_email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Role)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.permissoes)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.usuario_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.usuario_conta_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.usuario_nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.usuario_dcto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.usuario_user)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.usuario_senha)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.usuario_email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Role)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.permissoes)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

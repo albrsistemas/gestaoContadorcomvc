@@ -1,0 +1,147 @@
+﻿@model gestaoContadorcomvc.Models.Autenticacao.Usuario
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Gestão de usuários</h2>
+<hr class="hrLine" />
+
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <fieldset>
+        <legend>Dados do usuário</legend>
+        <div class="row">
+            <div class="col-md-12">
+                <input type="hidden" asp-for="usuario_id" class="form-control" />
+                <input type="hidden" asp-for="permissoes" id="inputPermissao" class="form-control" />
+                <div class="row">
+                    <div class="col-12 col-md-12">
+                        <div class="form-group">
+                            <label asp-for="usuario_nome" class="control-label"></label>
+                            <input asp-for="usuario_nome" class="form-control" />
+                            <span asp-validation-for="usuario_nome" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="usuario_dcto" class="control-label"></label>
+                            <input asp-for="usuario_dcto" class="form-control" />
+                            <span asp-validation-for="usuario_dcto" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label asp-for="usuario_email" class="control-label"></label>
+                            <input asp-for="usuario_email" class="form-control" />
+                            <span asp-validation-for="usuario_email" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="usuario_user" class="control-label"></label>
+                            <input asp-for="usuario_user" class="form-control" />
+                            <span asp-validation-for="usuario_user" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="usuario_senha" class="control-label"></label>
+                            <input type="password" asp-for="usuario_senha" class="form-control" />
+                            <span asp-validation-for="usuario_senha" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Confirmação de Senha</label>
+                            <input type="password" id="confirmeSenhaUsuario" class="form-control" onchange="validaSenhaUsuario(this.value)" onfocus="limpaValidacao()"/>
+                            <span id="spanConfirmeSenhaUsuario" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Permissões</legend>
+        <div class="box-accordion">
+            <div class="box-accordion-titulo" id="boxPermissoesCadastro" onclick="boxAccordionToggle(this.id)">
+                Cadastro
+            </div>
+            <div class="box-accordion-dados">
+                <!--Cadastro Usuário-->
+                <div class="row">
+                    <div class="row">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="usuarioList" id="usuarioList" onclick="checkPermissoes(this.id)">
+                            <label class="form-check-label" for="usuarioList">Usuários</label>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-left: 30px;">
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" id="usuarioInsert" value="usuarioInsert" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="usuarioInsert">Incluir</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" id="usuarioEdit" value="usuarioEdit" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="usuarioEdit">Alterar</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" id="usuarioDelete" value="usuarioDelete" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="usuarioDelete">Apagar</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Cadastro Categorias-->
+                <div class="row">
+                    <div class="row">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="categoriaList">
+                            <label class="form-check-label" for="categoriaList">Categorias</label>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-left: 30px;">
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" id="categoriaInsert" value="option1">
+                                <label class="form-check-label" for="categoriaInsert">Incluir</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" id="categoriaEdit" value="option1">
+                                <label class="form-check-label" for="categoriaEdit">Alterar</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" id="categoriaDelete" value="option1">
+                                <label class="form-check-label" for="categoriaDelete">Apagar</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+
+    <button type="submit" class="btn btn-info">Gravar</button>
+    <button class="btn btn-secondary">Cancelar</button>
+</form>
+
+
+<script src="~/js/user.js"></script>
+
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+

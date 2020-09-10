@@ -1,21 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using gestaoContadorcomvc.Filtros;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using gestaoContadorcomvc.Services;
 using Microsoft.AspNetCore.Http;
 
 namespace gestaoContadorcomvc
@@ -33,7 +24,9 @@ namespace gestaoContadorcomvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddControllersWithViews();   
+            services.AddControllersWithViews();
+
+            //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             //Configuração para uso de autenticação por token jwtbearer
             var key = Encoding.ASCII.GetBytes(Settings.Secret);

@@ -1,16 +1,14 @@
 ﻿using gestaoContadorcomvc.Models.SoftwareHouse;
-using Microsoft.AspNetCore.Http;
+using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace gestaoContadorcomvc.Models.Autenticacao
-{    
+{
     public class Usuario
     {        
         //Atributos
@@ -39,7 +37,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         public string usuario_email { get; set; }
 
         public string Role { get; set; }
-        public List<Permissao> permissoes { get; set; }
+        public string permissoes { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -83,8 +81,9 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                         user.usuario_conta_id = Convert.ToInt32(leitor["usuario_conta_id"]);
                         user.usuario_nome = leitor["usuario_nome"].ToString();
                         user.usuario_dcto = leitor["usuario_dcto"].ToString();
-                        user.usuario_email = leitor["usuario_email"].ToString();
+                        user.usuario_email = leitor["usuario_email"].ToString();                        
                         user.Role = leitor["Role"].ToString();
+                        user.permissoes = leitor["usuario_permissoes"].ToString();
                     }
                 }
                 else
@@ -108,6 +107,117 @@ namespace gestaoContadorcomvc.Models.Autenticacao
 
             return user;
         }
+
+        //Lista usuario pela conta (lista não traz o usuário 'adm' e o usuario que fez a requisição
+
+        public List<Vm_usuario> listaUsuarios(int conta_id, int usuario_id)
+        {
+            List<Vm_usuario> lista = new List<Vm_usuario>();
+
+            try
+            {
+                conn.Open();
+                MySqlCommand comando = new MySqlCommand("SELECT * from usuario where usuario_conta_id = @conta and Role = 'user' and usuario_id != @usuario_id;", conn);
+                comando.Parameters.AddWithValue("@conta", conta_id);
+                comando.Parameters.AddWithValue("@usuario_id", usuario_id);
+
+                var leitor = comando.ExecuteReader();
+
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        lista.Add(new Vm_usuario
+                        {
+                            usuario_nome = leitor["usuario_nome"].ToString(),
+                            usuario_email = leitor["usuario_email"].ToString(),
+                            usuario_dcto = leitor["usuario_dcto"].ToString(),                            
+                            usuario_id = Convert.ToInt32(leitor["usuario_id"]),                            
+                        });
+                    }
+                }
+                else
+                {
+                    lista = null;
+                }
+
+                conn.Close();
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return lista;
+        }
+
+
+
+
+        public List<Usuario> ListaUsuario(int conta_id, int usuario_id)
+        {
+            List<Usuario> usuarios = new List<Usuario>(usuario_id);
+
+
+            //List<Usuario>.Enumerator<Usuario> usuarios = new List<Usuario>();
+
+            try
+            {
+                conn.Open();
+                MySqlCommand comando = new MySqlCommand("SELECT * from usuario where usuario_conta_id = @conta and Role = 'user' and usuario_id != @usuario_id;", conn);
+                comando.Parameters.AddWithValue("@conta", conta_id);
+                comando.Parameters.AddWithValue("@usuario_id", usuario_id);
+
+                var leitor = comando.ExecuteReader();
+
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        usuarios.Add(new gestaoContadorcomvc.Models.Autenticacao.Usuario
+                        {
+                            usuario_nome = leitor["usuario_nome"].ToString(),
+                            usuario_email = leitor["usuario_email"].ToString(),
+                            usuario_dcto = leitor["usuario_dcto"].ToString(),
+                            usuario_conta_id = Convert.ToInt32(leitor["usuario_conta_id"]),
+                            usuario_id = Convert.ToInt32(leitor["usuario_id"]),
+                            Role = leitor["Role"].ToString(),
+                            permissoes = leitor["usuario_permissoes"].ToString()
+                        });
+                    }
+                }
+                else
+                {
+                    usuarios = null;
+                }
+
+                conn.Close();
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return usuarios;
+        }
+
+
     }
 
     

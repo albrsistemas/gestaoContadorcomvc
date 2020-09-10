@@ -70,19 +70,14 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
             //Gerando o login            
             HttpContext.Session.SetObjectAsJson("user", user);
+            HttpContext.Session.SetString("Role", user.Role);
+            HttpContext.Session.SetInt32("ID", user.usuario_id);
+            HttpContext.Session.SetInt32("Conta", user.usuario_conta_id);
 
             TempData["user"] = user.usuario_nome;
 
             return RedirectToAction("Index", "Home");
         }
-
-        //[HttpGet]
-        //public async System.Threading.Tasks.Task<IActionResult> LogoutAsync()
-        //{
-        //    HttpContext.Session.Clear();
-
-        //    return RedirectToAction("Login", "Conta");
-        //}
 
         [HttpGet]
         public IActionResult Logout()
