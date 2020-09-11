@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <SignAssembly>false</SignAssembly>
     <StartupObject>gestaoContadorcomvc.Program</StartupObject>
+    <UserSecretsId>60288893-95d8-452e-be0c-c8f0248494c9</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
