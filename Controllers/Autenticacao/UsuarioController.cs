@@ -1,6 +1,7 @@
 ﻿using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections;
@@ -11,6 +12,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
     [FiltroAutenticacao]
     public class UsuarioController : Controller
     {
+        [FiltroAutorizacao(permissao = "usuarioList")]
         // GET: UsuarioController
         public ActionResult Index()
         {
@@ -23,6 +25,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             return View(user.listaUsuarios(user.usuario_conta_id, user.usuario_id));
         }
 
+        [FiltroAutorizacao(permissao = "usuarioCreate")]
         // GET: UsuarioController/Create
         public ActionResult Create()
         {
@@ -56,6 +59,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             }
         }
 
+        [FiltroAutorizacao(permissao = "usuarioEdit")]
         // GET: UsuarioController/Edit/5
         public ActionResult Edit(int id)
         {
@@ -91,6 +95,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             }
         }
 
+        [FiltroAutorizacao(permissao = "usuarioDelete")]
         // GET: UsuarioController/Delete/5
         public ActionResult Delete(int id)
         {
@@ -127,7 +132,8 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             }
         }
 
-        //Alterar senha do usuário (restrito ao adm)
+        //Alterar senha do usuário (restrito ao adm)        
+        [FiltroAutorizacao(permissao = "Adm")]
         public ActionResult EditPassword(int id)
         {
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");

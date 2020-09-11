@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Routing;
 namespace gestaoContadorcomvc.Filtros
 {
     public class FiltroAutenticacao : Attribute, IActionFilter
-    {       
+    {        
         public void OnActionExecuting(ActionExecutingContext context)
         {
             //Código :  antes que a action executa 
