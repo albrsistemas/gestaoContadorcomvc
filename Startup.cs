@@ -26,7 +26,7 @@ namespace gestaoContadorcomvc
             services.AddCors();
             services.AddControllersWithViews();
 
-            //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             //Configuração para uso de autenticação por token jwtbearer
             var key = Encoding.ASCII.GetBytes(Settings.Secret);

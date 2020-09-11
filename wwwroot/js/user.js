@@ -1,28 +1,26 @@
-﻿function validaSenhaUsuario(valor) {
-    var senha = document.getElementById("usuario_senha").value;
+﻿//function validaSenhaUsuario(valor) {    
+//    var senha = document.getElementById("usuario_senha").value;
 
-    if (senha != valor) {
-        document.getElementById("spanConfirmeSenhaUsuario").innerHTML = "Senha não confere";
+//    if (senha != valor) {
+//        document.getElementById("spanConfirmeSenhaUsuario").innerHTML = "Senha não confere";
 
-        return false;
-    }
-}
+//        return false;
+//    }
+//}
 
-function limpaValidacao() {
-    document.getElementById("spanConfirmeSenhaUsuario").innerHTML = "";
-}
+//function limpaValidacao() {
+//    document.getElementById("spanConfirmeSenhaUsuario").innerHTML = "";
+//}
 
 function checkPermissoes(id) {       
 
     //Facilitador de checagem para o usuário
     if (id == "usuarioList") {
-        if (!document.getElementById("usuarioList").checked) {
-            permissoes.splice(permissoes.indexOf("usuarioList", 0));
+        if (!document.getElementById("usuarioList").checked) {            
             document.getElementById("usuarioInsert").checked = false;
             document.getElementById("usuarioEdit").checked = false;
             document.getElementById("usuarioDelete").checked = false;
-        } else {
-            permissoes.push("usuarioList");
+        } else {            
             document.getElementById("usuarioInsert").checked = true;
             document.getElementById("usuarioEdit").checked = true;
             document.getElementById("usuarioDelete").checked = true;
@@ -42,4 +40,5 @@ function checkPermissoes(id) {
         }
     }    
     document.getElementById("inputPermissao").value = strPermissoes;
+    console.log(document.getElementById("inputPermissao").value);
 }

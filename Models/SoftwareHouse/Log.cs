@@ -17,6 +17,7 @@ namespace gestaoContadorcomvc.Models.SoftwareHouse
         public string log_mensagem { get; set; }
         public int log_conta_id { get; set; }
         public int log_usuario_id { get; set; }
+        public string log_data { get; set; }
 
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
         public IConfigurationRoot GetConfiguration()
@@ -70,7 +71,58 @@ namespace gestaoContadorcomvc.Models.SoftwareHouse
             {
                 conn.Close();
             }
+        }
 
-        } 
+        //Lista logs
+        public List<Log> logs(int conta_id)
+        {
+            List<Log> logs = new List<Log>();
+
+
+            //List<Usuario>.Enumerator<Usuario> usuarios = new List<Usuario>();
+
+            try
+            {
+                conn.Open();
+                MySqlCommand comando = new MySqlCommand("SELECT * from log where log_conta_id = @conta_id;", conn);
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+
+                var leitor = comando.ExecuteReader();
+
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        logs.Add(new Log
+                        {
+                            log_id = Convert.ToInt32(leitor["log_id"]),
+                            log_conta_id = Convert.ToInt32(leitor["log_conta_id"]),
+                            log_usuario_id = Convert.ToInt32(leitor["log_usuario_id"]),
+                            log_classe = leitor["log_classe"].ToString(),
+                            log_metodo = leitor["log_metodo"].ToString(),
+                            log_tipo = leitor["log_tipo"].ToString(),
+                            log_mensagem = leitor["log_mensagem"].ToString(),
+                            log_data = leitor["log_data"].ToString()
+                        });
+                    }
+                }                
+
+                conn.Close();
+            }
+            catch (Exception e)
+            {
+                _ = e.StackTrace;
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return logs;
+        }
     }
 }

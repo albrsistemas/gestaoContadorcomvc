@@ -73,6 +73,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             HttpContext.Session.SetString("Role", user.Role);
             HttpContext.Session.SetInt32("ID", user.usuario_id);
             HttpContext.Session.SetInt32("Conta", user.usuario_conta_id);
+            HttpContext.Session.SetString("Permissoes", user.permissoes);
 
             TempData["user"] = user.usuario_nome;
 

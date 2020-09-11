@@ -44,3 +44,21 @@ function boxAccordionToggle(id) {
         document.getElementById(id).parentElement.children[1].style.display = "block";
     }
 }
+
+$(".delete").click(function () {
+    var id = $(this).attr("data-id");    
+    $("#modal").load("Delete?id=" + id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(".EditPassword").click(function () {
+    var id = $(this).attr("data-id");
+    $("#modal").load("EditPassword?id=" + id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(document).ready(function () {
+    $('#Esconder').delay(3000).fadeOut();
+});

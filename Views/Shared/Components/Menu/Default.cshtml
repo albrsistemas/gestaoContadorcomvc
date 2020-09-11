@@ -1,83 +1,85 @@
 ﻿@{
-
-
-
     if (TempData["user"] != null)
     {
 
         gestaoContadorcomvc.Models.Autenticacao.Usuario usuario = new gestaoContadorcomvc.Models.Autenticacao.Usuario();
         usuario = (gestaoContadorcomvc.Models.Autenticacao.Usuario)TempData["user"];
 
-        <ul class="navbar-nav">
-            @{
-                if (usuario.Role == "adm")
-                {
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Cadastro
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            @if (usuario.permissoes.Split("|").Contains("usuarioList"))
-                            {<a class='dropdown-item' asp-controller='Usuario' asp-action='Index'>Usuários</a> }
-                            @*<a class="dropdown-item" href="#">Categoria</a>
+        if (usuario.permissoes != null)
+        {
+            <ul class="navbar-nav">
+                @{
+                    if (usuario.Role == "adm" || usuario.permissoes.Contains("usuarioList") || usuario.permissoes.Contains("categoriaList"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Cadastro
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                @if (usuario.Role == "adm" || usuario.permissoes.Contains("usuarioList"))
+                                {<a class='dropdown-item' asp-controller='Usuario' asp-action='Index'>Usuários</a>}
+                                @if (usuario.Role == "adm" || usuario.permissoes.Contains("categoriaList"))
+                                {<a class="dropdown-item" href="#">Categoria</a> }
+                                @*
                                 <a class="dropdown-item" asp-controller="Contas" asp-action="Index">Conta</a>
                                 <a class="dropdown-item" href="#">Cartão de Crédito</a>
                                 <a class="dropdown-item" href="#">Participante</a>
                                 <a class="dropdown-item" href="#">Produtos</a>*@
-                        </div>
-                    </li>
+                            </div>
+                        </li>
+                    }
                 }
-            }
 
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Lançamento
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="#">Orçamento</a>
-                    <a class="dropdown-item" href="#">Compra</a>
-                    <a class="dropdown-item" href="#">Venda</a>
-                    <a class="dropdown-item" href="#">Prestação de Serviço</a>
-                    <a class="dropdown-item" href="#">Empréstimos/Financiamentos</a>
-                    <a class="dropdown-item" href="#">Lançamento Contábil</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Controle
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" asp-controller="ContasPagar" asp-action="Index">Contas a Pagar</a>
-                    <a class="dropdown-item" href="#">Contas a Receber</a>
-                    <a class="dropdown-item" href="#">Fluxo de Caixa</a>
-                    <a class="dropdown-item" href="#">Cartão de Crédito</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Relatório
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="#">FLuxo de Caixa Anual</a>
-                    <a class="dropdown-item" href="#">Conciliação Categoria</a>
-                    <a class="dropdown-item" href="#">Extrato Categoria</a>
-                    <a class="dropdown-item" href="#">Comparativo Orçamento/Realizado</a>
-                </div>
-            </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Lançamento
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Orçamento</a>
+                        <a class="dropdown-item" href="#">Compra</a>
+                        <a class="dropdown-item" href="#">Venda</a>
+                        <a class="dropdown-item" href="#">Prestação de Serviço</a>
+                        <a class="dropdown-item" href="#">Empréstimos/Financiamentos</a>
+                        <a class="dropdown-item" href="#">Lançamento Contábil</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Controle
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" asp-controller="ContasPagar" asp-action="Index">Contas a Pagar</a>
+                        <a class="dropdown-item" href="#">Contas a Receber</a>
+                        <a class="dropdown-item" href="#">Fluxo de Caixa</a>
+                        <a class="dropdown-item" href="#">Cartão de Crédito</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Relatório
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">FLuxo de Caixa Anual</a>
+                        <a class="dropdown-item" href="#">Conciliação Categoria</a>
+                        <a class="dropdown-item" href="#">Extrato Categoria</a>
+                        <a class="dropdown-item" href="#">Comparativo Orçamento/Realizado</a>
+                    </div>
+                </li>
 
-        </ul>
-        <div class="dropdown-divider"></div>
-        <ul class="navbar-nav ml-auto">
-            <!--Menu alinhao a direita-->
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@usuario.usuario_nome</a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="#">Minha Conta</a>
-                    <a class="dropdown-item" asp-controller="Configuracoes" asp-action="Index">Configurações</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" asp-controller="Conta" asp-action="Logout">Sair</a>
-                </div>
-            </li>
-        </ul>
+            </ul>
+            <div class="dropdown-divider"></div>
+            <ul class="navbar-nav ml-auto">
+                <!--Menu alinhao a direita-->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@usuario.usuario_nome</a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Minha Conta</a>
+                        <a class="dropdown-item" asp-controller="Configuracoes" asp-action="Index">Configurações</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" asp-controller="Conta" asp-action="Logout">Sair</a>
+                    </div>
+                </li>
+            </ul>
+        }
     }
 }
