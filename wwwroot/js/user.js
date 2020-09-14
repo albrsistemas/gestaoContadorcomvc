@@ -12,22 +12,22 @@
 //    document.getElementById("spanConfirmeSenhaUsuario").innerHTML = "";
 //}
 
-function checkPermissoes(id) {       
-
+function checkPermissoes(id) {
+    console.log(id);
+    let local = id.replace("List", "");
     //Facilitador de checagem para o usuário
-    if (id == "usuarioList") {
-        if (!document.getElementById("usuarioList").checked) {            
-            document.getElementById("usuarioInsert").checked = false;
-            document.getElementById("usuarioEdit").checked = false;
-            document.getElementById("usuarioDelete").checked = false;
-        } else {            
-            document.getElementById("usuarioInsert").checked = true;
-            document.getElementById("usuarioEdit").checked = true;
-            document.getElementById("usuarioDelete").checked = true;
+    if (id.includes("List")) {
+        if (!document.getElementById(local + "List").checked) {
+            document.getElementById(local + "Create").checked = false;
+            document.getElementById(local + "Edit").checked = false;
+            document.getElementById(local + "Delete").checked = false;
+        } else {
+            document.getElementById(local + "Create").checked = true;
+            document.getElementById(local + "Edit").checked = true;
+            document.getElementById(local + "Delete").checked = true;
         }
     }
-
-
+    
 
     //Varrengo os inputs e atribuindo valores ao campo usuario_permissoes
     var strPermissoes = "";
@@ -36,9 +36,9 @@ function checkPermissoes(id) {
 
     for (let x = 0; x < inputs.length; x++) {
         if (inputs[x].type == "checkbox" && inputs[x].checked) {
-            strPermissoes += inputs[x].value + "|";            
+            strPermissoes += inputs[x].value + "|";
         }
-    }    
+    }
     document.getElementById("inputPermissao").value = strPermissoes;
     console.log(document.getElementById("inputPermissao").value);
 }

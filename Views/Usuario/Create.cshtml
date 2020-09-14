@@ -20,7 +20,6 @@
     }
 }
 
-
 <form asp-controller="Usuario" asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <fieldset>
@@ -89,16 +88,18 @@
             <div class="box-accordion-dados">
                 <!--Cadastro Usuário-->
                 <div class="row">
-                    <div class="row">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="usuarioList" id="usuarioList" onclick="checkPermissoes(this.id)">
-                            <label class="form-check-label" for="usuarioList">Usuários</label>
+                    <div class="col-12 col-md-3">
+                        <div class="row">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="usuarioList" id="usuarioList" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="usuarioList">Usuários</label>
+                            </div>
                         </div>
                     </div>
                     <div class="row" style="padding-left: 30px;">
                         <div class="col-md-4 col-12">
                             <div class="form-check form-check-inline" style="width: 20%;">
-                                <input class="form-check-input" type="checkbox" id="usuarioInsert" value="usuarioCreate" onclick="checkPermissoes(this.id)">
+                                <input class="form-check-input" type="checkbox" id="usuarioCreate" value="usuarioCreate" onclick="checkPermissoes(this.id)">
                                 <label class="form-check-label" for="usuarioCreate">Incluir</label>
                             </div>
                         </div>
@@ -118,29 +119,69 @@
                 </div>
                 <!--Cadastro Categorias-->
                 <div class="row">
-                    <div class="row">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="categoriaList">
-                            <label class="form-check-label" for="categoriaList">Categorias</label>
+                    <div class="col-12 col-md-3">
+                        <div class="row">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="categoriaList" id="categoriaList" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="categoriaList">Categorias</label>
+                            </div>
                         </div>
                     </div>
                     <div class="row" style="padding-left: 30px;">
                         <div class="col-md-4 col-12">
                             <div class="form-check form-check-inline" style="width: 20%;">
-                                <input class="form-check-input" type="checkbox" id="categoriaInsert" value="option1">
-                                <label class="form-check-label" for="categoriaInsert">Incluir</label>
+                                <input class="form-check-input" type="checkbox" id="categoriaCreate" value="categoriaCreate" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="categoriaCreate">Incluir</label>
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
                             <div class="form-check form-check-inline" style="width: 20%;">
-                                <input class="form-check-input" type="checkbox" id="categoriaEdit" value="option1">
+                                <input class="form-check-input" type="checkbox" id="categoriaEdit" value="categoriaEdit" onclick="checkPermissoes(this.id)">
                                 <label class="form-check-label" for="categoriaEdit">Alterar</label>
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
                             <div class="form-check form-check-inline" style="width: 20%;">
-                                <input class="form-check-input" type="checkbox" id="categoriaDelete" value="option1">
+                                <input class="form-check-input" type="checkbox" id="categoriaDelete" value="categoriaDelete" onclick="checkPermissoes(this.id)">
                                 <label class="form-check-label" for="categoriaDelete">Apagar</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+        <div class="box-accordion">
+            <div class="box-accordion-titulo" id="boxPermissoesCadastro" onclick="boxAccordionToggle(this.id)">
+                Lançamento
+            </div>
+            <div class="box-accordion-dados">                
+                <!--Lançamentos Contábeis-->
+                <div class="row">
+                    <div class="col-12 col-md-3">
+                        <div class="row">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="lancamentoList" id="lancamentoList" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="lancamentoList">Lançamentos Contábeis</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-left: 30px;">
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" id="lancamentoCreate" value="lancamentoCreate" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="lancamentoCreate">Incluir</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" id="lancamentoEdit" value="lancamentoEdit" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="lancamentoEdit">Alterar</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" id="lancamentoDelete" value="lancamentoDelete" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="lancamentoDelete">Apagar</label>
                             </div>
                         </div>
                     </div>

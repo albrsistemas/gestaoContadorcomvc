@@ -171,6 +171,14 @@ body {
         background-color: #d9d8d4;
     }
 
+    .line-list svg {
+        color: #ff4400;
+    }
+    .line-list row {
+        width: calc(100% - 60px);
+    }
+
+
 .col-list-left {
     min-height: 30px;
     width: 30px;

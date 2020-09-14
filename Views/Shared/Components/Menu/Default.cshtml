@@ -19,7 +19,7 @@
                                 @if (usuario.Role == "adm" || usuario.permissoes.Contains("usuarioList"))
                                 {<a class='dropdown-item' asp-controller='Usuario' asp-action='Index'>Usuários</a>}
                                 @if (usuario.Role == "adm" || usuario.permissoes.Contains("categoriaList"))
-                                {<a class="dropdown-item" href="#">Categoria</a> }
+                                {<a class="dropdown-item" asp-controller='Categoria' asp-action='Index'>Categoria</a> }
                                 @*
                                 <a class="dropdown-item" asp-controller="Contas" asp-action="Index">Conta</a>
                                 <a class="dropdown-item" href="#">Cartão de Crédito</a>
@@ -40,7 +40,7 @@
                         <a class="dropdown-item" href="#">Venda</a>
                         <a class="dropdown-item" href="#">Prestação de Serviço</a>
                         <a class="dropdown-item" href="#">Empréstimos/Financiamentos</a>
-                        <a class="dropdown-item" href="#">Lançamento Contábil</a>
+                        <a class="dropdown-item" asp-controller="Lancamento" asp-action="Index">Lançamento Contábil</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
