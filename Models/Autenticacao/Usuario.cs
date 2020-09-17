@@ -69,11 +69,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                         user.Role = leitor["Role"].ToString();
                         user.permissoes = leitor["usuario_permissoes"].ToString();
                     }
-                }
-                else
-                {
-                    user = null;
-                }
+                }                
 
                 conn.Close();
             }
@@ -120,11 +116,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                             usuario_id = Convert.ToInt32(leitor["usuario_id"]),                            
                         });
                     }
-                }
-                else
-                {
-                    lista = null;
-                }
+                }                
 
                 conn.Close();
             }
@@ -146,10 +138,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         //Lista de usuários com exlusão do usuário 'adm' e o usuário requerente
         public List<Usuario> ListaUsuario(int conta_id, int usuario_id)
         {
-            List<Usuario> usuarios = new List<Usuario>(usuario_id);
-
-
-            //List<Usuario>.Enumerator<Usuario> usuarios = new List<Usuario>();
+            List<Usuario> usuarios = new List<Usuario>(usuario_id);            
 
             try
             {
@@ -176,11 +165,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                             permissoes = leitor["usuario_permissoes"].ToString()
                         });
                     }
-                }
-                else
-                {
-                    usuarios = null;
-                }
+                }                
 
                 conn.Close();
             }
@@ -237,7 +222,10 @@ namespace gestaoContadorcomvc.Models.Autenticacao
             }
             finally
             {
-                conn.Close();
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
             }
 
             return retorno;
@@ -325,7 +313,10 @@ namespace gestaoContadorcomvc.Models.Autenticacao
             }
             finally
             {
-                conn.Close();
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
             }
 
             return retorno;
@@ -363,7 +354,10 @@ namespace gestaoContadorcomvc.Models.Autenticacao
             }
             finally
             {
-                conn.Close();
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
             }
 
             return retorno;
@@ -403,7 +397,10 @@ namespace gestaoContadorcomvc.Models.Autenticacao
             }
             finally
             {
-                conn.Close();
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
             }
 
             return retorno;

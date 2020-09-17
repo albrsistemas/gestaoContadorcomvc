@@ -59,6 +59,13 @@ $(".EditPassword").click(function () {
     })
 });
 
+$(".create").click(function () {
+    var id = $(this).attr("data-id");    
+    $("#modal").load("Create?id=" + id, function () {
+        $("#modal").modal('show');
+    })
+});
+
 $(document).ready(function () {
     $('#Esconder').delay(3000).fadeOut();
 });

@@ -1,0 +1,60 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_categoria
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Criar Categoria</h4>
+            </div>
+            <form asp-controller="Categoria" asp-action="Create">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            @{
+                                if (Model.contaPadrao_grupo.ToUpper() == "RECEITA")
+                                {
+                                    <p>Cadastro de nova categoria de: <strong>Receita</strong></p>
+                                }
+                                if (Model.contaPadrao_grupo.ToUpper() == "DESPESA")
+                                {
+                                    <p>Cadastro de nova categoria de: <strong>Despesa</strong></p>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <hr class="hrLine" />
+                    @{
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="contaPadrao_descricao" class="control-label"></label>
+                                    <input asp-for="contaPadrao_descricao" class="form-control" />
+                                    <span asp-validation-for="contaPadrao_descricao" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="contaPadrao_apelido" class="control-label"></label>
+                                    <input asp-for="contaPadrao_apelido" class="form-control" />
+                                    <span asp-validation-for="contaPadrao_apelido" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" value="@Model.contaPadrao_id" name="categoriaPai_id" />
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-info">Gravar</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
