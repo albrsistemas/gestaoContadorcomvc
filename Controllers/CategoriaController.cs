@@ -8,6 +8,7 @@ using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace gestaoContadorcomvc.Controllers
 {
@@ -133,7 +134,10 @@ namespace gestaoContadorcomvc.Controllers
         [FiltroAutorizacao(permissao = "categoriaCreate")]
         public ActionResult CreateCxBanco()
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");                       
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Selects select = new Selects();
+
+            ViewBag.bancos = select.getBancos().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Selected = c.value == "001" }).ToList();
 
             return View();
         }
@@ -159,6 +163,37 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
+        [FiltroAutorizacao(permissao = "categoriaDelete")]
+        public ActionResult DeleteCxBanco(int id, string descricao)
+        {
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+
+            Vm_categoria banco = new Vm_categoria();
+            banco.contaPadrao_id = id;
+            banco.contaPadrao_descricao = descricao;
+
+            return View(banco);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteCxBanco(IFormCollection dados)
+        {
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+
+            try
+            {
+                ContaPadrao contaPadrao = new ContaPadrao();
+
+                TempData["deleteCategoria"] = contaPadrao.deletaBanco(dados["id"], user.usuario_conta_id, user.usuario_id);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
 
     }
 }

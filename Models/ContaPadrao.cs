@@ -366,5 +366,101 @@ namespace gestaoContadorcomvc.Models
 
             return retorno;
         }
+
+        //Listar bancos por códigos'
+        public List<ContaPadrao> listaBancos()
+        {
+            List<ContaPadrao> bancos = new List<ContaPadrao>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from contapadrao where contapadrao.contaPadrao_classificacao like '01.1.1.02.%';";                
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        bancos.Add(new ContaPadrao
+                        {
+                            contaPadrao_id = Convert.ToInt32(leitor["contaPadrao_id"]),
+                            contaPadrao_descricao = leitor["contaPadrao_descricao"].ToString(),
+                            contaPadrao_codigoBanco = leitor["contaPadrao_codigoBanco"].ToString()
+                        });
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Transacao.Rollback();
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return bancos;
+        }
+
+        //Delete vínculo cliente a conta bancária'
+        public string deletaBanco(string id_banco, int conta_id, int usuario_id)
+        {
+            string retorno = "Conta bancária excluída com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "DELETE from caixabanco WHERE caixabanco_conta_id = @conta_id and caixabanco_contaPadrao_id = @id_banco;";
+                comando.Parameters.AddWithValue("@id_banco", id_banco);
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Tentativa de excluir conta bancária: " + id_banco + " com sucesso";
+                log.log("ContaPadrao", "deletaBanco", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                string msg = "Tentativa de escluir conta bancária: " + id_banco + " fracassou" + e.Message.ToString().Substring(0, 300);
+
+                retorno = "Erro ao excluir a conta bancária, tente novamente. Se persistir entre em contato com o suporte !";
+
+                log.log("ContaPadrao", "deletaBanco", "Erro", msg, conta_id, usuario_id);
+
+                Transacao.Rollback();
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
+
+
     }
 }

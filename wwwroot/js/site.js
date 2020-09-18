@@ -59,9 +59,17 @@ $(".EditPassword").click(function () {
     })
 });
 
-$(".CreateCxBanco").click(function () {
+$(".createBco").click(function () {
     //var id = $(this).attr("data-id");    
     $("#modal").load("CreateCxBanco" , function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(".deleteBco").click(function () {
+    var id = $(this).attr("data-id");
+    var descricao = $(this).attr("data-descricao");
+    $("#modal").load("DeleteCxBanco?id=" + id + "&descricao=" + encodeURIComponent(descricao), function () {
         $("#modal").modal('show');
     })
 });
