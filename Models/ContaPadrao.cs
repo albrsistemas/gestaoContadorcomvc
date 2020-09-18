@@ -6,6 +6,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace gestaoContadorcomvc.Models
 {
@@ -460,6 +461,88 @@ namespace gestaoContadorcomvc.Models
             return retorno;
         }
 
+        /*METODOS DO CONTROLADOR ContaPadrao*/
+
+        //Lista contas
+        public List<ContaPadrao> listContasPadrao()
+        {
+            List<ContaPadrao> lista = new List<ContaPadrao>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from contapadrao order by contapadrao.contaPadrao_classificacao;";
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        ContaPadrao conta = new ContaPadrao();                      
+                        
+                        if (DBNull.Value != leitor["contaPadrao_id"])
+                        {
+                            conta.contaPadrao_id = Convert.ToInt32(leitor["contaPadrao_id"]);
+                        }
+                        else
+                        {
+                            conta.contaPadrao_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["contaPadrao_conta_id"])
+                        {
+                            conta.contaPadrao_conta_id = Convert.ToInt32(leitor["contaPadrao_conta_id"]);
+                        }
+                        else
+                        {
+                            conta.contaPadrao_conta_id = 0;
+                        }                        
+                        conta.contaPadrao_classificacao = leitor["contaPadrao_classificacao"].ToString();
+                        conta.contaPadrao_descricao = leitor["contaPadrao_descricao"].ToString();
+                        conta.contaPadrao_apelido = leitor["contaPadrao_apelido"].ToString();
+                        conta.contaPadrao_grupo = leitor["contaPadrao_grupo"].ToString();
+                        conta.contaPadrao_tipo = leitor["contaPadrao_tipo"].ToString();
+                        conta.contaPadrao_especie = leitor["contaPadrao_especie"].ToString();
+                        conta.contaPadrao_natureza = leitor["contaPadrao_natureza"].ToString();                        
+                        if (DBNull.Value != leitor["contaPadrao_filhos"])
+                        {
+                            conta.contaPadrao_filhos = Convert.ToInt32(leitor["contaPadrao_filhos"]);
+                        }
+                        else
+                        {
+                            conta.contaPadrao_filhos = 0;
+                        }
+                        conta.contaPadrao_status = leitor["contaPadrao_status"].ToString();
+                        conta.contapadrao_tags = leitor["contapadrao_tags"].ToString();
+                        conta.contaPadrao_codigoBanco = leitor["contaPadrao_codigoBanco"].ToString();
+
+                        lista.Add(conta);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                Transacao.Rollback();
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return lista;
+        }
 
 
     }
