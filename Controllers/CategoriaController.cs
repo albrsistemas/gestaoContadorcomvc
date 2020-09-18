@@ -129,5 +129,36 @@ namespace gestaoContadorcomvc.Controllers
                 return View();
             }
         }
+
+        [FiltroAutorizacao(permissao = "categoriaCreate")]
+        public ActionResult CreateCxBanco()
+        {
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");                       
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateCxBanco(IFormCollection dados)
+        {
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+
+            try
+            {
+                ContaPadrao contaPadrao = new ContaPadrao();
+                string retorno = contaPadrao.vincularBanco(dados["contaPadrao_codigoBanco"], user.usuario_conta_id, user.usuario_id);
+
+                TempData["novaCategoria"] = retorno;
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+
     }
 }

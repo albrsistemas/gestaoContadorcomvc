@@ -23,6 +23,7 @@ namespace gestaoContadorcomvc.Models
         public int contaPadrao_filhos { get; set; }
         public string contaPadrao_status { get; set; }
         public string contapadrao_tags { get; set; }
+        public string contaPadrao_codigoBanco { get; set; }
 
 
         /*--------------------------*/
@@ -103,6 +104,7 @@ namespace gestaoContadorcomvc.Models
                         }
                         _categoria.contaPadrao_status = leitor["contaPadrao_status"].ToString();
                         _categoria.contaPadrao_tags = leitor["contapadrao_tags"].ToString();
+                        _categoria.contaPadrao_codigoBanco = leitor["contaPadrao_codigoBanco"].ToString();
                         _categoria.caixaBanco_conta_id = leitor["caixaBanco_conta_id"].ToString();
 
                         /*----*/
@@ -320,7 +322,49 @@ namespace gestaoContadorcomvc.Models
             return retorno;
         }
 
+        //Vincular conta bancária ao Cliente (conta)'
+        public string vincularBanco(string codigoBanco, int conta_id, int usuario_id)
+        {
+            string retorno = "Conta bancária cadastrada com sucesso !";
 
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
 
+            try
+            {
+                comando.CommandText = "INSERT into caixabanco (caixaBanco_contaPadrao_id, caixaBanco_conta_id) values (@caixaBanco_contaPadrao_id, @caixaBanco_conta_id)";
+                comando.Parameters.AddWithValue("@caixaBanco_contaPadrao_id", codigoBanco);
+                comando.Parameters.AddWithValue("@caixaBanco_conta_id", conta_id);                
+                comando.ExecuteNonQuery();
+
+                Transacao.Commit();
+
+                string msg = "Tentativa de vincular novo banco de codigo: " + codigoBanco + " Cadastrado com sucesso";
+                log.log("ContaPadrao", "vincularBanco", "Sucesso", msg, conta_id, usuario_id);
+            }
+            catch (Exception e)
+            {
+                string msg = "Tentativa de vincular novo banco de codigo: " + codigoBanco + " fracassou" + e.Message.ToString().Substring(0, 300);
+
+                retorno = "Erro ao cadastrar conta bancária, tente novamente. Se persistir entre em contato com o suporte !";
+
+                log.log("ContaPadrao", "vincularBanco", "Erro", msg, conta_id, usuario_id);
+
+                Transacao.Rollback();
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
     }
 }

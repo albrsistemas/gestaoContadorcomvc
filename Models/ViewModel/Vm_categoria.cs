@@ -31,6 +31,11 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string contaPadrao_tags { get; set; }
         public string caixaBanco_conta_id { get; set; }
 
+        [Required(ErrorMessage = "O código do banco é obrigatório.")]
+        [StringLength(3, MinimumLength = 3, ErrorMessage = "O código do banco possui três dígitos")]
+        [Display(Name = "Código do Banco")]
+        public string contaPadrao_codigoBanco { get; set; }
+
         public List<Vm_categoria> caixaBcos { get; set; }
         public List<Vm_categoria> receitas { get; set; }
         public List<Vm_categoria> despesas { get; set; }
