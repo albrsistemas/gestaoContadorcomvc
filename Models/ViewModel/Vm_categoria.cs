@@ -28,5 +28,8 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string categoria_status { get; set; } //Ativo ou Deletado
         public string categoria_conta_contabil { get; set; }
         public string categoria_requer_provisao { get; set; }
+
+        [Required(ErrorMessage = "A sequencia é obrigatória.")]
+        public string categoria_sequencia { get; set; }
     }
 }

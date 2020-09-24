@@ -108,7 +108,31 @@ $(".createGrupoCategoria").click(function () {
     })
 });
 
-function mask_classificaoCategoria(valor, id, escopo) {    
+$(".createCategoria").click(function () {
+    var grupo = $(this).attr("data-grupo");
+    var escopo = $(this).attr("data-escopo");
+    $("#modal").load("Create?grupo=" + grupo + "&escopo=" + escopo, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(".editCategoria").click(function () {
+    var id = $(this).attr("data-id");
+    var tipo = $(this).attr("data-tipo");
+    $("#modal").load("Edit?id=" + id + "&tipo=" + tipo, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(".deleteCategoria").click(function () {
+    var id = $(this).attr("data-id");
+    var tipo = $(this).attr("data-tipo");
+    $("#modal").load("Delete?id=" + id + "&tipo=" + tipo, function () {
+        $("#modal").modal('show');
+    })
+});
+
+function mask_classificaoCategoriaGrupo(valor, id, escopo) {    
     let tamanho = valor.length;
     if (tamanho == 1) {
         document.getElementById(id).value = valor + ".";
@@ -116,4 +140,8 @@ function mask_classificaoCategoria(valor, id, escopo) {
     if (tamanho > 3) {
         document.getElementById(id).value = valor.substring(0, 3);
     }
+}
+
+function montaClassificacao(valor, grupo) {
+    document.getElementById("categoria_classificacao").value = grupo + "." + valor;
 }

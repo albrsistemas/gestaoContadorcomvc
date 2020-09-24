@@ -14,6 +14,8 @@ namespace gestaoContadorcomvc.Controllers.SoftwareHouse
     {
         public IActionResult Index()
         {
+            ViewData["bread"] = "Log";
+
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
 
             Log log = new Log();

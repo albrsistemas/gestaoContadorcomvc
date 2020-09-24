@@ -84,7 +84,7 @@ namespace gestaoContadorcomvc.Models.SoftwareHouse
             try
             {
                 conn.Open();
-                MySqlCommand comando = new MySqlCommand("SELECT * from log where log_conta_id = @conta_id;", conn);
+                MySqlCommand comando = new MySqlCommand("SELECT * from log where log_conta_id = @conta_id ORDER by log.log_id DESC;", conn);
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
 
                 var leitor = comando.ExecuteReader();
