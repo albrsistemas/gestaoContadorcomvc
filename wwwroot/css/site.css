@@ -253,11 +253,14 @@ body {
         color: orangered;
         font-weight: bold;
     }
+.line-list-head{
+    display:none;
+}
 /*Fim estilo LineList*/
-
-
-
 @media (min-width: 768px) {
+    .line-list-head {
+        display: block;
+    }
     .cp {
         background-color: tomato;
         text-align: center;

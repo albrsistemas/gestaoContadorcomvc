@@ -1,46 +1,32 @@
-﻿using gestaoContadorcomvc.Models.Autenticacao;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace gestaoContadorcomvc.Models.ViewModel
 {
     public class Vm_categoria
     {
-        //Os atrubutos abaixo são da model ContaPadrao
+        public int categoria_id { get; set; }
 
-        public int contaPadrao_id { get; set; }
-        public int contaPadrao_conta_id { get; set; }
-        public string contaPadrao_classificacao { get; set; }
+        [Display(Name = "Classificação")]
+        [Required(ErrorMessage = "A classificação é obrigatória.")]
+        [Remote("classificacaoExiste", "Categoria", ErrorMessage = "Classificação já existe")]
+        public string categoria_classificacao { get; set; }
 
-        [Required(ErrorMessage = "O nome é obrigatório.")]
         [Display(Name = "Nome")]
-        public string contaPadrao_descricao { get; set; }
-                
-        [Display(Name = "Apelido")]
-        public string contaPadrao_apelido { get; set; }
-        public string contaPadrao_grupo { get; set; }
-        public string contaPadrao_tipo { get; set; }        
-        public string contaPadrao_especie { get; set; }
-        public string contaPadrao_natureza { get; set; }
-        public string vm_categoria_caixaBanco { get; set; }
-        public int contaPadrao_filhos { get; set; }
-        public string contaPadrao_status { get; set; }
-        public string contaPadrao_tags { get; set; }
-        public string caixaBanco_conta_id { get; set; }
+        [Required(ErrorMessage = "O nome é obrigatório.")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Mínimo de dois caracteres")]
+        public string categoria_nome { get; set; }
+        
+        public DateTime categoria_dataCriacao { get; set; }
+        
+        public int categoria_conta_id { get; set; }
+        public string categoria_tipo { get; set; } //sintética ou analítica
+        public string categoria_escopo { get; set; } //entrada ou saída de recursos
 
-        [Required(ErrorMessage = "O código do banco é obrigatório.")]
-        [StringLength(3, MinimumLength = 3, ErrorMessage = "O código do banco possui três dígitos")]
-        [Display(Name = "Código do Banco")]
-        public string contaPadrao_codigoBanco { get; set; }
-
-        public List<Vm_categoria> caixaBcos { get; set; }
-        public List<Vm_categoria> receitas { get; set; }
-        public List<Vm_categoria> despesas { get; set; }
-
-        public Usuario userLogado { get; set; }
-
+        [Display(Name = "Situação")]
+        public string categoria_status { get; set; } //Ativo ou Deletado
+        public string categoria_conta_contabil { get; set; }
+        public string categoria_requer_provisao { get; set; }
     }
 }

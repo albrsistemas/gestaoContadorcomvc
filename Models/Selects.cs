@@ -26,10 +26,38 @@ namespace gestaoContadorcomvc.Models
                 {
                     value = item.contaPadrao_id.ToString(),
                     text = (item.contaPadrao_descricao + " (" + item.contaPadrao_codigoBanco + ")")
-                }); ;
+                });
             }
 
             return selectBancos;
+        }
+
+        //Grupos das contas padrão
+        public List<Selects> getGrupoContas()
+        {
+            List<Selects> contas = new List<Selects>();
+            contas.Add(new Selects
+            {
+                value = "Ativo",
+                text = "Ativo"
+            });
+            contas.Add(new Selects
+            {
+                value = "Passico",
+                text = "Passivo"
+            });
+            contas.Add(new Selects
+            {
+                value = "Receita",
+                text = "Receita"
+            });
+            contas.Add(new Selects
+            {
+                value = "Despesa",
+                text = "Despesa"
+            });
+
+            return contas;
         }
 
 

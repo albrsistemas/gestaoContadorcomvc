@@ -48,12 +48,12 @@ namespace gestaoContadorcomvc.Models
 
 
         //Lista de categorias
-        public Vm_categoria listaCategorias(int conta_id, int usuario_id, int contador_id, Usuario user)
+        public Vm_categoria_old listaCategorias(int conta_id, int usuario_id, int contador_id, Usuario user)
         {
-            Vm_categoria categoria = new Vm_categoria();
-            List<Vm_categoria> caixaBanco = new List<Vm_categoria>();
-            List<Vm_categoria> receitas = new List<Vm_categoria>();
-            List<Vm_categoria> despesas = new List<Vm_categoria>();
+            Vm_categoria_old categoria = new Vm_categoria_old();
+            List<Vm_categoria_old> caixaBanco = new List<Vm_categoria_old>();
+            List<Vm_categoria_old> receitas = new List<Vm_categoria_old>();
+            List<Vm_categoria_old> despesas = new List<Vm_categoria_old>();
 
 
             try
@@ -69,7 +69,7 @@ namespace gestaoContadorcomvc.Models
                 {
                     while (leitor.Read())
                     {
-                        Vm_categoria _categoria = new Vm_categoria();
+                        Vm_categoria_old _categoria = new Vm_categoria_old();
                         if (DBNull.Value != leitor["contaPadrao_id"])
                         {
                             _categoria.contaPadrao_id = Convert.ToInt32(leitor["contaPadrao_id"]);
@@ -149,9 +149,9 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Busca categoria por id
-        public Vm_categoria buscaCategoria(string id, int conta_id, int usuario_id)
+        public Vm_categoria_old buscaCategoria(string id, int conta_id, int usuario_id)
         {
-            Vm_categoria _categoria = new Vm_categoria();
+            Vm_categoria_old _categoria = new Vm_categoria_old();
 
             try
             {
@@ -221,7 +221,7 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Criar categoria tipo 'Clinte'
-        public string criarCategoriaCliente(Vm_categoria categoriaPai, string nome, string apelido, int conta_id, int usuario_id)
+        public string criarCategoriaCliente(Vm_categoria_old categoriaPai, string nome, string apelido, int conta_id, int usuario_id)
         {
             string retorno = "Categoria cadastrada com sucesso !";
 
@@ -464,9 +464,9 @@ namespace gestaoContadorcomvc.Models
         /*METODOS DO CONTROLADOR ContaPadrao*/
 
         //Lista contas
-        public List<ContaPadrao> listContasPadrao()
+        public List<Vm_ContaPadrao> listContasPadrao(string pattern)
         {
-            List<ContaPadrao> lista = new List<ContaPadrao>();
+            List<Vm_ContaPadrao> lista = new List<Vm_ContaPadrao>();
 
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
@@ -475,9 +475,12 @@ namespace gestaoContadorcomvc.Models
             comando.Connection = conn;
             comando.Transaction = Transacao;
 
+            pattern = pattern + "%";
+
             try
             {
-                comando.CommandText = "SELECT * from contapadrao order by contapadrao.contaPadrao_classificacao;";
+                comando.CommandText = "SELECT * from contapadrao where contapadrao.contaPadrao_classificacao like @pattern order by contapadrao.contaPadrao_classificacao;";
+                comando.Parameters.AddWithValue("@pattern", pattern);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -487,7 +490,7 @@ namespace gestaoContadorcomvc.Models
                 {
                     while (leitor.Read())
                     {
-                        ContaPadrao conta = new ContaPadrao();                      
+                        Vm_ContaPadrao conta = new Vm_ContaPadrao();                      
                         
                         if (DBNull.Value != leitor["contaPadrao_id"])
                         {

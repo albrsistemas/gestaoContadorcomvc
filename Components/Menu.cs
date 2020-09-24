@@ -9,7 +9,7 @@ namespace gestaoContadorcomvc.Components
         {
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
 
-            TempData["user"] = user;
+            TempData["user"] = user;            
 
             return View();
         }

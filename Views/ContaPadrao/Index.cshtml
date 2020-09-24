@@ -1,35 +1,38 @@
-﻿@model IEnumerable<gestaoContadorcomvc.Models.ContaPadrao>
+﻿@model IEnumerable<gestaoContadorcomvc.Models.ViewModel.Vm_ContaPadrao>
 
 <style>
-    .tab_2{
+    .tab_2 {
         padding-left: 0px;
     }
+
     .tab_4 {
         padding-left: 10px;
     }
+
     .tab_6 {
         padding-left: 20px;
     }
+
     .tab_9 {
         padding-left: 30px;
     }
+
     .tab_13 {
         padding-left: 40px;
     }
+
     .tab_22 {
         padding-left: 50px;
     }
-    .container{
+
+    .container {
         max-width: 100%;
     }
-    .col-list-left label{
+
+    .col-list-left label {
         display: none;
     }
-    .cp_list{
-        position: fixed;
-        top: 103px;
-        right: 10px;
-    }
+
     .Deletado {
         background-color: #f08d8d;
     }
@@ -40,7 +43,18 @@
 <h2>Plano de Contas Padrão</h2>
 <hr class="hrLine" />
 
-<a class="btn btn-info cp_list" style="margin-bottom:10px;" asp-controller="ContaPadrao" asp-action="Index">Cadastrar nova conta</a>
+
+<button class="btn btn-info" style="margin-bottom:10px;" asp-controller="ContaPadrao" asp-action="Index" data-id="nova"><a class="createConta" data-id="novaCategoria" style="cursor:pointer">Cadastrar nova conta</a></button>
+
+
+<form asp-controller="ContaPadrao" asp-action="Index">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Pequisa por classificação" aria-label="Pequisa por classificação" aria-describedby="button-addon2" name="pattern">
+        <div class="input-group-append">
+            <button class="btn btn-outline-info" type="submit">Buscar</button>
+        </div>
+    </div>
+</form>
 
 <div class="line-list line-list-head">
     <div class="col-list-left">
@@ -50,8 +64,8 @@
     <div class="col-list-body">
         <div class="row">
             @*<div class="col-12 col-md-2">
-                <span><strong>Classificação</strong></span>
-            </div>*@
+                    <span><strong>Classificação</strong></span>
+                </div>*@
             <div class="col-12 col-md-8">
                 <span><strong>Nome</strong></span>
             </div>
@@ -65,13 +79,13 @@
                 <span><strong>Situação</strong></span>
             </div>
             <div class="col-12 col-md-1">
-                
+
             </div>
         </div>
     </div>
     @*<div class="col-list-rigth" style="padding-right: 10px;">
-        <span><strong>Ações</strong></span>
-    </div>*@
+            <span><strong>Ações</strong></span>
+        </div>*@
 </div>
 
 @{
@@ -85,8 +99,8 @@
             <div class="col-list-body">
                 <div class="row">
                     @*<div class="col-12 col-md-2">
-                        <span>@Html.DisplayFor(modelItem => item.contaPadrao_classificacao)</span>
-                    </div>*@
+                            <span>@Html.DisplayFor(modelItem => item.contaPadrao_classificacao)</span>
+                        </div>*@
                     <div class="col-12 col-md-8">
                         <span class="tab_@item.contaPadrao_classificacao.Length"><span>@Html.DisplayFor(modelItem => item.contaPadrao_classificacao)</span>. @Html.DisplayFor(modelItem => item.contaPadrao_descricao)</span>
                     </div>
@@ -105,25 +119,21 @@
                         <span>@Html.DisplayFor(modelItem => item.contaPadrao_status)</span>
                     </div>
                     <div class="col-12 col-md-1">
-                       
+
                     </div>
                 </div>
-                </div>
+            </div>
             <div class="col-list-rigth">
-                <a href="#">
+                <a class="edit" data-id="@item.contaPadrao_id" style="cursor:pointer">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                     </svg>
                 </a>
-                @*<a href="#">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-dash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
-                    </svg>
-                </a>*@
             </div>
         </div>
     }
 }
 
 <div class="row" style="margin-bottom: 10px;margin-top:10px;"></div>
+
 <div id="modal" class="modal fade" role="dialog" />

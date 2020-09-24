@@ -1,0 +1,303 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_categoria_old
+
+@using Microsoft.AspNetCore.Http
+
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Categorías";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    svg {
+        color: #ff4400;
+    }
+
+    .col-list-left label {
+        display: none;
+    }
+
+    .plus {
+        cursor: pointer;
+        float: right;
+    }
+
+    fieldset {
+        margin-bottom: 10px;
+    }
+
+    .Cliente {
+        margin-left: 15px;
+        width: calc(100% - 15px);
+        background-color: #f7e8be;
+    }
+
+    .menuCxBco {
+        margin-bottom: 10px;
+    }
+</style>
+
+@{
+    if (TempData["novaCategoria"] != null && TempData["novaCategoria"].ToString().Contains("sucesso"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Sucesso!</strong> @TempData["novaCategoria"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    if (TempData["novaCategoria"] != null && TempData["novaCategoria"].ToString().Contains("Erro"))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Erro!</strong> @TempData["novaCategoria"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    if (TempData["deleteCategoria"] != null && TempData["deleteCategoria"].ToString().Contains("sucesso"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Sucesso!</strong> @TempData["deleteCategoria"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    if (TempData["deleteCategoria"] != null && TempData["deleteCategoria"].ToString().Contains("Erro"))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Erro!</strong> @TempData["deleteCategoria"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+
+
+}
+
+
+<h2>Gestão de categorias</h2>
+<hr class="hrLine" />
+
+<!--Grupo de categorias de caixa e bancos-->
+<fieldset>
+    <legend>
+        Caixa
+    </legend>
+    @{
+        foreach (var item in Model.caixaBcos)
+        {
+            if (item.contaPadrao_classificacao.Contains("01.1.1.01."))
+            {
+                <div class="line-list">
+                    <div class="col-list-left">
+                        <input class="check-list-input" type="checkbox" id="categoria_@item.contaPadrao_id">
+                        <label class="check-list-label" for="categoria_@Html.DisplayFor(modelItem => item.contaPadrao_id)"></label>
+                    </div>
+                    <div class="col-list-body">
+                        <div class="row">
+                            <div class="col-12 col-md-4">
+                                <span><strong>Nome: </strong>@Html.DisplayFor(modelItem => item.contaPadrao_descricao)</span><br />
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <span><strong>Apelido: </strong>@Html.DisplayFor(modelItem => item.contaPadrao_apelido)</span><br />
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <span><strong>Tipo: </strong>@Html.DisplayFor(modelItem => item.contaPadrao_tipo)</span><br />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-list-rigth">
+                        <span class="icon-option">
+                            
+                        </span>
+                    </div>
+                </div>
+            }
+        }
+    }
+
+</fieldset>
+
+<!--Banco-->
+<fieldset>
+    <legend>
+        Contas Bancárias
+        <a class="createBco" style="cursor:pointer">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+            </svg>
+        </a>        
+    </legend>
+    @{
+        foreach (var item in Model.caixaBcos)
+        {
+            if (item.contaPadrao_classificacao.Contains("01.1.1.02."))
+            {
+                <div class="line-list">
+                    <div class="col-list-left">
+                        <input class="check-list-input" type="checkbox" id="categoria_@item.contaPadrao_id">
+                        <label class="check-list-label" for="categoria_@Html.DisplayFor(modelItem => item.contaPadrao_id)"></label>
+                    </div>
+                    <div class="col-list-body">
+                        <div class="row">
+                            <div class="col-12 col-md-4">
+                                <span><strong>Nome: </strong>@Html.DisplayFor(modelItem => item.contaPadrao_descricao)</span><br />
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <span><strong>Apelido: </strong>@Html.DisplayFor(modelItem => item.contaPadrao_apelido)</span><br />
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <span><strong>Tipo: </strong>@Html.DisplayFor(modelItem => item.contaPadrao_tipo)</span><br />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-list-rigth">
+                        <span class="icon-option">
+                            @{
+                                    if (Model.userLogado.Role.ToUpper() == "ADM" || Model.userLogado.permissoes.Contains("categoriaDelete"))
+                                    {                                        
+                                        if (item.contaPadrao_classificacao.Contains("01.1.1.02."))
+                                        {
+                                            <a class="deleteBco" data-id="@item.contaPadrao_id" data-descricao="@item.contaPadrao_descricao">
+                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-dash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
+                                                </svg>
+                                            </a>
+                                        }
+                                    }
+                                }
+                        </span>
+                    </div>
+                </div>
+            }
+        }
+    }
+
+</fieldset>
+
+<fieldset>
+    <legend>Receitas</legend>
+    @{
+        foreach (var item in Model.receitas)
+        {
+            <div class="line-list @item.contaPadrao_tipo">
+                <div class="col-list-left">
+                    <input class="check-list-input" type="checkbox" id="categoria_@item.contaPadrao_id">
+                    <label class="check-list-label" for="categoria_@Html.DisplayFor(modelItem => item.contaPadrao_id)"></label>
+                </div>
+                <div class="col-list-body">
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <span><strong>Nome: </strong>@Html.DisplayFor(modelItem => item.contaPadrao_descricao)</span><br />
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <span><strong>Apelido: </strong>@Html.DisplayFor(modelItem => item.contaPadrao_apelido)</span><br />
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <span><strong>Tipo: </strong>@Html.DisplayFor(modelItem => item.contaPadrao_tipo)</span><br />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-list-rigth">
+                    <span class="icon-option">
+                        @{
+                            if (item.contaPadrao_tipo == "Padrão")
+                            {
+                                if (Model.userLogado.Role.ToUpper() == "ADM" || Model.userLogado.permissoes.Contains("categoriaCreate"))
+                                {
+                                    <a class="create" data-id="@item.contaPadrao_id">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                        </svg>
+                                    </a>
+                                }
+                            }
+
+                            if (item.contaPadrao_tipo == "Cliente")
+                            {
+                                if (Model.userLogado.Role.ToUpper() == "ADM" || Model.userLogado.permissoes.Contains("categoriaDelete"))
+                                {
+                                    <a class="delete" data-id="@item.contaPadrao_id">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-dash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
+                                        </svg>
+                                    </a>
+                                }
+                            }
+                        }
+                    </span>
+                </div>
+            </div>
+        }
+    }
+</fieldset>
+
+<fieldset>
+    <legend>Despesas</legend>
+    @{
+        foreach (var item in Model.despesas)
+        {
+            <div class="line-list @item.contaPadrao_tipo">
+                <div class="col-list-left">
+                    <input class="check-list-input" type="checkbox" id="categoria_@item.contaPadrao_id">
+                    <label class="check-list-label" for="categoria_@Html.DisplayFor(modelItem => item.contaPadrao_id)"></label>
+                </div>
+                <div class="col-list-body">
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <span><strong>Nome: </strong>@Html.DisplayFor(modelItem => item.contaPadrao_descricao)</span><br />
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <span><strong>Apelido: </strong>@Html.DisplayFor(modelItem => item.contaPadrao_apelido)</span><br />
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <span><strong>Tipo: </strong>@Html.DisplayFor(modelItem => item.contaPadrao_tipo)</span><br />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-list-rigth">
+                    <span class="icon-option">
+                        @{
+                            if (item.contaPadrao_tipo == "Padrão")
+                            {
+                                if (Model.userLogado.Role.ToUpper() == "ADM" || Model.userLogado.permissoes.Contains("categoriaCreate"))
+                                {
+                                    <a class="create" data-id="@item.contaPadrao_id">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                        </svg>
+                                    </a>
+                                }
+                            }
+
+                            if (item.contaPadrao_tipo == "Cliente")
+                            {
+                                if (Model.userLogado.Role.ToUpper() == "ADM" || Model.userLogado.permissoes.Contains("categoriaDelete"))
+                                {
+                                    <a class="delete" data-id="@item.contaPadrao_id">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-dash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
+                                        </svg>
+                                    </a>
+                                }
+                            }
+                        }
+                    </span>
+                </div>
+            </div>
+        }
+    }
+</fieldset>
+
+<div class="row" style="margin-bottom: 10px;margin-top:10px;"></div>
+
+<div id="modal" class="modal fade" role="dialog" />

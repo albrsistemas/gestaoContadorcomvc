@@ -19,7 +19,7 @@
                                 @if (usuario.Role == "adm" || usuario.permissoes.Contains("usuarioList"))
                                 {<a class='dropdown-item' asp-controller='Usuario' asp-action='Index'>Usuários</a>}
                                 @if (usuario.Role == "adm" || usuario.permissoes.Contains("categoriaList"))
-                                {<a class="dropdown-item" asp-controller='Categoria' asp-action='Index'>Categoria</a>}
+                                {<a class="dropdown-item" asp-controller='Categoria' asp-action='Index'>Categoria</a>}                                
                                 @if (usuario.Role == "adm" || usuario.permissoes.Contains("contaPadraoList"))
                                 {<a class="dropdown-item" asp-controller='ContaPadrao' asp-action='Index'>Plano de Contas Padrão</a> }
                                 @*

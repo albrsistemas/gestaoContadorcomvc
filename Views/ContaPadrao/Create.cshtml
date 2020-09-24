@@ -1,0 +1,101 @@
+﻿
+@model gestaoContadorcomvc.Models.ViewModel.Vm_ContaPadrao
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Criar Conta Padrão</h4>
+            </div>
+            <form asp-controller="ContaPadrao" asp-action="Create">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p>Cadastrar nova conta no plano de contas padrão</p>
+                        </div>
+                    </div>
+                    <hr class="hrLine" />
+                    @{
+                        <div class="row">
+                            <div class="col-12">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>                                
+                                <div class="form-group">
+                                    <label asp-for="contaPadrao_classificacao" class="control-label"></label>
+                                    <input asp-for="contaPadrao_classificacao" class="form-control" />
+                                    <span asp-validation-for="contaPadrao_classificacao" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="contaPadrao_descricao" class="control-label"></label>
+                                    <input asp-for="contaPadrao_descricao" class="form-control" />
+                                    <span asp-validation-for="contaPadrao_descricao" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="contaPadrao_apelido" class="control-label"></label>
+                                    <input asp-for="contaPadrao_apelido" class="form-control" />
+                                    <span asp-validation-for="contaPadrao_apelido" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="contaPadrao_grupo" class="control-label"></label>
+                                    <select asp-items="@ViewBag.grupoContas" value="@TempData["contaPadrao_grupo"]" name="contaPadrao_grupo" class="form-control"></select>
+                                    <span asp-validation-for="contaPadrao_grupo" class="text-danger"></span>
+                                </div>
+                                @*<div class="form-group">
+                                    <label asp-for="contaPadrao_tipo" class="control-label"></label>
+                                    <input asp-for="contaPadrao_tipo" class="form-control" />
+                                    <span asp-validation-for="contaPadrao_tipo" class="text-danger"></span>
+                                </div>*@
+                                @*<div class="form-group">
+                                    <label asp-for="contaPadrao_conta_id" class="control-label"></label>
+                                    <input asp-for="contaPadrao_conta_id" class="form-control" />
+                                    <span asp-validation-for="contaPadrao_conta_id" class="text-danger"></span>
+                                </div>*@
+                                <div class="form-group">
+                                    <label asp-for="contaPadrao_especie" class="control-label"></label>
+                                    <input asp-for="contaPadrao_especie" class="form-control" />
+                                    <span asp-validation-for="contaPadrao_especie" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="contaPadrao_natureza" class="control-label"></label>
+                                    <input asp-for="contaPadrao_natureza" class="form-control" />
+                                    <span asp-validation-for="contaPadrao_natureza" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="contaPadrao_filhos" class="control-label"></label>
+                                    <input asp-for="contaPadrao_filhos" class="form-control" />
+                                    <span asp-validation-for="contaPadrao_filhos" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="contaPadrao_status" class="control-label"></label>
+                                    <input asp-for="contaPadrao_status" class="form-control" />
+                                    <span asp-validation-for="contaPadrao_status" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="contapadrao_tags" class="control-label"></label>
+                                    <select asp-for="contapadrao_tags" class="form-control">
+                                        <option></option>
+                                        <option>Geral</option>
+                                    </select>                                    
+                                    <span asp-validation-for="contapadrao_tags" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="contaPadrao_codigoBanco" class="control-label"></label>
+                                    <input type="text" asp-for="contaPadrao_codigoBanco" class="form-control" />
+                                    <span asp-validation-for="contaPadrao_codigoBanco" class="text-danger"></span>
+                                </div>                                
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-info">Gravar</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

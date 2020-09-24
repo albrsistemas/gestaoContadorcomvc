@@ -8,64 +8,47 @@ using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace gestaoContadorcomvc.Controllers
 {
     [FiltroAutenticacao]
     public class CategoriaController : Controller
     {
-        // GET: Categoria
+        // GET: Categoria_v2Controller
         [FiltroAutorizacao(permissao = "categoriaList")]
         public ActionResult Index()
         {
-            ViewData["bread"] = "Categoria";
+            ViewData["bread"] = "Plano de Categorias";
 
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Categoria categoria = new Categoria();
+            List<Vm_categoria> categorias = new List<Vm_categoria>();
+            categorias = categoria.listaCategorias(user.usuario_conta_id, user.usuario_id);
 
-            ContaPadrao contasPadrao = new ContaPadrao();
-            Vm_categoria categoria = new Vm_categoria();
+            if(categorias.Count == 0)
+            {
+                categoria.startCategoria(user.usuario_conta_id, user.usuario_id);
 
-            categoria = contasPadrao.listaCategorias(user.usuario_conta_id, user.usuario_id, 0, user);
+                return RedirectToAction(nameof(Index));
+            }
 
-            return View(categoria);
-        }
+            return View(categorias);
+        } 
 
-        // GET: Categoria/Create
-        [FiltroAutorizacao(permissao = "categoriaCreate")]
-        public ActionResult Create(string id)
+
+        // GET: Categoria_v2Controller/Create
+        public ActionResult Create()
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
-
-            ContaPadrao contaPadrao = new ContaPadrao();
-            Vm_categoria categoria = new Vm_categoria();
-
-            categoria = contaPadrao.buscaCategoria(id, user.usuario_conta_id, user.usuario_id);
-
-            categoria.contaPadrao_descricao = "";
-            categoria.contaPadrao_apelido = "";
-
-            return View(categoria);
+            return View();
         }
 
-        // POST: Categoria/Create
+        // POST: Categoria_v2Controller/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection dados)
+        public ActionResult Create(IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
-
             try
             {
-                ContaPadrao contaPadrao = new ContaPadrao();
-                Vm_categoria categoriaPai = new Vm_categoria();
-
-                categoriaPai = contaPadrao.buscaCategoria(dados["categoriaPai_id"], user.usuario_conta_id, user.usuario_id);
-
-                string retorno = contaPadrao.criarCategoriaCliente(categoriaPai, dados["contaPadrao_descricao"], dados["contaPadrao_apelido"], user.usuario_conta_id, user.usuario_id);
-
-                TempData["novaCategoria"] = retorno;
-
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -74,13 +57,13 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
-        // GET: Categoria/Edit/5
+        // GET: Categoria_v2Controller/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: Categoria/Edit/5
+        // POST: Categoria_v2Controller/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -95,34 +78,19 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
-        // GET: Categoria/Delete/5
-        [FiltroAutorizacao(permissao = "categoriaDelete")]
-        public ActionResult Delete(string id)
-        {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
-
-            ContaPadrao contaPadrao = new ContaPadrao();
-
-            Vm_categoria categoria = new Vm_categoria();
-
-            categoria = contaPadrao.buscaCategoria(id, user.usuario_conta_id, user.usuario_id);
-
-            return View(categoria);
-        }
-
-        // POST: Categoria/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        // GET: Categoria_v2Controller/Delete/5
         public ActionResult Delete(int id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            return View();
+        }
 
+        // POST: Categoria_v2Controller/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, IFormCollection collection)
+        {
             try
             {
-                ContaPadrao contaPadrao = new ContaPadrao();
-
-                TempData["deleteCategoria"] = contaPadrao.deletaCategoria(user.usuario_conta_id, user.usuario_id, id);
-
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -130,70 +98,55 @@ namespace gestaoContadorcomvc.Controllers
                 return View();
             }
         }
-
+                
         [FiltroAutorizacao(permissao = "categoriaCreate")]
-        public ActionResult CreateCxBanco()
+        public ActionResult CreateGrupoCategoria(string escopo)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
-            Selects select = new Selects();
-
-            ViewBag.bancos = select.getBancos().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Selected = c.value == "001" }).ToList();
+            TempData["escopo"] = escopo;
 
             return View();
         }
 
+        // POST: Categoria_v2Controller/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateCxBanco(IFormCollection dados)
+        public ActionResult CreateGrupoCategoria(IFormCollection collection)
         {
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
 
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
             try
             {
-                ContaPadrao contaPadrao = new ContaPadrao();
-                string retorno = contaPadrao.vincularBanco(dados["contaPadrao_codigoBanco"], user.usuario_conta_id, user.usuario_id);
+                Categoria categoria = new Categoria();
 
-                TempData["novaCategoria"] = retorno;
+                TempData["createGrupo"] = categoria.cadastrarCategoriaGrupo(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id);
 
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
-            }
-        }
-
-        [FiltroAutorizacao(permissao = "categoriaDelete")]
-        public ActionResult DeleteCxBanco(int id, string descricao)
-        {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
-
-            Vm_categoria banco = new Vm_categoria();
-            banco.contaPadrao_id = id;
-            banco.contaPadrao_descricao = descricao;
-
-            return View(banco);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteCxBanco(IFormCollection dados)
-        {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
-
-            try
-            {
-                ContaPadrao contaPadrao = new ContaPadrao();
-
-                TempData["deleteCategoria"] = contaPadrao.deletaBanco(dados["id"], user.usuario_conta_id, user.usuario_id);
+                TempData["createGrupo"] = "Erro ao criar o grupo";
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
         }
+
+        //Verificar se classificação da categoria existe
+        public IActionResult classificacaoExiste(string valor)
+        {
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+
+            Categoria categoria = new Categoria();
+
+            bool existe = categoria.classificacaoExiste(valor, user.usuario_conta_id);
+
+            return Json(!existe);
+        }
+
 
     }
 }

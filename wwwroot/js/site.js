@@ -81,6 +81,39 @@ $(".create").click(function () {
     })
 });
 
+$(".edit").click(function () {
+    var id = $(this).attr("data-id");
+    $("#modal").load("Edit?id=" + id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(".createConta").click(function () {
+    var id = $(this).attr("data-id");
+    $("#modal").load("Create?id=" + id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+
 $(document).ready(function () {
     $('#Esconder').delay(3000).fadeOut();
 });
+
+//Categoria
+$(".createGrupoCategoria").click(function () {
+    var escopo = $(this).attr("data-escopo");
+    $("#modal").load("CreateGrupoCategoria?escopo=" + escopo, function () {
+        $("#modal").modal('show');
+    })
+});
+
+function mask_classificaoCategoria(valor, id, escopo) {    
+    let tamanho = valor.length;
+    if (tamanho == 1) {
+        document.getElementById(id).value = valor + ".";
+    }
+    if (tamanho > 3) {
+        document.getElementById(id).value = valor.substring(0, 3);
+    }
+}

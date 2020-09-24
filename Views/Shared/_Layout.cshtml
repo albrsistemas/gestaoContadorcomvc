@@ -12,9 +12,9 @@
             width: 0;
             position: fixed;
             z-index: 1;
-            top: 93px;
+            top: 92px;
             left: 0;
-            background-color: #111;
+            background-color: #ffe699;
             overflow-x: hidden;
             transition: 0.5s;
         }
@@ -22,7 +22,7 @@
             .sidenav a {
                 padding: 8px 8px 8px 32px;
                 text-decoration: none;
-                font-size: 25px;
+                font-size: 18px;
                 color: #818181;
                 display: block;
                 transition: 0.3s;
@@ -30,6 +30,7 @@
 
                 .sidenav a:hover {
                     color: #f1f1f1;
+                    background-color: orangered;
                 }
 
             .sidenav .closebtn {
@@ -71,10 +72,11 @@
         </div>
     </div>
     <div id="mySidenav" class="sidenav">
-        <a href="#">About</a>
+        @await Component.InvokeAsync("Sidenav", ViewData["bread"].ToString())
+        @*<a href="#">About</a>
         <a href="#">Services</a>
         <a href="#">Clients</a>
-        <a href="#">Contact</a>
+        <a href="#">Contact</a>*@
     </div>
     <div id="corpo">
         <div class="container" style="margin-bottom: 35px;padding-top: 10px;">

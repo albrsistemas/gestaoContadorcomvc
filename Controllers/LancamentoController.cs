@@ -60,6 +60,8 @@ namespace gestaoContadorcomvc.Controllers
                 lancamento_tipo = "Gestão de Compras"
             });
 
+            ViewData["bread"] = "Lançamento Contábil";
+
             return View(lancamentos);
         }
 
