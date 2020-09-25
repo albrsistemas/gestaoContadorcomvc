@@ -99,10 +99,13 @@ namespace gestaoContadorcomvc
             app.UseSession(); //Necessário para uso de sessão            
 
             app.UseEndpoints(endpoints =>
-            {
+            {               
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Conta}/{action=Login}/{id?}");
+                endpoints.MapControllerRoute(
+                   name: "Contabilidade",
+                   pattern: "{Contabilidade}/{controller=Clientes}/{action=Index}/{id?}");
             });
         }
     }

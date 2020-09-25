@@ -1,0 +1,15 @@
+﻿@{
+    if (ViewData["bread"] != null && ViewData["bread"].ToString() == "Contabilidade")
+    {   
+        <a class="selectCliente" style="cursor:pointer;">
+            Cliente: @(ViewData["cliente"] != null ? ViewData["cliente"].ToString() : "Nenhum cliente selecionado")
+        </a>
+    }
+    else
+    {
+        if(ViewData["bread"] != null)
+        {
+            <p>@ViewData["bread"].ToString()</p>
+        }
+    }
+}

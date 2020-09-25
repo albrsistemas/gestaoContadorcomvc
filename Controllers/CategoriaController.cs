@@ -18,7 +18,7 @@ namespace gestaoContadorcomvc.Controllers
         [FiltroAutorizacao(permissao = "categoriaList")]
         public ActionResult Index()
         {
-            ViewData["bread"] = "Plano de Categorias";
+            ViewData["bread"] = "Categorias";            
 
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
             Categoria categoria = new Categoria();

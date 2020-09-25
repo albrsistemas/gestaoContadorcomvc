@@ -1,4 +1,5 @@
 ﻿using gestaoContadorcomvc.Models.Autenticacao;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace gestaoContadorcomvc.Components
@@ -7,7 +8,7 @@ namespace gestaoContadorcomvc.Components
     {
         public IViewComponentResult Invoke()
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");            
 
             TempData["user"] = user;            
 

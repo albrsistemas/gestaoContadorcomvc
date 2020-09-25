@@ -13,7 +13,8 @@ body {
     margin-bottom: 15px;
     /*border-bottom: 1px solid orange;*/
     position: fixed;
-    top: 57px;    
+    top: 57px;
+    user-select: none;
 }
 
 .bread_page {
@@ -34,6 +35,9 @@ body {
     text-align: center;
     padding-top: 5px;
     cursor: pointer;
+}
+#bread_nome_cliente{
+    display: none;
 }
 
 .drawer {
@@ -258,6 +262,11 @@ body {
 }
 /*Fim estilo LineList*/
 @media (min-width: 768px) {
+
+    #bread_nome_cliente {
+        display: block;
+    }
+
     .line-list-head {
         display: block;
     }

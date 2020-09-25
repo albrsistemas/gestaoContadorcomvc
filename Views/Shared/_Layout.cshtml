@@ -66,13 +66,14 @@
             </div>
         </nav>
     </header>
-    <div class="bread" style="z-index: 1000;cursor:pointer" onclick="openNav()">
+    <div class="bread" id="bread" style="z-index: 1000;">
         <div class="bread_page" id="bread_page">
-            <p>@ViewData["bread"]</p>
+            @*<p>@ViewData["bread"]</p>*@
+            @await Component.InvokeAsync("Bread")
         </div>
     </div>
     <div id="mySidenav" class="sidenav">
-        @await Component.InvokeAsync("Sidenav", ViewData["bread"].ToString())
+        @await Component.InvokeAsync("Sidenav", (ViewData["bread"] != null ? ViewData["bread"].ToString() : "Nulo"))
         @*<a href="#">About</a>
         <a href="#">Services</a>
         <a href="#">Clients</a>
