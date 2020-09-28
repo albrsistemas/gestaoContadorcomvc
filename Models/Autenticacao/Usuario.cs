@@ -23,6 +23,8 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         public string Role { get; set; }
         public string permissoes { get; set; }
 
+        public Conta conta { get; set; }
+
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
         public IConfigurationRoot GetConfiguration()

@@ -11,9 +11,11 @@ namespace gestaoContadorcomvc.Components
 {
     public class Bread : ViewComponent
     {
-        public IViewComponentResult Invoke()
+        public IViewComponentResult Invoke(string area)
         {
             string retorno = "";
+
+            string openNav = "fechado";
 
             string pagina = HttpContext.Request.GetDisplayUrl();
 
@@ -21,32 +23,54 @@ namespace gestaoContadorcomvc.Components
 
             var cliente = HttpContext.Session.GetInt32("cliente_id");
 
-
-            if (pagina.Contains("Contabilidade"))
+            //Contabilidade
+            if (area.Equals("Contabilidade"))
             {
                 retorno = "Contabilidade";
 
-                if(cliente != null && cliente > 0)
+                if (cliente != null && cliente > 0)
                 {
-                    //Buscar conta e armazenar na ViewData["cliente"] para sre exibido no bread
+                    conta = conta.buscarConta(Convert.ToInt32(cliente));
+                    retorno = conta.conta_email;
+                }
+                else
+                {
+                    retorno = "Nenhum cliente selecionado";
+                }
+            }
+
+            //Empresa
+            if (area.Equals("Empresa"))
+            {
+                if (pagina.Contains("Home/Index"))
+                {
+                    retorno = "Home Page";
                 }
 
+                if (pagina.Contains("Usuario/Index"))
+                {
+                    retorno = "Usuário";
+                }
+
+                if (pagina.Contains("Categoria/Index"))
+                {
+                    retorno = "Categorias";
+                }
+                if (pagina.Contains("Configuracoes/Index"))
+                {
+                    retorno = "Configurações";
+                    openNav = "aberto";
+                }
+                if (pagina.Contains("Configuracoes/Contabilidade"))
+                {
+                    retorno = "Configurações Contábeis";
+                    openNav = "aberto";
+                }
             }
 
-            if (pagina.Contains("Home/Index"))
-            {
-                retorno = "Home Page";
-            }
+            ViewData["openNav"] = openNav;
 
-            if (pagina.Contains("Usuario/Index"))
-            {
-                retorno = "Usuário";
-            }
-
-            if (pagina.Contains("Categoria/Index"))
-            {
-                retorno = "Categorias";                
-            }            
+            ViewData["area"] = area;
 
             ViewData["bread"] = retorno;
 

@@ -21,5 +21,10 @@ namespace gestaoContadorcomvc.Controllers
             return View();
         }
 
+        public IActionResult AcessoNegadoContabilidade()
+        {
+            return View();
+        }
+
     }
 }

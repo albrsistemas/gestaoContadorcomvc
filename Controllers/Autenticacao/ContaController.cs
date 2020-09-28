@@ -77,6 +77,15 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
             TempData["user"] = user.usuario_nome;
 
+            Conta conta = new Conta();
+            conta = conta.buscarConta(user.usuario_conta_id);
+
+
+            if (collection["area"].Equals("contabilidade") && conta.conta_tipo.ToUpper().Equals("CONTABILIDADE"))
+            {
+                return RedirectToAction("Index", "Home", new { area = "Contabilidade" });
+            }
+            
             return RedirectToAction("Index", "Home");
         }
 

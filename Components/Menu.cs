@@ -8,9 +8,14 @@ namespace gestaoContadorcomvc.Components
     {
         public IViewComponentResult Invoke()
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");            
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
 
-            TempData["user"] = user;            
+            Conta conta = new Conta();
+            conta = conta.buscarConta(user.usuario_conta_id);
+
+            user.conta = conta;
+
+            TempData["user"] = user;
 
             return View();
         }

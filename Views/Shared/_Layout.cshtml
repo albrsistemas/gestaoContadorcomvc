@@ -67,18 +67,15 @@
         </nav>
     </header>
     <div class="bread" id="bread" style="z-index: 1000;">
-        <div class="bread_page" id="bread_page">
-            @*<p>@ViewData["bread"]</p>*@
-            @await Component.InvokeAsync("Bread")
-        </div>
-    </div>
-    <div id="mySidenav" class="sidenav">
-        @await Component.InvokeAsync("Sidenav", (ViewData["bread"] != null ? ViewData["bread"].ToString() : "Nulo"))
-        @*<a href="#">About</a>
-        <a href="#">Services</a>
-        <a href="#">Clients</a>
-        <a href="#">Contact</a>*@
-    </div>
+        @await Component.InvokeAsync("Bread", "Empresa")
+        <!--
+            <div class="bread_page" id="bread_page">
+                await Component.InvokeAsync("Bread", "Empresa")
+            </div>
+            <div id="mySidenav" class="sidenav">
+                await Component.InvokeAsync("Sidenav", (ViewData["bread"] != null ? ViewData["bread"].ToString() : "Nulo"))
+            </div>-->
+    </div>    
     <div id="corpo">
         <div class="container" style="margin-bottom: 35px;padding-top: 10px;">
             <main role="main" class="pb-3">

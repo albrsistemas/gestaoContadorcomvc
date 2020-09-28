@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 92px;
+            left: 0;
+            background-color: #ffe699;
+            overflow-x: hidden;
+            transition: 0.5s;
+        }
+
+            .sidenav a {
+                padding: 8px 8px 8px 32px;
+                text-decoration: none;
+                font-size: 18px;
+                color: #818181;
+                display: block;
+                transition: 0.3s;
+            }
+
+                .sidenav a:hover {
+                    color: #f1f1f1;
+                    background-color: orangered;
+                }
+
+            .sidenav .closebtn {
+                position: absolute;
+                top: 0;
+                right: 25px;
+                font-size: 36px;
+                margin-left: 50px;
+            }
+
+        #corpo {
+            transition: margin-left .5s;
+            margin-top: 80px;
+            padding-top: 13px;
+        }
+
+        .btnSidBar {
+            cursor: pointer;
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body onload="Page()">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="border-bottom: 3px solid #ff4400;background-color: #060040;">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index"><strong><span>Contador</span><span style="color: #ff4400;">com</span><span>vc</span></strong></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown" style="background-color: #060040;">
+                @await Component.InvokeAsync("MenuContabilidade")
+            </div>
+        </nav>
+    </header>
+    <div class="bread" id="bread" style="z-index: 1000;">
+        <div class="bread_page" id="bread_page">
+            @await Component.InvokeAsync("Bread", "Contabilidade")
+        </div>
+    </div>
+    <div id="mySidenav" class="sidenav">
+        @await Component.InvokeAsync("Sidenav", (ViewData["bread"] != null ? ViewData["bread"].ToString() : "Nulo"))
+    </div>
+    <div id="corpo">
+        <div class="container" style="margin-bottom: 35px;padding-top: 10px;">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    <footer class="navbar fixed-bottom navbar-light" style="background-color: #ffe699;height: 35px;">
+        <span>versão 1.0001</span>
+        <span style="float:right;margin-right: 10px"><a asp-controller="Log" asp-action="Index">Log</a></span>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+
+    <div id="modal" class="modal fade" role="dialog"></div> <!--Modal para gerar as telas com recurso load jquery-->
+</body>
+</html>

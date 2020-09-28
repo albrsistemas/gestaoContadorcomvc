@@ -94,5 +94,28 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                 return View();
             }
         }
+
+        // GET: ClientesController/Edit/5
+        public ActionResult SelectCliente()
+        {
+            return View();
+        }
+
+        // POST: ClientesController/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SelectCliente(int id, IFormCollection collection)
+        {
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+
     }
 }

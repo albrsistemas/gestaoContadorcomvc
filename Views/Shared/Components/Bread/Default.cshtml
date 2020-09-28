@@ -1,15 +1,39 @@
 ﻿@{
-    if (ViewData["bread"] != null && ViewData["bread"].ToString() == "Contabilidade")
-    {   
-        <a class="selectCliente" style="cursor:pointer;">
-            Cliente: @(ViewData["cliente"] != null ? ViewData["cliente"].ToString() : "Nenhum cliente selecionado")
+    if (ViewData["area"] != null && ViewData["area"].ToString().Equals("Contabilidade"))
+    {
+        <a class="SelectClient" style="cursor:pointer">
+            @ViewData["bread"].ToString()
         </a>
     }
-    else
+
+    if (ViewData["area"] != null && ViewData["area"].ToString().Equals("Empresa"))
     {
-        if(ViewData["bread"] != null)
+        if (ViewData["openNav"] != null && ViewData["openNav"].ToString().Equals("aberto"))
         {
-            <p>@ViewData["bread"].ToString()</p>
+            <div class="bread_page" id="bread_page">
+                <p onclick="openNav('fechado')">@ViewData["bread"].ToString()</p>
+            </div>
+
+            if (ViewData["bread"].ToString().Contains("Configurações"))
+            {
+                <div id="mySidenav" class="sidenav">
+                    <a asp-controller="Configuracoes" asp-action="Contabilidade">Contabildiade</a>
+                </div>
+            }
+
+            <script>
+                    document.getElementById("bread").style.cursor = "pointer";                    
+                    document.getElementById("bread").addEventListener('click', function () {
+                        openNav('aberto');
+                    });
+            </script>
         }
+        else
+        {
+            <div class="bread_page" id="bread_page">
+                <p onclick="openNav('fechado')">@ViewData["bread"].ToString()</p>
+            </div>
+        }
+
     }
 }

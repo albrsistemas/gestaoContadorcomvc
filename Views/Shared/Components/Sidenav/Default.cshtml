@@ -1,11 +1,18 @@
-﻿@{  
+﻿@{
 
-        if (TempData["escopo"] != null)
+    if (TempData["escopo"] != null)
+    {
+        if (TempData["escopo"].ToString().Contains("Configurações"))
         {
-        <a href="#">@TempData["escopo"]</a>
+            <a asp-controller="Configuracoes" asp-action="Contabilidade">Contabildiade</a>
         }
         else
         {
-            <a href="#">Nulo</a>
+            <a href="#">@TempData["escopo"]</a>
         }
+    }
+    else
+    {
+        <a href="#">Nulo</a>
+    }
 }
