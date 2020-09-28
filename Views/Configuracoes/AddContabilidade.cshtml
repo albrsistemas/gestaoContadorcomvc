@@ -1,0 +1,51 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_contabilidade
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Adicionar Contabilidade</h4>
+            </div>
+            <form asp-controller="Configuracoes" asp-action="AddContabilidade">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p>Adição de contabildiade responsável pela empresa!</p>
+                        </div>
+                    </div>
+                    <hr class="hrLine" />
+                    @{                        
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="cc_cnpj" class="control-label"></label>
+                                    <input asp-for="cc_cnpj" class="form-control" readonly="readonly" />
+                                    <span asp-validation-for="cc_cnpj" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="cc_nome" class="control-label"></label>
+                                    <input asp-for="cc_nome" class="form-control" readonly="readonly" />
+                                    <span asp-validation-for="cc_nome" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="cc_termo" class="control-label"></label>
+                                    <textarea asp-for="cc_termo" class="form-control" readonly="readonly"></textarea>
+                                    <span asp-validation-for="cc_termo" class="text-danger"></span>
+                                </div>                                
+                            </div>
+                        </div>                        
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-info">Gravar</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

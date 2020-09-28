@@ -1,7 +1,23 @@
-﻿@{
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_contabilidade
+
+@{
     ViewData["Title"] = "Contabilidade";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Configurações Contábeis</h2>
 <hr class="hrLine" />
+
+<div class="row">
+    <div class="col-12">
+        <div class="input-group mb-3">
+            <input type="text" asp-for="cc_cnpj" class="form-control" placeholder="Digite o CNPJ de seu contador" aria-label="Meu Contador" aria-describedby="button-addon2" name="pattern">
+            <div class="input-group-append">
+                <button class="btn btn-outline-info addContabiliade">Adicionar Contabilidade</button>
+            </div>
+        </div>        
+        <a class="addContabiliade">
+            Adicionar COntabilidade
+        </a>
+    </div>
+</div>

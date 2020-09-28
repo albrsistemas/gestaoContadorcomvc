@@ -23,6 +23,8 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         [Required]
         public string conta_email { get; set; }
 
+        public string conta_nome { get; set; }
+
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      

@@ -62,7 +62,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown" style="background-color: #060040;">
-               @await Component.InvokeAsync("Menu")
+                @await Component.InvokeAsync("Menu")
             </div>
         </nav>
     </header>
@@ -75,11 +75,11 @@
             <div id="mySidenav" class="sidenav">
                 await Component.InvokeAsync("Sidenav", (ViewData["bread"] != null ? ViewData["bread"].ToString() : "Nulo"))
             </div>-->
-    </div>    
+    </div>
     <div id="corpo">
         <div class="container" style="margin-bottom: 35px;padding-top: 10px;">
             <main role="main" class="pb-3">
-                @RenderBody()                
+                @RenderBody()
             </main>
         </div>
     </div>
@@ -89,7 +89,9 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>   
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
+
+    <div id="modal" class="modal fade" role="dialog"></div> <!--Modal para gerar as telas com recurso load jquery-->
 </body>
 </html>

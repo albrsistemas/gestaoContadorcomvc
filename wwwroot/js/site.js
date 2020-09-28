@@ -156,3 +156,11 @@ $(".SelectClient").click(function () {
         $("#modal").modal('show');
     })
 });
+
+//Configurações Contábes
+$(".addContabiliade").click(function () {
+    //var escopo = $(this).attr("data-escopo");
+    $("#modal").load("/Configuracoes/AddContabilidade", function () {
+        $("#modal").modal('show');
+    })
+});
