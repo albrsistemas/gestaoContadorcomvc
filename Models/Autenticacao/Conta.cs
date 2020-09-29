@@ -24,6 +24,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         public string conta_email { get; set; }
 
         public string conta_nome { get; set; }
+        public int conta_contador { get; set; }
 
 
         /*--------------------------*/
@@ -77,9 +78,18 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                         {
                             conta.conta_id = 0;
                         }
+                        if (DBNull.Value != leitor["conta_contador"])
+                        {
+                            conta.conta_contador = Convert.ToInt32(leitor["conta_contador"]);
+                        }
+                        else
+                        {
+                            conta.conta_contador = 0;
+                        }
                         conta.conta_dcto = leitor["conta_dcto"].ToString();
                         conta.conta_tipo = leitor["conta_tipo"].ToString();
                         conta.conta_email = leitor["conta_email"].ToString();                        
+                        conta.conta_nome = leitor["conta_nome"].ToString();                        
                     }
                 }
             }
@@ -96,5 +106,69 @@ namespace gestaoContadorcomvc.Models.Autenticacao
 
             return conta;
         }
+
+        public Conta buscarContaPorDcto(string dcto)
+        {
+            Conta conta = new Conta();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "Select * from conta where conta.conta_dcto = @dcto";
+                comando.Parameters.AddWithValue("@dcto", dcto);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        if (DBNull.Value != leitor["conta_id"])
+                        {
+                            conta.conta_id = Convert.ToInt32(leitor["conta_id"]);
+                        }
+                        else
+                        {
+                            conta.conta_id = 0;
+                        }
+                        
+                        if (DBNull.Value != leitor["conta_contador"])
+                        {
+                            conta.conta_contador = Convert.ToInt32(leitor["conta_contador"]);
+                        }
+                        else
+                        {
+                            conta.conta_contador = 0;
+                        }
+                        conta.conta_dcto = leitor["conta_dcto"].ToString();
+                        conta.conta_tipo = leitor["conta_tipo"].ToString();
+                        conta.conta_email = leitor["conta_email"].ToString();
+                        conta.conta_nome = leitor["conta_nome"].ToString();                        
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return conta;
+        }
+
+
     }
 }

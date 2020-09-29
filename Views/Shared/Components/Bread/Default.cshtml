@@ -1,9 +1,13 @@
 ﻿@{
+
+    var user = (gestaoContadorcomvc.Models.Autenticacao.Usuario)TempData["user"];
+
+
     if (ViewData["area"] != null && ViewData["area"].ToString().Equals("Contabilidade"))
     {
-        <a class="SelectClient" style="cursor:pointer">
-            @ViewData["bread"].ToString()
-        </a>
+        <div class="bread_page" id="bread_page">
+            <a class="SelectClient" style="cursor:pointer">@ViewData["bread"].ToString()</a>
+        </div>        
     }
 
     if (ViewData["area"] != null && ViewData["area"].ToString().Equals("Empresa"))
@@ -17,15 +21,20 @@
             if (ViewData["bread"].ToString().Contains("Configurações"))
             {
                 <div id="mySidenav" class="sidenav">
-                    <a asp-controller="Configuracoes" asp-action="Contabilidade">Contabildiade</a>
+                    @{ 
+                        if(user.Role.ToUpper() == "ADM")
+                        {
+                            <a asp-controller="Configuracoes" asp-action="Contabilidade">Contabildiade</a>
+                        }
+                    }                    
                 </div>
             }
 
             <script>
-                    document.getElementById("bread").style.cursor = "pointer";                    
-                    document.getElementById("bread").addEventListener('click', function () {
-                        openNav('aberto');
-                    });
+                document.getElementById("bread").style.cursor = "pointer";
+                document.getElementById("bread").addEventListener('click', function () {
+                    openNav('aberto');
+                });
             </script>
         }
         else

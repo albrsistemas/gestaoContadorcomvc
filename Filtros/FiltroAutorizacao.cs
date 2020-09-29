@@ -11,9 +11,14 @@ namespace gestaoContadorcomvc.Filtros
 {
     public class FiltroAutorizacao : Attribute, IActionFilter
     {
-        public string permissao { get; set; }
+        public string permissao { get; set; }        
         public void OnActionExecuted(ActionExecutedContext context)
         {
+            if(permissao == null)
+            {
+                permissao = "";
+            }
+
             var user = context.HttpContext.Session.GetObjectFromJson<Usuario>("user");
 
             if(user.Role.ToUpper() != "ADM")

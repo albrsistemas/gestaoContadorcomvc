@@ -41,20 +41,14 @@
             <div class="modal-header">
                 <h4 class="modal-title">Selecionar Cliente</h4>
             </div>
-            <form asp-controller="Categoria" asp-action="Create">
+            <form asp-area="Contabilidade" asp-controller="Clientes" asp-action="SelectCliente">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="SelectClient" class="control-label"></label>
-                        <select class="form-control js_example_basic_single" id="SelectClient" style="width: 100%;">
-                            <option>Cliente 1</option>
-                            <option>Cliente 2</option>
-                            <option>Cliente 3</option>
-                            <option>Cliente 4</option>
-                            <option>Cliente 5</option>
-                            <option>Cliente 6</option>
-                        </select>
+                        <select asp-items="@ViewBag.empresasContador" value="@TempData["empresasContador"]" id="SelectClient" name="cliente_id" class="form-control js_example_basic_single" style="width: 100%;"></select>                        
                     </div>                   
                 </div>
+                <input type="hidden" name="url" value="@TempData["url"]" />"
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-info">Selecionar</button>

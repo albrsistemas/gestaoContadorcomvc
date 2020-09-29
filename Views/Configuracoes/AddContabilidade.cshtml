@@ -16,31 +16,44 @@
                         </div>
                     </div>
                     <hr class="hrLine" />
-                    @{                        
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label asp-for="cc_cnpj" class="control-label"></label>
-                                    <input asp-for="cc_cnpj" class="form-control" readonly="readonly" />
-                                    <span asp-validation-for="cc_cnpj" class="text-danger"></span>
+                    @{
+                        if (Model.cc_termo == "Erro")
+                        {
+                            <p><strong>Não foi localizado um contador com o número de documento informado!</strong></p>
+                        }
+                        else
+                        {
+                            string[] termo = new string[15];
+                            termo = Model.cc_termo.Split("|");
+                            <div class="row">
+                                <div class="col-12">
+                                    <p>@termo[0]</p>
+                                    <p>@termo[1]</p>
+                                    <p>@termo[2]</p>
+                                    <p>@termo[3]</p>
+                                    <p>@termo[4]</p>
+                                    <p>@termo[5]</p>
+                                    <p>@termo[6]</p>
+                                    <p>@termo[7]</p>
                                 </div>
-                                <div class="form-group">
-                                    <label asp-for="cc_nome" class="control-label"></label>
-                                    <input asp-for="cc_nome" class="form-control" readonly="readonly" />
-                                    <span asp-validation-for="cc_nome" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="cc_termo" class="control-label"></label>
-                                    <textarea asp-for="cc_termo" class="form-control" readonly="readonly"></textarea>
-                                    <span asp-validation-for="cc_termo" class="text-danger"></span>
-                                </div>                                
                             </div>
-                        </div>                        
+
+                            <input type="hidden" asp-for="cc_conta_id_contador" />
+                            <input type="hidden" asp-for="cc_conta_id" />
+                            <input type="hidden" asp-for="cc_dctoContador" />
+                            <input type="hidden" asp-for="cc_nomeContador" />
+                            <input type="hidden" asp-for="cc_termo" />
+                        }
                     }
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-info">Gravar</button>
+                    @{
+                        if (Model.cc_termo != "Erro")
+                        {
+                            <button type="submit" class="btn btn-info">Concordo</button>
+                        }
+                    }
                 </div>
             </form>
         </div><!-- /.modal-content -->

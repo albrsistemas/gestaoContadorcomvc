@@ -1,0 +1,35 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_contabilidade
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Desvincular Contabilidade</h4>
+            </div>
+            <form asp-controller="Configuracoes" asp-action="DeleteContabilidade">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p>Confirma a desvinculação do contador <strong>@Model.cc_nomeContador</strong>?</p>
+                            <p>Ao desvincular a contabildiade o contador ficará impossiblitado de prestar os serviços contábeis de sua empresa.</p>
+                        </div>
+                    </div>                    
+
+                    @{
+                        <input type="hidden" asp-for="cc_id" />                                                
+                        <input type="hidden" asp-for="cc_nomeContador" />                        
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-info">Desvincular</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

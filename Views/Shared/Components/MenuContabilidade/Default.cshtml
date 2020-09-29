@@ -17,7 +17,7 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 @if (usuario.Role == "adm" || usuario.permissoes.Contains("categContabList"))
-                                {<a class='dropdown-item' asp-controller='Usuario' asp-action='Index'>Categorias</a>}
+                                {<a class='dropdown-item' asp-area="Contabilidade" asp-controller='Categoria' asp-action='Index'>Categorias</a>}
                                 @if (usuario.Role == "adm" || usuario.permissoes.Contains("planoCategContabList"))
                                 {<a class="dropdown-item" asp-controller='Categoria' asp-action='Index'>Plano de Categorias</a>}                                                                
                             </div>
@@ -44,7 +44,7 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@usuario.usuario_nome</a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="#">Minha Conta</a>
-                        <a class="dropdown-item" asp-controller="Configuracoes" asp-action="Index">Configurações</a>
+                        @*<a class="dropdown-item" asp-controller="Configuracoes" asp-action="Index">Configurações</a>*@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" asp-controller="Conta" asp-action="Logout">Sair</a>
                     </div>

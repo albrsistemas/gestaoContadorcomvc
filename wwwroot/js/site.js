@@ -152,15 +152,35 @@ function montaClassificacao(valor, grupo) {
 //Bread alteração de empresa selecionada pelo contador;
 $(".SelectClient").click(function () {
     //var id = $(this).attr("data-id");
-    $("#modal").load("/Contabilidade/Clientes/SelectCliente", function () {
+    var url = window.location.href;
+    $("#modal").load("/Contabilidade/Clientes/SelectCliente?url=" + url, function () {
         $("#modal").modal('show');
     })
 });
 
 //Configurações Contábes
-$(".addContabiliade").click(function () {
-    //var escopo = $(this).attr("data-escopo");
-    $("#modal").load("/Configuracoes/AddContabilidade", function () {
+function addCont() {
+    let cnpj = document.getElementById("cc_cnpj").value;    
+    if (cnpj.length >= 11) {
+        let retorno = "";
+
+        $("#modal").load("/Configuracoes/AddContabilidade?dctoContador=" + cnpj, function () {
+            $("#modal").modal('show');
+        });
+        
+    } else {
+        document.getElementById("labelCNPJCont").innerText = "Digite o CNPJ ou CPF da contabilidade corretamente";
+    }
+}
+function limpaValidacaoCNPJCont() {
+    document.getElementById("labelCNPJCont").innerText = "";
+}
+$(".desvincularContador").click(function () {        
+    $("#modal").load("DeleteContabilidade", function () {        
         $("#modal").modal('show');
     })
 });
+
+
+
+

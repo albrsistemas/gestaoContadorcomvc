@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using gestaoContadorcomvc.Filtros;
+using gestaoContadorcomvc.Models;
+using gestaoContadorcomvc.Models.Autenticacao;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
     [Area("Contabilidade")]
     [Route("Contabilidade/[controller]/[action]")]
     [FiltroAutenticacao]
+    [FiltroContabilidade]
     public class ClientesController : Controller
     {
         // GET: ClientesController         
@@ -96,19 +100,33 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         }
 
         // GET: ClientesController/Edit/5
-        public ActionResult SelectCliente()
+        public ActionResult SelectCliente(string url)
         {
+            TempData["url"] = url;
+
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Selects select = new Selects();
+
+            var cliente_selecionado = HttpContext.Session.GetInt32("cliente_selecionado");
+
+            ViewBag.empresasContador = select.getEmpresasContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Selected = c.value == cliente_selecionado.ToString()}).ToList();
+
             return View();
         }
 
         // POST: ClientesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SelectCliente(int id, IFormCollection collection)
+        public ActionResult SelectCliente(int cliente_id, string url)
         {
+            string[] urlFatiada = new string[10];
+            urlFatiada = url.Split("/");
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                HttpContext.Session.SetInt32("cliente_selecionado", cliente_id);
+
+                return RedirectToAction(urlFatiada[5], urlFatiada[4], new { area = "Contabilidade" });
             }
             catch
             {

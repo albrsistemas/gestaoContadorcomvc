@@ -4,20 +4,69 @@
     ViewData["Title"] = "Contabilidade";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    #addContabilidade {
+        color: #17a2b8;
+        cursor: pointer;
+    }
+
+        #addContabilidade:hover {
+            color: white;
+        }
+
+    .dadosContador {
+        border: 1px solid #808080;
+        border-radius: 5px;
+        padding: 5px;
+    }
+</style>
+
+@{
+    if (TempData["buscaContador_error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Erro!</strong> @TempData["buscaContador_error"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
 
 <h2>Configurações Contábeis</h2>
 <hr class="hrLine" />
 
-<div class="row">
-    <div class="col-12">
-        <div class="input-group mb-3">
-            <input type="text" asp-for="cc_cnpj" class="form-control" placeholder="Digite o CNPJ de seu contador" aria-label="Meu Contador" aria-describedby="button-addon2" name="pattern">
-            <div class="input-group-append">
-                <button class="btn btn-outline-info addContabiliade">Adicionar Contabilidade</button>
+
+@{
+    if (Model != null)
+    {
+        <fieldset>
+            <legend>Contador vinculado a empresa</legend>
+            <div class="dadosContador">
+                <span><strong>CNPJ: </strong>@Model.cc_dctoContador</span><br />
+                <span><strong>Nome: </strong>@Model.cc_nomeContador</span><br />
+                <div class="botao" style="text-align:right">
+                    <a class="btn btn-danger desvincularContador" data-cc_conta_id_contador="@Model.cc_conta_id_contador" data-cc_nomeContador="@Model.cc_nomeContador" style="color:white;cursor:pointer">
+                        Desvincular Contador
+                    </a>
+                </div>
             </div>
-        </div>        
-        <a class="addContabiliade">
-            Adicionar COntabilidade
-        </a>
-    </div>
-</div>
+        </fieldset>
+    }
+    else
+    {
+        <p>Empresa sem vínculo de uma contabilidade. Digite abaixo, o CNPJ da contabildiade e clique em vincular.</p>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <input type="text" id="cc_cnpj" onfocus="limpaValidacaoCNPJCont()" class="form-control" placeholder="Digite o CNPJ de seu contador" aria-label="Meu Contador" aria-describedby="button-addon2" name="pattern">
+                    <div class="input-group-append">
+                        <a class="btn btn-outline-info addContabiliade" id="addContabilidade" onclick="addCont()">Adicionar Contabilidade</a>
+                    </div>
+                </div>
+                <span id="labelCNPJCont" class="text-danger"></span>
+            </div>
+        </div>
+    }
+}

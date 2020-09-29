@@ -13,6 +13,8 @@ namespace gestaoContadorcomvc.Components
     {
         public IViewComponentResult Invoke(string area)
         {
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+
             string retorno = "";
 
             string openNav = "fechado";
@@ -21,7 +23,7 @@ namespace gestaoContadorcomvc.Components
 
             Conta conta = new Conta();
 
-            var cliente = HttpContext.Session.GetInt32("cliente_id");
+            var cliente = HttpContext.Session.GetInt32("cliente_selecionado");
 
             //Contabilidade
             if (area.Equals("Contabilidade"))
@@ -31,7 +33,7 @@ namespace gestaoContadorcomvc.Components
                 if (cliente != null && cliente > 0)
                 {
                     conta = conta.buscarConta(Convert.ToInt32(cliente));
-                    retorno = conta.conta_email;
+                    retorno = conta.conta_nome;
                 }
                 else
                 {
@@ -73,6 +75,8 @@ namespace gestaoContadorcomvc.Components
             ViewData["area"] = area;
 
             ViewData["bread"] = retorno;
+
+            ViewData["user"] = user;
 
             return View();
         }
