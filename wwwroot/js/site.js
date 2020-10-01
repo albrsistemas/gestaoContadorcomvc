@@ -240,6 +240,12 @@ $(document).ready(function () {
     $(".toast").toast('show');
 });
 
+$(document).ready(function () {
+    $('.js_example_basic_single').select2({
+        width: 'resolve'
+    });
+});
+
 
 
 

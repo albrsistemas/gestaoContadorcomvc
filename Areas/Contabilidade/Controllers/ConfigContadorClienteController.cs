@@ -36,19 +36,19 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             //Verificar se existe lançamentos em aberto no plano de contas vigente a atribuir ao objeto configurações 's' ou 'n'
             if(ccc.ccc_planoContasVigente == 0)
             {
-                ccc.ccc_liberaPlano = "S";
+                ccc.ccc_liberaPlano = "Sim";
             }
             else
             {
                 //Pesquisa lançamentos e atribui sim, se retorno for não há lançamentos sem encerramnto para o plano. Do contrário não;
-                ccc.ccc_liberaPlano = "S"; //Por enquanto não existe lançamento, então vai ficar padrão 'sim'.
+                ccc.ccc_liberaPlano = "Sim"; //Por enquanto não existe lançamento, então vai ficar padrão 'sim'.
             }
 
             Selects select = new Selects();
 
             var cliente_selecionado = HttpContext.Session.GetInt32("cliente_selecionado");
 
-            ViewBag.empresasContador = select.getEmpresasContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Selected = c.value == cliente_selecionado.ToString() }).ToList();
+            ViewBag.planosContador = select.getPlanosContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Selected = c.value == ccc.ccc_planoContasVigente.ToString() }).ToList();
 
 
             return View(ccc);
@@ -69,7 +69,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         // POST: ConfigContadorClienteController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(bool ccc_pref_novaCategoria, bool chTeste, IFormCollection collection)
         {
             try
             {

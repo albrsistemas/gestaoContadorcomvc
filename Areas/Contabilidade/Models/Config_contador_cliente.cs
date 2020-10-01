@@ -16,9 +16,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
         public int ccc_contador_id { get; set; }
         public int ccc_cliente_id { get; set; }
         public int ccc_planoContasVigente { get; set; }
-        public string ccc_pref_novaCategoria { get; set; }
-        public string ccc_pref_editCategoria { get; set; }
-        public string ccc_pref_deleteCategoria { get; set; }
+        public bool ccc_pref_novaCategoria { get; set; }
+        public bool ccc_pref_editCategoria { get; set; }
+        public bool ccc_pref_deleteCategoria { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -101,9 +101,33 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
                         {
                             ccc.ccc_planoContasVigente = 0;
                         }
-                        ccc.ccc_pref_novaCategoria = leitor["ccc_pref_novaCategoria"].ToString();
-                        ccc.ccc_pref_editCategoria = leitor["ccc_pref_editCategoria"].ToString();
-                        ccc.ccc_pref_deleteCategoria = leitor["ccc_pref_deleteCategoria"].ToString();
+
+                        if (DBNull.Value != leitor["ccc_pref_novaCategoria"])
+                        {
+                            ccc.ccc_pref_novaCategoria = Convert.ToBoolean(leitor["ccc_pref_novaCategoria"]);
+                        }
+                        else
+                        {
+                            ccc.ccc_pref_novaCategoria = true;
+                        }
+
+                        if (DBNull.Value != leitor["ccc_pref_editCategoria"])
+                        {
+                            ccc.ccc_pref_editCategoria = Convert.ToBoolean(leitor["ccc_pref_editCategoria"]);
+                        }
+                        else
+                        {
+                            ccc.ccc_pref_editCategoria = true;
+                        }
+
+                        if (DBNull.Value != leitor["ccc_pref_deleteCategoria"])
+                        {
+                            ccc.ccc_pref_deleteCategoria = Convert.ToBoolean(leitor["ccc_pref_deleteCategoria"]);
+                        }
+                        else
+                        {
+                            ccc.ccc_pref_deleteCategoria = true;
+                        }
                     }
                 }
             }

@@ -16,18 +16,52 @@
 @{
     if (TempData["Cliente"] != null && TempData["Cliente"].ToString() != "Nenhum cliente selecionado!")
     {
-        <form asp-area="Contabilidade" asp-controller="ContaContabil" asp-action="Create">
-            <fieldset>
-                <legend>Plano de Contas</legend>
-                <div class="form-group">
-                    <label for="SelectClient" class="control-label"></label>
-                    <select asp-items="@ViewBag.empresasContador" value="@TempData["empresasContador"]" id="SelectClient" name="cliente_id" class="form-control js_example_basic_single" style="width: 100%;"></select>
+    <form asp-area="Contabilidade" asp-controller="ConfigContadorCliente" asp-action="Create">
+        <fieldset>
+            <legend>Plano de Contas</legend>
+            <div class="form-group">
+                @{
+                    if (Model.ccc_liberaPlano == "Sim")
+                    {
+                        <select asp-items="@ViewBag.planosContador" value="@TempData["planosContador"]" name="ccc_planoContasVigente" class="form-control js_example_basic_single" style="width: 100%;"></select>
+                    }
+                    else
+                    {
+                        <select asp-items="@ViewBag.planosContador" disabled value="@TempData["planosContador"]" name="ccc_planoContasVigente" class="form-control js_example_basic_single" style="width: 100%;"></select>
+                    }
+                }
+            </div>
+            <div class="form-group">
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="customRadioInline1" name="ccc_pref_tipoContabil" class="custom-control-input">
+                    <label class="custom-control-label" for="customRadioInline1">Sem Contabilidade</label>
                 </div>
-            </fieldset>
-            <fieldset>
-                <legend>Restrições</legend>
-
-            </fieldset>
-        </form>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="customRadioInline2" name="ccc_pref_tipoContabil" class="custom-control-input">
+                    <label class="custom-control-label" for="customRadioInline2">Contabilidade Contadorcomvc</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="customRadioInline3" name="ccc_pref_tipoContabil" class="custom-control-input">
+                    <label class="custom-control-label" for="customRadioInline3">Contabilidade Externa</label>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Restrições</legend>
+            <div class="custom-control custom-switch">
+                <input type="checkbox" asp-for="ccc_pref_novaCategoria" class="custom-control-input">
+                <label class="custom-control-label" for="ccc_pref_novaCategoria">Impedir que cliente cadastre categoiras</label>
+            </div>            
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" asp-for="ccc_pref_editCategoria">
+                <label class="custom-control-label" for="ccc_pref_editCategoria">Impedir que cliente altere categorias</label>
+            </div>
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" asp-for="ccc_pref_deleteCategoria">
+                <label class="custom-control-label" for="ccc_pref_deleteCategoria">Impedir que cliente apague categorias</label>
+            </div>
+        </fieldset>
+        <button type="submit" class="btn btn-info" style="margin-top: 20px;">Gravar</button>        
+    </form>
     }
 }

@@ -80,6 +80,7 @@ namespace gestaoContadorcomvc.Models
             conn = new MySqlConnection(configuration.GetSection("ConnectionStrings").GetSection("conexaocvc").Value);
         }
 
+        //Empresas contador
         public List<Selects> getEmpresasContador(int conta_id_contador)
         {
             List<Selects> empresas = new List<Selects>();
@@ -108,6 +109,53 @@ namespace gestaoContadorcomvc.Models
                         {
                             value = leitor["conta_id"].ToString(),
                             text = leitor["conta_nome"].ToString()
+                        });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return empresas;
+        }
+
+        //Plano de contas do contador
+        public List<Selects> getPlanosContador(int conta_id_contador)
+        {
+            List<Selects> empresas = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from planocontas WHERE planocontas.plano_conta_id = @conta_id_contador and planocontas.plano_status = 'Ativo'";
+                comando.Parameters.AddWithValue("@conta_id_contador", conta_id_contador);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        empresas.Add(new Selects
+                        {
+                            value = leitor["plano_id"].ToString(),
+                            text = leitor["plano_nome"].ToString()
                         });
                     }
                 }
