@@ -31,5 +31,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
 
         [Required(ErrorMessage = "A sequencia é obrigatória.")]
         public string categoria_sequencia { get; set; }
+        public string categoria_mascaraContabil { get; set; }
+        public string categoria_contaonline { get; set; }
     }
 }

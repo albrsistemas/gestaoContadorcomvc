@@ -1,4 +1,5 @@
 ﻿using gestaoContadorcomvc.Models.SoftwareHouse;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System;
@@ -164,6 +165,24 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                 {
                     conn.Close();
                 }
+            }
+
+            return conta;
+        }
+
+        //Método para retornar conxteto do cliente selecionado na contabilidade
+        public Conta contextoCliente(int id)
+        {
+            Conta conta = new Conta();
+
+            if (id > 0)
+            {
+                conta = conta.buscarConta(id);                
+            }
+            else
+            {
+                conta.conta_id = 0;
+                conta.conta_nome = "Nenhum cliente selecionado!";
             }
 
             return conta;

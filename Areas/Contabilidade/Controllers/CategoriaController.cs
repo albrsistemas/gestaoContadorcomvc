@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using gestaoContadorcomvc.Filtros;
+using gestaoContadorcomvc.Models;
+using gestaoContadorcomvc.Models.Autenticacao;
+using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +20,17 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         // GET: CategoriaController
         public ActionResult Index()
         {
-            return View();
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+
+            Conta conta = new Conta();
+            conta = conta.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+            TempData["Cliente"] = conta.conta_nome;
+
+            Categoria categoria = new Categoria();
+            List<Vm_categoria> categorias = new List<Vm_categoria>();
+            categorias = categoria.listaCategorias(conta.conta_id, user.usuario_id);            
+
+            return View(categorias);
         }
 
         // GET: CategoriaController/Details/5

@@ -28,6 +28,9 @@
     a {
         cursor: pointer;
     }
+    .line-list {
+        border: 0px;
+    }
 </style>
 
 @{
@@ -132,7 +135,7 @@
                     <span><strong>Nome</strong></span>
                 </div>
             </div>
-        </div>
+        </div>        
     </div>
 
     foreach (var item in Model)
@@ -215,7 +218,4 @@
         </div>
     }
 }
-
-<div class="row" style="margin-bottom: 10px;margin-top:10px;"></div>
-
 <div id="modal" class="modal fade" role="dialog" />

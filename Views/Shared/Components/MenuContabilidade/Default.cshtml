@@ -17,9 +17,7 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 @if (usuario.Role == "adm" || usuario.permissoes.Contains("planoContasList"))
-                                {<a class='dropdown-item' asp-area="Contabilidade" asp-controller='PlanoContas' asp-action='Index'>Plano de Contas</a>}
-                                @if (usuario.Role == "adm" || usuario.permissoes.Contains("categContabList"))
-                                {<a class='dropdown-item' asp-area="Contabilidade" asp-controller='Categoria' asp-action='Index'>Categorias</a>}
+                                {<a class='dropdown-item' asp-area="Contabilidade" asp-controller='PlanoContas' asp-action='Index'>Plano de Contas</a>}                                
                                 @if (usuario.Role == "adm" || usuario.permissoes.Contains("planoCategContabList"))
                                 {<a class="dropdown-item" asp-controller='Categoria' asp-action='Index'>Plano de Categorias</a>}
                             </div>
@@ -31,11 +29,14 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Cliente
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Configurações</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                        
+                        @if (usuario.Role == "adm" || usuario.permissoes.Contains("configContabList"))
+                        {<a class="dropdown-item" asp-area="Contabilidade" asp-controller='ConfigContadorCliente' asp-action='Index'>Configurações</a>}
+                        @if (usuario.Role == "adm" || usuario.permissoes.Contains("planoCategContabList"))
+                        {<a class="dropdown-item" asp-area="Contabilidade" asp-controller='Categoria' asp-action='Index'>Categorias</a>}
                         <a class="dropdown-item" href="#">Lançamentos</a>
                         <a class="dropdown-item" href="#">Balancete</a>
-                        <a class="dropdown-item" href="#">DRE</a>                        
+                        <a class="dropdown-item" href="#">DRE</a>
                     </div>
                 </li>
             </ul>
