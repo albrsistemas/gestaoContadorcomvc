@@ -56,7 +56,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
             catch
             {
-                return View();
+                return RedirectToAction("Index", new { controller = "ContaContabil", action = "Index" });
             }
         }
 
@@ -92,7 +92,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
             catch
             {
-                return View();
+                return RedirectToAction("Index", new { controller = "ContaContabil", action = "Index" });
             }
         }
 
@@ -123,7 +123,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
             catch
             {
-                return View();
+                return RedirectToAction("Index", new { controller = "ContaContabil", action = "Index" });
             }
         }
     }

@@ -13,6 +13,7 @@ namespace gestaoContadorcomvc.Models
         //Atributos
         public string value { get; set; }
         public string text { get; set; }
+        public bool disabled { get; set; }
 
         //Método para listar bancos
         public List<Selects> getBancos()

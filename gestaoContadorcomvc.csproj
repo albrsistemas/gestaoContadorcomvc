@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Contabilidade\Data\" />
-    <Folder Include="Areas\Contabilidade\Models\ViewModel\" />
     <Folder Include="wwwroot\lib\select2\" />
   </ItemGroup>
 

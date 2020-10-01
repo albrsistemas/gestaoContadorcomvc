@@ -181,6 +181,65 @@ $(".desvincularContador").click(function () {
     })
 });
 
+//Contas contábeis
+function nivelConta(vlr) {    
+    var tamanho = vlr.length;
+
+    if (tamanho == 2) {        
+        document.getElementById('ccontabil_classificacao').value = vlr + ".";
+        document.getElementById('ccontabil_nivel').value = 1;
+    }
+    if (tamanho == 4) {
+        document.getElementById('ccontabil_classificacao').value = vlr + ".";
+        document.getElementById('ccontabil_nivel').value = 2;
+    }
+    if (tamanho == 6) {
+        document.getElementById('ccontabil_classificacao').value = vlr + ".";
+        document.getElementById('ccontabil_nivel').value = 3;
+    }
+    if (tamanho == 9) {
+        document.getElementById('ccontabil_classificacao').value = vlr + ".";
+        document.getElementById('ccontabil_nivel').value = 4;
+    }   
+    if (tamanho == 13) {        
+        document.getElementById('ccontabil_nivel').value = 5;
+    }
+    if (tamanho > 13) {
+        document.getElementById('ccontabil_classificacao').value = vlr.substring(0, 13);        
+    }
+}
+
+function removeDot(vlr) {
+    let nivel = document.getElementById('ccontabil_nivel').value;
+
+    if (nivel != "5") {
+        console.log(vlr);
+        console.log((vlr.length - 1));
+        console.log(vlr.substring((vlr.length - 1), 1));
+        document.getElementById('ccontabil_classificacao').value = vlr.toString().substring(0, (vlr.length - 1));
+    }
+}
+
+$(".editContaContabil").click(function () {
+    var ccontabil_id = $(this).attr("data-ccontabil_id");
+    var plano_id = $(this).attr("data-plano_id");
+    $("#modal").load("Edit?ccontabil_id=" + ccontabil_id + "&plano_id=" + plano_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(".deleteContaContabil").click(function () {
+    var ccontabil_id = $(this).attr("data-ccontabil_id");
+    var plano_id = $(this).attr("data-plano_id");
+    $("#modal").load("Delete?ccontabil_id=" + ccontabil_id + "&plano_id=" + plano_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(document).ready(function () {
+    $(".toast").toast('show');
+});
+
 
 
 

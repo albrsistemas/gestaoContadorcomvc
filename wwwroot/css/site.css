@@ -260,8 +260,18 @@ body {
 .line-list-head{
     display:none;
 }
+
+.alert {
+    position: fixed;
+    top: 100px;
+}
+
 /*Fim estilo LineList*/
 @media (min-width: 768px) {
+    .alert {
+        position: fixed;
+        top: 100px;
+    }
 
     #bread_nome_cliente {
         display: block;
