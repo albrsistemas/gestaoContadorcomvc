@@ -266,6 +266,32 @@ body {
     top: 100px;
 }
 
+.btn-tools {
+    width: 100%;
+    height: 42px;
+    line-height: 42px;
+    border-radius: 5px;
+    background-color: #cfd0d1;
+    padding-left: 10px;
+    padding-right: 10px;    
+}
+.btn-tools span{
+    font-family: sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+}
+.btn-tools svg{
+    color: orangered;
+}
+    .btn-tools a {
+        text-decoration: none;
+        font-family: sans-serif;
+        color: black;
+        padding-right: 10px;
+    }
+    .btn-tools a span{
+        font-size: 15px;
+    }
 /*Fim estilo LineList*/
 @media (min-width: 768px) {
     .alert {
