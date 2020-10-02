@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel
 {
+    [Area("Contabilidade")]
     public class vm_ContaContabil
     {
         public int ccontabil_id { get; set; }

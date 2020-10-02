@@ -67,14 +67,7 @@
         </nav>
     </header>
     <div class="bread" id="bread" style="z-index: 1000;">
-        @await Component.InvokeAsync("Bread", "Empresa")
-        <!--
-            <div class="bread_page" id="bread_page">
-                await Component.InvokeAsync("Bread", "Empresa")
-            </div>
-            <div id="mySidenav" class="sidenav">
-                await Component.InvokeAsync("Sidenav", (ViewData["bread"] != null ? ViewData["bread"].ToString() : "Nulo"))
-            </div>-->
+        @await Component.InvokeAsync("Bread", "Empresa")       
     </div>
     <div id="corpo">
         <div class="container" style="margin-bottom: 35px;padding-top: 10px;">

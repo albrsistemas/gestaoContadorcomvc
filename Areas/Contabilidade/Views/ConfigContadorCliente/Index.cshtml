@@ -4,6 +4,28 @@
     Layout = "~/Areas/Contabilidade/Views/Shared/_Layout.cshtml";
 }
 
+@{
+    if (TempData["retornoConfig"] != null && TempData["retornoConfig"].ToString().Contains("sucesso"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Sucesso!</strong> @TempData["retornoConfig"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    if (TempData["retornoConfig"] != null && TempData["retornoConfig"].ToString().Contains("Erro"))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Erro!</strong> @TempData["retornoConfig"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
+
 <h2>Configurações</h2>
 @{
     if (TempData["Cliente"] != null)
@@ -14,54 +36,66 @@
 <hr class="hrLine" />
 
 @{
+    var action = "Edit";
+    if (Model.ccc_id == 0)
+    {
+        action = "Create";
+    }
+
     if (TempData["Cliente"] != null && TempData["Cliente"].ToString() != "Nenhum cliente selecionado!")
     {
-    <form asp-area="Contabilidade" asp-controller="ConfigContadorCliente" asp-action="Create">
-        <fieldset>
-            <legend>Plano de Contas</legend>
-            <div class="form-group">
-                @{
-                    if (Model.ccc_liberaPlano == "Sim")
-                    {
-                        <select asp-items="@ViewBag.planosContador" value="@TempData["planosContador"]" name="ccc_planoContasVigente" class="form-control js_example_basic_single" style="width: 100%;"></select>
+        <form asp-area="Contabilidade" asp-controller="ConfigContadorCliente" asp-action="@action">
+            <fieldset>
+                <legend>Contabilidade</legend>
+                <div class="form-group">
+                    @{
+                        if (Model.ccc_liberaPlano == "Sim")
+                        {
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" asp-for="ccc_pref_contabilizacao" onchange="contabilizacao(this.value)" class="custom-control-input">
+                                <label class="custom-control-label" for="ccc_pref_contabilizacao">Contabilização on line</label>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ccc_planoContasVigente" class="control-label"></label>
+                                <select asp-items="@ViewBag.planosContador" value="@TempData["planosContador"]" asp-for="ccc_planoContasVigente" class="form-control" style="width: 100%;"></select>
+                                <span asp-validation-for="ccc_planoContasVigente" class="text-danger"></span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" asp-for="ccc_pref_contabilizacao" disabled onchange="contabilizacao(this.value)" class="custom-control-input">
+                                <label class="custom-control-label" for="ccc_pref_contabilizacao">Contabilização on line</label>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ccc_planoContasVigente" class="control-label"></label>
+                                <select asp-items="@ViewBag.planosContador" disabled value="@TempData["planosContador"]" asp-for="ccc_planoContasVigente" class="form-control" style="width: 100%;"></select>
+                                <span asp-validation-for="ccc_planoContasVigente" class="text-danger"></span>
+                            </div>
+                        }
                     }
-                    else
-                    {
-                        <select asp-items="@ViewBag.planosContador" disabled value="@TempData["planosContador"]" name="ccc_planoContasVigente" class="form-control js_example_basic_single" style="width: 100%;"></select>
-                    }
-                }
-            </div>
-            <div class="form-group">
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="customRadioInline1" name="ccc_pref_tipoContabil" class="custom-control-input">
-                    <label class="custom-control-label" for="customRadioInline1">Sem Contabilidade</label>
                 </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="customRadioInline2" name="ccc_pref_tipoContabil" class="custom-control-input">
-                    <label class="custom-control-label" for="customRadioInline2">Contabilidade Contadorcomvc</label>
+            </fieldset>
+            <fieldset>
+                <legend>Restrições</legend>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" asp-for="ccc_pref_novaCategoria" class="custom-control-input">
+                    <label class="custom-control-label" for="ccc_pref_novaCategoria">Impedir que cliente cadastre categoiras</label>
                 </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="customRadioInline3" name="ccc_pref_tipoContabil" class="custom-control-input">
-                    <label class="custom-control-label" for="customRadioInline3">Contabilidade Externa</label>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" asp-for="ccc_pref_editCategoria">
+                    <label class="custom-control-label" for="ccc_pref_editCategoria">Impedir que cliente altere categorias</label>
                 </div>
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend>Restrições</legend>
-            <div class="custom-control custom-switch">
-                <input type="checkbox" asp-for="ccc_pref_novaCategoria" class="custom-control-input">
-                <label class="custom-control-label" for="ccc_pref_novaCategoria">Impedir que cliente cadastre categoiras</label>
-            </div>            
-            <div class="custom-control custom-switch">
-                <input type="checkbox" class="custom-control-input" asp-for="ccc_pref_editCategoria">
-                <label class="custom-control-label" for="ccc_pref_editCategoria">Impedir que cliente altere categorias</label>
-            </div>
-            <div class="custom-control custom-switch">
-                <input type="checkbox" class="custom-control-input" asp-for="ccc_pref_deleteCategoria">
-                <label class="custom-control-label" for="ccc_pref_deleteCategoria">Impedir que cliente apague categorias</label>
-            </div>
-        </fieldset>
-        <button type="submit" class="btn btn-info" style="margin-top: 20px;">Gravar</button>        
-    </form>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" asp-for="ccc_pref_deleteCategoria">
+                    <label class="custom-control-label" for="ccc_pref_deleteCategoria">Impedir que cliente apague categorias</label>
+                </div>
+            </fieldset>
+            <button type="submit" class="btn btn-info" style="margin-top: 20px;">Gravar</button>
+        </form>
     }
 }
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

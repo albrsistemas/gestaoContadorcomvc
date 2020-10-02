@@ -246,6 +246,32 @@ $(document).ready(function () {
     });
 });
 
+function contabilizacao(vlr) {
+    let cb = document.getElementById("ccc_pref_contabilizacao");   
+
+    if (!cb.disabled) {        
+        if (!cb.checked) {
+            $('#ccc_planoContasVigente option').each(function () {
+                //Removendo os options selected
+                $(this).removeAttr('selected');
+                console.log(this);
+            });
+            $('#ccc_planoContasVigente option').each(function () {
+                if (this.value == 0) {
+                    this.setAttribute("selected", "selected");
+
+                    $('#ccc_planoContasVigente').val("");
+                }
+            });
+
+            document.getElementById("ccc_planoContasVigente").disabled = true;
+            document.getElementById("ccc_planoContasVigente-error").innerHTML = "";
+        } else {
+            document.getElementById("ccc_planoContasVigente").disabled = false;
+        }
+    }
+}
+
 
 
 

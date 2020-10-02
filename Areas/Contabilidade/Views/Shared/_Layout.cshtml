@@ -68,8 +68,8 @@
         </nav>
     </header>
     <div class="bread" id="bread" style="z-index: 1000;">
-        @await Component.InvokeAsync("Bread", "Contabilidade")        
-    </div>    
+        @await Component.InvokeAsync("Bread", "Contabilidade")
+    </div>
     <div id="corpo">
         <div class="container" style="margin-bottom: 35px;padding-top: 10px;">
             <main role="main" class="pb-3">
@@ -85,6 +85,8 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/select2/js/select2.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 

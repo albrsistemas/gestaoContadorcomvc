@@ -14,18 +14,18 @@
                 <form asp-area="Contabilidade" asp-controller="ContaContabil" asp-action="Create">
                     <div class="modal-body">
                         <div class="row">
-                                <div class="col-12">
-                                    <p><strong>Plano de Contas:</strong> @plano.plano_nome</p>
-                                </div>
+                            <div class="col-12">
+                                <p><strong>Plano de Contas:</strong> @plano.plano_nome</p>
                             </div>
-                            <hr class="hrLine" />
+                        </div>
+                        <hr class="hrLine" />
                         @{
                             <div class="row">
                                 <input type="hidden" value="@plano.plano_id" name="plano_id" />
                                 <div class="col-8">
                                     <div class="form-group">
                                         <label asp-for="ccontabil_classificacao" class="control-label"></label>
-                                        <input asp-for="ccontabil_classificacao" class="form-control" autofocus onkeyup="nivelConta(this.value)" onblur="removeDot(this.value)"/>
+                                        <input asp-for="ccontabil_classificacao" class="form-control" autofocus onkeyup="nivelConta(this.value)" onblur="removeDot(this.value)" />
                                         <span asp-validation-for="ccontabil_classificacao" class="text-danger"></span>
                                     </div>
                                 </div>

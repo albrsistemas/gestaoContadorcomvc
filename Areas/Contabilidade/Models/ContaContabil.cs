@@ -1,5 +1,7 @@
 ﻿using gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel;
 using gestaoContadorcomvc.Models.SoftwareHouse;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System;
@@ -10,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace gestaoContadorcomvc.Areas.Contabilidade.Models
 {
+    [Area("Contabilidade")]    
     public class ContaContabil
     {
         public int ccontabil_id { get; set; }

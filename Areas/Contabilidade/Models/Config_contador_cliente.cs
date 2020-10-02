@@ -15,7 +15,8 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
         public int ccc_id { get; set; }
         public int ccc_contador_id { get; set; }
         public int ccc_cliente_id { get; set; }
-        public int ccc_planoContasVigente { get; set; }
+        public string ccc_planoContasVigente { get; set; }
+        public bool ccc_pref_contabilizacao { get; set; }
         public bool ccc_pref_novaCategoria { get; set; }
         public bool ccc_pref_editCategoria { get; set; }
         public bool ccc_pref_deleteCategoria { get; set; }
@@ -91,16 +92,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
                         else
                         {
                             ccc.ccc_cliente_id = 0;
-                        }
+                        }                       
 
-                        if (DBNull.Value != leitor["ccc_planoContasVigente"])
-                        {
-                            ccc.ccc_planoContasVigente = Convert.ToInt32(leitor["ccc_planoContasVigente"]);
-                        }
-                        else
-                        {
-                            ccc.ccc_planoContasVigente = 0;
-                        }
+                        ccc.ccc_planoContasVigente = leitor["ccc_planoContasVigente"].ToString();
 
                         if (DBNull.Value != leitor["ccc_pref_novaCategoria"])
                         {
@@ -128,6 +122,14 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
                         {
                             ccc.ccc_pref_deleteCategoria = true;
                         }
+                        if (DBNull.Value != leitor["ccc_pref_contabilizacao"])
+                        {
+                            ccc.ccc_pref_contabilizacao = Convert.ToBoolean(leitor["ccc_pref_contabilizacao"]);
+                        }
+                        else
+                        {
+                            ccc.ccc_pref_contabilizacao = false;
+                        }
                     }
                 }
             }
@@ -146,5 +148,100 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
 
             return ccc;
         }
+
+        //Cadastrar configurações
+        public string cadastrarConfiguracoes(int conta_id, int usuario_id, int ccc_contador_id, int ccc_cliente_id, bool ccc_pref_contabilizacao, string ccc_planoContasVigente, bool ccc_pref_novaCategoria, bool ccc_pref_editCategoria, bool ccc_pref_deleteCategoria)
+        {            
+            string retorno = "Configurações gravada com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "INSERT into config_contador_cliente (ccc_contador_id, ccc_cliente_id, ccc_planoContasVigente, ccc_pref_contabilizacao, ccc_pref_novaCategoria, ccc_pref_editCategoria, ccc_pref_deleteCategoria) values (@ccc_contador_id, @ccc_cliente_id, @ccc_planoContasVigente, @ccc_pref_contabilizacao, @ccc_pref_novaCategoria, @ccc_pref_editCategoria, @ccc_pref_deleteCategoria);";
+                comando.Parameters.AddWithValue("@ccc_contador_id", ccc_contador_id);
+                comando.Parameters.AddWithValue("@ccc_cliente_id", ccc_cliente_id);
+                comando.Parameters.AddWithValue("@ccc_planoContasVigente", ccc_planoContasVigente);
+                comando.Parameters.AddWithValue("@ccc_pref_contabilizacao", ccc_pref_contabilizacao);
+                comando.Parameters.AddWithValue("@ccc_pref_novaCategoria", ccc_pref_novaCategoria);
+                comando.Parameters.AddWithValue("@ccc_pref_editCategoria", ccc_pref_editCategoria);
+                comando.Parameters.AddWithValue("@ccc_pref_deleteCategoria", ccc_pref_deleteCategoria);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Configurações do cliente id: " + ccc_cliente_id + " do contador id: " + ccc_contador_id + " cadastrado com sucesso";
+                log.log("Config_contador_cliente", "cadastrarConfiguracoes", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao gravar as configurações do cliente. Tente novamente. Se persistir o problema entre em contato com o suporte!";
+
+                string msg = "Cadastro das Configurações do cliente id: " + ccc_cliente_id + " do contador id: " + ccc_contador_id + " fracassou [" + e.Message.Substring(0, 300) + "]";
+                log.log("Config_contador_cliente", "cadastrarConfiguracoes", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
+        //Cadastrar configurações
+        public string alterarConfiguracoes(int conta_id, int usuario_id, int ccc_contador_id, int ccc_cliente_id, bool ccc_pref_contabilizacao, string ccc_planoContasVigente, bool ccc_pref_novaCategoria, bool ccc_pref_editCategoria, bool ccc_pref_deleteCategoria)
+        {
+            string retorno = "Configurações gravada com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "UPDATE config_contador_cliente set ccc_planoContasVigente = @ccc_planoContasVigente, ccc_pref_contabilizacao = @ccc_pref_contabilizacao, ccc_pref_novaCategoria = @ccc_pref_novaCategoria, ccc_pref_editCategoria = @ccc_pref_editCategoria, ccc_pref_deleteCategoria = @ccc_pref_deleteCategoria where ccc_contador_id = @ccc_contador_id and ccc_cliente_id = @ccc_cliente_id;";
+                comando.Parameters.AddWithValue("@ccc_contador_id", ccc_contador_id);
+                comando.Parameters.AddWithValue("@ccc_cliente_id", ccc_cliente_id);
+                comando.Parameters.AddWithValue("@ccc_planoContasVigente", ccc_planoContasVigente);
+                comando.Parameters.AddWithValue("@ccc_pref_contabilizacao", ccc_pref_contabilizacao);
+                comando.Parameters.AddWithValue("@ccc_pref_novaCategoria", ccc_pref_novaCategoria);
+                comando.Parameters.AddWithValue("@ccc_pref_editCategoria", ccc_pref_editCategoria);
+                comando.Parameters.AddWithValue("@ccc_pref_deleteCategoria", ccc_pref_deleteCategoria);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Configurações do cliente id: " + ccc_cliente_id + " do contador id: " + ccc_contador_id + " alterada com sucesso";
+                log.log("Config_contador_cliente", "alterarConfiguracoes", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao gravar as configurações do cliente. Tente novamente. Se persistir o problema entre em contato com o suporte!";
+
+                string msg = "Alteração das Configurações do cliente id: " + ccc_cliente_id + " do contador id: " + ccc_contador_id + " fracassou [" + e.Message.Substring(0, 300) + "]";
+                log.log("Config_contador_cliente", "alterarConfiguracoes", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
     }
 }

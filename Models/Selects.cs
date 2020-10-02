@@ -131,6 +131,11 @@ namespace gestaoContadorcomvc.Models
         public List<Selects> getPlanosContador(int conta_id_contador)
         {
             List<Selects> empresas = new List<Selects>();
+            empresas.Add(new Selects {
+                value = "",
+                text = "Selecione um plano de contas",
+                disabled = true
+            });
 
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
@@ -155,7 +160,8 @@ namespace gestaoContadorcomvc.Models
                         empresas.Add(new Selects
                         {
                             value = leitor["plano_id"].ToString(),
-                            text = leitor["plano_nome"].ToString()
+                            text = leitor["plano_nome"].ToString(),
+                            disabled = false
                         });
                     }
                 }

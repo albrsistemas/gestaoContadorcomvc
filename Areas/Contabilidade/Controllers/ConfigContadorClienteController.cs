@@ -34,7 +34,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             ccc = config.buscaCCC(user.usuario_id, contexto.conta_id, user.usuario_conta_id);
 
             //Verificar se existe lançamentos em aberto no plano de contas vigente a atribuir ao objeto configurações 's' ou 'n'
-            if(ccc.ccc_planoContasVigente == 0)
+            if(ccc.ccc_planoContasVigente == "0")
             {
                 ccc.ccc_liberaPlano = "Sim";
             }
@@ -48,73 +48,66 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 
             var cliente_selecionado = HttpContext.Session.GetInt32("cliente_selecionado");
 
-            ViewBag.planosContador = select.getPlanosContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Selected = c.value == ccc.ccc_planoContasVigente.ToString() }).ToList();
-
+            if(ccc.ccc_id == 0)
+            {
+                ViewBag.planosContador = select.getPlanosContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.text == "Selecione um plano de contas" }).ToList();
+            }
+            else
+            {
+                ViewBag.planosContador = select.getPlanosContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == ccc.ccc_planoContasVigente.ToString() }).ToList();
+            }
 
             return View(ccc);
-        }
-
-        // GET: ConfigContadorClienteController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: ConfigContadorClienteController/Create
-        public ActionResult Create()
-        {
-            return View();
         }
 
         // POST: ConfigContadorClienteController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(bool ccc_pref_novaCategoria, bool chTeste, IFormCollection collection)
+        public ActionResult Create(bool ccc_pref_contabilizacao, string ccc_planoContasVigente, bool ccc_pref_novaCategoria, bool ccc_pref_editCategoria, bool ccc_pref_deleteCategoria)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+                Conta contexto = new Conta();
+                contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+
+                Config_contador_cliente config = new Config_contador_cliente();
+
+                TempData["retornoConfig"] = config.cadastrarConfiguracoes(user.usuario_conta_id, user.usuario_id, user.usuario_conta_id, contexto.conta_id, ccc_pref_contabilizacao, ccc_planoContasVigente, ccc_pref_novaCategoria, ccc_pref_editCategoria, ccc_pref_deleteCategoria);
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
                 return View();
             }
-        }
-
-        // GET: ConfigContadorClienteController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
         }
 
         // POST: ConfigContadorClienteController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(bool ccc_pref_contabilizacao, string ccc_planoContasVigente, bool ccc_pref_novaCategoria, bool ccc_pref_editCategoria, bool ccc_pref_deleteCategoria)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
 
-        // GET: ConfigContadorClienteController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+                var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+                Conta contexto = new Conta();
+                contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
 
-        // POST: ConfigContadorClienteController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
+                Config_contador_cliente config = new Config_contador_cliente();
+
+                TempData["retornoConfig"] = config.alterarConfiguracoes(user.usuario_conta_id, user.usuario_id, user.usuario_conta_id, contexto.conta_id, ccc_pref_contabilizacao, ccc_planoContasVigente, ccc_pref_novaCategoria, ccc_pref_editCategoria, ccc_pref_deleteCategoria);
+
                 return RedirectToAction(nameof(Index));
             }
             catch
