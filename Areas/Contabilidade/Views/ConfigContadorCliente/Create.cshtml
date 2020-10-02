@@ -1,0 +1,53 @@
+﻿@model gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel.vm_ConfigContadorCliente
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Configurações</h4>
+            </div>
+            <form asp-area="Contabilidade" asp-controller="ConfigContadorCliente" asp-action="Create">
+                <div class="modal-body">
+                    <fieldset>
+                        <legend>Contabilidade</legend>
+                        <div class="form-group">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" asp-for="ccc_pref_contabilizacao" onchange="contabilizacao(this.value)" class="custom-control-input">
+                                <label class="custom-control-label" for="ccc_pref_contabilizacao">Contabilização on line</label>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ccc_planoContasVigente" class="control-label"></label>
+                                <select asp-items="@ViewBag.planosContador" disabled value="@TempData["planosContador"]" asp-for="ccc_planoContasVigente" class="form-control" style="width: 100%;"></select>
+                                <span asp-validation-for="ccc_planoContasVigente" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Restrições</legend>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" asp-for="ccc_pref_novaCategoria" class="custom-control-input">
+                            <label class="custom-control-label" for="ccc_pref_novaCategoria">Impedir que cliente cadastre categoiras</label>
+                        </div>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" asp-for="ccc_pref_editCategoria">
+                            <label class="custom-control-label" for="ccc_pref_editCategoria">Impedir que cliente altere categorias</label>
+                        </div>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" asp-for="ccc_pref_deleteCategoria">
+                            <label class="custom-control-label" for="ccc_pref_deleteCategoria">Impedir que cliente apague categorias</label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-info">Gravar</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

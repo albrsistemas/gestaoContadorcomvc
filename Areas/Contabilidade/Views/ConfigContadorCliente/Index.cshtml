@@ -36,63 +36,54 @@
 <hr class="hrLine" />
 
 @{
-    var action = "Edit";
-    if (Model.ccc_id == 0)
-    {
-        action = "Create";
-    }
 
     if (TempData["Cliente"] != null && TempData["Cliente"].ToString() != "Nenhum cliente selecionado!")
     {
-        <form asp-area="Contabilidade" asp-controller="ConfigContadorCliente" asp-action="@action">
+        if (Model.ccc_id == 0)
+        {
+            <p>Cliente sem configurações</p>
+            
+            <div class="form-group">
+                <button class="btn btn-info"><a class="create" data-escopo="Entrada">Cadastrar</a></button>
+            </div>
+        }
+        else
+        {
             <fieldset>
                 <legend>Contabilidade</legend>
                 <div class="form-group">
-                    @{
-                        if (Model.ccc_liberaPlano == "Sim")
-                        {
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" asp-for="ccc_pref_contabilizacao" onchange="contabilizacao(this.value)" class="custom-control-input">
-                                <label class="custom-control-label" for="ccc_pref_contabilizacao">Contabilização on line</label>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="ccc_planoContasVigente" class="control-label"></label>
-                                <select asp-items="@ViewBag.planosContador" value="@TempData["planosContador"]" asp-for="ccc_planoContasVigente" class="form-control" style="width: 100%;"></select>
-                                <span asp-validation-for="ccc_planoContasVigente" class="text-danger"></span>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" asp-for="ccc_pref_contabilizacao" disabled onchange="contabilizacao(this.value)" class="custom-control-input">
-                                <label class="custom-control-label" for="ccc_pref_contabilizacao">Contabilização on line</label>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="ccc_planoContasVigente" class="control-label"></label>
-                                <select asp-items="@ViewBag.planosContador" disabled value="@TempData["planosContador"]" asp-for="ccc_planoContasVigente" class="form-control" style="width: 100%;"></select>
-                                <span asp-validation-for="ccc_planoContasVigente" class="text-danger"></span>
-                            </div>
-                        }
-                    }
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" asp-for="ccc_pref_contabilizacao" disabled onchange="contabilizacao(this.value)" class="custom-control-input">
+                        <label class="custom-control-label" for="ccc_pref_contabilizacao">Contabilização on line</label>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label asp-for="ccc_planoContasVigente" class="control-label"></label>
+                        <select asp-items="@ViewBag.planosContador" disabled value="@TempData["planosContador"]" asp-for="ccc_planoContasVigente" class="form-control" style="width: 100%;"></select>
+                        <span asp-validation-for="ccc_planoContasVigente" class="text-danger"></span>
+                    </div>
                 </div>
             </fieldset>
             <fieldset>
                 <legend>Restrições</legend>
                 <div class="custom-control custom-switch">
-                    <input type="checkbox" asp-for="ccc_pref_novaCategoria" class="custom-control-input">
+                    <input type="checkbox" asp-for="ccc_pref_novaCategoria" class="custom-control-input" disabled>
                     <label class="custom-control-label" for="ccc_pref_novaCategoria">Impedir que cliente cadastre categoiras</label>
                 </div>
                 <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" asp-for="ccc_pref_editCategoria">
+                    <input type="checkbox" class="custom-control-input" asp-for="ccc_pref_editCategoria" disabled>
                     <label class="custom-control-label" for="ccc_pref_editCategoria">Impedir que cliente altere categorias</label>
                 </div>
                 <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" asp-for="ccc_pref_deleteCategoria">
+                    <input type="checkbox" class="custom-control-input" asp-for="ccc_pref_deleteCategoria" disabled>
                     <label class="custom-control-label" for="ccc_pref_deleteCategoria">Impedir que cliente apague categorias</label>
                 </div>
             </fieldset>
-            <button type="submit" class="btn btn-info" style="margin-top: 20px;">Gravar</button>
-        </form>
+            <br />
+            <div class="form-group">
+                <button class="btn btn-info"><a class="edit" data-escopo="Entrada">Alterar</a></button>
+            </div>
+        }
     }
 }
 
