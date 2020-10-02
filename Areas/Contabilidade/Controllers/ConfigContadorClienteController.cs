@@ -72,6 +72,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
+                if(ccc_planoContasVigente == null)
+                {
+                    ccc_planoContasVigente = "0";
+                }
+
                 var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
                 Conta contexto = new Conta();
                 contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
@@ -98,6 +103,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                 if (!ModelState.IsValid)
                 {
                     return RedirectToAction(nameof(Index));
+                }
+
+                if (ccc_planoContasVigente == null)
+                {
+                    ccc_planoContasVigente = "0";
                 }
 
                 var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
