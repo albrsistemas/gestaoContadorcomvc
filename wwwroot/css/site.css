@@ -169,6 +169,7 @@ body {
     border: 1px solid #808080;
     border-radius: 5px;
     margin-bottom: 1px;
+    user-select: none;
 }
 
     .line-list:hover {
@@ -257,8 +258,15 @@ body {
         color: orangered;
         font-weight: bold;
     }
-.line-list-head{
-    display:none;
+
+.list-title-mobile {
+    display: block;
+}
+.list-title-full {
+    display: none;
+}
+.list-header {
+    display: none;
 }
 
 .alert {
@@ -302,10 +310,19 @@ body {
     #bread_nome_cliente {
         display: block;
     }
-
-    .line-list-head {
+    .line-list {
+        user-select: text;
+    }
+    .list-header {
         display: block;
     }
+    .list-title-mobile {
+        display: none;
+    }
+    .list-title-full {
+        display: block;
+    }
+
     .cp {
         background-color: tomato;
         text-align: center;

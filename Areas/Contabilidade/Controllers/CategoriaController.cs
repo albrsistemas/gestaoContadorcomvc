@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gestaoContadorcomvc.Areas.Contabilidade.Models;
+using gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel;
 using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
@@ -26,9 +28,28 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             conta = conta.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
             TempData["Cliente"] = conta.conta_nome;
 
+            //Vericiar se cliente possui contabilidade on line. Se poitivo buscar o plano do cliente
+            Config_contador_cliente config = new Config_contador_cliente();
+            vm_ConfigContadorCliente vm_config = new vm_ConfigContadorCliente();
+            vm_config = config.buscaCCC(user.usuario_id, conta.conta_id, user.usuario_conta_id);
+
+
             Categoria categoria = new Categoria();
             List<Vm_categoria> categorias = new List<Vm_categoria>();
-            categorias = categoria.listaCategorias(conta.conta_id, user.usuario_id);            
+
+            //Verificando o plano de contas
+            PlanoContas planoContas = new PlanoContas();
+            if(vm_config.ccc_planoContasVigente != null)
+            {
+                planoContas = planoContas.buscaPlanoContas(Convert.ToInt32(vm_config.ccc_planoContasVigente), user.usuario_conta_id, user.usuario_id);
+                TempData["planoCliente"] = planoContas.plano_nome;
+
+                categorias = categoria.listaCategorias(conta.conta_id, user.usuario_id, user.usuario_conta_id.ToString(), vm_config.ccc_planoContasVigente);
+            }
+            else
+            {
+                categorias = categoria.listaCategorias(conta.conta_id, user.usuario_id, null, null);
+            }
 
             return View(categorias);
         }

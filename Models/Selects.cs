@@ -15,26 +15,26 @@ namespace gestaoContadorcomvc.Models
         public string text { get; set; }
         public bool disabled { get; set; }
 
-        //Método para listar bancos
-        public List<Selects> getBancos()
-        {
-            List<Selects> selectBancos = new List<Selects>();
-            ContaPadrao contaPadrao = new ContaPadrao();
-            List<ContaPadrao> bancos = new List<ContaPadrao>();
+        ////Método para listar bancos
+        //public List<Selects> getBancos()
+        //{
+        //    List<Selects> selectBancos = new List<Selects>();
+        //    ContaPadrao contaPadrao = new ContaPadrao();
+        //    List<ContaPadrao> bancos = new List<ContaPadrao>();
 
-            bancos = contaPadrao.listaBancos();
+        //    bancos = contaPadrao.listaBancos();
 
-            foreach (var item in bancos)
-            {                
-                selectBancos.Add(new Selects
-                {
-                    value = item.contaPadrao_id.ToString(),
-                    text = (item.contaPadrao_descricao + " (" + item.contaPadrao_codigoBanco + ")")
-                });
-            }
+        //    foreach (var item in bancos)
+        //    {                
+        //        selectBancos.Add(new Selects
+        //        {
+        //            value = item.contaPadrao_id.ToString(),
+        //            text = (item.contaPadrao_descricao + " (" + item.contaPadrao_codigoBanco + ")")
+        //        });
+        //    }
 
-            return selectBancos;
-        }
+        //    return selectBancos;
+        //}
 
         //Grupos das contas padrão
         public List<Selects> getGrupoContas()

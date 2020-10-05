@@ -21,14 +21,14 @@ namespace gestaoContadorcomvc.Controllers
 
             List<Vm_ContaPadrao> contas = new List<Vm_ContaPadrao>();
 
-            if(pattern == null)
-            {
-                contas = cp.listContasPadrao("01");
-            }
-            else
-            {
-                contas = cp.listContasPadrao(pattern);
-            }
+            //if(pattern == null)
+            //{
+            //    contas = cp.listContasPadrao("01");
+            //}
+            //else
+            //{
+            //    contas = cp.listContasPadrao(pattern);
+            //}
 
             return View(contas);
         }

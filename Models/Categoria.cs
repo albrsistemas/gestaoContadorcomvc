@@ -23,7 +23,7 @@ namespace gestaoContadorcomvc.Models
         public string categoria_escopo { get; set; } //entrada ou saída de recursos
         public string categoria_status { get; set; } //Ativo ou Deletado
         public string categoria_conta_contabil { get; set; }
-        public string categoria_requer_provisao { get; set; }
+        public string categoria_requer_provisao { get; set; } //Campo criado, mas não está usado. Veriricar necesside e contexto.
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -45,7 +45,7 @@ namespace gestaoContadorcomvc.Models
         Log log = new Log();
 
         //Listar categorias cliente
-        public List<Vm_categoria> listaCategorias(int conta_id, int usuario_id)
+        public List<Vm_categoria> listaCategorias(int conta_id, int usuario_id, string contador_id, string plano_id)
         {
             List<Vm_categoria> categorias = new List<Vm_categoria>();
 
@@ -58,8 +58,11 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT * from categoria where categoria_conta_id = @conta_id and categoria.categoria_status = 'Ativo' order by categoria_classificacao";
+                //comando.CommandText = "SELECT * from categoria where categoria_conta_id = @conta_id and categoria.categoria_status = 'Ativo' order by categoria_classificacao";
+                comando.CommandText = "SELECT * from categoria LEFT JOIN categoria_contaonline on categoria.categoria_id = categoria_contaonline.cco_categoria_id and categoria_contaonline.cco_contador_conta_id = @contador_id and categoria_contaonline.cco_plano_id = @plano_id LEFT JOIN contacontabil on categoria_contaonline.cco_ccontabil_id = contacontabil.ccontabil_id where categoria_conta_id = @conta_id and categoria.categoria_status = 'Ativo' order by categoria_classificacao;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@contador_id", contador_id);
+                comando.Parameters.AddWithValue("@plano_id", plano_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -101,7 +104,8 @@ namespace gestaoContadorcomvc.Models
                         categoria.categoria_tipo = leitor["categoria_tipo"].ToString();
                         categoria.categoria_escopo = leitor["categoria_escopo"].ToString();
                         categoria.categoria_status = leitor["categoria_status"].ToString();
-                        categoria.categoria_requer_provisao = leitor["categoria_requer_provisao"].ToString();
+                        categoria.categoria_requer_provisao = leitor["categoria_requer_provisao"].ToString();                       
+                        categoria.categoria_contaonline = leitor["ccontabil_classificacao"].ToString();                       
 
                         categorias.Add(categoria);
                     }
@@ -505,6 +509,5 @@ namespace gestaoContadorcomvc.Models
 
             return retorno;
         }
-
     }
 }

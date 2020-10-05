@@ -30,8 +30,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string categoria_requer_provisao { get; set; }
 
         [Required(ErrorMessage = "A sequencia é obrigatória.")]
-        public string categoria_sequencia { get; set; }
-        public string categoria_mascaraContabil { get; set; }
-        public string categoria_contaonline { get; set; }
+        public string categoria_sequencia { get; set; }        
+        public string categoria_contaonline { get; set; }        
     }
 }

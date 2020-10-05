@@ -131,7 +131,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
                             ccc.ccc_pref_contabilizacao = false;
                         }
                     }
-                }
+                }                
             }
             catch (Exception e)
             {
