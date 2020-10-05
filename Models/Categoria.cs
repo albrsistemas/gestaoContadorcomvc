@@ -105,6 +105,7 @@ namespace gestaoContadorcomvc.Models
                         categoria.categoria_escopo = leitor["categoria_escopo"].ToString();
                         categoria.categoria_status = leitor["categoria_status"].ToString();
                         categoria.categoria_requer_provisao = leitor["categoria_requer_provisao"].ToString();                       
+                        categoria.categoria_conta_contabil = leitor["categoria_conta_contabil"].ToString();                       
                         categoria.categoria_contaonline = leitor["ccontabil_classificacao"].ToString();                       
 
                         categorias.Add(categoria);
@@ -248,7 +249,7 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Cadastrar categoria
-        public string cadastrarCategoria(string classificacao, string nome, string escopo, int conta_id, int usuario_id)
+        public string cadastrarCategoria(string classificacao, string nome, string escopo, int conta_id, int usuario_id, string categoria_conta_contabil)
         {
             string retorno = "Categoria cadastrada com sucesso!";
 
@@ -261,11 +262,12 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status) VALUES(@classificacao, @nome, 'Analítica' , @conta_id, @escopo, 'Ativo');";
+                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_conta_contabil) VALUES(@classificacao, @nome, 'Analítica' , @conta_id, @escopo, 'Ativo', @categoria_conta_contabil);";
                 comando.Parameters.AddWithValue("@classificacao", classificacao);
                 comando.Parameters.AddWithValue("@nome", nome);
                 comando.Parameters.AddWithValue("@escopo", escopo);
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@categoria_conta_contabil", categoria_conta_contabil);
                 comando.ExecuteNonQuery();
 
 
@@ -348,6 +350,7 @@ namespace gestaoContadorcomvc.Models
                         categoria.categoria_tipo = leitor["categoria_tipo"].ToString();
                         categoria.categoria_escopo = leitor["categoria_escopo"].ToString();
                         categoria.categoria_status = leitor["categoria_status"].ToString();
+                        categoria.categoria_conta_contabil = leitor["categoria_conta_contabil"].ToString();
                         categoria.categoria_requer_provisao = leitor["categoria_requer_provisao"].ToString();
                     }
                 }
@@ -368,7 +371,7 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Alterar nome categoria
-        public string alterarNomeCategoria(string nome, int id, int conta_id, int usuario_id)
+        public string alterarNomeCategoria(string nome, string categoria_conta_contabil, int id, int conta_id, int usuario_id)
         {
             string retorno = "Categoria alterada com sucesso!";
 
@@ -381,8 +384,9 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "UPDATE categoria set categoria.categoria_nome = @nome where categoria.categoria_id = @id;";                
+                comando.CommandText = "UPDATE categoria set categoria.categoria_nome = @nome, categoria_conta_contabil = @categoria_conta_contabil where categoria.categoria_id = @id;";                
                 comando.Parameters.AddWithValue("@nome", nome);                
+                comando.Parameters.AddWithValue("@categoria_conta_contabil", categoria_conta_contabil);                
                 comando.Parameters.AddWithValue("@id", id);
                 comando.ExecuteNonQuery();
 

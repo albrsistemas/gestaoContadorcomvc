@@ -24,22 +24,7 @@
     .line-list {
         border: 0px;
     }
-
-    .nivel_2 {
-        padding-left: 20px;
-    }
-
-    .nivel_3 {
-        padding-left: 25px;
-    }
-
-    .nivel_4 {
-        padding-left: 30px;
-    }
-
-    .nivel_5 {
-        padding-left: 35px;
-    }
+      
 </style>
 
 @{
@@ -104,26 +89,28 @@
                 </a>
             </div>
         </div>
-        </div>
+    </div>
     <hr class="hrLine" />
 
     //Cabeçalho
-    <div class="line-list">
-        <div class="col-list-left">
-            <input class="check-list-input" type="checkbox" id="cp_todas">
-            <label class="check-list-label" for="cp_todas"></label>
-        </div>
-        <div class="col-list-body">
-            <div class="row">
-                <div class="col-12 col-md-2"><strong>Classificação</strong></div>
-                <div class="col-12 col-md-7"><strong>Descrição</strong></div>
-                <div class="col-12 col-md-3"><strong>Apelido</strong></div>
+    <div class="list-header">
+        <div class="line-list">
+            <div class="col-list-left">
+                <input class="check-list-input" type="checkbox" id="cp_todas">
+                <label class="check-list-label" for="cp_todas"></label>
+            </div>
+            <div class="col-list-body">
+                <div class="row">
+                    <div class="col-12 col-md-2"><strong>Classificação</strong></div>
+                    <div class="col-12 col-md-7"><strong>Descrição</strong></div>
+                    <div class="col-12 col-md-3"><strong>Apelido</strong></div>
+                </div>
+            </div>
+            <div class="col-list-rigth" style="padding-right: 10px;">
+                <span><strong>Ações</strong></span>
             </div>
         </div>
-        <div class="col-list-rigth" style="padding-right: 10px;">
-            <span><strong>Ações</strong></span>
-        </div>
-    </div>
+    </div>    
 
     foreach (var item in Model)
     {

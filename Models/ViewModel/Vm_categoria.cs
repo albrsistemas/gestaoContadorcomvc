@@ -26,6 +26,8 @@ namespace gestaoContadorcomvc.Models.ViewModel
 
         [Display(Name = "Situação")]
         public string categoria_status { get; set; } //Ativo ou Deletado
+
+        [Display(Name = "Conta Contábil")]
         public string categoria_conta_contabil { get; set; }
         public string categoria_requer_provisao { get; set; }
 

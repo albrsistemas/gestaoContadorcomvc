@@ -27,10 +27,20 @@
                                     <label asp-for="categoria_nome" class="control-label"></label>
                                     <input asp-for="categoria_nome" class="form-control" />
                                     <span asp-validation-for="categoria_nome" class="text-danger"></span>
-                                </div>                           
+                                </div>
+                                @{ 
+                                    if (Model.categoria_tipo.Equals("Analítica"))
+                                    {
+                                        <div class="form-group">
+                                            <label asp-for="categoria_conta_contabil" class="control-label"></label>
+                                            <input asp-for="categoria_conta_contabil" class="form-control" />
+                                            <span asp-validation-for="categoria_conta_contabil" class="text-danger"></span>
+                                        </div>
+                                    }
+                                }                                
                                 <input type="hidden" asp-for="categoria_id" class="form-control" />
                             </div>
-                        </div>
+                        </div>                        
                     }
                 </div>
                 <div class="modal-footer">

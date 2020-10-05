@@ -34,19 +34,24 @@
                             </div>
                         </div>
                         <div class="row">
-                                <div class="col-12">                                    
-                                    <div class="form-group">
-                                        <label asp-for="categoria_classificacao" class="control-label"></label>
-                                        <input asp-for="categoria_classificacao" class="form-control" readonly="readonly" />
-                                        <span asp-validation-for="categoria_classificacao" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="categoria_nome" class="control-label"></label>
-                                        <input asp-for="categoria_nome" class="form-control" />
-                                        <span asp-validation-for="categoria_nome" class="text-danger"></span>
-                                    </div>
-                                    <input type="hidden" name="escopo" value='@(TempData["escopo"] != null ? @TempData["escopo"] : "")' />
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="categoria_classificacao" class="control-label"></label>
+                                    <input asp-for="categoria_classificacao" class="form-control" readonly="readonly" />
+                                    <span asp-validation-for="categoria_classificacao" class="text-danger"></span>
                                 </div>
+                                <div class="form-group">
+                                    <label asp-for="categoria_nome" class="control-label"></label>
+                                    <input asp-for="categoria_nome" class="form-control" />
+                                    <span asp-validation-for="categoria_nome" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="categoria_conta_contabil" class="control-label"></label>
+                                    <input asp-for="categoria_conta_contabil" class="form-control" />
+                                    <span asp-validation-for="categoria_conta_contabil" class="text-danger"></span>
+                                </div>
+                                <input type="hidden" name="escopo" value='@(TempData["escopo"] != null ? @TempData["escopo"] : "")' />
+                            </div>
                         </div>
                     }
                 </div>

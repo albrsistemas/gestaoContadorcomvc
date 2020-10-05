@@ -134,21 +134,29 @@
 
 @{
     <!--Cabeçalho-->
-    <div class="line-list line-list-head">
-        <div class="col-list-left">
-            <input class="check-list-input" type="checkbox" id="cp_todas">
-            <label class="check-list-label" for="cp_todas"></label>
-        </div>
-        <div class="col-list-body">
-            <div class="row">
-                <div class="col-12 col-md-2">
-                    <span><strong>Classificação</strong></span>
-                </div>
-                <div class="col-12 col-md-10">
-                    <span><strong>Nome</strong></span>
+    <div class="list-header">
+        <div class="line-list">
+            <div class="col-list-left">
+                <input class="check-list-input" type="checkbox" id="cp_todas">
+                <label class="check-list-label" for="cp_todas"></label>
+            </div>
+            <div class="col-list-body">
+                <div class="row">
+                    <div class="col-12 col-md-2">
+                        <span><strong>Classificação</strong></span>
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <span><strong>Nome</strong></span>
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <span><strong>Conta Contábil</strong></span>
+                    </div>
                 </div>
             </div>
-        </div>        
+            <div class="col-list-rigth" style="padding-right: 10px;">
+                <span><strong>Ações</strong></span>
+            </div>
+        </div>
     </div>
 
     foreach (var item in Model)
@@ -173,7 +181,7 @@
                     <div class="col-12 col-md-2">
                         <span>@item.categoria_classificacao</span>
                     </div>
-                    <div class="col-12 col-md-10">
+                    <div class="col-12 col-md-8">
                         @{
                             if (item.categoria_classificacao.Length == 1)
                             {
@@ -188,6 +196,9 @@
                                 <span>@item.categoria_nome</span>
                             }
                         }
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <span>@item.categoria_conta_contabil</span>
                     </div>
                 </div>
             </div>

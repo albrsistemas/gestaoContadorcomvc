@@ -98,7 +98,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Categoria categoria = new Categoria();
 
-                TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id);
+                TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id, collection["categoria_conta_contabil"]);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -139,7 +139,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Categoria categoria = new Categoria();
 
-                TempData["editCategoria"] = categoria.alterarNomeCategoria(collection["categoria_nome"], categoria_id, user.usuario_conta_id, user.usuario_id);
+                TempData["editCategoria"] = categoria.alterarNomeCategoria(collection["categoria_nome"], collection["categoria_conta_contabil"], categoria_id, user.usuario_conta_id, user.usuario_id);
 
                 return RedirectToAction(nameof(Index));
             }

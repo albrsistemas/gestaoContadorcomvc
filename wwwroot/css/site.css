@@ -166,10 +166,11 @@ body {
     float: left;
     display: flex;
     align-items: center;
-    border: 1px solid #808080;
+    /*border: 1px solid #808080;*/
     border-radius: 5px;
-    margin-bottom: 1px;
+    margin-bottom: 2px;
     user-select: none;
+    background-color: #faf0cf;
 }
 
     .line-list:hover {
@@ -300,8 +301,43 @@ body {
     .btn-tools a span{
         font-size: 15px;
     }
+/*Niveis das contas contábeis dos planos de contas do contador*/
+.nivel_2 {
+    padding-left: 15px;
+}
+
+.nivel_3 {
+    padding-left: 15px;
+}
+
+.nivel_4 {
+    padding-left: 15px;
+}
+
+.nivel_5 {
+    padding-left: 15px;
+}
+/*Fim*/
 /*Fim estilo LineList*/
 @media (min-width: 768px) {
+    /*Niveis das contas contábeis dos planos de contas do contador*/
+    .nivel_2 {
+        padding-left: 20px;
+    }
+
+    .nivel_3 {
+        padding-left: 25px;
+    }
+
+    .nivel_4 {
+        padding-left: 30px;
+    }
+
+    .nivel_5 {
+        padding-left: 35px;
+    }
+    /*Fim*/
+
     .alert {
         position: fixed;
         top: 100px;
@@ -312,6 +348,7 @@ body {
     }
     .line-list {
         user-select: text;
+        background-color: white;
     }
     .list-header {
         display: block;
