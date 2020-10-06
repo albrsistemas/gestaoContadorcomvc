@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gestaoContadorcomvc.Areas.Contabilidade.Models;
 using gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel;
 using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
+using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +29,15 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         // GET: CCOController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Conta contexto = new Conta();
+            contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+
+            Categoria_contaonline cco = new Categoria_contaonline();
+            vm_categoria_contaonline vm_cco = new vm_categoria_contaonline();
+            vm_cco = cco.buscarVinculo(contexto.conta_id, user.usuario_id, id);                
+
+            return View(vm_cco);
         }
 
         // GET: CCOController/Create
@@ -54,55 +64,55 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Conta contexto = new Conta();
+            contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (!ModelState.IsValid)
+                {
+                    TempData["retornoCCO"] = "Erro! Há informações incorretas no formulário de vinculação de conta on line!";
+
+                    return RedirectToAction("Index", "Categoria", new { area = "Contabilidade" });
+                }
+
+                Categoria_contaonline cco = new Categoria_contaonline();
+
+                TempData["retornoCCO"] = cco.vinculacaoCCO(user.usuario_id, contexto.conta_id, user.usuario_conta_id, collection["cco_plano_id"], collection["cco_ccontabil_id"], collection["cco_categoria_id"]);
+
+                return RedirectToAction("Index", "Categoria", new { area = "Contabilidade" });
             }
             catch
             {
-                return View();
-            }
-        }
+                TempData["retornoCCO"] = "Erro! Houve uma falha na vinculação da conta on line. Tente novamente. Se persistir entre em contato com o suporte!";
 
-        // GET: CCOController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: CCOController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Categoria", new { area = "Contabilidade" });
             }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: CCOController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+        }       
 
         // POST: CCOController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int cco_id, string cco_plano_id, string cco_categoria_id, string cco_ccontabil_id)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+                Conta contexto = new Conta();
+                contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+
+                Categoria_contaonline cco = new Categoria_contaonline();
+
+                TempData["retornoCCO"] = cco.desvinculacaoCCO(user.usuario_id,contexto.conta_id,user.usuario_conta_id, cco_id, cco_plano_id, cco_ccontabil_id, cco_categoria_id);
+
+                return RedirectToAction("Index", "Categoria", new { area = "Contabilidade" });
             }
             catch
             {
-                return View();
+                TempData["retornoCCO"] = "Erro! Houve uma falha na desvinculação da conta on line. Tente novamente. Se persistir entre em contato com o suporte!";
+
+                return RedirectToAction("Index", "Categoria", new { area = "Contabilidade" });
             }
         }
     }

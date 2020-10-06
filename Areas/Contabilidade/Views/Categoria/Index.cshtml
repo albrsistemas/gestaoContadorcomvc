@@ -115,6 +115,26 @@
         </div>
     }
 
+    if (TempData["retornoCCO"] != null && TempData["retornoCCO"].ToString().Contains("sucesso"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Sucesso!</strong> @TempData["retornoCCO"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    if (TempData["retornoCCO"] != null && TempData["retornoCCO"].ToString().Contains("Erro"))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Erro!</strong> @TempData["retornoCCO"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
 }
 <h2>Categorias</h2>
 @{
@@ -130,7 +150,7 @@
     }
     else
     {
-<h6>Plano de Contas: cliente não possui um plano de contas configurado!</h6>
+        <h6>Plano de Contas: cliente não possui um plano de contas configurado!</h6>
     }
 }
 <div class="btn-tools">
@@ -178,8 +198,8 @@
             </div>
         </div>
 
-                                    foreach (var item in Model)
-                                    {
+        foreach (var item in Model)
+        {
             <div class="line-list">
                 <div class="col-list-left">
                     <input class="check-list-input" type="checkbox" id="cp_todas">
@@ -188,21 +208,21 @@
                 <div class="col-list-body">
                     <div class="row">
                         <div class="col-12 col-md-2">
-                            <span>@item.categoria_classificacao</span>                            
+                            <span>@item.categoria_classificacao</span>
                         </div>
                         <div class="col-12 col-md-6">
                             @{
                                 if (item.categoria_classificacao.Length == 1)
                                 {
-                                    <span><strong>@item.categoria_nome.ToUpper()</strong></span>                                    
+                                    <span><strong>@item.categoria_nome.ToUpper()</strong></span>
                                 }
                                 if (item.categoria_classificacao.Length == 3)
                                 {
-                                    <span><strong>@item.categoria_nome</strong></span>                                    
+                                    <span><strong>@item.categoria_nome</strong></span>
                                 }
                                 if (item.categoria_classificacao.Length > 3)
                                 {
-                                    <span>@item.categoria_nome</span>                                    
+                                    <span>@item.categoria_nome</span>
                                 }
                             }
                         </div>
@@ -210,7 +230,7 @@
                             @{
                                 if (item.categoria_classificacao.Length > 3)
                                 {
-                                    <span>@item.categoria_conta_contabil</span>                                    
+                                    <span>@item.categoria_conta_contabil</span>
                                 }
                             }
                         </div>
@@ -229,9 +249,9 @@
                                     }
                                     else
                                     {
-                                        <a class="editCategoria_contaonline" data-plano_id="@TempData["planoCliente_id"].ToString()" data-ccontabil_id="@item.categoria_id">
+                                        <a class="DetailsCCO" data-id="@item.categoria_contaonline_id">
                                             <span>@item.categoria_contaonline</span>
-                                        </a>                                        
+                                        </a>
                                     }
                                 }
                             }

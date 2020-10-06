@@ -282,6 +282,14 @@ $(".createCategoria_contaonline").click(function () {
     })
 });
 
+$(".DetailsCCO").click(function () {
+    var id = $(this).attr("data-id");
+    $("#modal").load("/Contabilidade/CCO/Details?id=" + id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+
 
 
 

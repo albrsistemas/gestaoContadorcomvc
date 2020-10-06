@@ -107,6 +107,7 @@ namespace gestaoContadorcomvc.Models
                         categoria.categoria_requer_provisao = leitor["categoria_requer_provisao"].ToString();                       
                         categoria.categoria_conta_contabil = leitor["categoria_conta_contabil"].ToString();                       
                         categoria.categoria_contaonline = leitor["ccontabil_classificacao"].ToString();                       
+                        categoria.categoria_contaonline_id = leitor["cco_id"].ToString();                       
 
                         categorias.Add(categoria);
                     }

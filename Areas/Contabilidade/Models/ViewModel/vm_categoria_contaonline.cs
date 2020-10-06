@@ -18,5 +18,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel
         public int cco_ccontabil_id { get; set; }
         public int cco_categoria_id { get; set; }
         public string categoria_nome { get; set; }
+        public string cco_cliente_nome { get; set; }        
+        public string cco_plano_nome { get; set; }
+        public string cco_ccontabil_nome { get; set; }
+        public string cco_ccontabil_classificacao { get; set; }
     }
 }

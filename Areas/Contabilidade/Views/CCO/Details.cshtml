@@ -1,0 +1,80 @@
+﻿
+@model gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel.vm_categoria_contaonline
+@{
+    Layout = null;
+}
+<style>
+    #SelectClient + .select2-container .select2-selection--single {
+        box-sizing: border-box;
+        cursor: pointer;
+        display: block;
+        height: 38px;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+        #SelectClient + .select2-container .select2-selection--single:focus {
+            color: #495057;
+            background-color: #fff;
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+    /* line 131 */
+    #SelectClient + .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #444;
+        line-height: 38px;
+    }
+
+    /* line 139 */
+    #SelectClient + .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 38px;
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        width: 20px;
+    }
+</style>
+
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Conta on Line</h4>
+            </div>
+            <form asp-area="Contabilidade" asp-controller="CCO" asp-action="Delete">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p>Categoria <strong>@Model.categoria_nome</strong> vinculada a conta on line detalhada abaixo:</p>
+                        </div>
+                    </div>
+                    <hr class="hrLine" />
+                    <div class="row">
+                        <div class="col-12">
+                            <p><strong>Plano de Contas: </strong>@Model.cco_plano_nome</p>
+                        </div>
+                        <div class="col-12">
+                            <p><strong>Conta on line: </strong>@Model.cco_ccontabil_nome</p>
+                        </div>
+                        <div class="col-12">
+                            <p><strong>Classificação: </strong>@Model.cco_ccontabil_classificacao</p>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" asp-for="cco_id" />
+                <input type="hidden" asp-for="cco_plano_id" />
+                <input type="hidden" asp-for="cco_ccontabil_id" />
+                <input type="hidden" asp-for="cco_categoria_id" />
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>                                        
+                    <button type="submit" class="btn btn-danger">Excluir Vínculo</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->    
+</div>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

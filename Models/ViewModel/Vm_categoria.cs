@@ -33,6 +33,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
 
         [Required(ErrorMessage = "A sequencia é obrigatória.")]
         public string categoria_sequencia { get; set; }        
-        public string categoria_contaonline { get; set; }        
+        public string categoria_contaonline { get; set; } //Classificação da conta on line        
+        public string categoria_contaonline_id { get; set; } //ID da conta on line        
     }
 }
