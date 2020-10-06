@@ -272,6 +272,16 @@ function contabilizacao(vlr) {
     }
 }
 
+//Vinculo conta on line categorias cliente visão contador
+$(".createCategoria_contaonline").click(function () {
+    var categoria_id = $(this).attr("data-categoria_id");
+    var plano_id = $(this).attr("data-plano_id");
+    console.log(plano_id);
+    $("#modal").load("/Contabilidade/CCO/Create?categoria_id=" + categoria_id + "&plano_id=" + plano_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
 
 
 

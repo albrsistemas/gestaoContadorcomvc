@@ -17,6 +17,9 @@ namespace gestaoContadorcomvc.Controllers.SoftwareHouse
             ViewData["bread"] = "Log";
 
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Conta conta = new Conta();
+            conta = conta.buscarConta(user.usuario_conta_id);
+            TempData["conta_tipo"] = conta.conta_tipo;
 
             Log log = new Log();
 

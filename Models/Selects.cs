@@ -180,6 +180,63 @@ namespace gestaoContadorcomvc.Models
             return empresas;
         }
 
+        //Contas contábeis do plano especificado
+        public List<Selects> getPlanoContas(int plano_id)
+        {
+            List<Selects> planoContas = new List<Selects>();           
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from contacontabil WHERE contacontabil.ccontabil_plano_id = @plano_id and contacontabil.ccontabil_status = 'Ativo'";
+                comando.Parameters.AddWithValue("@plano_id", plano_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    var nivelconta = "";
+                    while (leitor.Read())
+                    {
+                        Selects conta = new Selects();
+                        conta.text = leitor["ccontabil_classificacao"].ToString() + "  " + leitor["ccontabil_nome"].ToString();
+                        conta.value = leitor["ccontabil_id"].ToString();
+                        nivelconta = leitor["ccontabil_nivel"].ToString();
+                        if (nivelconta.Equals("5"))
+                        {
+                            conta.disabled = false;
+                        }
+                        else
+                        {
+                            conta.disabled = true;
+                        }
+
+                        planoContas.Add(conta);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return planoContas;
+        }
+
 
 
     }

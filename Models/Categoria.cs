@@ -491,7 +491,7 @@ namespace gestaoContadorcomvc.Models
                 Transacao.Commit();
 
                 string msg = "Exclusão da categoria nome: " + nome + " Excluida com sucesso";
-                log.log("Categoria", "alterarNomeCategoria", "Sucesso", msg, conta_id, usuario_id);
+                log.log("Categoria", "deletarCategoria", "Sucesso", msg, conta_id, usuario_id);
             }
             catch (Exception e)
             {
