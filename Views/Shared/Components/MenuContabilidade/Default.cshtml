@@ -19,7 +19,7 @@
                                 @if (usuario.Role == "adm" || usuario.permissoes.Contains("planoContasList"))
                                 {<a class='dropdown-item' asp-area="Contabilidade" asp-controller='PlanoContas' asp-action='Index'>Plano de Contas</a>}                                
                                 @if (usuario.Role == "adm" || usuario.permissoes.Contains("planoCategContabList"))
-                                {<a class="dropdown-item" asp-controller='Categoria' asp-action='Index'>Plano de Categorias</a>}
+                                {<a class="dropdown-item" asp-area="Contabilidade" asp-controller='PlanoCategorias' asp-action='Index'>Plano de Categorias</a>}
                             </div>
                         </li>
                     }

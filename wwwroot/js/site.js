@@ -289,6 +289,13 @@ $(".DetailsCCO").click(function () {
     })
 });
 
+$(".SelectPlano").click(function () {
+    var pc_id = $(this).attr("data-pc_id");
+    $("#modal").load("/Contabilidade/CategoriasPlano/SelectPlano?pc_id=" + pc_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
 
 
 

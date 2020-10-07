@@ -45,7 +45,7 @@ namespace gestaoContadorcomvc.Models
         Log log = new Log();
 
         //Listar categorias cliente
-        public List<Vm_categoria> listaCategorias(int conta_id, int usuario_id, string contador_id, string plano_id)
+        public List<Vm_categoria> listaCategorias(int conta_id, int usuario_id, string contador_id, string plano_id, string dePlanoCategorias)
         {
             List<Vm_categoria> categorias = new List<Vm_categoria>();
 
@@ -59,10 +59,11 @@ namespace gestaoContadorcomvc.Models
             try
             {
                 //comando.CommandText = "SELECT * from categoria where categoria_conta_id = @conta_id and categoria.categoria_status = 'Ativo' order by categoria_classificacao";
-                comando.CommandText = "SELECT * from categoria LEFT JOIN categoria_contaonline on categoria.categoria_id = categoria_contaonline.cco_categoria_id and categoria_contaonline.cco_contador_conta_id = @contador_id and categoria_contaonline.cco_plano_id = @plano_id LEFT JOIN contacontabil on categoria_contaonline.cco_ccontabil_id = contacontabil.ccontabil_id where categoria_conta_id = @conta_id and categoria.categoria_status = 'Ativo' order by categoria_classificacao;";
+                comando.CommandText = "SELECT * from categoria LEFT JOIN categoria_contaonline on categoria.categoria_id = categoria_contaonline.cco_categoria_id and categoria_contaonline.cco_contador_conta_id = @contador_id and categoria_contaonline.cco_plano_id = @plano_id LEFT JOIN contacontabil on categoria_contaonline.cco_ccontabil_id = contacontabil.ccontabil_id where categoria_conta_id = @conta_id and categoria.categoria_status = 'Ativo' and categoria_dePlano = @dePlano order by categoria_classificacao;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@contador_id", contador_id);
                 comando.Parameters.AddWithValue("@plano_id", plano_id);
+                comando.Parameters.AddWithValue("@dePlano", dePlanoCategorias);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -130,7 +131,7 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Cadastrar categoria
-        public string startCategoria(int conta_id, int usuario_id)
+        public string startCategoria(int conta_id, int usuario_id, string categoria_dePlano)
         {
             string retorno = "Categoria cadastrada com sucesso!";
 
@@ -143,11 +144,13 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status) VALUES('1', 'ENTRADA DE RECURSOS', 'Sintetica' , @conta_id_comand1, 'Entrada', 'Ativo');";
+                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_dePlano) VALUES('1', 'ENTRADA DE RECURSOS', 'Sintetica' , @conta_id_comand1, 'Entrada', 'Ativo', @categoria_dePlanoE);";
                 comando.Parameters.AddWithValue("@conta_id_comand1", conta_id);
+                comando.Parameters.AddWithValue("@categoria_dePlanoE", categoria_dePlano);
                 comando.ExecuteNonQuery();
-                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status) VALUES('2', 'SAIDA DE RECURSOS', 'Sintetica' , @conta_id, 'Saida', 'Ativo');";
+                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_dePlano) VALUES('2', 'SAIDA DE RECURSOS', 'Sintetica' , @conta_id, 'Saida', 'Ativo', @categoria_dePlanoS);";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@categoria_dePlanoS", conta_id);
                 comando.ExecuteNonQuery();
 
                 Transacao.Commit();

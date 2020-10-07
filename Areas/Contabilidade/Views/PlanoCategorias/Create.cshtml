@@ -1,4 +1,4 @@
-﻿@model gestaoContadorcomvc.Areas.Contabilidade.Models.PlanoContas
+﻿@model gestaoContadorcomvc.Areas.Contabilidade.Models.PlanoCategorias
 @{
     Layout = null;
 }
@@ -6,17 +6,17 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Novo plano de contas</h4>
+                <h4 class="modal-title">Novo plano de categorias</h4>
             </div>
-            <form asp-area="Contabilidade" asp-controller="PlanoContas" asp-action="Create">
+            <form asp-area="Contabilidade" asp-controller="PlanoCategorias" asp-action="Create">
                 <div class="modal-body">                  
                     @{                        
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label asp-for="plano_nome" class="control-label"></label>
-                                    <input asp-for="plano_nome" class="form-control"/>
-                                    <span asp-validation-for="plano_nome" class="text-danger"></span>
+                                    <label asp-for="pc_nome" class="control-label"></label>
+                                    <input asp-for="pc_nome" class="form-control"/>
+                                    <span asp-validation-for="pc_nome" class="text-danger"></span>
                                 </div>                                
                             </div>
                         </div>

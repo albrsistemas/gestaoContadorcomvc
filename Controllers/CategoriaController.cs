@@ -23,11 +23,11 @@ namespace gestaoContadorcomvc.Controllers
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
             Categoria categoria = new Categoria();
             List<Vm_categoria> categorias = new List<Vm_categoria>();
-            categorias = categoria.listaCategorias(user.usuario_conta_id, user.usuario_id, null, null);
+            categorias = categoria.listaCategorias(user.usuario_conta_id, user.usuario_id, null, null,"Não");
 
             if(categorias.Count == 0)
             {
-                categoria.startCategoria(user.usuario_conta_id, user.usuario_id);
+                categoria.startCategoria(user.usuario_conta_id, user.usuario_id, null);
 
                 return RedirectToAction(nameof(Index));
             }

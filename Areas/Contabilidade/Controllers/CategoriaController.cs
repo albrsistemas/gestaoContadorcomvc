@@ -45,11 +45,18 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                 TempData["planoCliente"] = planoContas.plano_nome;
                 TempData["planoCliente_id"] = planoContas.plano_id;
 
-                categorias = categoria.listaCategorias(conta.conta_id, user.usuario_id, user.usuario_conta_id.ToString(), vm_config.ccc_planoContasVigente);
+                categorias = categoria.listaCategorias(conta.conta_id, user.usuario_id, user.usuario_conta_id.ToString(), vm_config.ccc_planoContasVigente,"Não");
             }
             else
             {
-                categorias = categoria.listaCategorias(conta.conta_id, user.usuario_id, null, null);
+                categorias = categoria.listaCategorias(conta.conta_id, user.usuario_id, null, null,"Não");
+            }
+
+            if (categorias.Count == 0)
+            {
+                categoria.startCategoria(user.usuario_conta_id, user.usuario_id, null);
+
+                return RedirectToAction(nameof(Index));
             }
 
             return View(categorias);
