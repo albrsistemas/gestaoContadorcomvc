@@ -29,7 +29,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             TempData["pc_id"] = pc_id;
 
             Selects select = new Selects();
-            ViewBag.planosContegoriasContador = select.getPlanosCategoriaContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.planosContasContador = select.getPlanosContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
 
             return View(planoContas.listaPlanoContas(user.usuario_conta_id, user.usuario_id));
         }

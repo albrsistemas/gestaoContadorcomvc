@@ -536,15 +536,10 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_conta_contabil, categoria_copia) SELECT categoria_classificacao, categoria_nome, categoria_tipo, @cliente_id, categoria_escopo, categoria_status, categoria_conta_contabil, categoria_id from categoria where categoria.categoria_conta_id = @contador_id and categoria.categoria_dePlano = '@pc_id' AND categoria.categoria_classificacao <> '1' and categoria.categoria_classificacao <> '2';";                
+                comando.CommandText = "CALL pr_copiarPlanoCategorias(@contador_id, @cliente_id, @pc_id);";                
                 comando.Parameters.AddWithValue("@cliente_id", cliente_id);
                 comando.Parameters.AddWithValue("@contador_id", conta_id);
                 comando.Parameters.AddWithValue("@pc_id", pc_id);
-                comando.ExecuteNonQuery();
-
-                comando.CommandText = "insert into categoria_contaonline (cco_cliente_conta_id, cco_contador_conta_id, cco_plano_id, cco_ccontabil_id, cco_categoria_id) SELECT categoria.categoria_conta_id, cco.cco_contador_conta_id, cco.cco_plano_id, cco.cco_ccontabil_id, categoria.categoria_id from categoria_contaonline as cco left join categoria on categoria.categoria_copia = cco.cco_categoria_id where categoria.categoria_conta_id = @cliente_id_2 and cco.cco_contador_conta_id = @contador_id_2;";
-                comando.Parameters.AddWithValue("@cliente_id_2", cliente_id);
-                comando.Parameters.AddWithValue("@contador_id_2", conta_id);
                 comando.ExecuteNonQuery();
 
                 Transacao.Commit();
