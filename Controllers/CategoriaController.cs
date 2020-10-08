@@ -25,12 +25,12 @@ namespace gestaoContadorcomvc.Controllers
             List<Vm_categoria> categorias = new List<Vm_categoria>();
             categorias = categoria.listaCategorias(user.usuario_conta_id, user.usuario_id, null, null,"Não");
 
-            if(categorias.Count == 0)
-            {
-                categoria.startCategoria(user.usuario_conta_id, user.usuario_id, null);
+            //if(categorias.Count == 0)
+            //{
+            //    categoria.startCategoria(user.usuario_conta_id, user.usuario_id, "Não");
 
-                return RedirectToAction(nameof(Index));
-            }
+            //    return RedirectToAction(nameof(Index));
+            //}
 
             return View(categorias);
         }

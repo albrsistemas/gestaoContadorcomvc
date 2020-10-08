@@ -34,7 +34,8 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
                     collection["usuario_dcto"],
                     collection["usuario_user"],
                     collection["usuario_senha"],
-                    collection["conta_email"]);
+                    collection["conta_email"],
+                    collection["conta_nome"]);
                 
                 return RedirectToAction(nameof(Login));
             }

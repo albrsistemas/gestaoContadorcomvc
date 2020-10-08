@@ -20,6 +20,9 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         [Remote("dctoExiste", "Conta", ErrorMessage = "Já existe uma conta com este cnpj ou cpf")]
         public string conta_dcto { get; set; }
 
+        [Required(ErrorMessage = "O nome da conta é obrigatório")]
+        public string conta_nome { get; set; }
+
         [Required(ErrorMessage = "O e-mail é obrigatório.")]
         [DataType(DataType.EmailAddress, ErrorMessage = "Email inválido")]
         [Remote("emailExiste", "Conta", ErrorMessage = "E-mail já cadastrado")]
@@ -68,31 +71,32 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         //objeto de log para uso nos métodos
         Log log = new Log();
 
-        public void registro(string conta_dcto, string conta_tipo, string usuario_nome, string usuario_dcto, string usuario_user, string usuario_senha, string conta_email)
+        public void registro(string conta_dcto, string conta_tipo, string usuario_nome, string usuario_dcto, string usuario_user, string usuario_senha, string conta_email, string conta_nome)
         {
             conn.Open();
-            MySqlCommand myCommand = conn.CreateCommand();
-            MySqlTransaction myTrans;
-            myTrans = conn.BeginTransaction();
-            myCommand.Connection = conn;
-            myCommand.Transaction = myTrans;
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction transacao;
+            transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = transacao;
 
             try
             {
-                myCommand.CommandText = "CALL registrarConta(@conta_dcto,@conta_tipo,@usuario_nome, @usuario_dcto,@usuario_user,@usuario_senha, @conta_email, @conta_email);";
-                myCommand.Parameters.AddWithValue("@conta_dcto", conta_dcto);
-                myCommand.Parameters.AddWithValue("@conta_tipo", conta_tipo);
-                myCommand.Parameters.AddWithValue("@conta_email", conta_email);
-                myCommand.Parameters.AddWithValue("@usuario_nome", usuario_nome);
-                myCommand.Parameters.AddWithValue("@usuario_dcto", usuario_dcto);
-                myCommand.Parameters.AddWithValue("@usuario_user", usuario_user);
-                myCommand.Parameters.AddWithValue("@usuario_senha", usuario_senha);
-                myCommand.ExecuteNonQuery();
-                myTrans.Commit();
+                comando.CommandText = "CALL registrarConta(@conta_dcto,@conta_tipo,@usuario_nome, @usuario_dcto,@usuario_user,@usuario_senha, @conta_email, @conta_email, @conta_nome);";                                
+                comando.Parameters.AddWithValue("@conta_dcto", conta_dcto);
+                comando.Parameters.AddWithValue("@conta_tipo", conta_tipo);
+                comando.Parameters.AddWithValue("@conta_email", conta_email);
+                comando.Parameters.AddWithValue("@conta_nome", conta_nome);
+                comando.Parameters.AddWithValue("@usuario_nome", usuario_nome);
+                comando.Parameters.AddWithValue("@usuario_dcto", usuario_dcto);
+                comando.Parameters.AddWithValue("@usuario_user", usuario_user);
+                comando.Parameters.AddWithValue("@usuario_senha", usuario_senha);
+                comando.ExecuteNonQuery();
+                transacao.Commit();
             }
             catch (Exception e)
             {
-                myTrans.Rollback();
+                transacao.Rollback();
                 log.log("Registro", "registro", "Erro", e.ToString().Substring(0, 300), 0, 0);
             }
             finally

@@ -130,52 +130,52 @@ namespace gestaoContadorcomvc.Models
             return categorias;
         }
 
-        //Cadastrar categoria
-        public string startCategoria(int conta_id, int usuario_id, string categoria_dePlano)
-        {
-            string retorno = "Categoria cadastrada com sucesso!";
+        ////Cadastrar categoria
+        //public string startCategoria(int conta_id, int usuario_id, string categoria_dePlano)
+        //{
+        //    string retorno = "Categoria cadastrada com sucesso!";
 
-            conn.Open();
-            MySqlCommand comando = conn.CreateCommand();
-            MySqlTransaction Transacao;
-            Transacao = conn.BeginTransaction();
-            comando.Connection = conn;
-            comando.Transaction = Transacao;
+        //    conn.Open();
+        //    MySqlCommand comando = conn.CreateCommand();
+        //    MySqlTransaction Transacao;
+        //    Transacao = conn.BeginTransaction();
+        //    comando.Connection = conn;
+        //    comando.Transaction = Transacao;
 
-            try
-            {
-                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_dePlano) VALUES('1', 'ENTRADA DE RECURSOS', 'Sintetica' , @conta_id_comand1, 'Entrada', 'Ativo', @categoria_dePlanoE);";
-                comando.Parameters.AddWithValue("@conta_id_comand1", conta_id);
-                comando.Parameters.AddWithValue("@categoria_dePlanoE", categoria_dePlano);
-                comando.ExecuteNonQuery();
-                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_dePlano) VALUES('2', 'SAIDA DE RECURSOS', 'Sintetica' , @conta_id, 'Saida', 'Ativo', @categoria_dePlanoS);";
-                comando.Parameters.AddWithValue("@conta_id", conta_id);
-                comando.Parameters.AddWithValue("@categoria_dePlanoS", conta_id);
-                comando.ExecuteNonQuery();
+        //    try
+        //    {
+        //        comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_dePlano) VALUES('1', 'ENTRADA DE RECURSOS', 'Sintetica' , @conta_id_comand1, 'Entrada', 'Ativo', @categoria_dePlanoE);";
+        //        comando.Parameters.AddWithValue("@conta_id_comand1", conta_id);
+        //        comando.Parameters.AddWithValue("@categoria_dePlanoE", categoria_dePlano);
+        //        comando.ExecuteNonQuery();
+        //        comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_dePlano) VALUES('2', 'SAIDA DE RECURSOS', 'Sintetica' , @conta_id, 'Saida', 'Ativo', @categoria_dePlanoS);";
+        //        comando.Parameters.AddWithValue("@conta_id", conta_id);
+        //        comando.Parameters.AddWithValue("@categoria_dePlanoS", categoria_dePlano);
+        //        comando.ExecuteNonQuery();
 
-                Transacao.Commit();
+        //        Transacao.Commit();
 
-                string msg = "Start de categorias do cliente ID: " + conta_id + " Cadastrado com sucesso";
-                log.log("Categoria", "startCategoria", "Sucesso", msg, conta_id, usuario_id);
-            }
-            catch (Exception e)
-            {
-                string msg = "Start de categorias do cliente ID: " + conta_id + " fracassou > " + e.Message.ToString().Substring(0, 300);
+        //        string msg = "Start de categorias do cliente ID: " + conta_id + " Cadastrado com sucesso";
+        //        log.log("Categoria", "startCategoria", "Sucesso", msg, conta_id, usuario_id);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        string msg = "Start de categorias do cliente ID: " + conta_id + " fracassou > " + e.Message.ToString().Substring(0, 300);
 
-                log.log("Categoria", "startCategoria", "Erro", msg, conta_id, usuario_id);
+        //        log.log("Categoria", "startCategoria", "Erro", msg, conta_id, usuario_id);
 
-                Transacao.Rollback();
-            }
-            finally
-            {
-                if (conn.State == System.Data.ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-            }
+        //        Transacao.Rollback();
+        //    }
+        //    finally
+        //    {
+        //        if (conn.State == System.Data.ConnectionState.Open)
+        //        {
+        //            conn.Close();
+        //        }
+        //    }
 
-            return retorno;
-        }
+        //    return retorno;
+        //}
 
         //Verificar se classificação da categoria existe
         public bool classificacaoExiste(string valor, int conta_id)
