@@ -207,7 +207,7 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Cadastrar grupo categoria
-        public string cadastrarCategoriaGrupo(string classificacao, string nome, string escopo, int conta_id, int usuario_id)
+        public string cadastrarCategoriaGrupo(string classificacao, string nome, string escopo, int conta_id, int usuario_id, string categoria_dePlano, string categoria_copia)
         {
             string retorno = "Grupo cadastrado com sucesso!";
 
@@ -220,11 +220,13 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status) VALUES(@classificacao, @nome, 'Sintetica' , @conta_id, @escopo, 'Ativo');";
+                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_dePlano, categoria_copia) VALUES(@classificacao, @nome, 'Sintetica' , @conta_id, @escopo, 'Ativo' , @categoria_dePlano, @categoria_copia);";
                 comando.Parameters.AddWithValue("@classificacao", classificacao);
                 comando.Parameters.AddWithValue("@nome", nome);
                 comando.Parameters.AddWithValue("@escopo", escopo);
-                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@conta_id", conta_id);                
+                comando.Parameters.AddWithValue("@categoria_dePlano", categoria_dePlano);
+                comando.Parameters.AddWithValue("@categoria_copia", categoria_copia);
                 comando.ExecuteNonQuery();               
                 
 
@@ -253,7 +255,7 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Cadastrar categoria
-        public string cadastrarCategoria(string classificacao, string nome, string escopo, int conta_id, int usuario_id, string categoria_conta_contabil)
+        public string cadastrarCategoria(string classificacao, string nome, string escopo, int conta_id, int usuario_id, string categoria_conta_contabil, string categoria_dePlano, string categoria_copia)
         {
             string retorno = "Categoria cadastrada com sucesso!";
 
@@ -266,12 +268,14 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_conta_contabil) VALUES(@classificacao, @nome, 'Analítica' , @conta_id, @escopo, 'Ativo', @categoria_conta_contabil);";
+                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_conta_contabil, categoria_dePlano, categoria_copia) VALUES(@classificacao, @nome, 'Analítica' , @conta_id, @escopo, 'Ativo', @categoria_conta_contabil, @categoria_dePlano, @categoria_copia);";
                 comando.Parameters.AddWithValue("@classificacao", classificacao);
                 comando.Parameters.AddWithValue("@nome", nome);
                 comando.Parameters.AddWithValue("@escopo", escopo);
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@categoria_conta_contabil", categoria_conta_contabil);
+                comando.Parameters.AddWithValue("@categoria_dePlano", categoria_dePlano);
+                comando.Parameters.AddWithValue("@categoria_copia", categoria_copia);
                 comando.ExecuteNonQuery();
 
 

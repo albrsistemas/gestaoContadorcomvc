@@ -121,10 +121,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
 
             try
             {
-                comando.CommandText = "insert into planocategorias (pc_nome, pc_conta_id) values (@plano_nome, @conta_id)";
+                //comando.CommandText = "insert into planocategorias (pc_nome, pc_conta_id) values (@plano_nome, @conta_id)";
+                comando.CommandText = "CALL pr_planoCategorias(@plano_nome, @conta_id);";
                 comando.Parameters.AddWithValue("@plano_nome", plano_nome);
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
-                comando.ExecuteNonQuery();
+                comando.ExecuteNonQuery();                
                 Transacao.Commit();
 
                 string msg = "Plano de categorias de nome: " + plano_nome + " cadastrado com sucesso";

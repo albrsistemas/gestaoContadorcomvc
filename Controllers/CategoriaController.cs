@@ -23,14 +23,7 @@ namespace gestaoContadorcomvc.Controllers
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
             Categoria categoria = new Categoria();
             List<Vm_categoria> categorias = new List<Vm_categoria>();
-            categorias = categoria.listaCategorias(user.usuario_conta_id, user.usuario_id, null, null,"Não");
-
-            //if(categorias.Count == 0)
-            //{
-            //    categoria.startCategoria(user.usuario_conta_id, user.usuario_id, "Não");
-
-            //    return RedirectToAction(nameof(Index));
-            //}
+            categorias = categoria.listaCategorias(user.usuario_conta_id, user.usuario_id, null, null,"Não");            
 
             return View(categorias);
         }
@@ -59,7 +52,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Categoria categoria = new Categoria();
 
-                TempData["createGrupo"] = categoria.cadastrarCategoriaGrupo(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id);
+                TempData["createGrupo"] = categoria.cadastrarCategoriaGrupo(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id, "Não", "0");
 
                 return RedirectToAction(nameof(Index));
             }
@@ -98,7 +91,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Categoria categoria = new Categoria();
 
-                TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id, collection["categoria_conta_contabil"]);
+                TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id, collection["categoria_conta_contabil"], "Não", "0");
 
                 return RedirectToAction(nameof(Index));
             }

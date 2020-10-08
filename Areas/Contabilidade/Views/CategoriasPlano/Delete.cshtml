@@ -1,0 +1,67 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_categoria
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Exclusão</h4>
+            </div>
+            <form asp-area="Contabilidade" asp-controller="CategoriasPlano" asp-action="Delete">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p>Excluir @(Model.categoria_tipo == "Sintetica" ? "o grupo: " : "a categoria: ")<strong>@Model.categoria_nome</strong></p>
+                        </div>
+                    </div>
+                    <hr class="hrLine" />
+
+                    @{
+                        if (TempData["RestricaoDelete"] != null)
+                        {
+                            <div class="row">
+                                <div class="col-12">
+                                    <p>@TempData["RestricaoDelete"].ToString()</p>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-12">
+                                    <p>Confirma a exclusão @(Model.categoria_tipo == "Sintetica" ? "do grupo: " : "da categoria: ")<strong>@Model.categoria_nome</strong></p>
+                                </div>
+                            </div>
+                            <input type="hidden" asp-for="categoria_nome" />
+                            <input type="hidden" asp-for="categoria_id" />
+                            <input type="hidden" name="planoCategorias_id" value='@(TempData["planoCategorias_id"] != null ? @TempData["planoCategorias_id"].ToString() : "")' />
+                            <input type="hidden" name="planoContas_id" value='@(TempData["planoContas_id"] != null ? @TempData["planoContas_id"].ToString() : "")' />
+                        }
+                    }
+                </div>
+                <div class="modal-footer">
+                    @{
+                        if (TempData["RestricaoDelete"] != null)
+                        {
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        }
+                    }
+                    @{
+                        if (TempData["RestricaoDelete"] == null)
+                        {
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        }
+                    }
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

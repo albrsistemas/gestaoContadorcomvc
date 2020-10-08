@@ -50,14 +50,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             else
             {
                 categorias = categoria.listaCategorias(conta.conta_id, user.usuario_id, null, null,"Não");
-            }
-
-            //if (categorias.Count == 0)
-            //{
-            //    categoria.startCategoria(user.usuario_conta_id, user.usuario_id, "Não");
-
-            //    return RedirectToAction(nameof(Index));
-            //}
+            }                      
 
             return View(categorias);
         }
@@ -88,7 +81,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             {
                 Categoria categoria = new Categoria();
 
-                TempData["createGrupo"] = categoria.cadastrarCategoriaGrupo(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], contexto.conta_id, user.usuario_id);
+                TempData["createGrupo"] = categoria.cadastrarCategoriaGrupo(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], contexto.conta_id, user.usuario_id, "Não", "0");
 
                 return RedirectToAction(nameof(Index));
             }
@@ -130,7 +123,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             {
                 Categoria categoria = new Categoria();
 
-                TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], contexto.conta_id, user.usuario_id, collection["categoria_conta_contabil"]);
+                TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], contexto.conta_id, user.usuario_id, collection["categoria_conta_contabil"],"Não","0");
 
                 return RedirectToAction(nameof(Index));
             }

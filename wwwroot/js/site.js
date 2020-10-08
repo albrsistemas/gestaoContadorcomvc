@@ -276,8 +276,9 @@ function contabilizacao(vlr) {
 $(".createCategoria_contaonline").click(function () {
     var categoria_id = $(this).attr("data-categoria_id");
     var plano_id = $(this).attr("data-plano_id");
+    var local = $(this).attr("data-local");
     console.log(plano_id);
-    $("#modal").load("/Contabilidade/CCO/Create?categoria_id=" + categoria_id + "&plano_id=" + plano_id, function () {
+    $("#modal").load("/Contabilidade/CCO/Create?categoria_id=" + categoria_id + "&plano_id=" + plano_id + "&local=" + local, function () {
         $("#modal").modal('show');
     })
 });
@@ -292,6 +293,47 @@ $(".DetailsCCO").click(function () {
 $(".SelectPlano").click(function () {
     var pc_id = $(this).attr("data-pc_id");
     $("#modal").load("/Contabilidade/CategoriasPlano/SelectPlano?pc_id=" + pc_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+
+//Plano de Categorias
+$(".createGrupoCategoriaPlano").click(function () {
+    var escopo = $(this).attr("data-escopo");
+    var planoCategorias_id = $(this).attr("data-planoCategorias_id");
+    var planoContas_id = $(this).attr("data-planoContas_id");
+    $("#modal").load("CreateGrupoCategoria?escopo=" + escopo + "&planoCategorias_id=" + planoCategorias_id + "&planoContas_id=" + planoContas_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(".createCategoriaPlano").click(function () {
+    var grupo = $(this).attr("data-grupo");
+    var escopo = $(this).attr("data-escopo");
+    var planoCategorias_id = $(this).attr("data-planoCategorias_id");
+    var planoContas_id = $(this).attr("data-planoContas_id");
+    $("#modal").load("/Contabilidade/CategoriasPlano/Create?grupo=" + grupo + "&escopo=" + escopo + "&planoCategorias_id=" + planoCategorias_id + "&planoContas_id=" + planoContas_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(".editCategoriaPlano").click(function () {
+    var id = $(this).attr("data-id");
+    var tipo = $(this).attr("data-tipo");
+    var planoCategorias_id = $(this).attr("data-planoCategorias_id");
+    var planoContas_id = $(this).attr("data-planoContas_id");
+    $("#modal").load("/Contabilidade/CategoriasPlano/Edit?id=" + id + "&tipo=" + tipo + "&planoCategorias_id=" + planoCategorias_id + "&planoContas_id=" + planoContas_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(".deleteCategoriaPlano").click(function () {
+    var id = $(this).attr("data-id");
+    var tipo = $(this).attr("data-tipo");
+    var planoCategorias_id = $(this).attr("data-planoCategorias_id");
+    var planoContas_id = $(this).attr("data-planoContas_id");
+    $("#modal").load("/Contabilidade/CategoriasPlano/Delete?id=" + id + "&tipo=" + tipo + "&planoCategorias_id=" + planoCategorias_id + "&planoContas_id=" + planoContas_id, function () {
         $("#modal").modal('show');
     })
 });
