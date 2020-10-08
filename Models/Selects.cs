@@ -237,6 +237,54 @@ namespace gestaoContadorcomvc.Models
             return planoContas;
         }
 
+        //Plano de categorias do contador
+        public List<Selects> getPlanosCategoriaContador(int conta_id_contador)
+        {
+            List<Selects> planos = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT pc_id, pc_nome, pc_conta_id from planocategorias WHERE planocategorias.pc_conta_id = @contador_id and planocategorias.pc_status = 'Ativo'";
+                comando.Parameters.AddWithValue("@contador_id", conta_id_contador);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        planos.Add(new Selects
+                        {
+                            value = leitor["pc_id"].ToString(),
+                            text = leitor["pc_nome"].ToString(),
+                            disabled = false
+                        });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return planos;
+        }
+
 
 
     }

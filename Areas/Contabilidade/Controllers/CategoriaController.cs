@@ -10,6 +10,7 @@ using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
@@ -215,6 +216,41 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                 Categoria categoria = new Categoria();
 
                 TempData["deleteCategoria"] = categoria.deletarCategoria(categoria_id, categoria_nome, contexto.conta_id, user.usuario_id);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public ActionResult copiarPlanoCategorias()
+        {
+            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Conta contexto = new Conta();
+            contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+
+            PlanoContas planoContas = new PlanoContas();
+
+            Selects select = new Selects();
+            ViewBag.getPlanosCategoriaContador = select.getPlanosCategoriaContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+
+            return View(contexto);
+        }
+
+        // POST: CategoriaController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult copiarPlanoCategorias(int pc_id, int cliente_id)
+        {
+            try
+            {
+                var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+
+                Categoria categoria = new Categoria();
+
+                TempData["copiarPlanoCategorias"] = categoria.copiarPlanoCategorias(user.usuario_id, user.usuario_conta_id, pc_id, cliente_id);
 
                 return RedirectToAction(nameof(Index));
             }

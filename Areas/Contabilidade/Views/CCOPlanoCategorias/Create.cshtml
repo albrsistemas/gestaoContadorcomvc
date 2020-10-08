@@ -42,7 +42,7 @@
             <div class="modal-header">
                 <h4 class="modal-title">Víncular Conta on Line</h4>
             </div>
-            <form asp-area="Contabilidade" asp-controller="CCO" asp-action="Create">
+            <form asp-area="Contabilidade" asp-controller="CCOPlanoCategorias" asp-action="Create">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
@@ -61,7 +61,9 @@
                             </div>
                         </div>
                         <input type="hidden" asp-for="cco_plano_id" />
-                        <input type="hidden" asp-for="cco_categoria_id" />                        
+                        <input type="hidden" asp-for="cco_categoria_id" />
+                        <input type="hidden" name="planoCategorias_id" value='@(TempData["planoCategorias_id"] != null ? @TempData["planoCategorias_id"].ToString() : "")' />
+                        <input type="hidden" name="planoContas_id" value='@(TempData["planoContas_id"] != null ? @TempData["planoContas_id"].ToString() : "")' />
                     }
                 </div>
                 <div class="modal-footer">

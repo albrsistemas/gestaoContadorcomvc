@@ -1,0 +1,51 @@
+﻿@model gestaoContadorcomvc.Models.Autenticacao.Conta
+@{
+    Layout = null;
+}
+<style>
+    .text-alert {
+        color: #856404;
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+    }
+</style>
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Copiar plano de categorias</h4>
+            </div>
+            <form asp-area="Contabilidade" asp-controller="Categoria" asp-action="copiarPlanoCategorias">
+                <div class="modal-body">
+                    <div class="row" style="text-align: center">
+                        <div class="col-12">
+                            <p>Tem certeza que deseja copiar um plano de categorias para o cliente: <strong>@Model.conta_nome</strong></p>
+                            <div class="text-alert">
+                                <p><strong>Para copiar um plano de categorias é necessário que não haja nenhuma categoria cadastrada anteriormente, para não ocorrer confronto de classificações!</strong></p>
+                            </div>                            
+                        </div>
+                    </div>
+                    <hr class="hrLine" />
+                    @{
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="SelectClient" class="control-label">Selecionar o plano de categorias</label>
+                                    <select asp-items="@ViewBag.getPlanosCategoriaContador" value="@TempData["pc_id"]" name="pc_id" class="form-control js_example_basic_single" style="width: 100%;"></select>
+                                </div>
+                                <input type="hidden" asp-for="conta_id" name="cliente_id" />
+                            </div>
+                        </div>                        
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Copiar</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

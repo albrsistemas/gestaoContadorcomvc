@@ -521,5 +521,54 @@ namespace gestaoContadorcomvc.Models
 
             return retorno;
         }
+
+        //Copiar categorias do contador para cliente
+        public string copiarPlanoCategorias(int usuario_id, int conta_id, int pc_id, int cliente_id)
+        {
+            string retorno = "Categorias copiadas com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_conta_contabil, categoria_copia) SELECT categoria_classificacao, categoria_nome, categoria_tipo, @cliente_id, categoria_escopo, categoria_status, categoria_conta_contabil, categoria_id from categoria where categoria.categoria_conta_id = @contador_id and categoria.categoria_dePlano = '@pc_id' AND categoria.categoria_classificacao <> '1' and categoria.categoria_classificacao <> '2';";                
+                comando.Parameters.AddWithValue("@cliente_id", cliente_id);
+                comando.Parameters.AddWithValue("@contador_id", conta_id);
+                comando.Parameters.AddWithValue("@pc_id", pc_id);
+                comando.ExecuteNonQuery();
+
+                comando.CommandText = "insert into categoria_contaonline (cco_cliente_conta_id, cco_contador_conta_id, cco_plano_id, cco_ccontabil_id, cco_categoria_id) SELECT categoria.categoria_conta_id, cco.cco_contador_conta_id, cco.cco_plano_id, cco.cco_ccontabil_id, categoria.categoria_id from categoria_contaonline as cco left join categoria on categoria.categoria_copia = cco.cco_categoria_id where categoria.categoria_conta_id = @cliente_id_2 and cco.cco_contador_conta_id = @contador_id_2;";
+                comando.Parameters.AddWithValue("@cliente_id_2", cliente_id);
+                comando.Parameters.AddWithValue("@contador_id_2", conta_id);
+                comando.ExecuteNonQuery();
+
+                Transacao.Commit();
+
+                string msg = "Cópia de plano id: " + pc_id + " de categorias do contador id : "  + conta_id + " para o ciente id: " + cliente_id + " Cadastrado com sucesso";
+                log.log("Categoria", "copiarPlanoCategorias", "Sucesso", msg, conta_id, usuario_id);
+            }
+            catch (Exception e)
+            {
+                string msg = "Cópia de plano id: " + pc_id + " de categorias do contador id : " + conta_id + " para o ciente id: " + cliente_id + " fracassou > " + e.Message.ToString().Substring(0, 300);
+
+                log.log("Categoria", "copiarPlanoCategorias", "Erro", msg, conta_id, usuario_id);
+
+                Transacao.Rollback();
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
     }
 }

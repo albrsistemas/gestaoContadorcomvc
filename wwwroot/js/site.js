@@ -100,7 +100,7 @@ $(".createConta").click(function () {
 
 
 $(document).ready(function () {
-    $('#Esconder').delay(3000).fadeOut();
+    $('#Esconder').delay(4000).fadeOut();
 });
 
 //Categoria
@@ -131,6 +131,12 @@ $(".deleteCategoria").click(function () {
     var id = $(this).attr("data-id");
     var tipo = $(this).attr("data-tipo");
     $("#modal").load("Delete?id=" + id + "&tipo=" + tipo, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(".copiarPlanoCategorias").click(function () {    
+    $("#modal").load("copiarPlanoCategorias", function () {
         $("#modal").modal('show');
     })
 });
@@ -334,6 +340,23 @@ $(".deleteCategoriaPlano").click(function () {
     var planoCategorias_id = $(this).attr("data-planoCategorias_id");
     var planoContas_id = $(this).attr("data-planoContas_id");
     $("#modal").load("/Contabilidade/CategoriasPlano/Delete?id=" + id + "&tipo=" + tipo + "&planoCategorias_id=" + planoCategorias_id + "&planoContas_id=" + planoContas_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+//Vinculo conta on line categorias cliente visão contador
+$(".createCategoria_contaonlinePlano").click(function () {
+    var categoria_id = $(this).attr("data-categoria_id");    
+    var planoCategorias_id = $(this).attr("data-planoCategorias_id");
+    var planoContas_id = $(this).attr("data-planoContas_id");    
+    $("#modal").load("/Contabilidade/CCOPlanoCategorias/Create?categoria_id=" + categoria_id + "&planoContas_id=" + planoContas_id + "&planoCategorias_id=" + planoCategorias_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(".DetailsCCOPlano").click(function () {
+    var id = $(this).attr("data-id");
+    $("#modal").load("/Contabilidade/CCOPlanoCategorias/Details?id=" + id, function () {
         $("#modal").modal('show');
     })
 });
