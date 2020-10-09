@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using gestaoContadorcomvc.Models.Autenticacao;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 
 namespace gestaoContadorcomvc.Controllers.Autenticacao
 {
@@ -64,17 +67,38 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             Usuario user = new Usuario();
             user = user.buscaUsuarioLogin(collection["usuario"], collection["senha"]);
 
-            if(user == null)
+            if(user == null || user.usuario_id == 0)
             {
                 return View(TempData["errorLogin"] = "Usuário ou senha inválidos"); 
             }
 
             //Gerando o login            
             HttpContext.Session.SetObjectAsJson("user", user);
-            HttpContext.Session.SetString("Role", user.Role);
-            HttpContext.Session.SetInt32("ID", user.usuario_id);
-            HttpContext.Session.SetInt32("Conta", user.usuario_conta_id);
-            HttpContext.Session.SetString("Permissoes", user.permissoes);
+            HttpContext.Session.SetInt32("cliente_id", 0);
+            //HttpContext.Session.SetString("Role", user.Role);
+            //HttpContext.Session.SetInt32("ID", user.usuario_id);
+            //HttpContext.Session.SetInt32("Conta", user.usuario_conta_id);
+            //HttpContext.Session.SetString("Permissoes", user.permissoes);
+
+            if(user != null && user.usuario_id > 0)
+            {
+                var userClaims = new List<Claim>()
+                {
+                    //definindo o cookie
+                    new Claim(ClaimTypes.Name, user.usuario_id.ToString()),
+                    new Claim(ClaimTypes.Email, user.usuario_email),
+                    new Claim(ClaimTypes.Role, user.Role)
+                };
+
+                var minhaIdentity = new ClaimsIdentity(userClaims, "Usuario");
+                var userPrincipal = new ClaimsPrincipal(new[] { minhaIdentity });
+                //cria o cookie
+                _ = HttpContext.SignInAsync(userPrincipal);
+            }
+
+
+
+
 
             TempData["user"] = user.usuario_nome;
 
@@ -91,10 +115,12 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
         }
 
         [HttpGet]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-//            HttpContext.Session.Clear();
+            //            HttpContext.Session.Clear();
             HttpContext.Session.Remove("user");
+
+            await HttpContext.SignOutAsync();
 
             return RedirectToAction("Login", "Conta");
         }
