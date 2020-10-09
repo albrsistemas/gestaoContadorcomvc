@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using gestaoContadorcomvc.Areas.Contabilidade.Models;
 using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models.Autenticacao;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,8 +13,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
     [Area("Contabilidade")]
     [Route("Contabilidade/[controller]/[action]")]
-    [FiltroAutenticacao]
-    [FiltroContabilidade]
+    //[FiltroAutenticacao]
+    //[FiltroContabilidade]
+    [Authorize(Roles = "Contabilidade")]
     public class PlanoContasController : Controller
     {
         [FiltroAutorizacao(permissao = "planoContasList")]

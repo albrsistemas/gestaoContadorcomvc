@@ -7,6 +7,7 @@ using gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel;
 using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,8 +16,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
     [Area("Contabilidade")]
     [Route("Contabilidade/[controller]/[action]")]
-    [FiltroAutenticacao]
-    [FiltroContabilidade]
+    //[FiltroAutenticacao]
+    //[FiltroContabilidade]
+    [Authorize(Roles = "Contabilidade")]
     public class ConfigContadorClienteController : Controller
     {
         // GET: ConfigContadorClienteController

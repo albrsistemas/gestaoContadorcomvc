@@ -8,6 +8,7 @@ using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,8 +17,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
     [Area("Contabilidade")]
     [Route("Contabilidade/[controller]/[action]")]
-    [FiltroAutenticacao]
-    [FiltroContabilidade]
+    //[FiltroAutenticacao]
+    //[FiltroContabilidade]
+    [Authorize(Roles = "Contabilidade")]
     public class CategoriaController : Controller
     {
         // GET: CategoriaController
@@ -51,9 +53,12 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             else
             {
                 categorias = categoria.listaCategorias(conta.conta_id, user.usuario_id, null, null,"Não");
-            }                      
+            }
 
-            return View(categorias);
+            Vm_categoria cats = new Vm_categoria();
+            cats.categorias = categorias;
+
+            return View(cats);
         }
 
         [FiltroAutorizacao(permissao = "categoriaCreate")]

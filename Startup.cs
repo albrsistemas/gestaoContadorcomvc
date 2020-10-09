@@ -29,24 +29,31 @@ namespace gestaoContadorcomvc
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             //Configuração para uso de autenticação por token jwtbearer
-            var key = Encoding.ASCII.GetBytes(Settings.Secret);
-            services.AddAuthentication(x =>
+            //var key = Encoding.ASCII.GetBytes(Settings.Secret);
+            //services.AddAuthentication(x =>
+            //{
+            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //})
+            //.AddJwtBearer(x =>
+            //{
+            //    x.RequireHttpsMetadata = false;
+            //    x.SaveToken = true;
+            //    x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+            //    {
+            //        ValidateIssuerSigningKey = true,
+            //        IssuerSigningKey = new SymmetricSecurityKey(key),
+            //        ValidateIssuer = false,
+            //        ValidateAudience = false
+            //    };
+            //});
+            services.AddAuthentication("CookieAuthentication").AddCookie("CookieAuthentication", config =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
+                config.Cookie.Name = "UserLoginCookie";
+                config.LoginPath = "/Conta/Login";
+                config.AccessDeniedPath = "/Conta/AccessDeniedPath";
             });
+
 
             //Habilitando projeto utilzar navegação segura ssl (precisar estar com certificado instalado na hospedagem).
             services.AddHttpsRedirection(options =>

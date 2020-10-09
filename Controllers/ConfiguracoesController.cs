@@ -2,6 +2,7 @@
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Math.EC.Multiplier;
@@ -20,7 +21,8 @@ namespace gestaoContadorcomvc.Controllers.GE
         }
 
         // GET: Categoria_v2Controller/Create
-        [FiltroAutorizacao(permissao = "ADM")]
+        //[FiltroAutorizacao(permissao = "ADM")]
+        [Authorize(Roles = "adm")]
         public ActionResult Contabilidade()
         {
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");

@@ -1,0 +1,27 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AccessDenied</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />    
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12" style="margin-top: 30px;">
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading">Acesso Negado!!</h4>                    
+                </div>
+            </div>
+            <div class="col-12">
+                <a class="btn btn-info" style="width:100%" asp-controller="Conta" asp-action="Login">Login</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

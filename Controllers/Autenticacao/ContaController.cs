@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using gestaoContadorcomvc.Models.Autenticacao;
@@ -72,39 +73,36 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
                 return View(TempData["errorLogin"] = "Usuário ou senha inválidos"); 
             }
 
-            //Gerando o login            
+            //Gerando o login     
+            
             HttpContext.Session.SetObjectAsJson("user", user);
             HttpContext.Session.SetInt32("cliente_id", 0);
-            //HttpContext.Session.SetString("Role", user.Role);
-            //HttpContext.Session.SetInt32("ID", user.usuario_id);
-            //HttpContext.Session.SetInt32("Conta", user.usuario_conta_id);
-            //HttpContext.Session.SetString("Permissoes", user.permissoes);
+            HttpContext.Session.SetString("Role", user.Role);
+            HttpContext.Session.SetInt32("ID", user.usuario_id);
+            HttpContext.Session.SetInt32("Conta", user.usuario_conta_id);
+            HttpContext.Session.SetString("Permissoes", user.permissoes);
 
-            if(user != null && user.usuario_id > 0)
+            Conta conta = new Conta();
+            conta = conta.buscarConta(user.usuario_conta_id);
+
+            if (user != null && user.usuario_id > 0)
             {
                 var userClaims = new List<Claim>()
                 {
                     //definindo o cookie
                     new Claim(ClaimTypes.Name, user.usuario_id.ToString()),
                     new Claim(ClaimTypes.Email, user.usuario_email),
-                    new Claim(ClaimTypes.Role, user.Role)
+                    new Claim(ClaimTypes.Role, user.Role),
+                    new Claim(ClaimTypes.Role, conta.conta_tipo),                    
                 };
 
                 var minhaIdentity = new ClaimsIdentity(userClaims, "Usuario");
-                var userPrincipal = new ClaimsPrincipal(new[] { minhaIdentity });
+                var claimPrincipal = new ClaimsPrincipal(new[] { minhaIdentity });
                 //cria o cookie
-                _ = HttpContext.SignInAsync(userPrincipal);
+                _ = HttpContext.SignInAsync(claimPrincipal);
             }
 
-
-
-
-
             TempData["user"] = user.usuario_nome;
-
-            Conta conta = new Conta();
-            conta = conta.buscarConta(user.usuario_conta_id);
-
 
             if (collection["area"].Equals("contabilidade") && conta.conta_tipo.ToUpper().Equals("CONTABILIDADE"))
             {
@@ -123,6 +121,12 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             await HttpContext.SignOutAsync();
 
             return RedirectToAction("Login", "Conta");
+        }
+
+        [HttpGet]
+        public IActionResult AccessDeniedPath()
+        {   
+            return View();
         }
 
         public IActionResult userExiste(string usuario_user)
