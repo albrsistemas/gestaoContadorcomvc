@@ -187,7 +187,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         }
 
         //Cadastrar novo usuário
-        public string novoUsuario(string nome, string dcto, string usuario, string senha, int conta_id, string email, string permissoes, int usuario_id)
+        public string novoUsuario(string nome, string dcto, string usuario, string senha, int conta_id, string email, string permissoes, int usuario_id, Permissoes _permissoes)
         {
             string retorno = "Usuário cadastrado com sucesso !";
             
@@ -209,6 +209,44 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                 comando.Parameters.AddWithValue("@usuario_email", email);
                 comando.Parameters.AddWithValue("@usuario_permissoes", permissoes);
                 comando.ExecuteNonQuery();
+
+                comando.CommandText = "insert into permissoes (permissoes_usuario_id, usuarioList, usuarioCreate, usuarioEdit, usuarioDelete, categoriaList, categoriaCreate, categoriaEdit, categoriaDelete, config, configContabilidade, planoContasList, planoContasCreate, planoContasEdit, planoContasDelete, contasContabeisList, contasContabeisCreate, contasContabeisEdit, contasContabeisDelete, planoCategoriasList, planoCategoriasCreate, planoCategoriasEdit, planoCategoriasDelete, categoriasPlanoList, categoriasPlanoCreate, categoriasPlanoEdit, categoriasPlanoDelete, clienteConfigList, clienteConfigCreate, clienteConfigEdit, clienteCategoriasList, clienteCategoriasCreate, clienteCategoriasEdit, clienteCategoriasDelete, clienteCopiaPlano) VALUES (LAST_INSERT_ID(), @usuarioList, @usuarioCreate, @usuarioEdit, @usuarioDelete, @categoriaList, @categoriaCreate, @categoriaEdit, @categoriaDelete, @config, @configContabilidade, @planoContasList, @planoContasCreate, @planoContasEdit, @planoContasDelete, @contasContabeisList, @contasContabeisCreate, @contasContabeisEdit, @contasContabeisDelete, @planoCategoriasList, @planoCategoriasCreate, @planoCategoriasEdit, @planoCategoriasDelete, @categoriasPlanoList, @categoriasPlanoCreate, @categoriasPlanoEdit, @categoriasPlanoDelete, @clienteConfigList, @clienteConfigCreate, @clienteConfigEdit, @clienteCategoriasList, @clienteCategoriasCreate, @clienteCategoriasEdit, @clienteCategoriasDelete, @clienteCopiaPlano);";               
+                comando.Parameters.AddWithValue("@usuarioList", _permissoes.usuarioList);
+                comando.Parameters.AddWithValue("@usuarioCreate", _permissoes.usuarioCreate);
+                comando.Parameters.AddWithValue("@usuarioEdit", _permissoes.usuarioEdit);
+                comando.Parameters.AddWithValue("@usuarioDelete", _permissoes.usuarioDelete);
+                comando.Parameters.AddWithValue("@categoriaList", _permissoes.categoriaList);
+                comando.Parameters.AddWithValue("@categoriaCreate", _permissoes.categoriaCreate);
+                comando.Parameters.AddWithValue("@categoriaEdit", _permissoes.categoriaEdit);
+                comando.Parameters.AddWithValue("@categoriaDelete", _permissoes.categoriaDelete);
+                comando.Parameters.AddWithValue("@config", _permissoes.config);
+                comando.Parameters.AddWithValue("@configContabilidade", _permissoes.configContabilidade);
+                comando.Parameters.AddWithValue("@planoContasList", _permissoes.planoContasList);
+                comando.Parameters.AddWithValue("@planoContasCreate", _permissoes.planoContasCreate);
+                comando.Parameters.AddWithValue("@planoContasEdit", _permissoes.planoContasEdit);
+                comando.Parameters.AddWithValue("@planoContasDelete", _permissoes.planoContasDelete);
+                comando.Parameters.AddWithValue("@contasContabeisList", _permissoes.contasContabeisList);
+                comando.Parameters.AddWithValue("@contasContabeisCreate", _permissoes.contasContabeisCreate);
+                comando.Parameters.AddWithValue("@contasContabeisEdit", _permissoes.contasContabeisEdit);
+                comando.Parameters.AddWithValue("@contasContabeisDelete", _permissoes.contasContabeisDelete);
+                comando.Parameters.AddWithValue("@planoCategoriasList", _permissoes.planoCategoriasList);
+                comando.Parameters.AddWithValue("@planoCategoriasCreate", _permissoes.planoCategoriasCreate);
+                comando.Parameters.AddWithValue("@planoCategoriasEdit", _permissoes.planoCategoriasEdit);
+                comando.Parameters.AddWithValue("@planoCategoriasDelete", _permissoes.planoCategoriasDelete);
+                comando.Parameters.AddWithValue("@categoriasPlanoList", _permissoes.categoriasPlanoList);
+                comando.Parameters.AddWithValue("@categoriasPlanoCreate", _permissoes.categoriasPlanoCreate);
+                comando.Parameters.AddWithValue("@categoriasPlanoEdit", _permissoes.categoriasPlanoEdit);
+                comando.Parameters.AddWithValue("@categoriasPlanoDelete", _permissoes.categoriasPlanoDelete);
+                comando.Parameters.AddWithValue("@clienteConfigList", _permissoes.clienteConfigList);
+                comando.Parameters.AddWithValue("@clienteConfigCreate", _permissoes.clienteConfigCreate);
+                comando.Parameters.AddWithValue("@clienteConfigEdit", _permissoes.clienteConfigEdit);
+                comando.Parameters.AddWithValue("@clienteCategoriasList", _permissoes.clienteCategoriasList);
+                comando.Parameters.AddWithValue("@clienteCategoriasCreate", _permissoes.clienteCategoriasCreate);
+                comando.Parameters.AddWithValue("@clienteCategoriasEdit", _permissoes.clienteCategoriasEdit);
+                comando.Parameters.AddWithValue("@clienteCategoriasDelete", _permissoes.clienteCategoriasDelete);
+                comando.Parameters.AddWithValue("@clienteCopiaPlano", _permissoes.clienteCopiaPlano);
+                comando.ExecuteNonQuery();
+
                 Transacao.Commit();
 
                 string msg = "Tentativa de criar novo usuário de nome: " + nome + " Cadastrado com sucesso";
@@ -275,11 +313,19 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                 }
             }
 
+            Permissoes permissoes = new Permissoes();
+            permissoes = permissoes.listaPermissoes(usuario_id);
+            usuario._permissoes = permissoes;
+
+            Conta conta = new Conta();
+            conta = conta.buscarConta(usuario.usuario_conta_id);
+            usuario.conta = conta;
+
             return usuario;
         }
 
         //Altera usuário
-        public string alteraUsuario(string nome, string dcto, int conta_id, string email, string permissoes, int usuario_id, int usuarioLogado)
+        public string alteraUsuario(string nome, string dcto, int conta_id, string email, string permissoes, int usuario_id, int usuarioLogado, Permissoes _permissoes)
         {
             string retorno = "Usuário alterado com sucesso !";
 
@@ -299,6 +345,45 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                 comando.Parameters.AddWithValue("@usuario_permissoes", permissoes);
                 comando.Parameters.AddWithValue("@usuario_id", usuario_id);
                 comando.ExecuteNonQuery();
+
+                comando.CommandText = ("update permissoes set usuarioList = @usuarioList, usuarioCreate = @usuarioCreate, usuarioEdit = @usuarioEdit, usuarioDelete = @usuarioDelete, categoriaList = @categoriaList, categoriaCreate = @categoriaCreate, categoriaEdit = @categoriaEdit, categoriaDelete = @categoriaDelete, config = @config, configContabilidade = @configContabilidade, planoContasList = @planoContasList, planoContasCreate = @planoContasCreate, planoContasEdit = @planoContasEdit, planoContasDelete = @planoContasDelete, contasContabeisList = @contasContabeisList, contasContabeisCreate = @contasContabeisCreate, contasContabeisEdit = @contasContabeisEdit, contasContabeisDelete = @contasContabeisDelete, planoCategoriasList = @planoCategoriasList, planoCategoriasCreate = @planoCategoriasCreate, planoCategoriasEdit = @planoCategoriasEdit, planoCategoriasDelete = @planoCategoriasDelete, categoriasPlanoList = @categoriasPlanoList, categoriasPlanoCreate = @categoriasPlanoCreate, categoriasPlanoEdit = @categoriasPlanoEdit, categoriasPlanoDelete = @categoriasPlanoDelete, clienteConfigList = @clienteConfigList, clienteConfigCreate = @clienteConfigCreate, clienteConfigEdit = @clienteConfigEdit, clienteCategoriasList = @clienteCategoriasList, clienteCategoriasCreate = @clienteCategoriasCreate, clienteCategoriasEdit = @clienteCategoriasEdit, clienteCategoriasDelete = @clienteCategoriasDelete, clienteCopiaPlano = @clienteCopiaPlano where permissoes_usuario_id = @permissoes_usuario_id");
+                comando.Parameters.AddWithValue("@usuarioList", _permissoes.usuarioList);
+                comando.Parameters.AddWithValue("@usuarioCreate", _permissoes.usuarioCreate);
+                comando.Parameters.AddWithValue("@usuarioEdit", _permissoes.usuarioEdit);
+                comando.Parameters.AddWithValue("@usuarioDelete", _permissoes.usuarioDelete);
+                comando.Parameters.AddWithValue("@categoriaList", _permissoes.categoriaList);
+                comando.Parameters.AddWithValue("@categoriaCreate", _permissoes.categoriaCreate);
+                comando.Parameters.AddWithValue("@categoriaEdit", _permissoes.categoriaEdit);
+                comando.Parameters.AddWithValue("@categoriaDelete", _permissoes.categoriaDelete);
+                comando.Parameters.AddWithValue("@config", _permissoes.config);
+                comando.Parameters.AddWithValue("@configContabilidade", _permissoes.configContabilidade);
+                comando.Parameters.AddWithValue("@planoContasList", _permissoes.planoContasList);
+                comando.Parameters.AddWithValue("@planoContasCreate", _permissoes.planoContasCreate);
+                comando.Parameters.AddWithValue("@planoContasEdit", _permissoes.planoContasEdit);
+                comando.Parameters.AddWithValue("@planoContasDelete", _permissoes.planoContasDelete);
+                comando.Parameters.AddWithValue("@contasContabeisList", _permissoes.contasContabeisList);
+                comando.Parameters.AddWithValue("@contasContabeisCreate", _permissoes.contasContabeisCreate);
+                comando.Parameters.AddWithValue("@contasContabeisEdit", _permissoes.contasContabeisEdit);
+                comando.Parameters.AddWithValue("@contasContabeisDelete", _permissoes.contasContabeisDelete);
+                comando.Parameters.AddWithValue("@planoCategoriasList", _permissoes.planoCategoriasList);
+                comando.Parameters.AddWithValue("@planoCategoriasCreate", _permissoes.planoCategoriasCreate);
+                comando.Parameters.AddWithValue("@planoCategoriasEdit", _permissoes.planoCategoriasEdit);
+                comando.Parameters.AddWithValue("@planoCategoriasDelete", _permissoes.planoCategoriasDelete);
+                comando.Parameters.AddWithValue("@categoriasPlanoList", _permissoes.categoriasPlanoList);
+                comando.Parameters.AddWithValue("@categoriasPlanoCreate", _permissoes.categoriasPlanoCreate);
+                comando.Parameters.AddWithValue("@categoriasPlanoEdit", _permissoes.categoriasPlanoEdit);
+                comando.Parameters.AddWithValue("@categoriasPlanoDelete", _permissoes.categoriasPlanoDelete);
+                comando.Parameters.AddWithValue("@clienteConfigList", _permissoes.clienteConfigList);
+                comando.Parameters.AddWithValue("@clienteConfigCreate", _permissoes.clienteConfigCreate);
+                comando.Parameters.AddWithValue("@clienteConfigEdit", _permissoes.clienteConfigEdit);
+                comando.Parameters.AddWithValue("@clienteCategoriasList", _permissoes.clienteCategoriasList);
+                comando.Parameters.AddWithValue("@clienteCategoriasCreate", _permissoes.clienteCategoriasCreate);
+                comando.Parameters.AddWithValue("@clienteCategoriasEdit", _permissoes.clienteCategoriasEdit);
+                comando.Parameters.AddWithValue("@clienteCategoriasDelete", _permissoes.clienteCategoriasDelete);
+                comando.Parameters.AddWithValue("@clienteCopiaPlano", _permissoes.clienteCopiaPlano);
+                comando.Parameters.AddWithValue("@permissoes_usuario_id", usuario_id);
+                comando.ExecuteNonQuery();
+
                 Transacao.Commit();
 
                 string msg = "Tentativa de alterar o usuário ID: " + usuario_id + " Alterado com sucesso";

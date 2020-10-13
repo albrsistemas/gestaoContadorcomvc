@@ -53,250 +53,237 @@
                             <span asp-validation-for="usuario_email" class="text-danger"></span>
                         </div>
                     </div>
-                </div>                
+                </div>
             </div>
         </div>
     </fieldset>
     <fieldset>
         <legend>Permissões</legend>
-        <div class="box-accordion">
-            <div class="box-accordion-titulo" id="boxPermissoesCadastro" onclick="boxAccordionToggle(this.id)">
-                Cadastro
+
+        <h6>Cadastros</h6>
+        <hr class="hrLine" />
+        <!--Cadastro Usuário-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.usuarioList" type="checkbox" id="usuarioList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="usuarioList">Usuários</label>
+                    </div>
+                </div>
             </div>
-            <div class="box-accordion-dados">
-                <!--Cadastro Usuário-->
-                <div class="row">
-                    <div class="col-12 col-md-3">
-                        <div class="row">
-                            <div class="form-check">
-                                @{
-                                    if (Model.permissoes.Contains("usuarioList"))
-                                    {
-                                        <input class="form-check-input" type="checkbox" value="usuarioList" id="usuarioList" onclick="checkPermissoes(this.id)" checked="checked">
-                                        <label class="form-check-label" for="usuarioList">Usuários</label>
-                                    }
-                                    else
-                                    {
-                                        <input class="form-check-input" type="checkbox" value="usuarioList" id="usuarioList" onclick="checkPermissoes(this.id)">
-                                        <label class="form-check-label" for="usuarioList">Usuários</label>
-                                    }
-                                }
-
-                            </div>
-                        </div>
-                    </div>                    
-                    <div class="row" style="padding-left: 30px;">
-                        <div class="col-md-4 col-12">
-                            <div class="form-check form-check-inline" style="width: 20%;">
-                                @{
-                                    if (Model.permissoes.Contains("usuarioInsert"))
-                                    {
-                                        <input class="form-check-input" type="checkbox" id="usuarioInsert" value="usuarioInsert" onclick="checkPermissoes(this.id)" checked="checked">
-                                        <label class="form-check-label" for="usuarioInsert">Incluir</label>
-                                    }
-                                    else
-                                    {
-                                        <input class="form-check-input" type="checkbox" id="usuarioInsert" value="usuarioInsert" onclick="checkPermissoes(this.id)">
-                                        <label class="form-check-label" for="usuarioInsert">Incluir</label>
-                                    }
-                                }
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <div class="form-check form-check-inline" style="width: 20%;">
-                                @{
-                                    if (Model.permissoes.Contains("usuarioEdit"))
-                                    {
-                                        <input class="form-check-input" type="checkbox" id="usuarioEdit" value="usuarioEdit" onclick="checkPermissoes(this.id)" checked="checked">
-                                        <label class="form-check-label" for="usuarioEdit">Alterar</label>
-                                    }
-                                    else
-                                    {
-                                        <input class="form-check-input" type="checkbox" id="usuarioEdit" value="usuarioEdit" onclick="checkPermissoes(this.id)">
-                                        <label class="form-check-label" for="usuarioEdit">Alterar</label>
-                                    }
-                                }
-
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <div class="form-check form-check-inline" style="width: 20%;">
-                                @{
-                                    if (Model.permissoes.Contains("usuarioDelete"))
-                                    {
-                                        <input class="form-check-input" type="checkbox" id="usuarioDelete" value="usuarioDelete" onclick="checkPermissoes(this.id)" checked="checked">
-                                        <label class="form-check-label" for="usuarioDelete">Apagar</label>
-                                    }
-                                    else
-                                    {
-                                        <input class="form-check-input" type="checkbox" id="usuarioDelete" value="usuarioDelete" onclick="checkPermissoes(this.id)">
-                                        <label class="form-check-label" for="usuarioDelete">Apagar</label>
-                                    }
-                                }
-                            </div>
-                        </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.usuarioCreate" id="usuarioCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="usuarioCreate">Incluir</label>
                     </div>
                 </div>
-                    <!--Cadastro Categorias-->
-                <div class="row">
-                    <div class="col-12 col-md-3">
-                        <div class="row">
-
-                            <div class="form-check">
-                                @{
-                                    if (Model.permissoes.Contains("categoriaList"))
-                                    {
-                                        <input class="form-check-input" type="checkbox" value="categoriaList" id="categoriaList" onclick="checkPermissoes(this.id)" checked="checked">
-                                        <label class="form-check-label" for="categoriaList">Categorias</label>
-                                    }
-                                    else
-                                    {
-                                        <input class="form-check-input" type="checkbox" value="categoriaList" id="categoriaList" onclick="checkPermissoes(this.id)">
-                                        <label class="form-check-label" for="categoriaList">Categorias</label>
-                                    }
-                                }
-
-                            </div>
-                        </div>
-                    </div>                        
-                        <div class="row" style="padding-left: 30px;">
-                            <div class="col-md-4 col-12">
-                                <div class="form-check form-check-inline" style="width: 20%;">
-                                    @{
-                                        if (Model.permissoes.Contains("categoriaCreate"))
-                                        {
-                                            <input class="form-check-input" type="checkbox" id="categoriaCreate" value="categoriaCreate" onclick="checkPermissoes(this.id)" checked="checked">
-                                            <label class="form-check-label" for="categoriaCreate">Incluir</label>
-                                        }
-                                        else
-                                        {
-                                            <input class="form-check-input" type="checkbox" id="categoriaCreate" value="categoriaCreate" onclick="checkPermissoes(this.id)">
-                                            <label class="form-check-label" for="categoriaCreate">Incluir</label>
-                                        }
-                                    }
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-12">
-                                <div class="form-check form-check-inline" style="width: 20%;">
-                                    @{
-                                        if (Model.permissoes.Contains("categoriaEdit"))
-                                        {
-                                            <input class="form-check-input" type="checkbox" id="categoriaEdit" value="categoriaEdit" onclick="checkPermissoes(this.id)" checked="checked">
-                                            <label class="form-check-label" for="categoriaEdit">Alterar</label>
-                                        }
-                                        else
-                                        {
-                                            <input class="form-check-input" type="checkbox" id="categoriaEdit" value="categoriaEdit" onclick="checkPermissoes(this.id)">
-                                            <label class="form-check-label" for="categoriaEdit">Alterar</label>
-                                        }
-                                    }
-
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-12">
-                                <div class="form-check form-check-inline" style="width: 20%;">
-                                    @{
-                                        if (Model.permissoes.Contains("categoriaDelete"))
-                                        {
-                                            <input class="form-check-input" type="checkbox" id="categoriaDelete" value="categoriaDelete" onclick="checkPermissoes(this.id)" checked="checked">
-                                            <label class="form-check-label" for="categoriaDelete">Apagar</label>
-                                        }
-                                        else
-                                        {
-                                            <input class="form-check-input" type="checkbox" id="categoriaDelete" value="categoriaDelete" onclick="checkPermissoes(this.id)">
-                                            <label class="form-check-label" for="categoriaDelete">Apagar</label>
-                                        }
-                                    }
-                                </div>
-                            </div>
-                        </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.usuarioEdit" id="usuarioEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="usuarioEdit">Alterar</label>
                     </div>
                 </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.usuarioDelete" id="usuarioDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="usuarioDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="box-accordion">
-            <div class="box-accordion-titulo">
-                Lançamento
-            </div>
-            <div class="box-accordion-dados">
-                <!--Cadastro Lançamentos-->
+        <!--Cadastro Categorias-->
+        <div class="row">
+            <div class="col-12 col-md-3">
                 <div class="row">
-                    <div class="row">
-                        <div class="col-12 col-md-3">
-                            <div class="form-check">
-                                @{
-                                    if (Model.permissoes.Contains("lancamentoList"))
-                                    {
-                                        <input class="form-check-input" type="checkbox" value="lancamentoList" id="lancamentoList" onclick="checkPermissoes(this.id)" checked="checked">
-                                        <label class="form-check-label" for="lancamentoList">Lançamentos Contábeis</label>
-                                    }
-                                    else
-                                    {
-                                        <input class="form-check-input" type="checkbox" value="lancamentoList" id="lancamentoList" onclick="checkPermissoes(this.id)">
-                                        <label class="form-check-label" for="lancamentoList">Lançamentos Contábeis</label>
-                                    }
-                                }
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.categoriaList" type="checkbox" id="categoriaList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="categoriaList">Categorias</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.categoriaCreate" id="categoriaCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="categoriaCreate">Incluir</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.categoriaEdit" id="categoriaEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="categoriaEdit">Alterar</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.categoriaDelete" id="categoriaDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="categoriaDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <h6>Configurações</h6>
+        <hr class="hrLine" />
+        <!--Cadastro Configurações-->
+        <div class="row">
+            <div class="col-12 col-md-12">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.config" type="checkbox" id="config" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="config">Configurações</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-12">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.configContabilidade" type="checkbox" id="configContabilidade" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="configContabilidade">Configurações Contabilidade</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+
+        @{
+            if (Model.conta.conta_tipo == "Contabilidade")
+            {
+                <legend>Permissões Área Contabilidade</legend>
+                <h6>Cadastros</h6>
+                <hr class="hrLine" />
+                <!--Cadastro Plano Contas-->
+                <div class="row">
+                    <div class="col-12 col-md-3">
+                        <div class="row">
+                            <div class="form-check">
+                                <input class="form-check-input" asp-for="_permissoes.planoContasList" type="checkbox" id="planoContasList" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="planoContasList">Plano de Contas</label>
                             </div>
                         </div>
                     </div>
                     <div class="row" style="padding-left: 30px;">
                         <div class="col-md-4 col-12">
                             <div class="form-check form-check-inline" style="width: 20%;">
-                                @{
-                                    if (Model.permissoes.Contains("lancamentoCreate"))
-                                    {
-                                        <input class="form-check-input" type="checkbox" id="lancamentoCreate" value="lancamentoCreate" onclick="checkPermissoes(this.id)" checked="checked">
-                                        <label class="form-check-label" for="lancamentoCreate">Incluir</label>
-                                    }
-                                    else
-                                    {
-                                        <input class="form-check-input" type="checkbox" id="lancamentoCreate" value="lancamentoCreate" onclick="checkPermissoes(this.id)">
-                                        <label class="form-check-label" for="lancamentoCreate">Incluir</label>
-                                    }
-                                }
+                                <input class="form-check-input" type="checkbox" asp-for="_permissoes.planoContasCreate" id="planoContasCreate" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="planoContasCreate">Incluir</label>
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
                             <div class="form-check form-check-inline" style="width: 20%;">
-                                @{
-                                    if (Model.permissoes.Contains("lancamentoEdit"))
-                                    {
-                                        <input class="form-check-input" type="checkbox" id="lancamentoEdit" value="lancamentoEdit" onclick="checkPermissoes(this.id)" checked="checked">
-                                        <label class="form-check-label" for="lancamentoEdit">Alterar</label>
-                                    }
-                                    else
-                                    {
-                                        <input class="form-check-input" type="checkbox" id="lancamentoEdit" value="lancamentoEdit" onclick="checkPermissoes(this.id)">
-                                        <label class="form-check-label" for="lancamentoEdit">Alterar</label>
-                                    }
-                                }
-
+                                <input class="form-check-input" type="checkbox" asp-for="_permissoes.planoContasEdit" id="planoContasEdit" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="planoContasEdit">Alterar</label>
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
                             <div class="form-check form-check-inline" style="width: 20%;">
-                                @{
-                                    if (Model.permissoes.Contains("lancamentoDelete"))
-                                    {
-                                        <input class="form-check-input" type="checkbox" id="lancamentoDelete" value="lancamentoDelete" onclick="checkPermissoes(this.id)" checked="checked">
-                                        <label class="form-check-label" for="lancamentoDelete">Apagar</label>
-                                    }
-                                    else
-                                    {
-                                        <input class="form-check-input" type="checkbox" id="lancamentoDelete" value="lancamentoDelete" onclick="checkPermissoes(this.id)">
-                                        <label class="form-check-label" for="lancamentoDelete">Apagar</label>
-                                    }
-                                }
+                                <input class="form-check-input" type="checkbox" asp-for="_permissoes.planoContasDelete" id="planoContasDelete" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="planoContasDelete">Apagar</label>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+                <!--Cadastro Plano Categorias-->
+                <div class="row">
+                    <div class="col-12 col-md-3">
+                        <div class="row">
+                            <div class="form-check">
+                                <input class="form-check-input" asp-for="_permissoes.planoCategoriasList" type="checkbox" id="planoCategoriasList" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="planoCategoriasList">Plano de Categorias</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-left: 30px;">
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" asp-for="_permissoes.planoCategoriasCreate" id="planoCategoriasCreate" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="planoCategoriasCreate">Incluir</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" asp-for="_permissoes.planoCategoriasEdit" id="planoCategoriasEdit" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="planoCategoriasEdit">Alterar</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" asp-for="_permissoes.planoCategoriasDelete" id="planoCategoriasDelete" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="planoCategoriasDelete">Apagar</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h6>Clientes</h6>
+                <hr class="hrLine" />
+                <!--Cadastro Clientes-->
+                <div class="row">
+                    <div class="col-12 col-md-3">
+                        <div class="row">
+                            <div class="form-check">
+                                <input class="form-check-input" asp-for="_permissoes.clienteConfigList" type="checkbox" id="clienteConfigList" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="clienteConfigList">Configurações do Cliente</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-left: 30px;">
+                        <div class="col-md-6 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" asp-for="_permissoes.clienteConfigCreate" id="clienteConfigCreate" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="clienteConfigCreate">Incluir</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" asp-for="_permissoes.clienteConfigEdit" id="clienteConfigEdit" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="clienteConfigEdit">Alterar</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Cliente: Categorias-->
+                <div class="row">
+                    <div class="col-12 col-md-3">
+                        <div class="row">
+                            <div class="form-check">
+                                <input class="form-check-input" asp-for="_permissoes.clienteCategoriasList" type="checkbox" id="clienteCategoriasList" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="clienteCategoriasList">Categorias do Cliente</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-left: 30px;">
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" asp-for="_permissoes.clienteCategoriasCreate" id="clienteCategoriasCreate" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="clienteCategoriasCreate">Incluir</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" asp-for="_permissoes.clienteCategoriasEdit" id="clienteCategoriasEdit" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="clienteCategoriasEdit">Alterar</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="form-check form-check-inline" style="width: 20%;">
+                                <input class="form-check-input" type="checkbox" asp-for="_permissoes.clienteCategoriasDelete" id="clienteCategoriasDelete" onclick="checkPermissoes(this.id)">
+                                <label class="form-check-label" for="clienteCategoriasDelete">Apagar</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        }
+
     </fieldset>
+    <br />
 
     <button type="submit" class="btn btn-info">Gravar</button>
-    <a class="btn btn-secondary" asp-controller="Usuario" asp-action="Index">Cancelar</a>    
+    <a class="btn btn-secondary" asp-controller="Usuario" asp-action="Index">Cancelar</a>
 </form>
 
 <script>

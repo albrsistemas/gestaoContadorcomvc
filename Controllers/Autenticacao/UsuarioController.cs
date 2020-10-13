@@ -1,9 +1,11 @@
 ﻿using gestaoContadorcomvc.Filtros;
+using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -22,7 +24,10 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
             TempData["user"] = user;
 
-            return View(user.listaUsuarios(user.usuario_conta_id, user.usuario_id));
+            Vm_usuario vm_user = new Vm_usuario();
+            vm_user.usuarios = user.listaUsuarios(user.usuario_conta_id, user.usuario_id);
+
+            return View(vm_user.usuarios);
         }
 
         [FiltroAutorizacao(permissao = "usuarioCreate")]
@@ -31,13 +36,17 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
         {
             ViewData["bread"] = "Usuário / Novo";
 
-            return View();
+            Usuario user = new Usuario();
+            Vm_usuario usuario = new Vm_usuario();
+            usuario = user.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            return View(usuario);
         }
 
         // POST: UsuarioController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection dados)
+        public ActionResult Create(IFormCollection dados, [Bind] Vm_usuario vm_user)
         {
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
 
@@ -45,7 +54,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
             try
             {
-                retorno = user.novoUsuario(dados["usuario_nome"], dados["usuario_dcto"], dados["usuario_user"], dados["usuario_senha"], user.usuario_conta_id, dados["usuario_email"], dados["permissoes"], user.usuario_id);
+                retorno = user.novoUsuario(dados["usuario_nome"], dados["usuario_dcto"], dados["usuario_user"], dados["usuario_senha"], user.usuario_conta_id, dados["usuario_email"], dados["permissoes"], user.usuario_id, vm_user._permissoes);
 
                 TempData["novoUsuario"] = retorno;
 
@@ -77,7 +86,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
         // POST: UsuarioController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection dados)
+        public ActionResult Edit(int id, IFormCollection dados, [Bind] Vm_usuario vm_user)
         {
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
             Vm_usuario usuario = new Vm_usuario();
@@ -85,7 +94,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
             try
             {
-                TempData["editUsuario"] = user.alteraUsuario(dados["usuario_nome"], dados["usuario_dcto"], user.usuario_conta_id, dados["usuario_email"], dados["permissoes"], id, user.usuario_id);
+                TempData["editUsuario"] = user.alteraUsuario(dados["usuario_nome"], dados["usuario_dcto"], user.usuario_conta_id, dados["usuario_email"], dados["permissoes"], id, user.usuario_id, vm_user._permissoes);
                 
                 return RedirectToAction(nameof(Index));
             }

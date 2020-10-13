@@ -39,8 +39,7 @@ namespace gestaoContadorcomvc.Filtros
                         context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "AcessoNegado" } });
                     }
                 }
-            }           
-
+            }
             //throw new NotImplementedException();
         }
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Asn1.Crmf;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -52,5 +53,9 @@ namespace gestaoContadorcomvc.Models.ViewModel
 
         public string Role { get; set; }
         public string permissoes { get; set; }
+
+        public Conta conta { get; set; }
+        public Permissoes _permissoes { get; set; }
+        public IEnumerable<Vm_usuario> usuarios { get; set; }
     }
 }
