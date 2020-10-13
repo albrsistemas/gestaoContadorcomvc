@@ -6,6 +6,7 @@ using gestaoContadorcomvc.Areas.Contabilidade.Models;
 using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
+using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,25 +15,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
     [Area("Contabilidade")]
-    [Route("Contabilidade/[controller]/[action]")]
-    //[FiltroAutenticacao]
-    //[FiltroContabilidade]
+    [Route("Contabilidade/[controller]/[action]")]    
     [Authorize(Roles = "Contabilidade")]
     public class PlanoCategoriasController : Controller
     {
-        [FiltroAutorizacao(permissao = "planoCategoriasList")]
+        [Autoriza(permissao = "planoCategoriasList")]
         public ActionResult Index()
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
-
-            TempData["user"] = user;
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             PlanoCategorias plano = new PlanoCategorias();
+            plano.planosContegorias = plano.listaPlanoCategorias(user.usuario_conta_id, user.usuario_id);
+            plano.user = user;
 
-            return View(plano.listaPlanoCategorias(user.usuario_conta_id, user.usuario_id));
+            return View(plano);
         }
 
-        [FiltroAutorizacao(permissao = "planoCategoriasCreate")]
+        [Autoriza(permissao = "planoCategoriasCreate")]
         public ActionResult Create()
         {
             return View();
@@ -43,7 +44,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             if (!ModelState.IsValid)
             {
@@ -66,10 +69,12 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
         }
 
-        [FiltroAutorizacao(permissao = "planoCategoriasEdit")]
+        [Autoriza(permissao = "planoCategoriasEdit")]
         public ActionResult Edit(int id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             PlanoCategorias plano = new PlanoCategorias();
 
@@ -81,7 +86,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int pc_id, IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             if (!ModelState.IsValid)
             {
@@ -104,10 +111,12 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
         }
 
-        [FiltroAutorizacao(permissao = "planoCategoriasDelete")]
+        [Autoriza(permissao = "planoCategoriasDelete")]
         public ActionResult Delete(int id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             PlanoCategorias plano = new PlanoCategorias();
 
@@ -119,7 +128,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int pc_id, IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             try
             {

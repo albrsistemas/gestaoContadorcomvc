@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,5 +23,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel
         public bool ccc_pref_editCategoria { get; set; }
         public bool ccc_pref_deleteCategoria { get; set; }
         public string ccc_liberaPlano { get; set; } //Atributa recebe sim, se não houver lançamentos sem encerramento para o plano vigente. A pesquisa é feita no controller.
+        public IEnumerable<gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel.vm_ConfigContadorCliente> configuracoes { get; set; }
+        public Vm_usuario user { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using gestaoContadorcomvc.Areas.Contabilidade.Models;
 using gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel;
 using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models.Autenticacao;
+using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +14,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
     [Area("Contabilidade")]
-    [Route("Contabilidade/[controller]/[action]")]
-    //[FiltroAutenticacao]
-    //[FiltroContabilidade]
+    [Route("Contabilidade/[controller]/[action]")]    
     [Authorize(Roles = "Contabilidade")]
     public class ContaContabilController : Controller
     {
-        [FiltroAutorizacao(permissao = "planoContasList")]
+        [Autoriza(permissao = "planoContasList")]
         public ActionResult Index(int plano_id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));            
 
             PlanoContas plano = new PlanoContas();
 
@@ -33,20 +34,17 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                 return RedirectToAction("AcessoNegadoContador", "Home");
             }
 
-            TempData["plano"] = plano;
+            ContaContabil conta = new ContaContabil();            
+            vm_ContaContabil contaContabil = new vm_ContaContabil();
 
-            TempData["user"] = user;
+            contaContabil.contasContabeis = conta.listaContasContabeisPorPlano(user.usuario_conta_id, plano_id, user.usuario_id);
+            contaContabil.user = user;
+            contaContabil.plano = plano;
 
-            ContaContabil conta = new ContaContabil();
-            
-            List<vm_ContaContabil> contas = new List<vm_ContaContabil>();
-
-            contas = conta.listaContasContabeisPorPlano(user.usuario_conta_id, plano_id, user.usuario_id);
-
-            return View(contas);
+            return View(contaContabil);
         }
 
-        [FiltroAutorizacao(permissao = "planoContasCreate")]
+        [Autoriza(permissao = "planoContasCreate")]
         public ActionResult Create(int id)
         {
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
@@ -88,7 +86,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
         }
 
-        [FiltroAutorizacao(permissao = "planoContasEdit")]
+        [Autoriza(permissao = "planoContasEdit")]
         public ActionResult Edit(int ccontabil_id, int plano_id)
         {
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
@@ -134,7 +132,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
         }
 
-        // GET: ContaContabilController/Delete/5
+        [Autoriza(permissao = "planoContasDelete")]
         public ActionResult Delete(int ccontabil_id, int plano_id)
         {
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");

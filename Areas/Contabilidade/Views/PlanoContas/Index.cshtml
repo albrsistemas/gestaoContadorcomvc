@@ -1,4 +1,4 @@
-﻿@model IEnumerable<gestaoContadorcomvc.Areas.Contabilidade.Models.PlanoContas>
+﻿@model gestaoContadorcomvc.Areas.Contabilidade.Models.PlanoContas
 @{
     ViewData["Title"] = "Plano de Contas";
     Layout = "~/Areas/Contabilidade/Views/Shared/_Layout.cshtml";
@@ -48,15 +48,14 @@
 <h2>Plano de Contas</h2>
 <hr class="hrLine" />
 
-@{
-    var user = (gestaoContadorcomvc.Models.Autenticacao.Usuario)TempData["user"];
+@{  
 
-    if (user.Role.ToUpper().Equals("ADM") || user.permissoes.Contains("planoContasCreate"))
+    if (Model.user.Role == "adm" || Model.user._permissoes.planoContasCreate)
     {
         <a class="btn btn-info create" data-id="" style="margin-bottom:15px;color:white;">Novo</a>
     }
 
-    foreach (var item in Model)
+    foreach (var item in Model.planosConta)
     {
         <div class="line-list">
             <div class="col-list-left">
@@ -72,7 +71,7 @@
             </div>
             <div class="col-list-rigth" style="padding-right: 10px;">
                 @{
-                    if (user.Role.ToUpper().Equals("ADM") || user.permissoes.Contains("contaContabilList"))
+                    if (Model.user.Role == "adm" || Model.user._permissoes.planoContasList)
                     {
                         <a asp-area="Contabilidade" asp-controller="ContaContabil" asp-action="Index" asp-route-plano_id="@item.plano_id">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eye" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -81,7 +80,7 @@
                             </svg>
                         </a>                        
                     }
-                    if (user.Role.ToUpper().Equals("ADM") || user.permissoes.Contains("planoContasEdit"))
+                    if (Model.user.Role == "adm" || Model.user._permissoes.planoContasEdit)
                     {
                         <a class="edit" data-id="@item.plano_id">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -89,7 +88,7 @@
                             </svg>
                         </a>
                     }
-                    if (user.Role.ToUpper().Equals("ADM") || user.permissoes.Contains("planoContasDelete"))
+                    if (Model.user.Role == "adm" || Model.user._permissoes.planoContasDelete)
                     {
                         <a class="delete" data-id="@item.plano_id">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

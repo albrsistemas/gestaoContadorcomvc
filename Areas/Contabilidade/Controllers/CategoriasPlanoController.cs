@@ -16,15 +16,16 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
     [Area("Contabilidade")]
-    [Route("Contabilidade/[controller]/[action]")]
-    //[FiltroAutenticacao]
-    //[FiltroContabilidade]
+    [Route("Contabilidade/[controller]/[action]")]    
     [Authorize(Roles = "Contabilidade")]
     public class CategoriasPlanoController : Controller
-    {  
+    {
+        [Autoriza(permissao = "planoCategoriasList")]
         public ActionResult SelectPlano(int pc_id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             PlanoContas planoContas = new PlanoContas();
 
@@ -40,9 +41,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SelectPlano(int pc_id, int planoContas_id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
-            if(pc_id > 0 && planoContas_id > 0)
+            if (pc_id > 0 && planoContas_id > 0)
             {
                 return RedirectToAction("Index", "CategoriasPlano", new { @pc_id = pc_id, @planoContas_id = planoContas_id });
             }            
@@ -52,10 +55,12 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 
 
 
-        // GET: CategoriasPlanoController
+        [Autoriza(permissao = "planoCategoriasList")]
         public ActionResult Index(int planoContas_id, int pc_id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             //Verificando o plano de contas
             PlanoContas planoContas = new PlanoContas();
@@ -70,13 +75,14 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 
 
             Categoria categoria = new Categoria();
-            List<Vm_categoria> categorias = new List<Vm_categoria>();
-            categorias = categoria.listaCategorias(user.usuario_conta_id, user.usuario_id, user.usuario_conta_id.ToString(), planoContas_id.ToString(), pc_id.ToString());
+            Vm_categoria cats = new Vm_categoria();
+            cats.categorias = categoria.listaCategorias(user.usuario_conta_id, user.usuario_id, user.usuario_conta_id.ToString(), planoContas_id.ToString(), pc_id.ToString());
+            cats.user = user;
 
-            return View(categorias);
+            return View(cats);
         }
 
-        [FiltroAutorizacao(permissao = "categoriaCreate")]
+        [Autoriza(permissao = "planoCategoriasCreate")]
         public ActionResult Create(string grupo, string escopo, string planoCategorias_id, string planoContas_id)
         {
             TempData["grupoCategoria"] = grupo;
@@ -92,7 +98,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             if (!ModelState.IsValid)
             {
@@ -118,7 +126,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         }
 
         // GET: CategoriasPlanoController/Edit/5
-        [FiltroAutorizacao(permissao = "categoriaEdit")]
+        [Autoriza(permissao = "planoCategoriasEdit")]
         public ActionResult Edit(int id, string tipo, string planoCategorias_id, string planoContas_id)
         {
             Categoria categoria = new Categoria();
@@ -139,7 +147,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int categoria_id, IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             if (!ModelState.IsValid)
             {
@@ -164,10 +174,12 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
         }
 
-        // GET: CategoriasPlanoController/Delete/5
+        [Autoriza(permissao = "planoCategoriasDelete")]
         public ActionResult Delete(int id, string planoCategorias_id, string planoContas_id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             TempData["planoCategorias_id"] = planoCategorias_id;
             TempData["planoContas_id"] = planoContas_id;
@@ -198,7 +210,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int categoria_id, string categoria_nome, string planoCategorias_id, string planoContas_id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             try
             {
@@ -216,7 +230,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
         }
 
-        [FiltroAutorizacao(permissao = "categoriaCreate")]
+        [Autoriza(permissao = "planoCategoriasCreate")]
         public ActionResult CreateGrupoCategoria(string escopo, string planoCategorias_id, string planoContas_id)
         {
             TempData["escopo"] = escopo;
@@ -231,7 +245,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateGrupoCategoria(IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");            
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             if (!ModelState.IsValid)
             {

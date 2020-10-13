@@ -7,6 +7,7 @@ using gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel;
 using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
+using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,16 +19,18 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
     [Route("Contabilidade/[controller]/[action]")]
     //[FiltroAutenticacao]
     //[FiltroContabilidade]
-    [Authorize(Roles = "Contabilidade")]
+    [Authorize(Roles = "Contabilidade")]    
     public class ConfigContadorClienteController : Controller
     {
-        // GET: ConfigContadorClienteController
+        [Autoriza(permissao = "clienteConfigList")]
         public ActionResult Index()
         {
             //Usuário logado / contexto conta selecionada pelo contador
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
             Conta contexto = new Conta();
-            contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+            contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
             TempData["Cliente"] = contexto.conta_nome;
 
             //Criar objeto de configurações para enviar para a view
@@ -57,14 +60,18 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                 ViewBag.planosContador = select.getPlanosContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == ccc.ccc_planoContasVigente.ToString() }).ToList();
             }
 
+            ccc.user = user;
+
             return View(ccc);
         }
 
-        [FiltroAutorizacao(permissao = "configClienteCreate")]
+        [Autoriza(permissao = "clienteConfigCreate")]
         public ActionResult Create()
         {
             //Usuário logado / contexto conta selecionada pelo contador
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));            
 
             Selects select = new Selects();
            
@@ -90,9 +97,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                     ccc_planoContasVigente = "0";
                 }
 
-                var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
                 Conta contexto = new Conta();
-                contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+                contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
                 Config_contador_cliente config = new Config_contador_cliente();
 
@@ -109,13 +118,15 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         }
 
 
-        [FiltroAutorizacao(permissao = "configClienteEdit")]
+        [Autoriza(permissao = "clienteConfigEdit")]
         public ActionResult Edit()
         {
             //Usuário logado / contexto conta selecionada pelo contador
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
             Conta contexto = new Conta();
-            contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));           
+            contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
             //Criar objeto de configurações para enviar para a view
             Config_contador_cliente config = new Config_contador_cliente();
@@ -165,9 +176,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                     ccc_planoContasVigente = "0";
                 }
 
-                var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
                 Conta contexto = new Conta();
-                contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+                contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
                 Config_contador_cliente config = new Config_contador_cliente();
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using gestaoContadorcomvc.Areas.Contabilidade.Models;
 using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models.Autenticacao;
+using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,25 +13,29 @@ using Microsoft.AspNetCore.Mvc;
 namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
     [Area("Contabilidade")]
-    [Route("Contabilidade/[controller]/[action]")]
-    //[FiltroAutenticacao]
-    //[FiltroContabilidade]
+    [Route("Contabilidade/[controller]/[action]")]    
     [Authorize(Roles = "Contabilidade")]
     public class PlanoContasController : Controller
     {
-        [FiltroAutorizacao(permissao = "planoContasList")]
+        [Autoriza(permissao = "planoContasList")]
         public ActionResult Index()
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            Conta conta = new Conta();
+            conta = conta.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
             TempData["user"] = user;
 
             PlanoContas plano = new PlanoContas();
+            plano.planosConta = plano.listaPlanoContas(user.usuario_conta_id, user.usuario_id);
+            plano.user = user;
 
-            return View(plano.listaPlanoContas(user.usuario_conta_id, user.usuario_id));
+            return View(plano);
         }
 
-        [FiltroAutorizacao(permissao = "planoContasCreate")]
+        [Autoriza(permissao = "planoContasCreate")]
         public ActionResult Create()
         {
             return View();
@@ -62,7 +67,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
         }
 
-        [FiltroAutorizacao(permissao = "planoContasEdit")]
+        [Autoriza(permissao = "planoContasEdit")]
         public ActionResult Edit(int id)
         {
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
@@ -98,7 +103,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
         }
 
-        [FiltroAutorizacao(permissao = "planoContasDelete")]
+        [Autoriza(permissao = "planoContasDelete")]
         public ActionResult Delete(int id)
         {
             var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");

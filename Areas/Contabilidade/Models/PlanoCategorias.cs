@@ -1,4 +1,5 @@
 ﻿using gestaoContadorcomvc.Models.SoftwareHouse;
+using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System;
@@ -20,6 +21,10 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
         public string pc_nome { get; set; }
         public int pc_conta_id { get; set; }
         public string pc_status { get; set; }
+        
+        //Atributos de controle
+        public IEnumerable<gestaoContadorcomvc.Areas.Contabilidade.Models.PlanoCategorias> planosContegorias { get; set; }
+        public Vm_usuario user { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      

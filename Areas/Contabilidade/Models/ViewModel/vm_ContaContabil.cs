@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -35,6 +36,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel
         public DateTime ccontabil_dataCriacao { get; set; }
         public DateTime ccontabil_dataInativacao { get; set; }
         public string ccontabil_status { get; set; }
+        public IEnumerable<gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel.vm_ContaContabil> contasContabeis { get; set; }
+        public Vm_usuario user { get; set; }
+        public PlanoContas plano { get; set; }
 
 
         public string grupoConta(string classificacao)

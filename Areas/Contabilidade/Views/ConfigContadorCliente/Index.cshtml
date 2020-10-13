@@ -42,10 +42,13 @@
         if (Model.ccc_id == 0)
         {
             <p>Cliente sem configurações</p>
-            
-            <div class="form-group">
-                <button class="btn btn-info"><a class="create" data-escopo="Entrada">Cadastrar</a></button>
-            </div>
+
+            if (Model.user.Role == "adm" || Model.user._permissoes.clienteConfigCreate)
+            {
+                <div class="form-group">
+                    <button class="btn btn-info"><a class="create" data-escopo="Entrada">Cadastrar</a></button>
+                </div>
+            }
         }
         else
         {
@@ -80,9 +83,12 @@
                 </div>
             </fieldset>
             <br />
-            <div class="form-group">
-                <button class="btn btn-info"><a class="edit" data-escopo="Entrada">Alterar</a></button>
-            </div>
+            if (Model.user.Role == "adm" || Model.user._permissoes.clienteConfigEdit)
+            {
+                <div class="form-group">
+                    <button class="btn btn-info"><a class="edit" data-escopo="Entrada">Alterar</a></button>
+                </div>
+            }
         }
     }
 }
