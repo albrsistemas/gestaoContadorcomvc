@@ -1,8 +1,4 @@
-﻿@model IEnumerable<gestaoContadorcomvc.Models.ViewModel.Vm_usuario>
-
-@using Microsoft.AspNetCore.Http
-
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_usuario
 
 @{
     ViewData["Title"] = "Usuários";
@@ -55,7 +51,7 @@
             </button>
         </div>
     }
-    
+
     if (TempData["EditPasswordUsuario"] != null && TempData["EditPasswordUsuario"].ToString().Contains("sucesso"))
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
@@ -65,7 +61,7 @@
             </button>
         </div>
     }
-    
+
     if (TempData["EditPasswordUsuario"] != null && TempData["EditPasswordUsuario"].ToString().Contains("Erro"))
     {
         <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
@@ -82,14 +78,14 @@
 <hr class="hrLine" />
 
 @{
-    if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "adm" || HttpContextAccessor.HttpContext.Session.GetString("Permissoes").Contains("usuarioCreate"))
+    if (Model.Role.Equals("adm") || Model._permissoes.usuarioCreate)
     {
         <a class="btn btn-info" style="margin-bottom:10px;" asp-controller="Usuario" asp-action="Create">Novo</a>
     }
 }
 
 @{
-    foreach (var item in Model)
+    foreach (var item in Model.usuarios)
     {
         <div class="line-list">
             <div class="col-list-left">
@@ -104,7 +100,7 @@
             <div class="col-list-rigth">
                 <span class="icon-option">
                     @{
-                        if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "adm" || HttpContextAccessor.HttpContext.Session.GetString("Permissoes").Contains("usuarioEdit"))
+                        if (Model.Role.Equals("adm") || Model._permissoes.usuarioEdit)
                         {
                             <a asp-controller="Usuario" asp-action="Edit" asp-route-id="@item.usuario_id">
                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -117,7 +113,7 @@
                 </span>
                 <span class="icon-option">
                     @{
-                        if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "adm" || HttpContextAccessor.HttpContext.Session.GetString("Permissoes").Contains("usuarioDelete"))
+                        if (Model.Role.Equals("adm") || Model._permissoes.usuarioDelete)
                         {
                             <a class="delete" data-id="@item.usuario_id">
                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -129,7 +125,7 @@
                     }
                 </span>
                 @{
-                    if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "adm")
+                    if (Model.Role.Equals("adm"))
                     {
                         <span class="icon-option">
                             <a class="EditPassword" data-id="@item.usuario_id">

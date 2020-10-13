@@ -6,29 +6,35 @@ using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace gestaoContadorcomvc.Controllers
 {
-    [FiltroAutenticacao]
+    [Authorize]
     public class CategoriaController : Controller
     {
         // GET: Categoria_v2Controller
-        [FiltroAutorizacao(permissao = "categoriaList")]
+        [Autoriza(permissao = "categoriaList")]
         public ActionResult Index()
         {
-            ViewData["bread"] = "Categorias";            
+            ViewData["bread"] = "Categorias";
 
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
             Categoria categoria = new Categoria();
-            List<Vm_categoria> categorias = new List<Vm_categoria>();
-            categorias = categoria.listaCategorias(user.usuario_conta_id, user.usuario_id, null, null,"Não");            
+            Vm_categoria categorias = new Vm_categoria();
+            categorias.categorias = categoria.listaCategorias(user.usuario_conta_id, user.usuario_id, null, null,"Não");
+
+            categorias.user = user;
 
             return View(categorias);
         }
 
-        [FiltroAutorizacao(permissao = "categoriaCreate")]
+        [Autoriza(permissao = "categoriaCreate")]
         public ActionResult CreateGrupoCategoria(string escopo)
         {
             TempData["escopo"] = escopo;
@@ -41,7 +47,9 @@ namespace gestaoContadorcomvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateGrupoCategoria(IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             if (!ModelState.IsValid)
             {
@@ -65,7 +73,7 @@ namespace gestaoContadorcomvc.Controllers
         }
 
         // GET: Categoria_v2Controller/Create
-        [FiltroAutorizacao(permissao = "categoriaCreate")]
+        [Autoriza(permissao = "categoriaCreate")]
         public ActionResult Create(string grupo, string escopo)
         {
             TempData["grupoCategoria"] = grupo;
@@ -80,7 +88,9 @@ namespace gestaoContadorcomvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             if (!ModelState.IsValid)
             {
@@ -102,7 +112,7 @@ namespace gestaoContadorcomvc.Controllers
         }
 
         // GET: Categoria_v2Controller/Edit/5
-        [FiltroAutorizacao(permissao = "categoriaEdit")]
+        [Autoriza(permissao = "categoriaEdit")]
         public ActionResult Edit(int id, string tipo)
         {
             Categoria categoria = new Categoria();
@@ -121,7 +131,9 @@ namespace gestaoContadorcomvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int categoria_id, IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             if (!ModelState.IsValid)
             {
@@ -145,7 +157,9 @@ namespace gestaoContadorcomvc.Controllers
         // GET: Categoria_v2Controller/Delete/5
         public ActionResult Delete(int id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             Categoria categoria = new Categoria();
 
@@ -173,7 +187,9 @@ namespace gestaoContadorcomvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int categoria_id, string categoria_nome)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             try
             {
@@ -192,7 +208,9 @@ namespace gestaoContadorcomvc.Controllers
         //Verificar se classificação da categoria existe
         public IActionResult classificacaoExiste(string categoria_classificacao)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             Categoria categoria = new Categoria();
 

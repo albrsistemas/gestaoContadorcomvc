@@ -56,6 +56,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
 
         public Conta conta { get; set; }
         public Permissoes _permissoes { get; set; }
-        public IEnumerable<Vm_usuario> usuarios { get; set; }
+        public IEnumerable<gestaoContadorcomvc.Models.ViewModel.Vm_usuario> usuarios { get; set; }
+        public string usuario_ultimoCliente { get; set; }
     }
 }

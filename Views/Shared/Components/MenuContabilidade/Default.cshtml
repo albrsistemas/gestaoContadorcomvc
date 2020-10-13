@@ -2,44 +2,49 @@
     if (TempData["user"] != null)
     {
 
-        gestaoContadorcomvc.Models.Autenticacao.Usuario usuario = new gestaoContadorcomvc.Models.Autenticacao.Usuario();
-        usuario = (gestaoContadorcomvc.Models.Autenticacao.Usuario)TempData["user"];
+        gestaoContadorcomvc.Models.ViewModel.Vm_usuario usuario = new gestaoContadorcomvc.Models.ViewModel.Vm_usuario();
+        usuario = (gestaoContadorcomvc.Models.ViewModel.Vm_usuario)TempData["user"];
 
         if (usuario.permissoes != null)
         {
-            <ul class="navbar-nav">
-                @{
-                    if (usuario.Role == "adm" || usuario.permissoes.Contains("categContabList") || usuario.permissoes.Contains("planoCategContabList") || usuario.permissoes.Contains("planoContasList"))
-                    {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Cadastro
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                @if (usuario.Role == "adm" || usuario.permissoes.Contains("planoContasList"))
-                                {<a class='dropdown-item' asp-area="Contabilidade" asp-controller='PlanoContas' asp-action='Index'>Plano de Contas</a>}                                
-                                @if (usuario.Role == "adm" || usuario.permissoes.Contains("planoCategContabList"))
-                                {<a class="dropdown-item" asp-area="Contabilidade" asp-controller='PlanoCategorias' asp-action='Index'>Plano de Categorias</a>}
-                            </div>
-                        </li>
-                    }
-                }
+    <ul class="navbar-nav">
+        @{
+            if (usuario.Role == "adm" || usuario._permissoes.planoContasList || usuario._permissoes.planoCategoriasList)
+            {
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Cadastro
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        @if (usuario.Role == "adm" || usuario._permissoes.planoContasList)
+                        {<a class='dropdown-item' asp-area="Contabilidade" asp-controller='PlanoContas' asp-action='Index'>Plano de Contas</a>}
+                        @if (usuario.Role == "adm" || usuario._permissoes.planoCategoriasList)
+                        {<a class="dropdown-item" asp-area="Contabilidade" asp-controller='PlanoCategorias' asp-action='Index'>Plano de Categorias</a>}
+                    </div>
+                </li>
+            }
+        }
 
+        @{
+            if (usuario.Role == "adm" || usuario._permissoes.clienteConfigList || usuario._permissoes.clienteCategoriasList)
+            {
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Cliente
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                        
-                        @if (usuario.Role == "adm" || usuario.permissoes.Contains("configContabList"))
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        @if (usuario.Role == "adm" || usuario._permissoes.clienteConfigList)
                         {<a class="dropdown-item" asp-area="Contabilidade" asp-controller='ConfigContadorCliente' asp-action='Index'>Configurações</a>}
-                        @if (usuario.Role == "adm" || usuario.permissoes.Contains("planoCategContabList"))
+                        @if (usuario.Role == "adm" || usuario._permissoes.clienteCategoriasList)
                         {<a class="dropdown-item" asp-area="Contabilidade" asp-controller='Categoria' asp-action='Index'>Categorias</a>}
                         <a class="dropdown-item" href="#">Lançamentos</a>
                         <a class="dropdown-item" href="#">Balancete</a>
                         <a class="dropdown-item" href="#">DRE</a>
                     </div>
                 </li>
-            </ul>
+            }
+        }
+    </ul>
             <div class="dropdown-divider"></div>
             <ul class="navbar-nav ml-auto">
                 <!--Menu alinhao a direita-->

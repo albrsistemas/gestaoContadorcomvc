@@ -93,7 +93,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
                     new Claim(ClaimTypes.Name, user.usuario_id.ToString()),
                     new Claim(ClaimTypes.Email, user.usuario_email),
                     new Claim(ClaimTypes.Role, user.Role),
-                    new Claim(ClaimTypes.Role, conta.conta_tipo),                    
+                    new Claim(ClaimTypes.Role, conta.conta_tipo),                   
                 };
 
                 var minhaIdentity = new ClaimsIdentity(userClaims, "Usuario");

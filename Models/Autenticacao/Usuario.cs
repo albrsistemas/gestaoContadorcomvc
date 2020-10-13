@@ -69,7 +69,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                         user.usuario_dcto = leitor["usuario_dcto"].ToString();
                         user.usuario_email = leitor["usuario_email"].ToString();                        
                         user.Role = leitor["Role"].ToString();
-                        user.permissoes = leitor["usuario_permissoes"].ToString();
+                        user.permissoes = leitor["usuario_permissoes"].ToString();                        
                     }
                 }                
 
@@ -296,6 +296,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                         usuario.usuario_id = Convert.ToInt32(leitor["usuario_id"]);
                         usuario.Role = leitor["Role"].ToString();
                         usuario.permissoes = leitor["usuario_permissoes"].ToString();
+                        usuario.usuario_ultimoCliente = leitor["usuario_ultimoCliente"].ToString();
                     }
                 }               
 
@@ -491,6 +492,37 @@ namespace gestaoContadorcomvc.Models.Autenticacao
             }
 
             return retorno;
+        }
+
+        //Autualizar últomo cliente que usuário selecionou na área da contabilidade
+        public void ultimoCliente(string cliente_id, int usuario_id)
+        {
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "UPDATE usuario set usuario_ultimoCliente = @cliente_id where usuario_id = @usuario_id;";
+                comando.Parameters.AddWithValue("@usuario_id", usuario_id);
+                comando.Parameters.AddWithValue("@cliente_id", cliente_id);                
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+            }
+            catch (Exception)
+            {                
+                Transacao.Rollback();
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
         }
 
 

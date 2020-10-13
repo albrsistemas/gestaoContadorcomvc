@@ -1,4 +1,5 @@
 ﻿using gestaoContadorcomvc.Models.Autenticacao;
+using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,10 @@ namespace gestaoContadorcomvc.Components
     {
         public IViewComponentResult Invoke(string area)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             string retorno = "";
 
@@ -21,19 +25,18 @@ namespace gestaoContadorcomvc.Components
 
             string pagina = HttpContext.Request.GetDisplayUrl();
 
-            Conta conta = new Conta();
-
-            var cliente = HttpContext.Session.GetInt32("cliente_selecionado");
+            var cliente = user.usuario_ultimoCliente;
+            Conta contexto = new Conta();
+            contexto = contexto.buscarConta(Convert.ToInt32(cliente));
 
             //Contabilidade
             if (area.Equals("Contabilidade"))
             {
                 retorno = "Contabilidade";
 
-                if (cliente != null && cliente > 0)
-                {
-                    conta = conta.buscarConta(Convert.ToInt32(cliente));
-                    retorno = conta.conta_nome;
+                if (cliente != null && cliente != "0")
+                {   
+                    retorno = contexto.conta_nome;
                 }
                 else
                 {
@@ -76,7 +79,7 @@ namespace gestaoContadorcomvc.Components
 
             ViewData["bread"] = retorno;
 
-            ViewData["user"] = user;
+            ViewData["userBread"] = user;
 
             return View();
         }

@@ -39,5 +39,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string categoria_contaonline_id { get; set; } //ID da conta on line      
 
         public IEnumerable<gestaoContadorcomvc.Models.ViewModel.Vm_categoria> categorias { get; set; }
+
+        public Vm_usuario user { get; set; }
     }
 }

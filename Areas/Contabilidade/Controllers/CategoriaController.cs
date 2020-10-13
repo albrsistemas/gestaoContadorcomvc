@@ -20,15 +20,17 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
     //[FiltroAutenticacao]
     //[FiltroContabilidade]
     [Authorize(Roles = "Contabilidade")]
+    [Autoriza(permissao = "clienteCategoriasList")]
     public class CategoriaController : Controller
     {
         // GET: CategoriaController
         public ActionResult Index()
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
-
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
             Conta conta = new Conta();
-            conta = conta.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+            conta = conta.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
             TempData["Cliente"] = conta.conta_nome;
 
             //Vericiar se cliente possui contabilidade on line. Se poitivo buscar o plano do cliente
@@ -57,11 +59,12 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 
             Vm_categoria cats = new Vm_categoria();
             cats.categorias = categorias;
+            cats.user = user;
 
             return View(cats);
         }
 
-        [FiltroAutorizacao(permissao = "categoriaCreate")]
+        [Autoriza(permissao = "clienteCategoriasCreate")]
         public ActionResult CreateGrupoCategoria(string escopo)
         {
             TempData["escopo"] = escopo;
@@ -74,9 +77,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateGrupoCategoria(IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
             Conta contexto = new Conta();
-            contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+            contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
             if (!ModelState.IsValid)
             {
@@ -100,7 +105,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         }
 
         // GET: CategoriaController/Create
-        [FiltroAutorizacao(permissao = "categoriaCreate")]
+        [Autoriza(permissao = "clienteCategoriasCreate")]
         public ActionResult Create(string grupo, string escopo)
         {
             TempData["grupoCategoria"] = grupo;
@@ -115,9 +120,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
             Conta contexto = new Conta();
-            contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+            contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
 
             if (!ModelState.IsValid)
@@ -139,7 +146,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
         }
 
-        // GET: CategoriaController/Edit/5
+        [Autoriza(permissao = "clienteCategoriasEdit")]
         public ActionResult Edit(int id, string tipo)
         {
             Categoria categoria = new Categoria();
@@ -158,9 +165,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int categoria_id, IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
             Conta contexto = new Conta();
-            contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+            contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
             if (!ModelState.IsValid)
             {
@@ -181,10 +190,12 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
         }
 
-        // GET: CategoriaController/Delete/5
+        [Autoriza(permissao = "clienteCategoriasDelete")]
         public ActionResult Delete(int id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));            
 
             Categoria categoria = new Categoria();
 
@@ -212,9 +223,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int categoria_id, string categoria_nome)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
             Conta contexto = new Conta();
-            contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+            contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
             try
             {
@@ -230,11 +243,14 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             }
         }
 
+        [Autoriza(permissao = "clienteCopiaPlano")]
         public ActionResult copiarPlanoCategorias()
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
             Conta contexto = new Conta();
-            contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+            contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
             PlanoContas planoContas = new PlanoContas();
 
@@ -251,7 +267,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             try
             {
-                var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));                
 
                 Categoria categoria = new Categoria();
 
