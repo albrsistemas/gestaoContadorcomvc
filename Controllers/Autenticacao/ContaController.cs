@@ -32,10 +32,10 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
                 }
 
                 Registro registro = new Registro();
-                registro.registro(collection["conta_dcto"],
+                registro.registro(collection["conta_dcto"].ToString().Replace(".","").Replace("-","").Replace("/",""),
                     "Cliente",
                     collection["usuario_nome"],
-                    collection["usuario_dcto"],
+                    collection["usuario_dcto"].ToString().Replace(".", "").Replace("-", "").Replace("/", ""),
                     collection["usuario_user"],
                     collection["usuario_senha"],
                     collection["conta_email"],

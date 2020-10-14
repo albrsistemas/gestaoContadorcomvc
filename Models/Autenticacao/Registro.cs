@@ -24,7 +24,8 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         public string conta_nome { get; set; }
 
         [Required(ErrorMessage = "O e-mail é obrigatório.")]
-        [DataType(DataType.EmailAddress, ErrorMessage = "Email inválido")]
+        [DataType(DataType.EmailAddress, ErrorMessage = "Email inválido", ErrorMessageResourceName = "Email inválido")]
+        [EmailAddress(ErrorMessage = "Email inválido")]
         [Remote("emailExiste", "Conta", ErrorMessage = "E-mail já cadastrado")]
         public string conta_email { get; set; }
 

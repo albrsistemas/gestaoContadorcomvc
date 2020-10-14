@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gestaoContadorcomvc.Areas.Contabilidade.Models;
+using gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel;
 using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
@@ -31,12 +33,33 @@ namespace gestaoContadorcomvc.Controllers
 
             categorias.user = user;
 
+            Config_contador_cliente cco = new Config_contador_cliente();
+            vm_ConfigContadorCliente vm_cco = new vm_ConfigContadorCliente();
+            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id, user.conta.contador_id);
+
+            categorias.cco = vm_cco;
+
             return View(categorias);
         }
 
         [Autoriza(permissao = "categoriaCreate")]
         public ActionResult CreateGrupoCategoria(string escopo)
         {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Config_contador_cliente cco = new Config_contador_cliente();
+            vm_ConfigContadorCliente vm_cco = new vm_ConfigContadorCliente();
+            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id, user.conta.contador_id);
+
+            if (vm_cco.ccc_pref_novaCategoria)
+            {
+                TempData["createGrupo"] = "Erro, a função de criar categorias está bloqueada pelo contador!";
+
+                return RedirectToAction(nameof(Index));
+            }
+
             TempData["escopo"] = escopo;
 
             return View();
@@ -76,6 +99,21 @@ namespace gestaoContadorcomvc.Controllers
         [Autoriza(permissao = "categoriaCreate")]
         public ActionResult Create(string grupo, string escopo)
         {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Config_contador_cliente cco = new Config_contador_cliente();
+            vm_ConfigContadorCliente vm_cco = new vm_ConfigContadorCliente();
+            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id, user.conta.contador_id);
+
+            if (vm_cco.ccc_pref_novaCategoria)
+            {
+                TempData["createGrupo"] = "Erro, a função de criar categorias está bloqueada pelo contador!";
+
+                return RedirectToAction(nameof(Index));
+            }
+
             TempData["grupoCategoria"] = grupo;
 
             TempData["escopo"] = escopo;
@@ -115,6 +153,21 @@ namespace gestaoContadorcomvc.Controllers
         [Autoriza(permissao = "categoriaEdit")]
         public ActionResult Edit(int id, string tipo)
         {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Config_contador_cliente cco = new Config_contador_cliente();
+            vm_ConfigContadorCliente vm_cco = new vm_ConfigContadorCliente();
+            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id, user.conta.contador_id);
+
+            if (vm_cco.ccc_pref_novaCategoria)
+            {
+                TempData["createGrupo"] = "Erro, a função de alterar categorias está bloqueada pelo contador!";
+
+                return RedirectToAction(nameof(Index));
+            }
+
             Categoria categoria = new Categoria();
 
             Vm_categoria vm_categoria = new Vm_categoria();
@@ -160,6 +213,17 @@ namespace gestaoContadorcomvc.Controllers
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
             user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Config_contador_cliente cco = new Config_contador_cliente();
+            vm_ConfigContadorCliente vm_cco = new vm_ConfigContadorCliente();
+            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id, user.conta.contador_id);
+
+            if (vm_cco.ccc_pref_novaCategoria)
+            {
+                TempData["createGrupo"] = "Erro, a função de apagar categorias está bloqueada pelo contador!";
+
+                return RedirectToAction(nameof(Index));
+            }            
 
             Categoria categoria = new Categoria();
 

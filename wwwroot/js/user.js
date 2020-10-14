@@ -30,15 +30,15 @@ function checkPermissoes(id) {
     
 
     //Varrengo os inputs e atribuindo valores ao campo usuario_permissoes
-    var strPermissoes = "";
-    var inputs = [];
-    inputs = document.querySelectorAll("input");
+    //var strPermissoes = "";
+    //var inputs = [];
+    //inputs = document.querySelectorAll("input");
 
-    for (let x = 0; x < inputs.length; x++) {
-        if (inputs[x].type == "checkbox" && inputs[x].checked) {
-            strPermissoes += inputs[x].value + "|";
-        }
-    }
-    document.getElementById("inputPermissao").value = strPermissoes;
-    console.log(document.getElementById("inputPermissao").value);
+    //for (let x = 0; x < inputs.length; x++) {
+    //    if (inputs[x].type == "checkbox" && inputs[x].checked) {
+    //        strPermissoes += inputs[x].value + "|";
+    //    }
+    //}
+    //document.getElementById("inputPermissao").value = strPermissoes;
+    //console.log(document.getElementById("inputPermissao").value);
 }

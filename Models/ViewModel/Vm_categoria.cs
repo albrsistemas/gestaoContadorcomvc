@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using gestaoContadorcomvc.Areas.Contabilidade.Models;
+using gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,5 +43,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public IEnumerable<gestaoContadorcomvc.Models.ViewModel.Vm_categoria> categorias { get; set; }
 
         public Vm_usuario user { get; set; }
+
+        public vm_ConfigContadorCliente cco { get; set; }
     }
 }

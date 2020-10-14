@@ -26,6 +26,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
 
         public string conta_nome { get; set; }
         public int conta_contador { get; set; }
+        public int contador_id { get; set; }
 
 
         /*--------------------------*/
@@ -60,7 +61,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
 
             try
             {
-                comando.CommandText = "Select * from conta where conta.conta_id = @conta_id";
+                comando.CommandText = "SELECT conta.*, cc.cc_conta_id_contador from conta INNER join contacontabilidade as cc on cc.cc_id = conta.conta_contador where conta.conta_id = @conta_id";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
@@ -90,7 +91,15 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                         conta.conta_dcto = leitor["conta_dcto"].ToString();
                         conta.conta_tipo = leitor["conta_tipo"].ToString();
                         conta.conta_email = leitor["conta_email"].ToString();                        
-                        conta.conta_nome = leitor["conta_nome"].ToString();                        
+                        conta.conta_nome = leitor["conta_nome"].ToString();
+                        if (DBNull.Value != leitor["cc_conta_id_contador"])
+                        {
+                            conta.contador_id = Convert.ToInt32(leitor["cc_conta_id_contador"]);
+                        }
+                        else
+                        {
+                            conta.contador_id = 0;
+                        }
                     }
                 }
             }
