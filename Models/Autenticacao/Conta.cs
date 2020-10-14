@@ -61,7 +61,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
 
             try
             {
-                comando.CommandText = "SELECT conta.*, cc.cc_conta_id_contador from conta INNER join contacontabilidade as cc on cc.cc_id = conta.conta_contador where conta.conta_id = @conta_id";
+                comando.CommandText = "SELECT conta.*, cc.cc_conta_id_contador from conta LEFT join contacontabilidade as cc on cc.cc_id = conta.conta_contador where conta.conta_id = @conta_id";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
@@ -103,8 +103,9 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                     }
                 }
             }
-            catch (Exception)
-            {                
+            catch (Exception e)
+            {
+                string erro = e.Message;
             }
             finally
             {
