@@ -16,9 +16,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
     [Area("Contabilidade")]
-    [Route("Contabilidade/[controller]/[action]")]
-    //[FiltroAutenticacao]
-    //[FiltroContabilidade]
+    [Route("Contabilidade/[controller]/[action]")]    
     [Authorize(Roles = "Contabilidade")]
     public class CCOController : Controller
     {
@@ -28,12 +26,14 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             return View();
         }
 
-        // GET: CCOController/Details/5
+        [Autoriza(permissao = "clienteCategoriasCreate")]
         public ActionResult Details(int id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
             Conta contexto = new Conta();
-            contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+            contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
             Categoria_contaonline cco = new Categoria_contaonline();
             vm_categoria_contaonline vm_cco = new vm_categoria_contaonline();
@@ -42,7 +42,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             return View(vm_cco);
         }
 
-        // GET: CCOController/Create
+        [Autoriza(permissao = "clienteCategoriasCreate")]
         public ActionResult Create(int plano_id, int categoria_id)
         {
             Categoria categoria = new Categoria();
@@ -65,9 +65,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
             Conta contexto = new Conta();
-            contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+            contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
             try
             {
@@ -99,9 +101,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             try
             {
-                var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
                 Conta contexto = new Conta();
-                contexto = contexto.contextoCliente(Convert.ToInt32(HttpContext.Session.GetInt32("cliente_selecionado")));
+                contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
                 Categoria_contaonline cco = new Categoria_contaonline();
 

@@ -10,7 +10,7 @@ using System;
 
 namespace gestaoContadorcomvc.Controllers.GE
 {
-    [FiltroAutorizacao]
+    [Authorize]
     public class ConfiguracoesController : Controller
     {
         public IActionResult Index()
@@ -19,13 +19,13 @@ namespace gestaoContadorcomvc.Controllers.GE
 
             return View();
         }
-
-        // GET: Categoria_v2Controller/Create
-        //[FiltroAutorizacao(permissao = "ADM")]
-        [Authorize(Roles = "adm")]
+                
+        [Autoriza(permissao = "configContabilidade")]        
         public ActionResult Contabilidade()
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             Conta conta = new Conta();
             conta = conta.buscarConta(user.usuario_conta_id);
@@ -44,12 +44,13 @@ namespace gestaoContadorcomvc.Controllers.GE
 
             return View(contabilidade);
         }
-
-        // GET: Categoria_v2Controller/Create   
-        [FiltroAutorizacao(permissao = "ADM")]
+                
+        [Autoriza(permissao = "configContabilidade")]
         public ActionResult AddContabilidade(string dctoContador)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             Conta empresa = new Conta();
             empresa = empresa.buscarConta(user.usuario_conta_id);
@@ -99,7 +100,9 @@ namespace gestaoContadorcomvc.Controllers.GE
         [ValidateAntiForgeryToken]
         public ActionResult AddContabilidade(IFormCollection dados)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             if (!ModelState.IsValid)
             {
@@ -120,11 +123,12 @@ namespace gestaoContadorcomvc.Controllers.GE
             }
         }
 
-        // GET: Categoria_v2Controller/Create    
-        [FiltroAutorizacao(permissao = "ADM")]
+        [Autoriza(permissao = "configContabilidade")]
         public ActionResult DeleteContabilidade()
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             Conta empresa = new Conta();
             empresa = empresa.buscarConta(user.usuario_conta_id);
@@ -141,7 +145,9 @@ namespace gestaoContadorcomvc.Controllers.GE
         [ValidateAntiForgeryToken]
         public ActionResult DeleteContabilidade(IFormCollection dados)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));            
 
             if (!ModelState.IsValid)
             {

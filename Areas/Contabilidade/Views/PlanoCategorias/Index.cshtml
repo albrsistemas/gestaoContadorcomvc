@@ -50,7 +50,7 @@
 
 @{  
 
-    if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasCreate))
+    if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasCreate)
     {
         <a class="btn btn-info create" data-id="" style="margin-bottom:15px;color:white;">Novo</a>
     }
@@ -71,7 +71,7 @@
             </div>
             <div class="col-list-rigth" style="padding-right: 10px;">
                 @{
-                    if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasList))
+                    if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasList)
                     {
                         <a class="SelectPlano" data-pc_id="@item.pc_id">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eye" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -80,7 +80,7 @@
                             </svg>
                         </a>                        
                     }
-                    if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasEdit))
+                    if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasEdit)
                     {
                         <a class="edit" data-id="@item.pc_id">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -88,7 +88,7 @@
                             </svg>
                         </a>
                     }
-                    if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasDelete))
+                    if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasDelete)
                     {
                         <a class="delete" data-id="@item.pc_id">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

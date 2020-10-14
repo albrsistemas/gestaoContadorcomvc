@@ -51,12 +51,12 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
         public ActionResult Login()
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            //var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
 
-            if(user != null)
-            {
-                TempData["user"] = user.usuario_nome;
-            }
+            //if(user != null)
+            //{
+            //    TempData["user"] = user.usuario_nome;
+            //}
 
             return View();
         }
@@ -72,15 +72,6 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             {
                 return View(TempData["errorLogin"] = "Usuário ou senha inválidos"); 
             }
-
-            //Gerando o login     
-            
-            HttpContext.Session.SetObjectAsJson("user", user);
-            HttpContext.Session.SetInt32("cliente_id", 0);
-            HttpContext.Session.SetString("Role", user.Role);
-            HttpContext.Session.SetInt32("ID", user.usuario_id);
-            HttpContext.Session.SetInt32("Conta", user.usuario_conta_id);
-            HttpContext.Session.SetString("Permissoes", user.permissoes);
 
             Conta conta = new Conta();
             conta = conta.buscarConta(user.usuario_conta_id);
@@ -114,10 +105,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
         [HttpGet]
         public async Task<IActionResult> Logout()
-        {
-            //            HttpContext.Session.Clear();
-            HttpContext.Session.Remove("user");
-
+        {   
             await HttpContext.SignOutAsync();
 
             return RedirectToAction("Login", "Conta");

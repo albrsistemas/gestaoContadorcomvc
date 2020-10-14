@@ -18,6 +18,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public DateTime cc_dataDesvinculacao { get; set; }
         public Usuario usuario { get; set; }                
         public Conta conta { get; set; }
+        
 
 
     }

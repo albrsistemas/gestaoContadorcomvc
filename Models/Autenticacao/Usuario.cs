@@ -200,7 +200,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
 
             try
             {
-                comando.CommandText = "call pr_novoUsuario (@usuario_nome, @usuario_dcto, md5(@usuario_user), md5(@usuario_senha), @usuario_conta_id, @usuario_permissoes, @usuario_email);";
+                comando.CommandText = "call pr_novoUsuario (@usuario_nome, @usuario_dcto, @usuario_user, @usuario_senha, @usuario_conta_id, @usuario_permissoes, @usuario_email);";
                 comando.Parameters.AddWithValue("@usuario_nome", nome);
                 comando.Parameters.AddWithValue("@usuario_dcto", dcto);
                 comando.Parameters.AddWithValue("@usuario_user", usuario);

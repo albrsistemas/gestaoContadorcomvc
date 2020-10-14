@@ -4,10 +4,11 @@ using Microsoft.Extensions.Logging;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace gestaoContadorcomvc.Controllers
 {   
-    [FiltroAutenticacao]
+    [Authorize]
     public class HomeController : Controller
     {      
         public IActionResult Index()

@@ -16,18 +16,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
     [Area("Contabilidade")]
-    [Route("Contabilidade/[controller]/[action]")]
-    //[FiltroAutenticacao]
-    //[FiltroContabilidade]
+    [Route("Contabilidade/[controller]/[action]")]    
     [Authorize(Roles = "Contabilidade")]
     public class CCOPlanoCategoriasController : Controller
     {
+        [Autoriza(permissao = "planoCategoriasCreate")]
         public ActionResult Details(int id, int planoContas_id, int planoCategorias_id)
         {
             TempData["planoCategorias_id"] = planoCategorias_id;
             TempData["planoContas_id"] = planoContas_id;
 
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");           
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));            
 
             Categoria_contaonline cco = new Categoria_contaonline();
             vm_categoria_contaonline vm_cco = new vm_categoria_contaonline();
@@ -36,7 +37,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             return View(vm_cco);
         }
 
-        // GET: CCOController/Create
+        [Autoriza(permissao = "planoCategoriasCreate")]
         public ActionResult Create(int categoria_id, int planoContas_id, int planoCategorias_id)
         {
             TempData["planoCategorias_id"] = planoCategorias_id;
@@ -62,7 +63,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");            
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));            
 
             try
             {
@@ -94,7 +97,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             try
             {
-                var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");                
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
                 Categoria_contaonline cco = new Categoria_contaonline();
 

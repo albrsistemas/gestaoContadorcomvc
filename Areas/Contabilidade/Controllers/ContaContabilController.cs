@@ -47,7 +47,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [Autoriza(permissao = "planoContasCreate")]
         public ActionResult Create(int id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             PlanoContas plano = new PlanoContas();
 
@@ -72,7 +74,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                     return RedirectToAction("Index", new { plano_id = Convert.ToInt32(collection["plano_id"]) });
                 }
 
-                var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
                 ContaContabil ccontabil = new ContaContabil();
 
@@ -89,7 +93,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [Autoriza(permissao = "planoContasEdit")]
         public ActionResult Edit(int ccontabil_id, int plano_id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             PlanoContas plano = new PlanoContas();
 
@@ -118,7 +124,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                     return RedirectToAction("Index", new { plano_id = Convert.ToInt32(collection["plano_id"]) });
                 }
 
-                var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
                 ContaContabil contaContabil = new ContaContabil();
 
@@ -135,7 +143,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [Autoriza(permissao = "planoContasDelete")]
         public ActionResult Delete(int ccontabil_id, int plano_id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             PlanoContas plano = new PlanoContas();
 
@@ -157,7 +167,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             try
             {
-                var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
                 ContaContabil contaContabil = new ContaContabil();
 

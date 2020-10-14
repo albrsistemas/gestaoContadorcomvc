@@ -1,6 +1,6 @@
 ﻿@{
 
-    var user = (gestaoContadorcomvc.Models.ViewModel.Vm_usuario)TempData["userBread"];
+    var user = (gestaoContadorcomvc.Models.ViewModel.Vm_usuario)ViewData["userBread"];
 
 
     if (ViewData["area"] != null && ViewData["area"].ToString().Equals("Contabilidade"))
@@ -22,7 +22,7 @@
             {
                 <div id="mySidenav" class="sidenav">
                     @{ 
-                        if(user.Role.ToUpper() == "ADM")
+                        if(user.Role == "adm" || user._permissoes.configContabilidade)
                         {
                             <a asp-controller="Configuracoes" asp-action="Contabilidade">Contabildiade</a>
                         }

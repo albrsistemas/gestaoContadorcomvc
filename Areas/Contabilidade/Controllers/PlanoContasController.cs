@@ -22,9 +22,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
-            Conta conta = new Conta();
-            conta = conta.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));            
 
             TempData["user"] = user;
 
@@ -46,7 +44,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             if (!ModelState.IsValid)
             {
@@ -70,7 +70,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [Autoriza(permissao = "planoContasEdit")]
         public ActionResult Edit(int id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             PlanoContas plano = new PlanoContas();
 
@@ -82,7 +84,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int plano_id, IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             if (!ModelState.IsValid)
             {
@@ -106,7 +110,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [Autoriza(permissao = "planoContasDelete")]
         public ActionResult Delete(int id)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             PlanoContas plano = new PlanoContas();
 
@@ -118,7 +124,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int plano_id, IFormCollection collection)
         {
-            var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             try
             {

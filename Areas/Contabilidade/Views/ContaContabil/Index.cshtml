@@ -52,7 +52,7 @@
 @{ 
 
     <h2>Contas Contábeis</h2>
-    <h4>@plano.plano_nome</h4>
+    <h4>@Model.plano.plano_nome</h4>
     <div class="btn-tools">
         <div class="row">
             <div class="col-10" style="text-align:left">
@@ -64,7 +64,7 @@
                     <span>Voltar</span>
                 </a>
                 @{
-                    if (Model.user.Role == "adm" || Model.user._permissoes.planoContasCreate))
+                    if (Model.user.Role == "adm" || Model.user._permissoes.planoContasCreate)
                     {
                         <a class="create" data-id="@Model.plano.plano_id">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -126,7 +126,7 @@
             </div>
             <div class="col-list-rigth" style="padding-right: 10px;">
                 @{
-                    if (Model.user.Role == "adm" || Model.user._permissoes.planoContasEdit))
+                    if (Model.user.Role == "adm" || Model.user._permissoes.planoContasEdit)
                     {
                         <a class="editContaContabil" data-ccontabil_id="@item.ccontabil_id" data-plano_id="@Model.plano.plano_id">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -134,7 +134,7 @@
                             </svg>
                         </a>
                     }
-                    if (Model.user.Role == "adm" || Model.user._permissoes.planoContasDelete))
+                    if (Model.user.Role == "adm" || Model.user._permissoes.planoContasDelete)
                     {
                         <a class="deleteContaContabil" data-ccontabil_id="@item.ccontabil_id" data-plano_id="@Model.plano.plano_id">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

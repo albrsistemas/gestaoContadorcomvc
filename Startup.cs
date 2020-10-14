@@ -64,15 +64,15 @@ namespace gestaoContadorcomvc
 
             services.AddRazorPages().AddRazorRuntimeCompilation(); //Atualizar navegador em tempo execução dev.
 
-            services.AddDistributedMemoryCache(); //necessário para implementação de sessão
-            services.AddSession(options => //necessário para implementação de sessão
-            {
-                options.Cookie.Name = "cvc.Session";
-                options.IdleTimeout = TimeSpan.FromHours(2);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;                
-            });
-            services.AddHttpContextAccessor(); //necessário para implementação de sessão
+            //services.AddDistributedMemoryCache(); //necessário para implementação de sessão
+            //services.AddSession(options => //necessário para implementação de sessão
+            //{
+            //    options.Cookie.Name = "cvc.Session";
+            //    options.IdleTimeout = TimeSpan.FromHours(2);
+            //    options.Cookie.HttpOnly = true;
+            //    options.Cookie.IsEssential = true;                
+            //});
+            //services.AddHttpContextAccessor(); //necessário para implementação de sessão
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -103,7 +103,7 @@ namespace gestaoContadorcomvc
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseSession(); //Necessário para uso de sessão            
+            //app.UseSession(); //Necessário para uso de sessão            
 
             app.UseEndpoints(endpoints =>
             {               
