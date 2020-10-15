@@ -7,6 +7,8 @@
     <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
     <style>
         .sidenav {
             height: 100%;
@@ -79,15 +81,17 @@
     </div>
     <div class="row" style="margin-bottom: 10px;margin-top:10px;"></div> <!--Div criada apenas para dar espaçamento necessário no rodapé-->
     @*<footer class="navbar fixed-bottom navbar-light" style="background-color: #ffe699;height: 35px;">
-        <span>versão 1.0001</span>
-        <span style="float:right;margin-right: 10px"><a asp-controller="Log" asp-action="Index">Log</a></span>
-    </footer>*@
+            <span>versão 1.0001</span>
+            <span style="float:right;margin-right: 10px"><a asp-controller="Log" asp-action="Index">Log</a></span>
+        </footer>*@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/select2/js/select2.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+    <script src="~/lib/jquery-ui-1.12.1/jquery-ui.js"></script>
     @RenderSection("Scripts", required: false)
 
     <div id="modal" class="modal fade" role="dialog"></div> <!--Modal para gerar as telas com recurso load jquery-->

@@ -16,9 +16,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
     [Area("Contabilidade")]
-    [Route("Contabilidade/[controller]/[action]")]
-    //[FiltroAutenticacao]
-    //[FiltroContabilidade]
+    [Route("Contabilidade/[controller]/[action]")]    
     [Authorize(Roles = "Contabilidade")]
     [Autoriza(permissao = "clienteCategoriasList")]
     public class CategoriaController : Controller

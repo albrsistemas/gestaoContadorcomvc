@@ -37,7 +37,7 @@
                                 {<a class="dropdown-item" asp-area="Contabilidade" asp-controller='ConfigContadorCliente' asp-action='Index'>Configurações</a>}
                                 @if (usuario.Role == "adm" || usuario._permissoes.clienteCategoriasList)
                                 {<a class="dropdown-item" asp-area="Contabilidade" asp-controller='Categoria' asp-action='Index'>Categorias</a>}
-                                <a class="dropdown-item" href="#">Lançamentos</a>
+                                <a class="dropdown-item" asp-area="Contabilidade" asp-controller='Lancamento' asp-action='Create'>Lançamentos</a>
                                 <a class="dropdown-item" href="#">Balancete</a>
                                 <a class="dropdown-item" href="#">DRE</a>
                             </div>

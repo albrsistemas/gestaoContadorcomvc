@@ -1,0 +1,238 @@
+﻿@model gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel.vm_lancamento
+@{
+    ViewData["Title"] = "Lançamento Contábil";
+    Layout = "~/Areas/Contabilidade/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .col-list-rigth {
+        width: 90px;
+        text-align: right;
+    }
+
+    .check-list-label {
+        display: none;
+    }
+
+    .col-list-body {
+        width: calc(100%);
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    .line-list {
+        border: 0px;
+    }
+    .ultimosLancamentos{
+        font-size: 12px;
+        font-family: sans-serif;
+    }
+</style>
+
+
+
+<h2>Lançamento Contábil</h2>
+<hr class="hrLine" />
+
+@{
+    if (TempData["novoLancamento"] != null && TempData["novoLancamento"].ToString().Contains("Sucesso"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Erro!</strong> @TempData["novoLancamento"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    if (TempData["novoLancamento"] != null && TempData["novoLancamento"].ToString().Contains("Erro"))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Erro!</strong> @TempData["novoLancamento"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
+
+<form asp-area="Contabilidade" asp-controller="Lancamento" asp-action="Create">
+    <div class="row">
+        <div class="col-3">
+            <div class="form-group">
+                <label asp-for="lancamento_debito" class="control-label"></label>
+                <input asp-for="lancamento_debito" class="form-control" />
+                <span asp-validation-for="lancamento_debito" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="form-group">
+                <label class="control-label">&nbsp</label>
+                <input class="form-control" readonly="readonly" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label asp-for="lancamento_debito" class="control-label">Participante débito</label>
+                <input asp-for="lancamento_debito" class="form-control" />
+                <span asp-validation-for="lancamento_debito" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <div class="form-group">
+                <label asp-for="lancamento_debito" class="control-label">Crédito</label>
+                <input asp-for="lancamento_debito" class="form-control" />
+                <span asp-validation-for="lancamento_debito" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="form-group">
+                <label class="control-label">&nbsp</label>
+                <input class="form-control" readonly="readonly" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label asp-for="lancamento_debito" class="control-label">Participante crédito</label>
+                <input asp-for="lancamento_debito" class="form-control" />
+                <span asp-validation-for="lancamento_debito" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="lancamento_data" class="control-label"></label>
+                <input type="text" asp-for="lancamento_data"  class="form-control datepicker" />
+                <span asp-validation-for="lancamento_data" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="ld_valor" class="control-label">Valor</label>
+                <input asp-for="ld_valor" class="form-control" />
+                <span asp-validation-for="ld_valor" class="text-danger"></span>
+            </div>
+        </div>
+    </div>    
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label asp-for="ld_historico" class="control-label">Histórico</label>
+                <textarea asp-for="ld_valor" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="ld_historico" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-info">Gravar</button>
+    <a class="btn btn-secondary" asp-area="Contabilidade" asp-controller="Lancamento" asp-action="index">Voltar</a>
+</form>
+
+<div class="list-header">
+    <hr class="hrLine" />
+    <h6>Últimos lançamentos</h6>
+
+    <div class="line-list">
+        <div class="col-list-left">
+            <input class="check-list-input" type="checkbox" id="cp_todas">
+            <label class="check-list-label" for="cp_todas"></label>
+        </div>
+        <div class="col-list-body">
+            <div class="row">
+                <div class="col-12 col-md-2"><strong>Débito</strong></div>
+                <div class="col-12 col-md-2"><strong>Crédito</strong></div>
+                <div class="col-12 col-md-2"><strong>Data</strong></div>
+                <div class="col-12 col-md-2"><strong>Valor</strong></div>
+                <div class="col-12 col-md-4"><strong>Histórico</strong></div>
+            </div>
+        </div>
+        @*<div class="col-list-rigth" style="padding-right: 10px;">
+                <span><strong>Ações</strong></span>
+            </div>*@
+    </div>
+    <div class="ultimosLancamentos">
+        <div class="line-list">
+            <div class="col-list-left">
+                <input class="check-list-input" type="checkbox" id="cp_todas">
+                <label class="check-list-label" for="cp_todas"></label>
+            </div>
+            <div class="col-list-body">
+                <div class="row">
+                    <div class="col-12 col-md-2">Banco do Brasil</div>
+                    <div class="col-12 col-md-2">Caixa</div>
+                    <div class="col-12 col-md-2">15/10/2020</div>
+                    <div class="col-12 col-md-2">R$ 1.200,35</div>
+                    <div class="col-12 col-md-4">Depósitos em caixa eletrônico</div>
+                </div>
+            </div>
+        </div>
+        <div class="line-list">
+            <div class="col-list-left">
+                <input class="check-list-input" type="checkbox" id="cp_todas">
+                <label class="check-list-label" for="cp_todas"></label>
+            </div>
+            <div class="col-list-body">
+                <div class="row">
+                    <div class="col-12 col-md-2">Banco do Brasil</div>
+                    <div class="col-12 col-md-2">Caixa</div>
+                    <div class="col-12 col-md-2">15/10/2020</div>
+                    <div class="col-12 col-md-2">R$ 1.200,35</div>
+                    <div class="col-12 col-md-4">Depósitos em caixa eletrônico</div>
+                </div>
+            </div>
+        </div>
+        <div class="line-list">
+            <div class="col-list-left">
+                <input class="check-list-input" type="checkbox" id="cp_todas">
+                <label class="check-list-label" for="cp_todas"></label>
+            </div>
+            <div class="col-list-body">
+                <div class="row">
+                    <div class="col-12 col-md-2">Banco do Brasil</div>
+                    <div class="col-12 col-md-2">Caixa</div>
+                    <div class="col-12 col-md-2">15/10/2020</div>
+                    <div class="col-12 col-md-2">R$ 1.200,35</div>
+                    <div class="col-12 col-md-4">Depósitos em caixa eletrônico</div>
+                </div>
+            </div>
+        </div>
+        <div class="line-list">
+            <div class="col-list-left">
+                <input class="check-list-input" type="checkbox" id="cp_todas">
+                <label class="check-list-label" for="cp_todas"></label>
+            </div>
+            <div class="col-list-body">
+                <div class="row">
+                    <div class="col-12 col-md-2">Banco do Brasil</div>
+                    <div class="col-12 col-md-2">Caixa</div>
+                    <div class="col-12 col-md-2">15/10/2020</div>
+                    <div class="col-12 col-md-2">R$ 1.200,35</div>
+                    <div class="col-12 col-md-4">Depósitos em caixa eletrônico</div>
+                </div>
+            </div>
+        </div>
+        <div class="line-list">
+            <div class="col-list-left">
+                <input class="check-list-input" type="checkbox" id="cp_todas">
+                <label class="check-list-label" for="cp_todas"></label>
+            </div>
+            <div class="col-list-body">
+                <div class="row">
+                    <div class="col-12 col-md-2">Banco do Brasil</div>
+                    <div class="col-12 col-md-2">Caixa</div>
+                    <div class="col-12 col-md-2">15/10/2020</div>
+                    <div class="col-12 col-md-2">R$ 1.200,35</div>
+                    <div class="col-12 col-md-4">Depósitos em caixa eletrônico</div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+
