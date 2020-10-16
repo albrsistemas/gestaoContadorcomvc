@@ -66,7 +66,8 @@
                 <div class="col-12">
                     <div class="form-group">
                         <label asp-for="lancamento_debito_conta_id" class="control-label"></label>
-                        <input asp-for="lancamento_debito_conta_id" class="form-control" /> @*onkeydown="consultaContasContabeis(this.id, 'debito')"*@
+                        <select asp-items="@ViewBag.planoContas" value="@TempData["lancamento_debito_conta_id"]" id="lancamento_debito_conta_id" name="lancamento_debito_conta_id" class="form-control js_example_basic_single" style="width: 100%;"></select>
+                        @*<input asp-for="lancamento_debito_conta_id" class="form-control" />*@ @*onkeydown="consultaContasContabeis(this.id, 'debito')"*@
                         <span asp-validation-for="lancamento_debito_conta_id" class="text-danger"></span>
                     </div>
                 </div>
@@ -90,7 +91,8 @@
                 <div class="col-12">
                     <div class="form-group">
                         <label asp-for="lancamento_credito_conta_id" class="control-label"></label>
-                        <input asp-for="lancamento_credito_conta_id" class="form-control" /> @*onkeydown="consultaContasContabeis(this.id, 'credito')"/*@
+                        <select asp-items="@ViewBag.planoContas" value="@TempData["lancamento_credito_conta_id"]" id="lancamento_credito_conta_id" name="lancamento_credito_conta_id" class="form-control js_example_basic_single" style="width: 100%;"></select>
+                        @*<input asp-for="lancamento_credito_conta_id" class="form-control" />*@ @*onkeydown="consultaContasContabeis(this.id, 'credito')"/*@
                         <span asp-validation-for="lancamento_credito_conta_id" class="text-danger"></span>
                     </div>
                 </div>
@@ -114,14 +116,14 @@
                 <div class="col-6">
                     <div class="form-group">
                         <label asp-for="lancamento_data" class="control-label"></label>
-                        <input type="text" asp-for="lancamento_data" class="form-control datepicker" />
+                        <input type="text" asp-for="lancamento_data" id="lancamento_data_create" class="form-control datepicker" />
                         <span asp-validation-for="lancamento_data" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="form-group">
                         <label asp-for="lancamento_valor" class="control-label"></label>
-                        <input asp-for="lancamento_valor" class="form-control" />
+                        <input type="number" asp-for="lancamento_valor" step="0.01" id="lancamento_valor_create" class="form-control" onblur="formatValor(this.id, this.value, '2')" />
                         <span asp-validation-for="lancamento_valor" class="text-danger"></span>
                     </div>
                 </div>
@@ -172,10 +174,10 @@
                             </div>
                             <div class="col-list-body">
                                 <div class="row">
-                                    <div class="col-12 col-md-2">@item.lancamento_debito_classificacao " - " @item.lancamento_debito_nome</div>
-                                    <div class="col-12 col-md-2">@item.lancamento_credito_classificacao " - " @item.lancamento_credito_nome</div>
-                                    <div class="col-12 col-md-2">@item.lancamento_data</div>
-                                    <div class="col-12 col-md-2">@item.lancamento_valor</div>
+                                    <div class="col-12 col-md-2">@item.lancamento_debito_classificacao - @item.lancamento_debito_nome</div>
+                                    <div class="col-12 col-md-2">@item.lancamento_credito_classificacao - @item.lancamento_credito_nome</div>
+                                    <div class="col-12 col-md-2">@item.lancamento_data.ToString("d")</div>
+                                    <div class="col-12 col-md-2">@item.lancamento_valor.ToString("N")</div>
                                     <div class="col-12 col-md-4">@item.lancamento_historico</div>
                                 </div>
                             </div>

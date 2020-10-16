@@ -432,6 +432,19 @@ $(function () {
 //    });
 //}
 
+function formatValor(id, vlr, decimais) {
+    console.log(vlr);
+    vlr = vlr.replace(",", ".");
+    vlr = (parseFloat(vlr) * 1);
+    document.getElementById(id).value = vlr.toFixed(2);
+    console.log(vlr);
+}
+
+$(document).ready(function () {
+    document.getElementById("lancamento_valor_create").value = (0).toFixed(2);
+    let data = new Date();
+    document.getElementById("lancamento_data_create").value = data.toLocaleDateString();
+});
 
 
 

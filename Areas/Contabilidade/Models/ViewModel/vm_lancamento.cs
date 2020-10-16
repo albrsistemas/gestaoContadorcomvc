@@ -1,4 +1,5 @@
 ﻿using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -24,11 +25,12 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel
         public int lancamento_credito_conta_id { get; set; }
 
         [Display(Name = "Data")]
-        [Required(ErrorMessage = "A data é obrigatória")]        
+        [Required(ErrorMessage = "A data é obrigatória")]
+        [DataType(DataType.Date)]
         public DateTime lancamento_data { get; set; }
 
         [Display(Name = "Valor")]
-        [Required(ErrorMessage = "É obrigatório informar o valor do lançamento")]        
+        [Required(ErrorMessage = "É obrigatório informar o valor do lançamento")]   
         public Decimal lancamento_valor { get; set; }
 
         [Display(Name = "Histórico")]

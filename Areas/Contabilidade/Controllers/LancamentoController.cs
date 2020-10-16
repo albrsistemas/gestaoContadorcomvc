@@ -67,7 +67,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         // POST: LancamentoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind] vm_lancamento lanc)
+        public ActionResult Create(IFormCollection collection)
         {            
             try
             {
@@ -75,7 +75,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                 {
                     TempData["novoLancamento"] = "Erro no preenchimento das informações do formulário!";
 
-                    return View(lanc);
+                    return View();
                 }
 
                 Usuario usuario = new Usuario();
@@ -86,15 +86,25 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 
                 Lancamento lancamento = new Lancamento();
 
-                TempData["novoLancamento"] = lancamento.cadastrarLancamento(user.usuario_id, contexto.conta_id, user.usuario_conta_id, lanc);
+                //TempData["novoLancamento"] = lancamento.cadastrarLancamento(user.usuario_id, contexto.conta_id, user.usuario_conta_id, lanc);
 
-                return RedirectToAction(nameof(Index));
+                Config_contador_cliente config = new Config_contador_cliente();
+                vm_ConfigContadorCliente vm_config = new vm_ConfigContadorCliente();
+                vm_config = config.buscaCCC(user.usuario_id, contexto.conta_id, user.usuario_conta_id);
+                
+                vm_lancamento vm_lanc = new vm_lancamento();
+                vm_lanc.lancamentos = lancamento.listarLancamentosLimit(user.usuario_id, contexto.conta_id, user.usuario_conta_id, 3);
+                vm_lanc.user = user;
+                vm_lanc.vm_config = vm_config;
+
+
+                return View(vm_lanc);
             }
             catch
             {
                 TempData["novoLancamento"] = "Erro ao registrar o lançamento contábil. Tente novamente. Se persistir entre em contato com o suporte!";
 
-                return View(lanc);
+                return View();
             }
         }
 
