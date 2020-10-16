@@ -8,43 +8,46 @@ using System.Threading.Tasks;
 namespace gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel
 {
     public class vm_lancamento
-    {
-        //Lançamento do débito
-        public int ld_id { get; set; }
-        public string ld_origem { get; set; }
-        public string ld_tipo { get; set; }
-        public DateTime ld_data { get; set; }
-        public Decimal ld_valor { get; set; }
-        public int ld_contraPartida { get; set; }
-        public int ld_cliente_id { get; set; }
-        public int ld_contador_id { get; set; }
-        public DateTime ld_dataCriacao { get; set; }
-        public int ld_ccontabil { get; set; }
-        public string ld_historico { get; set; }
-        //Lançamento do crédito
-        public int lc_id { get; set; }
-        public string lc_origem { get; set; }
-        public string lc_tipo { get; set; }
-        public DateTime lc_data { get; set; }
-        public Decimal lc_valor { get; set; }
-        public int lc_contraPartida { get; set; }
-        public int lc_cliente_id { get; set; }
-        public int lc_contador_id { get; set; }
-        public DateTime lc_dataCriacao { get; set; }
-        public int lc_ccontabil { get; set; }
-        public string lc_historico { get; set; }
+    {        
         //Campos de controle
-        public IEnumerable<gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel.vm_lancamento> MyProperty { get; set; }
+        public IEnumerable<gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel.vm_lancamento> lancamentos { get; set; }
         public Vm_usuario user { get; set; }
+        public vm_ConfigContadorCliente vm_config { get; set; }
 
         //Campos do formulário
+        [Display(Name = "Débito")]
+        [Required(ErrorMessage = "É obrigatório uma conta débito")]
+        public int lancamento_debito_conta_id { get; set; }
+
+        [Display(Name = "Crédito")]
+        [Required(ErrorMessage = "É obrigatório uma conta crédito")]
+        public int lancamento_credito_conta_id { get; set; }
+
         [Display(Name = "Data")]
-        [Required(ErrorMessage = "A data é obrigatória")]
+        [Required(ErrorMessage = "A data é obrigatória")]        
         public DateTime lancamento_data { get; set; }
 
-        [Display(Name = "Débito")]
-        [Required(ErrorMessage = "É obrigatório um conta débito")]
-        public string lancamento_debito { get; set; }
+        [Display(Name = "Valor")]
+        [Required(ErrorMessage = "É obrigatório informar o valor do lançamento")]        
+        public Decimal lancamento_valor { get; set; }
 
+        [Display(Name = "Histórico")]
+        [Required(ErrorMessage = "É obrigatório informar o histótico")]
+        [MinLength(3, ErrorMessage = "Mínimo de 3 caracteres no histórico")]
+        [MaxLength(80, ErrorMessage = "Máximo de 80 caracteres no histórico")]
+        public string lancamento_historico { get; set; }
+
+        [Display(Name = "Participante Débito")]
+        public int lancamento_participante_debito { get; set; }
+
+        [Display(Name = "Participante Crédito")]
+        public int lancamento_participante_credito { get; set; }
+
+        public int lancamento_cliente_id { get; set; }
+        public int lancamento_contador_id { get; set; }
+        public string lancamento_debito_classificacao { get; set; }
+        public string lancamento_credito_classificacao { get; set; }
+        public string lancamento_debito_nome { get; set; }
+        public string lancamento_credito_nome { get; set; }
     }
 }

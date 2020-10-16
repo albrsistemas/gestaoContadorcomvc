@@ -376,6 +376,62 @@ $(function () {
     });
 });
 
+////Tela de lançamento contábil
+//function consultaContasContabeis(id, conta) {
+//    $(id).autocomplete({
+//        source: function (request, response) {
+//            $.ajax({
+//                url: "/Cliente/Participante/buscaParticipantes",
+//                data: { busca: request.term },
+//                type: 'POST',
+//                dataType: 'json',
+//                beforeSend: function (XMLHttpRequest) {
+
+//                },
+//                error: function (XMLHttpRequest, textStatus, errorThrown) {
+//                    alert("erro");
+//                },
+//                success: function (data, textStatus, XMLHttpRequest) {
+//                    var results = JSON.parse(data);
+
+//                    var autocompleteObjects = [];
+//                    for (var i = 0; i < results.length; i++) {
+//                        var object = {
+//                            // Used by jQuery Autocomplete to show
+//                            // autocomplete suggestions as well as
+//                            // the text in yourInputTextBox upon selection.
+//                            // Assign them to a value that you want the user to see.
+//                            value: results[i].participante_nome,
+//                            label: results[i].participante_nome,
+
+//                            // Put our own custom id here.
+//                            // If you want to, you can even put the result object.
+//                            id: results[i].participante_id
+//                        };
+
+//                        autocompleteObjects.push(object);
+//                    }
+
+//                    // Invoke the response callback.
+//                    response(autocompleteObjects);
+
+//                }
+//            });
+//        },
+//        minLength: 3,
+//        select: function (event, ui) {
+//            // Retrieve your id here and do something with it.            
+//            if (campo == 'destinatario') {
+//                carregaDadosPart(ui.item.id);
+//            }
+//            if (campo == 'transportadora') {
+//                carregarTransportadora(ui.item.id);
+//            }
+
+//        }
+//    });
+//}
+
 
 
 

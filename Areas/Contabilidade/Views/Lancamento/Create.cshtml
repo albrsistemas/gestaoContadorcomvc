@@ -24,7 +24,8 @@
     .line-list {
         border: 0px;
     }
-    .ultimosLancamentos{
+
+    .ultimosLancamentos {
         font-size: 12px;
         font-family: sans-serif;
     }
@@ -32,7 +33,7 @@
 
 
 
-<h2>Lançamento Contábil</h2>
+<h2>Novo Lançamento Contábil</h2>
 <hr class="hrLine" />
 
 @{
@@ -57,182 +58,136 @@
     }
 }
 
-<form asp-area="Contabilidade" asp-controller="Lancamento" asp-action="Create">
-    <div class="row">
-        <div class="col-3">
-            <div class="form-group">
-                <label asp-for="lancamento_debito" class="control-label"></label>
-                <input asp-for="lancamento_debito" class="form-control" />
-                <span asp-validation-for="lancamento_debito" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-9">
-            <div class="form-group">
-                <label class="control-label">&nbsp</label>
-                <input class="form-control" readonly="readonly" />
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="form-group">
-                <label asp-for="lancamento_debito" class="control-label">Participante débito</label>
-                <input asp-for="lancamento_debito" class="form-control" />
-                <span asp-validation-for="lancamento_debito" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-3">
-            <div class="form-group">
-                <label asp-for="lancamento_debito" class="control-label">Crédito</label>
-                <input asp-for="lancamento_debito" class="form-control" />
-                <span asp-validation-for="lancamento_debito" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-9">
-            <div class="form-group">
-                <label class="control-label">&nbsp</label>
-                <input class="form-control" readonly="readonly" />
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="form-group">
-                <label asp-for="lancamento_debito" class="control-label">Participante crédito</label>
-                <input asp-for="lancamento_debito" class="form-control" />
-                <span asp-validation-for="lancamento_debito" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="lancamento_data" class="control-label"></label>
-                <input type="text" asp-for="lancamento_data"  class="form-control datepicker" />
-                <span asp-validation-for="lancamento_data" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="ld_valor" class="control-label">Valor</label>
-                <input asp-for="ld_valor" class="form-control" />
-                <span asp-validation-for="ld_valor" class="text-danger"></span>
-            </div>
-        </div>
-    </div>    
-    <div class="row">
-        <div class="col-12">
-            <div class="form-group">
-                <label asp-for="ld_historico" class="control-label">Histórico</label>
-                <textarea asp-for="ld_valor" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="ld_historico" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <button type="submit" class="btn btn-info">Gravar</button>
-    <a class="btn btn-secondary" asp-area="Contabilidade" asp-controller="Lancamento" asp-action="index">Voltar</a>
-</form>
-
-<div class="list-header">
-    <hr class="hrLine" />
-    <h6>Últimos lançamentos</h6>
-
-    <div class="line-list">
-        <div class="col-list-left">
-            <input class="check-list-input" type="checkbox" id="cp_todas">
-            <label class="check-list-label" for="cp_todas"></label>
-        </div>
-        <div class="col-list-body">
+@{
+    if (Model.vm_config.ccc_planoContasVigente != "0")
+    {
+        <form asp-area="Contabilidade" asp-controller="Lancamento" asp-action="Create">
             <div class="row">
-                <div class="col-12 col-md-2"><strong>Débito</strong></div>
-                <div class="col-12 col-md-2"><strong>Crédito</strong></div>
-                <div class="col-12 col-md-2"><strong>Data</strong></div>
-                <div class="col-12 col-md-2"><strong>Valor</strong></div>
-                <div class="col-12 col-md-4"><strong>Histórico</strong></div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label asp-for="lancamento_debito_conta_id" class="control-label"></label>
+                        <input asp-for="lancamento_debito_conta_id" class="form-control" /> @*onkeydown="consultaContasContabeis(this.id, 'debito')"*@
+                        <span asp-validation-for="lancamento_debito_conta_id" class="text-danger"></span>
+                    </div>
+                </div>
+                @*<div class="col-9">
+                        <div class="form-group">
+                            <label class="control-label">&nbsp</label>
+                            <input class="form-control" readonly="readonly" id="conta_debito" />
+                        </div>
+                    </div>*@
             </div>
-        </div>
-        @*<div class="col-list-rigth" style="padding-right: 10px;">
-                <span><strong>Ações</strong></span>
-            </div>*@
-    </div>
-    <div class="ultimosLancamentos">
-        <div class="line-list">
-            <div class="col-list-left">
-                <input class="check-list-input" type="checkbox" id="cp_todas">
-                <label class="check-list-label" for="cp_todas"></label>
+            @*<div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="lancamento_participante_debito" class="control-label"></label>
+                            <input asp-for="lancamento_participante_debito" class="form-control" disabled="disabled" />
+                            <span asp-validation-for="lancamento_participante_debito" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>*@
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label asp-for="lancamento_credito_conta_id" class="control-label"></label>
+                        <input asp-for="lancamento_credito_conta_id" class="form-control" /> @*onkeydown="consultaContasContabeis(this.id, 'credito')"/*@
+                        <span asp-validation-for="lancamento_credito_conta_id" class="text-danger"></span>
+                    </div>
+                </div>
+                @*<div class="col-9">
+                        <div class="form-group">
+                            <label class="control-label">&nbsp</label>
+                            <input class="form-control" readonly="readonly" id="conta_credito" />
+                        </div>
+                    </div>*@
             </div>
-            <div class="col-list-body">
-                <div class="row">
-                    <div class="col-12 col-md-2">Banco do Brasil</div>
-                    <div class="col-12 col-md-2">Caixa</div>
-                    <div class="col-12 col-md-2">15/10/2020</div>
-                    <div class="col-12 col-md-2">R$ 1.200,35</div>
-                    <div class="col-12 col-md-4">Depósitos em caixa eletrônico</div>
+            @*<div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="lancamento_participante_credito" class="control-label"></label>
+                            <input asp-for="lancamento_participante_credito" class="form-control" disabled="disabled" />
+                            <span asp-validation-for="lancamento_participante_credito" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>*@
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="lancamento_data" class="control-label"></label>
+                        <input type="text" asp-for="lancamento_data" class="form-control datepicker" />
+                        <span asp-validation-for="lancamento_data" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="lancamento_valor" class="control-label"></label>
+                        <input asp-for="lancamento_valor" class="form-control" />
+                        <span asp-validation-for="lancamento_valor" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="line-list">
-            <div class="col-list-left">
-                <input class="check-list-input" type="checkbox" id="cp_todas">
-                <label class="check-list-label" for="cp_todas"></label>
-            </div>
-            <div class="col-list-body">
-                <div class="row">
-                    <div class="col-12 col-md-2">Banco do Brasil</div>
-                    <div class="col-12 col-md-2">Caixa</div>
-                    <div class="col-12 col-md-2">15/10/2020</div>
-                    <div class="col-12 col-md-2">R$ 1.200,35</div>
-                    <div class="col-12 col-md-4">Depósitos em caixa eletrônico</div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label asp-for="lancamento_historico" class="control-label"></label>
+                        <textarea asp-for="lancamento_historico" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="lancamento_historico" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="line-list">
-            <div class="col-list-left">
-                <input class="check-list-input" type="checkbox" id="cp_todas">
-                <label class="check-list-label" for="cp_todas"></label>
-            </div>
-            <div class="col-list-body">
-                <div class="row">
-                    <div class="col-12 col-md-2">Banco do Brasil</div>
-                    <div class="col-12 col-md-2">Caixa</div>
-                    <div class="col-12 col-md-2">15/10/2020</div>
-                    <div class="col-12 col-md-2">R$ 1.200,35</div>
-                    <div class="col-12 col-md-4">Depósitos em caixa eletrônico</div>
+            <button type="submit" class="btn btn-info">Gravar</button>
+            <a class="btn btn-secondary" asp-area="Contabilidade" asp-controller="Lancamento" asp-action="index">Voltar</a>
+        </form>
+
+        <div class="list-header">
+            <hr class="hrLine" />
+            <h6>Últimos lançamentos</h6>
+
+            <div class="line-list">
+                <div class="col-list-left">
+                    <input class="check-list-input" type="checkbox" id="cp_todas">
+                    <label class="check-list-label" for="cp_todas"></label>
                 </div>
-            </div>
-        </div>
-        <div class="line-list">
-            <div class="col-list-left">
-                <input class="check-list-input" type="checkbox" id="cp_todas">
-                <label class="check-list-label" for="cp_todas"></label>
-            </div>
-            <div class="col-list-body">
-                <div class="row">
-                    <div class="col-12 col-md-2">Banco do Brasil</div>
-                    <div class="col-12 col-md-2">Caixa</div>
-                    <div class="col-12 col-md-2">15/10/2020</div>
-                    <div class="col-12 col-md-2">R$ 1.200,35</div>
-                    <div class="col-12 col-md-4">Depósitos em caixa eletrônico</div>
+                <div class="col-list-body">
+                    <div class="row">
+                        <div class="col-12 col-md-2"><strong>Débito</strong></div>
+                        <div class="col-12 col-md-2"><strong>Crédito</strong></div>
+                        <div class="col-12 col-md-2"><strong>Data</strong></div>
+                        <div class="col-12 col-md-2"><strong>Valor</strong></div>
+                        <div class="col-12 col-md-4"><strong>Histórico</strong></div>
+                    </div>
                 </div>
+                @*<div class="col-list-rigth" style="padding-right: 10px;">
+                        <span><strong>Ações</strong></span>
+                    </div>*@
+            </div>
+            <div class="ultimosLancamentos">
+                @{
+                    foreach (var item in Model.lancamentos)
+                    {
+                        <div class="line-list">
+                            <div class="col-list-left">
+                                <input class="check-list-input" type="checkbox" id="cp_todas">
+                                <label class="check-list-label" for="cp_todas"></label>
+                            </div>
+                            <div class="col-list-body">
+                                <div class="row">
+                                    <div class="col-12 col-md-2">@item.lancamento_debito_classificacao " - " @item.lancamento_debito_nome</div>
+                                    <div class="col-12 col-md-2">@item.lancamento_credito_classificacao " - " @item.lancamento_credito_nome</div>
+                                    <div class="col-12 col-md-2">@item.lancamento_data</div>
+                                    <div class="col-12 col-md-2">@item.lancamento_valor</div>
+                                    <div class="col-12 col-md-4">@item.lancamento_historico</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
             </div>
         </div>
-        <div class="line-list">
-            <div class="col-list-left">
-                <input class="check-list-input" type="checkbox" id="cp_todas">
-                <label class="check-list-label" for="cp_todas"></label>
-            </div>
-            <div class="col-list-body">
-                <div class="row">
-                    <div class="col-12 col-md-2">Banco do Brasil</div>
-                    <div class="col-12 col-md-2">Caixa</div>
-                    <div class="col-12 col-md-2">15/10/2020</div>
-                    <div class="col-12 col-md-2">R$ 1.200,35</div>
-                    <div class="col-12 col-md-4">Depósitos em caixa eletrônico</div>
-                </div>
-            </div>
-        </div>
-    </div>    
-</div>
+    }
+    else
+    {
+        <p>Cliente não possui um plano de contas configurado. Para realizar lançamento configure um plano de contas!</p>
+    }
+}
 
