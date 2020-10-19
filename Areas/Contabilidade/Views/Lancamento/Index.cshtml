@@ -93,11 +93,11 @@
         </div>
         <div class="col-list-body">
             <div class="row">
-                <div class="col-12 col-md-2"><strong>Débito</strong></div>
-                <div class="col-12 col-md-2"><strong>Crédito</strong></div>
+                <div class="col-12 col-md-3"><strong>Débito</strong></div>
+                <div class="col-12 col-md-3"><strong>Crédito</strong></div>
                 <div class="col-12 col-md-2"><strong>Data</strong></div>
                 <div class="col-12 col-md-2"><strong>Valor</strong></div>
-                <div class="col-12 col-md-4"><strong>Histórico</strong></div>
+                <div class="col-12 col-md-2"><strong>Histórico</strong></div>
             </div>
         </div>
         <div class="col-list-rigth" style="padding-right: 10px;">
@@ -115,11 +115,17 @@
             </div>
             <div class="col-list-body">
                 <div class="row">
-                    <div class="col-12 col-md-2">@item.lancamento_debito_classificacao - @item.lancamento_debito_nome</div>
-                    <div class="col-12 col-md-2">@item.lancamento_credito_classificacao - @item.lancamento_credito_nome</div>
-                    <div class="col-12 col-md-2">@item.lancamento_data.ToString("d")</div>
-                    <div class="col-12 col-md-2">@item.lancamento_valor.ToString("N")</div>
-                    <div class="col-12 col-md-4">@item.lancamento_historico</div>
+                    <div class="col-12 col-md-2 line_list_title_mobile"><strong>Débito: </strong>@item.lancamento_debito_classificacao - @item.lancamento_debito_nome</div>
+                    <div class="col-12 col-md-2 line_list_title_mobile"><strong>Crédito: </strong>@item.lancamento_credito_classificacao - @item.lancamento_credito_nome</div>
+                    <div class="col-12 col-md-2 line_list_title_mobile"><strong>Data: </strong>@item.lancamento_data.ToString("d")</div>
+                    <div class="col-12 col-md-2 line_list_title_mobile"><strong>Valor: </strong>@item.lancamento_valor.ToString("N")</div>
+                    <div class="col-12 col-md-4 line_list_title_mobile"><strong>Histórico: </strong>@item.lancamento_historico</div>
+
+                    <div class="col-12 col-md-3 line_list_title_full">@item.lancamento_debito_classificacao - @item.lancamento_debito_nome</div>
+                    <div class="col-12 col-md-3 line_list_title_full">@item.lancamento_credito_classificacao - @item.lancamento_credito_nome</div>
+                    <div class="col-12 col-md-2 line_list_title_full">@item.lancamento_data.ToString("d")</div>
+                    <div class="col-12 col-md-2 line_list_title_full">@item.lancamento_valor.ToString("N")</div>
+                    <div class="col-12 col-md-2 line_list_title_full">@item.lancamento_historico</div>
                 </div>
             </div>
             <div class="col-list-rigth" style="padding-right: 10px;">
