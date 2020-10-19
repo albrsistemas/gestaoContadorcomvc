@@ -83,41 +83,34 @@
 }
 
 @{
-    if (Model.balancete == null)
+    if (Model.vm_config.ccc_planoContasVigente != "0")
     {
-        //Exibe o formulário
-        if (Model.vm_config.ccc_planoContasVigente != "0")
-        {
-            <form asp-area="Contabilidade" asp-controller="Balancete" asp-action="Create">
-                <div class="row">
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label asp-for="data_inicial" class="control-label"></label>
-                            <input type="text" asp-for="data_inicial" autocomplete="off" id="data_inicial" class="form-control datepicker" value="" onclick="startDate(this.id)" onchange="gerarDataFinal(this.value)" />
-                            <span asp-validation-for="data_inicial" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label asp-for="data_final" class="control-label"></label>
-                            <input type="text" asp-for="data_final" autocomplete="off" id="data_final" class="form-control datepicker" value="" />
-                            <span asp-validation-for="data_final" class="text-danger"></span>
-                        </div>
+        <form asp-area="Contabilidade" asp-controller="Balancete" asp-action="Create">
+            <div class="row">
+                <div class="col-6 col-md-5">
+                    <div class="form-group">
+                        <label asp-for="data_inicial" class="control-label"></label>
+                        <input type="text" asp-for="data_inicial" autocomplete="off" id="data_inicial" class="form-control datepicker" value="" onchange="gerarDataFinal(this.value)" />
+                        <span asp-validation-for="data_inicial" class="text-danger"></span>
                     </div>
                 </div>
+                <div class="col-6 col-md-5">
+                    <div class="form-group">
+                        <label asp-for="data_final" class="control-label"></label>
+                        <input type="text" asp-for="data_final" autocomplete="off" id="data_final" class="form-control datepicker" value="" />
+                        <span asp-validation-for="data_final" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-2">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-info" style="width: 100%;margin-top:30px;">Gerar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <hr class="hrLine" />
 
-                <button type="submit" class="btn btn-info">Gerar</button>
-            </form>
-        }
-        else
-        {
-            <p>Cliente não possui um plano de contas cadastrado!</p>
-        }
-    }
-    else
-    {
-        //Exibe o resultado do formulário
-        <div class="list-header">
+        <div class="list-header printme">
             <div class="line-list">
                 <div class="col-list-left">
                     <input class="check-list-input" type="checkbox" id="cp_todas">
@@ -125,12 +118,12 @@
                 </div>
                 <div class="col-list-body">
                     <div class="row">
-                        <div class="col-12 col-md-2"><strong>Classificação</strong></div>
-                        <div class="col-12 col-md-6"><strong>Descrição</strong></div>
-                        <div class="col-12 col-md-1 vlr"><strong>Saldo Inicial</strong></div>
-                        <div class="col-12 col-md-1 vlr"><strong>Débito</strong></div>
-                        <div class="col-12 col-md-1 vlr"><strong>Crédito</strong></div>
-                        <div class="col-12 col-md-1 vlr"><strong>Saldo Final</strong></div>
+                        <div class="col-md-2"><strong>Classificação</strong></div>
+                        <div class="col-md-6"><strong>Descrição</strong></div>
+                        <div class="col-md-1" style="white-space:nowrap;text-align:right"><strong>Saldo Inicial</strong></div>
+                        <div class="col-md-1" style="white-space:nowrap;text-align:right"><strong>Débito</strong></div>
+                        <div class="col-md-1" style="white-space:nowrap;text-align:right"><strong>Crédito</strong></div>
+                        <div class="col-md-1" style="white-space:nowrap;text-align:right"><strong>Saldo Final</strong></div>
                     </div>
                 </div>
             </div>
@@ -144,23 +137,32 @@
                     <label class="check-list-label" for="cp_todas"></label>
                 </div>
                 <div class="col-list-body">
-                    <div class="row">
-                        <div class="col-12 line_list_title_mobile"><strong>Classif.: </strong>@item.classificacao</div>
-                        <div class="col-12 line_list_title_mobile"><strong>Desc.: </strong>@item.descricao</div>
-                        <div class="col-12 line_list_title_mobile"><strong>Saldo Inicial: </strong>@item.saldo_inicial.ToString("N")</div>
-                        <div class="col-12 line_list_title_mobile"><strong>Débito: </strong>@item.debito.ToString("N")</div>
-                        <div class="col-12 line_list_title_mobile"><strong>Crédito: </strong>@item.credito.ToString("N")</div>
-                        <div class="col-12 line_list_title_mobile"><strong>Saldo Final: </strong>@item.saldo_final.ToString("N")</div>
-
-                        <div class="col-2 line_list_title_full">@item.classificacao</div>
-                        <div class="col-6 line_list_title_full">@item.descricao</div>
-                        <div class="col-1 line_list_title_full vlr">@item.saldo_inicial.ToString("N")</div>
-                        <div class="col-1 line_list_title_full vlr">@item.debito.ToString("N")</div>
-                        <div class="col-1 line_list_title_full vlr">@item.credito.ToString("N")</div>
-                        <div class="col-1 line_list_title_full vlr">@item.saldo_final.ToString("N")</div>
+                    <div class="line_list_title_full printme">
+                        <div class="row">
+                            <div class="col-2">@item.classificacao</div>
+                            <div class="col-6">@item.descricao</div>
+                            <div class="col-1 vlr">@item.saldo_inicial.ToString("N")</div>
+                            <div class="col-1 vlr">@item.debito.ToString("N")</div>
+                            <div class="col-1 vlr">@item.credito.ToString("N")</div>
+                            <div class="col-1 vlr">@item.saldo_final.ToString("N")</div>
+                        </div>
+                    </div>
+                    <div class="line_list_title_mobile no-printme">
+                        <div class="row">
+                            <div class="col-12"><strong>Classif.: </strong>@item.classificacao</div>
+                            <div class="col-12"><strong>Desc.: </strong>@item.descricao</div>
+                            <div class="col-12"><strong>Saldo Inicial: </strong>@item.saldo_inicial.ToString("N")</div>
+                            <div class="col-12"><strong>Débito: </strong>@item.debito.ToString("N")</div>
+                            <div class="col-12"><strong>Crédito: </strong>@item.credito.ToString("N")</div>
+                            <div class="col-12"><strong>Saldo Final: </strong>@item.saldo_final.ToString("N")</div>
+                        </div>
                     </div>
                 </div>
             </div>
         }
+    }
+    else
+    {
+        <p>Cliente não possui um plano de contas cadastrado!</p>
     }
 }

@@ -42,9 +42,7 @@ namespace gestaoContadorcomvc.Models
         public string vincularContabilidade(int usuario_id, int cc_conta_id, int cc_conta_id_contador, string cc_dctoContador, string cc_nomeContador, string cc_termo)
         {
             string retorno = "Contador vinculado com sucesso!";
-
-            int recuperacao_id = 0;
-
+            
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
             MySqlTransaction Transacao;

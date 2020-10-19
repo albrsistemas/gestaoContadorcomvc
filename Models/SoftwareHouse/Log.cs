@@ -63,7 +63,7 @@ namespace gestaoContadorcomvc.Models.SoftwareHouse
                     myTrans.Commit();
                 */
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 myTrans.Rollback();
             }

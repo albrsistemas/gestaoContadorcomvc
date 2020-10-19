@@ -1,21 +1,27 @@
 ﻿//Onload página layout
 function Page() {
 
-    //Renderizando as informações do Drawer conforme a página específica:
-    //let page = window.location.href;    
-    //switch (page) {
-    //    case 'https://localhost:44339/ContasPagar':
-    //        document.getElementById('drawer').innerHTML = "";
-    //        document.getElementById('drawer').innerHTML = "Página Contas a Pagar";
-    //        break;
-    //    case 'https://localhost:44339/':
-    //        document.getElementById('drawer').style.display = 'none';            
-    //        document.getElementById('bread_menu').style.display = 'none';            
+    //Atribuindo valor padrão a campos da tela novo lançamento contábil
+    let Element_vlr = document.getElementById("lancamento_valor_create");
+    let Element_data = document.getElementById("lancamento_data_create");
+    if (Element_vlr) {
+        Element_vlr.value = (0).toFixed(2);
+    }
+    if (Element_data) {
+        let data = new Date();
+        Element_data.value = data.toLocaleDateString();
+    }  
 
-    //        break;
-    //    default:
-    //        document.getElementById('drawer').innerHTML = "";                        
-    //}
+    //Tela balancete contábil
+    let Elemet_data_inicial = document.getElementById("data_inicial");
+    if (Elemet_data_inicial) {
+        let data = new Date();
+        document.getElementById("data_inicial").value = '01/' + (data.getMonth() + 1) + "/" + data.getFullYear();
+
+        var ultimoDia = new Date(data.getFullYear(), data.getMonth() + 1, 0);
+        document.getElementById('data_final').value = ultimoDia.toLocaleDateString();
+    }
+
 }
 
 function ValidaRegistro(id) {
@@ -376,74 +382,69 @@ $(function () {
     });
 });
 
-////Tela de lançamento contábil
-//function consultaContasContabeis(id, conta) {
-//    $(id).autocomplete({
-//        source: function (request, response) {
-//            $.ajax({
-//                url: "/Cliente/Participante/buscaParticipantes",
-//                data: { busca: request.term },
-//                type: 'POST',
-//                dataType: 'json',
-//                beforeSend: function (XMLHttpRequest) {
+//Tela de lançamento contábil
+function consultaContasContabeis(id, tipo, termo) {    
+    let id_campo = "#" + id;
+    $(id_campo).autocomplete({        
+        source: function (request, response) {            
+            $.ajax({
+                url: "/Contabilidade/ContaContabil/consultaContasContabeis",
+                data: { termo: request.term },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("erro");
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    var results = JSON.parse(data);                    
+                    var autocompleteObjects = [];
+                    for (var i = 0; i < results.length; i++) {
+                        var object = {
+                            // Used by jQuery Autocomplete to show
+                            // autocomplete suggestions as well as
+                            // the text in yourInputTextBox upon selection.
+                            // Assign them to a value that you want the user to see.
+                            value: results[i].ccontabil_classificacao + " - " + results[i].ccontabil_nome,
+                            label: results[i].ccontabil_classificacao + " - " + results[i].ccontabil_nome,
 
-//                },
-//                error: function (XMLHttpRequest, textStatus, errorThrown) {
-//                    alert("erro");
-//                },
-//                success: function (data, textStatus, XMLHttpRequest) {
-//                    var results = JSON.parse(data);
+                            // Put our own custom id here.
+                            // If you want to, you can even put the result object.
+                            id: results[i].ccontabil_id,
+                            nivel: results[i].ccontabil_nivel
+                        };
 
-//                    var autocompleteObjects = [];
-//                    for (var i = 0; i < results.length; i++) {
-//                        var object = {
-//                            // Used by jQuery Autocomplete to show
-//                            // autocomplete suggestions as well as
-//                            // the text in yourInputTextBox upon selection.
-//                            // Assign them to a value that you want the user to see.
-//                            value: results[i].participante_nome,
-//                            label: results[i].participante_nome,
+                        autocompleteObjects.push(object);
+                    }
 
-//                            // Put our own custom id here.
-//                            // If you want to, you can even put the result object.
-//                            id: results[i].participante_id
-//                        };
+                    // Invoke the response callback.
+                    response(autocompleteObjects);
+                }
+            });
+        },
+        minLength: 3,
+        select: function (event, ui) {
+            // Retrieve your id here and do something with it.  
+            if (tipo == 'debito') {
+                document.getElementById('lancamento_debito_conta_id').value = ui.item.id;
+                document.getElementById('conta_debito_nivel').value = ui.item.nivel;
+            }
+            if (tipo == 'credito') {
+                document.getElementById('lancamento_credito_conta_id').value = ui.item.id;
+                document.getElementById('conta_credito_nivel').value = ui.item.nivel;
+            }
+                        
 
-//                        autocompleteObjects.push(object);
-//                    }
-
-//                    // Invoke the response callback.
-//                    response(autocompleteObjects);
-
-//                }
-//            });
-//        },
-//        minLength: 3,
-//        select: function (event, ui) {
-//            // Retrieve your id here and do something with it.            
-//            if (campo == 'destinatario') {
-//                carregaDadosPart(ui.item.id);
-//            }
-//            if (campo == 'transportadora') {
-//                carregarTransportadora(ui.item.id);
-//            }
-
-//        }
-//    });
-//}
+        }
+    });
+}
 
 function formatValor(id, vlr, decimais) {    
     vlr = vlr.replace(",", ".");
     vlr = (parseFloat(vlr) * 1);
     document.getElementById(id).value = vlr.toFixed(2);    
-}
-
-function startDate(id) {    
-    let data = new Date();
-    document.getElementById(id).value = '01/' + (data.getMonth() + 1) + "/" + data.getFullYear();
-
-    var ultimoDia = new Date(data.getFullYear(), data.getMonth() + 1, 0);
-    document.getElementById('data_final').value = ultimoDia.toLocaleDateString();
 }
 
 function gerarDataFinal(vlr) {
@@ -452,16 +453,6 @@ function gerarDataFinal(vlr) {
     var ultimoDia = new Date(data.getFullYear(), data.getMonth() + 1, 0);
     document.getElementById('data_final').value = ultimoDia.toLocaleDateString();
 }
-
-/*
-$(document).ready(function () {
-    document.getElementById("lancamento_valor_create").value = (0).toFixed(2);
-    let data = new Date();
-    document.getElementById("lancamento_data_create").value = data.toLocaleDateString();
-});
-*/
-
-
 
 
 

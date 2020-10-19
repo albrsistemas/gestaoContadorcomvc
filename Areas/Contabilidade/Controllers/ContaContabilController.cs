@@ -10,6 +10,7 @@ using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
@@ -180,6 +181,32 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             catch
             {
                 return RedirectToAction("Index", new { controller = "ContaContabil", action = "Index" });
+            }
+        }
+        
+        public ActionResult consultaContasContabeis(string termo)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            Conta contexto = new Conta();
+            contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
+
+            Config_contador_cliente config = new Config_contador_cliente();
+            vm_ConfigContadorCliente vm_config = new vm_ConfigContadorCliente();
+            vm_config = config.buscaCCC(user.usuario_id, contexto.conta_id, user.usuario_conta_id);
+
+            if(vm_config.ccc_planoContasVigente != "0")
+            {
+                ContaContabil contaContabil = new ContaContabil();
+                vm_ContaContabil conta = new vm_ContaContabil();                
+                conta.contasContabeis = contaContabil.listaContas(Convert.ToInt32(vm_config.ccc_planoContasVigente),termo);
+
+                return Json(JsonConvert.SerializeObject(conta.contasContabeis));
+            }
+            else
+            {
+                return Json("Cliente não possui plano de contas configurado!");
             }
         }
     }

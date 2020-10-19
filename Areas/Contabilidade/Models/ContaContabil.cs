@@ -381,103 +381,103 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
         }
 
         //Lista contas por nome ou apelido para atender a tela de lançamento contábil
-        //public List<vm_ContaContabil> listaContas(int plano_id)
-        //{
-        //    List<vm_ContaContabil> contas = new List<vm_ContaContabil>();
+        public List<vm_ContaContabil> listaContas(int plano_id, string termo)
+        {
+            List<vm_ContaContabil> contas = new List<vm_ContaContabil>();
 
-        //    conn.Open();
-        //    MySqlCommand comando = conn.CreateCommand();
-        //    MySqlTransaction Transacao;
-        //    Transacao = conn.BeginTransaction();
-        //    comando.Connection = conn;
-        //    comando.Transaction = Transacao;
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
 
-        //    try
-        //    {
-        //        comando.CommandText = "select * from contacontabil where contacontabil.ccontabil_plano_id = @plano_id and contacontabil.ccontabil_status = 'Ativo' order by contacontabil.ccontabil_classificacao";
-        //        comando.Parameters.AddWithValue("@plano_id", plano_id);
-        //        comando.ExecuteNonQuery();
-        //        Transacao.Commit();
+            try
+            {
+                comando.CommandText = "select contacontabil.ccontabil_id, contacontabil.ccontabil_nivel, contacontabil.ccontabil_classificacao, contacontabil.ccontabil_nome, contacontabil.ccontabil_apelido from contacontabil where contacontabil.ccontabil_plano_id = @plano and contacontabil.ccontabil_status = 'Ativo' and(contacontabil.ccontabil_classificacao like CONCAT('%', @termo, '%') OR contacontabil.ccontabil_nome like CONCAT('%', @termo, '%') OR contacontabil.ccontabil_apelido like CONCAT('%', @termo, '%')) order by contacontabil.ccontabil_classificacao;";
+                comando.Parameters.AddWithValue("@plano", plano_id);
+                comando.Parameters.AddWithValue("@termo", termo);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
 
-        //        var leitor = comando.ExecuteReader();
+                var leitor = comando.ExecuteReader();
 
-        //        if (leitor.HasRows)
-        //        {
-        //            while (leitor.Read())
-        //            {
-        //                vm_ContaContabil conta = new vm_ContaContabil();
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        vm_ContaContabil conta = new vm_ContaContabil();
 
-        //                if (DBNull.Value != leitor["ccontabil_id"])
-        //                {
-        //                    conta.ccontabil_id = Convert.ToInt32(leitor["ccontabil_id"]);
-        //                }
-        //                else
-        //                {
-        //                    conta.ccontabil_id = 0;
-        //                }
+                        if (DBNull.Value != leitor["ccontabil_id"])
+                        {
+                            conta.ccontabil_id = Convert.ToInt32(leitor["ccontabil_id"]);
+                        }
+                        else
+                        {
+                            conta.ccontabil_id = 0;
+                        }
 
-        //                if (DBNull.Value != leitor["ccontabil_plano_id"])
-        //                {
-        //                    conta.ccontabil_plano_id = Convert.ToInt32(leitor["ccontabil_plano_id"]);
-        //                }
-        //                else
-        //                {
-        //                    conta.ccontabil_plano_id = 0;
-        //                }
+                        //if (DBNull.Value != leitor["ccontabil_plano_id"])
+                        //{
+                        //    conta.ccontabil_plano_id = Convert.ToInt32(leitor["ccontabil_plano_id"]);
+                        //}
+                        //else
+                        //{
+                        //    conta.ccontabil_plano_id = 0;
+                        //}
 
-        //                if (DBNull.Value != leitor["ccontabil_nivel"])
-        //                {
-        //                    conta.ccontabil_nivel = Convert.ToInt32(leitor["ccontabil_nivel"]);
-        //                }
-        //                else
-        //                {
-        //                    conta.ccontabil_nivel = 0;
-        //                }
+                        if (DBNull.Value != leitor["ccontabil_nivel"])
+                        {
+                            conta.ccontabil_nivel = Convert.ToInt32(leitor["ccontabil_nivel"]);
+                        }
+                        else
+                        {
+                            conta.ccontabil_nivel = 0;
+                        }
 
-        //                if (DBNull.Value != leitor["ccontabil_dataCriacao"])
-        //                {
-        //                    conta.ccontabil_dataCriacao = Convert.ToDateTime(leitor["ccontabil_dataCriacao"]);
-        //                }
-        //                else
-        //                {
-        //                    conta.ccontabil_dataCriacao = new DateTime();
-        //                }
+                        //if (DBNull.Value != leitor["ccontabil_dataCriacao"])
+                        //{
+                        //    conta.ccontabil_dataCriacao = Convert.ToDateTime(leitor["ccontabil_dataCriacao"]);
+                        //}
+                        //else
+                        //{
+                        //    conta.ccontabil_dataCriacao = new DateTime();
+                        //}
 
-        //                if (DBNull.Value != leitor["ccontabil_dataInativacao"])
-        //                {
-        //                    conta.ccontabil_dataInativacao = Convert.ToDateTime(leitor["ccontabil_dataInativacao"]);
-        //                }
-        //                else
-        //                {
-        //                    conta.ccontabil_dataInativacao = new DateTime();
-        //                }
+                        //if (DBNull.Value != leitor["ccontabil_dataInativacao"])
+                        //{
+                        //    conta.ccontabil_dataInativacao = Convert.ToDateTime(leitor["ccontabil_dataInativacao"]);
+                        //}
+                        //else
+                        //{
+                        //    conta.ccontabil_dataInativacao = new DateTime();
+                        //}
 
-        //                conta.ccontabil_classificacao = leitor["ccontabil_classificacao"].ToString();
-        //                conta.ccontabil_nome = leitor["ccontabil_nome"].ToString();
-        //                conta.ccontabil_apelido = leitor["ccontabil_apelido"].ToString();
-        //                conta.ccontabil_grupo = leitor["ccontabil_grupo"].ToString();
-        //                conta.ccontabil_status = leitor["ccontabil_status"].ToString();
+                        conta.ccontabil_classificacao = leitor["ccontabil_classificacao"].ToString();
+                        conta.ccontabil_nome = leitor["ccontabil_nome"].ToString();
+                        conta.ccontabil_apelido = leitor["ccontabil_apelido"].ToString();
+                        //conta.ccontabil_grupo = leitor["ccontabil_grupo"].ToString();
+                        //conta.ccontabil_status = leitor["ccontabil_status"].ToString();
 
 
-        //                contas.Add(conta);
-        //            }
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        string msg = e.Message.Substring(0, 300);
-        //        log.log("ContaContabil", "listaContasContabeisPorPlano", "Erro", msg, conta_id, usuario_id);
-        //    }
-        //    finally
-        //    {
-        //        if (conn.State == System.Data.ConnectionState.Open)
-        //        {
-        //            conn.Close();
-        //        }
-        //    }
+                        contas.Add(conta);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message.Substring(0, 300);                
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
 
-        //    return contas;
-        //}
+            return contas;
+        }
 
     }
 }

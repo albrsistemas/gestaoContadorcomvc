@@ -201,6 +201,5 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
 
             return retorno;
         }
-
     }
 }

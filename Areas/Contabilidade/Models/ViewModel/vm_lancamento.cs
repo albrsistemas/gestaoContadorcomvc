@@ -18,19 +18,22 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel
         //Campos do formulário
         [Display(Name = "Débito")]
         [Required(ErrorMessage = "É obrigatório uma conta débito")]
+        [Range(1, 100000, ErrorMessage = "É obrigatório uma conta débito")]
         public int lancamento_debito_conta_id { get; set; }
 
         [Display(Name = "Crédito")]
         [Required(ErrorMessage = "É obrigatório uma conta crédito")]
+        [Range(1, 100000,ErrorMessage = "É obrigatório uma conta crédito")]
         public int lancamento_credito_conta_id { get; set; }
 
         [Display(Name = "Data")]
         [Required(ErrorMessage = "A data é obrigatória")]
-        [DataType(DataType.Date)]
+        [DataType(DataType.Date)]        
         public DateTime lancamento_data { get; set; }
 
         [Display(Name = "Valor")]
-        [Required(ErrorMessage = "É obrigatório informar o valor do lançamento")]   
+        [Required(ErrorMessage = "É obrigatório informar o valor do lançamento")]
+        [Range(0.01, 100000, ErrorMessage = "É obrigatório informar o valor do lançamento")]
         public Decimal lancamento_valor { get; set; }
 
         [Display(Name = "Histórico")]
@@ -44,6 +47,12 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel
 
         [Display(Name = "Participante Crédito")]
         public int lancamento_participante_credito { get; set; }
+
+        [Range(5, 5, ErrorMessage = "Não é permitido lançamento em conta de nível infefior a 5")]
+        public int conta_debito_nivel { get; set; }
+
+        [Range(5, 5, ErrorMessage = "Não é permitido lançamento em conta de nível infefior a 5")]
+        public int conta_credito_nivel { get; set; }
 
         public int lancamento_cliente_id { get; set; }
         public int lancamento_contador_id { get; set; }
