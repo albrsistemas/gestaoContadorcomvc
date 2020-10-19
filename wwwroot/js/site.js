@@ -432,19 +432,34 @@ $(function () {
 //    });
 //}
 
-function formatValor(id, vlr, decimais) {
-    console.log(vlr);
+function formatValor(id, vlr, decimais) {    
     vlr = vlr.replace(",", ".");
     vlr = (parseFloat(vlr) * 1);
-    document.getElementById(id).value = vlr.toFixed(2);
-    console.log(vlr);
+    document.getElementById(id).value = vlr.toFixed(2);    
 }
 
+function startDate(id) {    
+    let data = new Date();
+    document.getElementById(id).value = '01/' + (data.getMonth() + 1) + "/" + data.getFullYear();
+
+    var ultimoDia = new Date(data.getFullYear(), data.getMonth() + 1, 0);
+    document.getElementById('data_final').value = ultimoDia.toLocaleDateString();
+}
+
+function gerarDataFinal(vlr) {
+    data_inicial = vlr.substring(6, 10) + "-" + vlr.substring(3, 5) + "-" + (vlr.substring(0, 2) + 1);        
+    let data = new Date(data_inicial);    
+    var ultimoDia = new Date(data.getFullYear(), data.getMonth() + 1, 0);
+    document.getElementById('data_final').value = ultimoDia.toLocaleDateString();
+}
+
+/*
 $(document).ready(function () {
     document.getElementById("lancamento_valor_create").value = (0).toFixed(2);
     let data = new Date();
     document.getElementById("lancamento_data_create").value = data.toLocaleDateString();
 });
+*/
 
 
 
