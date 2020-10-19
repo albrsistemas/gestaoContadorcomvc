@@ -156,9 +156,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
         }
 
         //Cadastrar lançamento
-        public string cadastrarLancamento(int usuario_id, int cliente_id, int contador_id, vm_lancamento lanc)
+        public string cadastrarLancamento(int usuario_id, int cliente_id, int contador_id, string origem, DateTime lancamento_data, string lancamento_valor, string lancamento_debito, string lancamento_credito, string lancamento_historico)
         {
-            string retorno = "Lançamento contábil registrado com sucesso!";
+            string retorno = "Lançamento contábil registrado com sucesso !";
 
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
@@ -170,17 +170,17 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
             try
             {
                 comando.CommandText = "CALL pr_novolancamento('Lançamento Contábil',@data,@valor,@cliente_id,@contador_id,@contaDebito,@contaCredito,@histotico);";
-                comando.Parameters.AddWithValue("@data", lanc.lancamento_data);
-                comando.Parameters.AddWithValue("@valor", lanc.lancamento_valor);
+                comando.Parameters.AddWithValue("@data", lancamento_data);
+                comando.Parameters.AddWithValue("@valor", lancamento_valor);
                 comando.Parameters.AddWithValue("@cliente_id", cliente_id);
                 comando.Parameters.AddWithValue("@contador_id", contador_id);
-                comando.Parameters.AddWithValue("@contaDebito", lanc.lancamento_debito_conta_id);
-                comando.Parameters.AddWithValue("@contaCredito", lanc.lancamento_credito_conta_id);
-                comando.Parameters.AddWithValue("@histotico", lanc.lancamento_historico);
+                comando.Parameters.AddWithValue("@contaDebito", lancamento_debito);
+                comando.Parameters.AddWithValue("@contaCredito", lancamento_credito);
+                comando.Parameters.AddWithValue("@histotico", lancamento_historico);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
-                string msg = "Lançamento de código id débito: " + lanc.lancamento_debito_conta_id + " cadastrado com sucesso";
+                string msg = "Lançamento de código id débito: " + lancamento_debito + " e crédito id: " + lancamento_credito + " cadastrado com sucesso";
                 log.log("Lançamento", "cadastrarLancamento", "Sucesso", msg, cliente_id, usuario_id);
 
             }
@@ -188,7 +188,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
             {
                 retorno = "Erro ao registrar o lançamento contábil!";
 
-                string msg = "Tentativa de registrar lançamento de id débito: " + lanc.lancamento_debito_conta_id + " fracassou [" + e.Message.Substring(0, 300) + "]";
+                string msg = "Tentativa de registrar lançamento de id débito: " + lancamento_debito + " e crédito id: " + lancamento_credito + " fracassou [" + e.Message.Substring(0, 300) + "]";
                 log.log("Lançamento", "Lançamento", "Erro", msg, cliente_id, usuario_id);
             }
             finally

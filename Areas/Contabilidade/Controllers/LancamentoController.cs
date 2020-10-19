@@ -75,7 +75,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                 {
                     TempData["novoLancamento"] = "Erro no preenchimento das informações do formulário!";
 
-                    return View();
+                    return RedirectToAction(nameof(Create));
                 }
 
                 Usuario usuario = new Usuario();
@@ -85,18 +85,22 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                 contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
                 Lancamento lancamento = new Lancamento();
-
-                //TempData["novoLancamento"] = lancamento.cadastrarLancamento(user.usuario_id, contexto.conta_id, user.usuario_conta_id, lanc);
+                TempData["novoLancamento"] = lancamento.cadastrarLancamento(user.usuario_id, contexto.conta_id, user.usuario_conta_id, "Lançamento Contábil", Convert.ToDateTime(collection["lancamento_data"]), collection["lancamento_valor"], collection["lancamento_debito_conta_id"], collection["lancamento_credito_conta_id"], collection["lancamento_historico"]);
 
                 Config_contador_cliente config = new Config_contador_cliente();
                 vm_ConfigContadorCliente vm_config = new vm_ConfigContadorCliente();
                 vm_config = config.buscaCCC(user.usuario_id, contexto.conta_id, user.usuario_conta_id);
-                
+
                 vm_lancamento vm_lanc = new vm_lancamento();
                 vm_lanc.lancamentos = lancamento.listarLancamentosLimit(user.usuario_id, contexto.conta_id, user.usuario_conta_id, 3);
                 vm_lanc.user = user;
                 vm_lanc.vm_config = vm_config;
 
+                if (config.ccc_planoContasVigente != "0")
+                {
+                    Selects select = new Selects();
+                    ViewBag.planoContas = select.getPlanoContas(Convert.ToInt32(vm_config.ccc_planoContasVigente)).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+                }
 
                 return View(vm_lanc);
             }
@@ -104,7 +108,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             {
                 TempData["novoLancamento"] = "Erro ao registrar o lançamento contábil. Tente novamente. Se persistir entre em contato com o suporte!";
 
-                return View();
+                return RedirectToAction(nameof(Create));
             }
         }
 

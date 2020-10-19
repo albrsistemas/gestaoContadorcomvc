@@ -37,10 +37,10 @@
 <hr class="hrLine" />
 
 @{
-    if (TempData["novoLancamento"] != null && TempData["novoLancamento"].ToString().Contains("Sucesso"))
+    if (TempData["novoLancamento"] != null && TempData["novoLancamento"].ToString().Contains("sucesso"))
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
-            <strong>Erro!</strong> @TempData["novoLancamento"].ToString()
+            <strong>Sucesso!</strong> @TempData["novoLancamento"].ToString()
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -66,7 +66,7 @@
                 <div class="col-12">
                     <div class="form-group">
                         <label asp-for="lancamento_debito_conta_id" class="control-label"></label>
-                        <select asp-items="@ViewBag.planoContas" value="@TempData["lancamento_debito_conta_id"]" id="lancamento_debito_conta_id" name="lancamento_debito_conta_id" class="form-control js_example_basic_single" style="width: 100%;"></select>
+                        <select asp-items="@ViewBag.planoContas" value="@TempData["lancamento_debito_conta_id"]" id="lancamento_debito_conta_id" name="lancamento_debito_conta_id" class="form-control js_example_basic_single" style="width: 100%;" autofocus></select>
                         @*<input asp-for="lancamento_debito_conta_id" class="form-control" />*@ @*onkeydown="consultaContasContabeis(this.id, 'debito')"*@
                         <span asp-validation-for="lancamento_debito_conta_id" class="text-danger"></span>
                     </div>
