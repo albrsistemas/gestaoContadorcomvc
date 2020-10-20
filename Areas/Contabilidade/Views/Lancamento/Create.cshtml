@@ -61,52 +61,33 @@
 @{
     if (Model.vm_config.ccc_planoContasVigente != "0")
     {
-        <form asp-area="Contabilidade" asp-controller="Lancamento" asp-action="Create">
+        <form id="formLancamentoContabil" asp-area="Contabilidade" asp-controller="Lancamento" asp-action="Create">
             <div class="row">
-                <div class="col-8">
+                <div class="col-12">
                     <div class="form-group">
                         <label asp-for="lancamento_debito_conta_id" class="control-label"></label>
                         @*<select asp-items="@ViewBag.planoContas" value="@TempData["lancamento_debito_conta_id"]" id="lancamento_debito_conta_id" name="lancamento_debito_conta_id" class="form-control js_example_basic_single" style="width: 100%;" autofocus></select>*@
                         <input type="text" id="conta_debito" class="form-control" onkeydown="consultaContasContabeis(this.id, 'debito', this.value)" />
+                        <span class="text-info" style="font-size:12px"><strong>Conta nível: </strong><span id="nivel_debito"></span></span><br/>
                         <span asp-validation-for="lancamento_debito_conta_id" class="text-danger"></span>
                         <span asp-validation-for="conta_debito_nivel" class="text-danger"></span>
+                        <input type="hidden" asp-for="lancamento_debito_conta_id" id="lancamento_debito_conta_id" name="lancamento_debito_conta_id" value="0" />
+                        <input type="hidden" asp-for="conta_debito_nivel" id="conta_debito_nivel" name="conta_debito_nivel" value="0" />
                     </div>
-                </div>
-                <div class="col-2">
-                    <div class="form-group">
-                        <label class="control-label">Cód.</label>
-                        <input class="form-control" asp-for="lancamento_debito_conta_id" id="lancamento_debito_conta_id" name="lancamento_debito_conta_id" value="0" readonly="readonly" />
-                    </div>
-                </div>
-                <div class="col-2">
-                    <div class="form-group">
-                        <label class="control-label">Nível</label>
-                        <input class="form-control" asp-for="conta_debito_nivel" id="conta_debito_nivel" name="conta_debito_nivel" value="0" readonly="readonly" />
-                    </div>
-                </div>
+                </div>                
             </div>           
             <div class="row">
-                <div class="col-8">
+                <div class="col-12">
                     <div class="form-group">
                         <label asp-for="lancamento_credito_conta_id" class="control-label"></label>
                         <input id="conta_credito" class="form-control" onkeydown="consultaContasContabeis(this.id, 'credito', this.value)" />
+                        <span class="text-info" style="font-size:12px"><strong>Conta nível: </strong><span id="nivel_credito"></span></span><br />
                         <span asp-validation-for="lancamento_credito_conta_id" class="text-danger"></span>
                         <span asp-validation-for="conta_credito_nivel" class="text-danger"></span>
+                        <input type="hidden" asp-for="lancamento_credito_conta_id" name="lancamento_credito_conta_id" id="lancamento_credito_conta_id" value="0" />
+                        <input type="hidden" asp-for="conta_credito_nivel" id="conta_credito_nivel" name="conta_credito_nivel" value="0" />
                     </div>
-                </div>
-                <div class="col-2">
-                    <div class="form-group">
-                        <label class="control-label">Cód.</label>
-                        <input class="form-control" asp-for="lancamento_credito_conta_id" name="lancamento_credito_conta_id" id="lancamento_credito_conta_id" value="0" readonly="readonly" />
-                    </div>
-                </div>
-                <div class="col-2">
-                    <div class="form-group">
-                        <label class="control-label">Nível</label>
-                        <input class="form-control" asp-for="conta_credito_nivel" id="conta_credito_nivel" name="conta_credito_nivel" value="0" readonly="readonly" />
-                    </div>
-                </div>
-
+                </div>   
             </div>
                 @*<div class="row">
             <div class="col-12">

@@ -1,4 +1,5 @@
 ﻿using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,8 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel
 
         [Display(Name = "Participante Crédito")]
         public int lancamento_participante_credito { get; set; }
-
+                
+        [HiddenInput(DisplayValue = false)]
         [Range(5, 5, ErrorMessage = "Não é permitido lançamento em conta de nível infefior a 5")]
         public int conta_debito_nivel { get; set; }
 

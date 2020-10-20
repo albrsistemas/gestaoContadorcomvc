@@ -430,10 +430,12 @@ function consultaContasContabeis(id, tipo, termo) {
             if (tipo == 'debito') {
                 document.getElementById('lancamento_debito_conta_id').value = ui.item.id;
                 document.getElementById('conta_debito_nivel').value = ui.item.nivel;
+                document.getElementById('nivel_debito').innerHTML = ui.item.nivel;
             }
             if (tipo == 'credito') {
                 document.getElementById('lancamento_credito_conta_id').value = ui.item.id;
                 document.getElementById('conta_credito_nivel').value = ui.item.nivel;
+                document.getElementById('nivel_credito').innerHTML = ui.item.nivel;
             }
                         
 
@@ -453,6 +455,9 @@ function gerarDataFinal(vlr) {
     var ultimoDia = new Date(data.getFullYear(), data.getMonth() + 1, 0);
     document.getElementById('data_final').value = ultimoDia.toLocaleDateString();
 }
+
+$.validator.setDefaults({ ignore: '' });
+
 
 
 
