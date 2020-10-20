@@ -115,7 +115,7 @@
                     <label for="radio2" id="label2">Contabilidade</label>
                 </div>
                 <button type="submit" class="btn btn-info botao">Entrar</button>
-                <p class="criarConta">Não é registrado? <a asp-controller="Conta" asp-action="Registro">Cria sua conta</a></p>
+                @*<p class="criarConta">Não é registrado? <a asp-controller="Conta" asp-action="Registro">Cria sua conta</a></p>*@
                 @{
                     if (TempData["errorLogin"] != null)
                     {
