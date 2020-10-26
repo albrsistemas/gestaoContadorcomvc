@@ -1,0 +1,28 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_participante
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirmação de Esclusão</h4>
+            </div>
+            <div class="modal-body">
+                <p>Confirme a exclusão do cliente/fornecedor: </p>
+                <p><strong>Nome: </strong>@Model.participante_nome</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <form asp-controller="Participante" asp-action="Delete">
+                    <input type="hidden" value="@Model.participante_id" name="id" />
+                    <button type="submit" class="btn btn-info">Apagar</button>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}

@@ -264,7 +264,7 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Categorias do cliente
-        public List<Selects> getCategoriasCliente(int conta_id)
+        public List<Selects> getCategoriasCliente(int conta_id, bool semCategegoria)
         {
             List<Selects> categorias = new List<Selects>();
 
@@ -277,21 +277,35 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT c.categoria_id, c.categoria_classificacao, c.categoria_nome, c.categoria_tipo from categoria as c WHERE c.categoria_conta_id = @conta_id and c.categoria_status = 'Ativo';";
+                comando.CommandText = "SELECT c.categoria_id, c.categoria_classificacao, c.categoria_nome, c.categoria_tipo from categoria as c WHERE c.categoria_conta_id = @conta_id and c.categoria_status = 'Ativo' order by c.categoria_classificacao;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
                 var leitor = comando.ExecuteReader();
+                Selects semCat = new Selects();
+                //add select 'Sem Categoria'
+                if (semCategegoria)
+                {
+                    semCat.value = "0";
+                    semCat.text = "Sem Categoria";
+                    semCat.disabled = false;
+
+                    categorias.Add(semCat);
+                }
+
 
                 if (leitor.HasRows)
                 {
                     while (leitor.Read())
                     {
                         Selects categoria = new Selects();
+
+                        string texto = leitor["categoria_classificacao"].ToString() + " - " + leitor["categoria_nome"].ToString();
                         categoria.value = leitor["categoria_id"].ToString();
-                        categoria.text = leitor["categoria_classificacao"].ToString() + " - " + leitor["categoria_nome"].ToString();
-                        if (leitor["categoria_tipo"].ToString().Equals("Sintetica"))
+                        categoria.text = texto;
+                        string tipo = leitor["categoria_tipo"].ToString();
+                        if (tipo.Equals("Sintetica"))
                         {
                             disabled = true;
                         }
@@ -318,6 +332,188 @@ namespace gestaoContadorcomvc.Models
             return categorias;
         }
 
+        //Lista uf igbe (origem: arquivo txt sped fiscal)
+        public List<Selects> getUF_ibge()
+        {
+            List<Selects> ufs_ibge = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT u.uf_ibge_codigo, u.uf_ibge_sigla from uf_ibge as u WHERE u.uf_ibge_data_fim IS NULL;";                
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects uf_ibge = new Selects();
+
+                        uf_ibge.value = leitor["uf_ibge_codigo"].ToString();
+                        uf_ibge.text = leitor["uf_ibge_sigla"].ToString();
+                        uf_ibge.disabled = false;
+
+                        ufs_ibge.Add(uf_ibge);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return ufs_ibge;
+        }
+
+        //Tipo contribuinte de acordo com o layout nf-e
+        public List<Selects> getTipoContribuinte()
+        {
+            List<Selects> tipoContribuinte = new List<Selects>();
+            tipoContribuinte.Add(new Selects
+            {
+                value = "1",
+                text = "Contribuinte ICMS"
+            });
+            tipoContribuinte.Add(new Selects
+            {
+                value = "2",
+                text = "Contribuinte isento de Inscrição no cadastro de Contribuintes do ICMS"
+            });
+            tipoContribuinte.Add(new Selects
+            {
+                value = "9",
+                text = "Não Contribuinte, que pode ou não possuir Inscrição Estadual no Cadastro de Contribuintes do ICMS"
+            });
+
+            return tipoContribuinte;
+        }
+
+        //regimes de tributação
+        public List<Selects> getRegimes()
+        {
+            List<Selects> regimes = new List<Selects>();
+            regimes.Add(new Selects
+            {
+                value = "1",
+                text = "Simples Nacional"
+            });
+            regimes.Add(new Selects
+            {
+                value = "2",
+                text = "Simples Nacional, excesso sublimite de receita bruta"
+            });
+            regimes.Add(new Selects
+            {
+                value = "3",
+                text = "Regime Normal"
+            });
+
+            return regimes;
+        }
+
+        //regimes de tributação
+        public List<Selects> getTipoPessoa()
+        {
+            List<Selects> tipoPessoa = new List<Selects>();
+            tipoPessoa.Add(new Selects
+            {
+                value = "1",
+                text = "Pessoa Física"
+            });
+            tipoPessoa.Add(new Selects
+            {
+                value = "2",
+                text = "Pessoa Jurídica"
+            });
+            tipoPessoa.Add(new Selects
+            {
+                value = "3",
+                text = "Estrangeiro"
+            });
+
+            return tipoPessoa;
+        }
+
+        //Lista paises igbe (origem: arquivo txt sped fiscal)
+        public List<Selects> getPaises_ibge()
+        {
+            List<Selects> paises = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT p.paisesIBGE_codigo, p.paisesIBGE_nome from paisesibge as p WHERE p.paisesIBGE_data_fim IS NULL;";
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects pais = new Selects();
+
+                        pais.value = leitor["paisesIBGE_codigo"].ToString();
+                        pais.text = leitor["paisesIBGE_nome"].ToString();
+                        pais.disabled = false;
+
+                        paises.Add(pais);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return paises;
+        }
+
+        //Status de cadastros
+        public List<Selects> getStatus()
+        {
+            List<Selects> status = new List<Selects>();
+            status.Add(new Selects
+            {
+                value = "Ativo",
+                text = "Ativo"
+            });
+            status.Add(new Selects
+            {
+                value = "Inativo",
+                text = "Inativo"
+            });            
+
+            return status;
+        }
 
 
     }

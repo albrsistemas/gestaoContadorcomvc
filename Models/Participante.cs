@@ -37,6 +37,9 @@ namespace gestaoContadorcomvc.Models
         public string participante_obs { get; set; }
         public int participante_conta_id { get; set; }
         public string participante_status { get; set; }
+        public string participante_insc_municipal { get; set; }
+        public int participante_regime_tributario { get; set; }
+        public string participante_suframa { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -138,6 +141,15 @@ namespace gestaoContadorcomvc.Models
                             participante.participante_pais = 0;
                         }
 
+                        if (DBNull.Value != leitor["participante_regime_tributario"])
+                        {
+                            participante.participante_regime_tributario = Convert.ToInt32(leitor["participante_regime_tributario"]);
+                        }
+                        else
+                        {
+                            participante.participante_regime_tributario = 0;
+                        }
+
                         if (DBNull.Value != leitor["participante_dataCriacao"])
                         {
                             participante.participante_dataCriacao = Convert.ToDateTime(leitor["participante_dataCriacao"]);
@@ -172,6 +184,8 @@ namespace gestaoContadorcomvc.Models
                         participante.participante_complemento = leitor["participante_complemento"].ToString();
                         participante.participante_obs = leitor["participante_obs"].ToString();
                         participante.participante_status = leitor["participante_status"].ToString();
+                        participante.participante_insc_municipal = leitor["participante_insc_municipal"].ToString();
+                        participante.participante_suframa = leitor["participante_suframa"].ToString();
                         
 
                         participantes.Add(participante);
@@ -200,7 +214,7 @@ namespace gestaoContadorcomvc.Models
             int participante_categoria, int participante_conta_id, int participante_pais, string participante_cep, string participante_nome, 
             string participante_logradouro, string participante_rg, string participante_orgaoEmissor, string participante_numero, string participante_codigo, 
             string participante_tipoPessoa, string participante_inscricaoEstadual, string participante_cnpj_cpf, string participante_complemento, 
-            string participante_obs, string participante_bairro, string participante_cidade, string participante_fantasia)
+            string participante_obs, string participante_bairro, string participante_cidade, string participante_fantasia, string participante_insc_municipal, int participante_regime_tributario, string participante_suframa)
         {
             string retorno = "Participante cadastrado com sucesso!";
 
@@ -214,30 +228,33 @@ namespace gestaoContadorcomvc.Models
             try
             {
                 comando.CommandText = "insert into participante " +
-                    "(participante_nome, participante_fantasia, participante_codigo, participante_tipoPessoa, participante_clienteDesde, participante_contribuinte, participante_inscricaoEstadual, participante_cnpj_cpf, participante_rg, participante_orgaoEmissor, participante_cep, participante_uf, participante_cidade, participante_bairro, participante_logradouro, participante_numero, participante_complemento, participante_categoria, participante_obs, participante_conta_id, participante_pais) " +
+                    "(participante_nome, participante_fantasia, participante_codigo, participante_tipoPessoa, participante_clienteDesde, participante_contribuinte, participante_inscricaoEstadual, participante_cnpj_cpf, participante_rg, participante_orgaoEmissor, participante_cep, participante_uf, participante_cidade, participante_bairro, participante_logradouro, participante_numero, participante_complemento, participante_categoria, participante_obs, participante_conta_id, participante_pais, participante_insc_municipal, participante_regime_tributario, participante_suframa) " +
                     "values (" +
-                    "@participante_nome, @participante_fantasia, @participante_codigo, @participante_tipoPessoa, @participante_clienteDesde, @participante_contribuinte, @participante_inscricaoEstadual, @participante_cnpj_cpf, @participante_rg, @participante_orgaoEmissor, @participante_cep, @participante_uf, @participante_cidade, @participante_bairro, @participante_logradouro, @participante_numero, @participante_complemento, @participante_categoria, @participante_obs, @participante_conta_id, @participante_pais);";
-                comando.Parameters.AddWithValue("@string participante_nome", participante_nome);
-                comando.Parameters.AddWithValue("@string participante_fantasia", participante_fantasia);
-                comando.Parameters.AddWithValue("@string participante_codigo", participante_codigo);
-                comando.Parameters.AddWithValue("@string participante_tipoPessoa", participante_tipoPessoa);
-                comando.Parameters.AddWithValue("@Date participante_clienteDesde", participante_clienteDesde);
-                comando.Parameters.AddWithValue("@int participante_contribuinte", participante_contribuinte);
-                comando.Parameters.AddWithValue("@string participante_inscricaoEstadual", participante_inscricaoEstadual);
-                comando.Parameters.AddWithValue("@string participante_cnpj_cpf", participante_cnpj_cpf);
-                comando.Parameters.AddWithValue("@string participante_rg", participante_rg);
-                comando.Parameters.AddWithValue("@string participante_orgaoEmissor", participante_orgaoEmissor);
-                comando.Parameters.AddWithValue("@string participante_cep", participante_cep);
-                comando.Parameters.AddWithValue("@int participante_uf", participante_uf);
-                comando.Parameters.AddWithValue("@string participante_cidade", participante_cidade);
-                comando.Parameters.AddWithValue("@string participante_bairro", participante_bairro);
-                comando.Parameters.AddWithValue("@string participante_logradouro", participante_logradouro);
-                comando.Parameters.AddWithValue("@string participante_numero", participante_numero);
-                comando.Parameters.AddWithValue("@string participante_complemento", participante_complemento);
-                comando.Parameters.AddWithValue("@int participante_categoria", participante_categoria);
-                comando.Parameters.AddWithValue("@string participante_obs", participante_obs);
-                comando.Parameters.AddWithValue("@int participante_conta_id", participante_conta_id);                
-                comando.Parameters.AddWithValue("@int participante_pais", participante_pais);
+                    "@participante_nome, @participante_fantasia, @participante_codigo, @participante_tipoPessoa, @participante_clienteDesde, @participante_contribuinte, @participante_inscricaoEstadual, @participante_cnpj_cpf, @participante_rg, @participante_orgaoEmissor, @participante_cep, @participante_uf, @participante_cidade, @participante_bairro, @participante_logradouro, @participante_numero, @participante_complemento, @participante_categoria, @participante_obs, @participante_conta_id, @participante_pais, @participante_insc_municipal, @participante_regime_tributario, @participante_suframa);";
+                comando.Parameters.AddWithValue("@participante_nome", participante_nome);
+                comando.Parameters.AddWithValue("@participante_fantasia", participante_fantasia);
+                comando.Parameters.AddWithValue("@participante_codigo", participante_codigo);
+                comando.Parameters.AddWithValue("@participante_tipoPessoa", participante_tipoPessoa);
+                comando.Parameters.AddWithValue("@participante_clienteDesde", participante_clienteDesde);
+                comando.Parameters.AddWithValue("@participante_contribuinte", participante_contribuinte);
+                comando.Parameters.AddWithValue("@participante_inscricaoEstadual", participante_inscricaoEstadual);
+                comando.Parameters.AddWithValue("@participante_cnpj_cpf", participante_cnpj_cpf);
+                comando.Parameters.AddWithValue("@participante_rg", participante_rg);
+                comando.Parameters.AddWithValue("@participante_orgaoEmissor", participante_orgaoEmissor);
+                comando.Parameters.AddWithValue("@participante_cep", participante_cep);
+                comando.Parameters.AddWithValue("@participante_uf", participante_uf);
+                comando.Parameters.AddWithValue("@participante_cidade", participante_cidade);
+                comando.Parameters.AddWithValue("@participante_bairro", participante_bairro);
+                comando.Parameters.AddWithValue("@participante_logradouro", participante_logradouro);
+                comando.Parameters.AddWithValue("@participante_numero", participante_numero);
+                comando.Parameters.AddWithValue("@participante_complemento", participante_complemento);
+                comando.Parameters.AddWithValue("@participante_categoria", participante_categoria);
+                comando.Parameters.AddWithValue("@participante_obs", participante_obs);
+                comando.Parameters.AddWithValue("@participante_conta_id", participante_conta_id);                
+                comando.Parameters.AddWithValue("@participante_pais", participante_pais);
+                comando.Parameters.AddWithValue("@participante_insc_municipal", participante_insc_municipal);
+                comando.Parameters.AddWithValue("@participante_regime_tributario", participante_regime_tributario);
+                comando.Parameters.AddWithValue("@participante_suframa", participante_suframa);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -342,6 +359,15 @@ namespace gestaoContadorcomvc.Models
                             participante.participante_pais = 0;
                         }
 
+                        if (DBNull.Value != leitor["participante_regime_tributario"])
+                        {
+                            participante.participante_regime_tributario = Convert.ToInt32(leitor["participante_regime_tributario"]);
+                        }
+                        else
+                        {
+                            participante.participante_regime_tributario = 0;
+                        }
+
                         if (DBNull.Value != leitor["participante_dataCriacao"])
                         {
                             participante.participante_dataCriacao = Convert.ToDateTime(leitor["participante_dataCriacao"]);
@@ -376,6 +402,8 @@ namespace gestaoContadorcomvc.Models
                         participante.participante_complemento = leitor["participante_complemento"].ToString();
                         participante.participante_obs = leitor["participante_obs"].ToString();
                         participante.participante_status = leitor["participante_status"].ToString();
+                        participante.participante_insc_municipal = leitor["participante_insc_municipal"].ToString();
+                        participante.participante_suframa = leitor["participante_suframa"].ToString();
 
                     }
                 }
@@ -399,10 +427,10 @@ namespace gestaoContadorcomvc.Models
         //Alterar participante
         public string alterarParticipante(int usuario_id, int conta_id, int participante_id,
             DateTime participante_clienteDesde, int participante_contribuinte, int participante_uf,
-            int participante_categoria, int participante_conta_id, int participante_pais, string participante_cep, string participante_nome,
+            int participante_categoria, int participante_pais, string participante_cep, string participante_nome,
             string participante_logradouro, string participante_rg, string participante_orgaoEmissor, string participante_numero, string participante_codigo,
             string participante_tipoPessoa, string participante_inscricaoEstadual, string participante_cnpj_cpf, string participante_complemento,
-            string participante_obs, string participante_bairro, string participante_cidade, string participante_fantasia, string participante_status)
+            string participante_obs, string participante_bairro, string participante_cidade, string participante_fantasia, string participante_status, string participante_insc_municipal, int participante_regime_tributario, string participante_suframa)
         {
             string retorno = "Participante alterado com sucesso!";
 
@@ -415,32 +443,34 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "update participante set " +
-                    "participante_nome = @participante_nome, participante_fantasia = @participante_fantasia, participante_codigo = @participante_codigo, participante_tipoPessoa = @participante_tipoPessoa, participante_clienteDesde = @participante_clienteDesde, participante_contribuinte = @participante_contribuinte, participante_inscricaoEstadual = @participante_inscricaoEstadual, participante_cnpj_cpf = @participante_cnpj_cpf, participante_rg = @participante_rg, participante_orgaoEmissor = @participante_orgaoEmissor, participante_cep = @participante_cep, participante_uf = @participante_uf, participante_cidade = @participante_cidade, participante_bairro = @participante_bairro, participante_logradouro = @participante_logradouro, participante_numero = @participante_numero, participante_complemento = @participante_complemento, participante_categoria = @participante_categoria, participante_obs = @participante_obs, participante_conta_id = @participante_conta_id, participante_status = @participante_status, participante_pais = @participante_pais;" + 
-                    "where participante_conta_id = @conta_id and participante_id = @participante_id";
-                comando.Parameters.AddWithValue("@string participante_nome", participante_nome);
-                comando.Parameters.AddWithValue("@string participante_fantasia", participante_fantasia);
-                comando.Parameters.AddWithValue("@string participante_codigo", participante_codigo);
-                comando.Parameters.AddWithValue("@string participante_tipoPessoa", participante_tipoPessoa);
-                comando.Parameters.AddWithValue("@Date participante_clienteDesde", participante_clienteDesde);
-                comando.Parameters.AddWithValue("@int participante_contribuinte", participante_contribuinte);
-                comando.Parameters.AddWithValue("@string participante_inscricaoEstadual", participante_inscricaoEstadual);
-                comando.Parameters.AddWithValue("@string participante_cnpj_cpf", participante_cnpj_cpf);
-                comando.Parameters.AddWithValue("@string participante_rg", participante_rg);
-                comando.Parameters.AddWithValue("@string participante_orgaoEmissor", participante_orgaoEmissor);
-                comando.Parameters.AddWithValue("@string participante_cep", participante_cep);
-                comando.Parameters.AddWithValue("@int participante_uf", participante_uf);
-                comando.Parameters.AddWithValue("@string participante_cidade", participante_cidade);
-                comando.Parameters.AddWithValue("@string participante_bairro", participante_bairro);
-                comando.Parameters.AddWithValue("@string participante_logradouro", participante_logradouro);
-                comando.Parameters.AddWithValue("@string participante_numero", participante_numero);
-                comando.Parameters.AddWithValue("@string participante_complemento", participante_complemento);
-                comando.Parameters.AddWithValue("@int participante_categoria", participante_categoria);
-                comando.Parameters.AddWithValue("@string participante_obs", participante_obs);
-                comando.Parameters.AddWithValue("@int participante_conta_id", participante_conta_id);
-                comando.Parameters.AddWithValue("@int participante_pais", participante_pais);
-                comando.Parameters.AddWithValue("@string participante_status", participante_status);
-                comando.Parameters.AddWithValue("@string participante_id", participante_id);
+                comando.CommandText = "update participante set participante_nome = @participante_nome, participante_fantasia = @participante_fantasia, participante_codigo = @participante_codigo, participante_tipoPessoa = @participante_tipoPessoa, participante_clienteDesde = @participante_clienteDesde, participante_contribuinte = @participante_contribuinte, participante_inscricaoEstadual = @participante_inscricaoEstadual, participante_cnpj_cpf = @participante_cnpj_cpf, participante_rg = @participante_rg, participante_orgaoEmissor = @participante_orgaoEmissor, participante_cep = @participante_cep, participante_uf = @participante_uf, participante_cidade = @participante_cidade, participante_bairro = @participante_bairro, participante_logradouro = @participante_logradouro, participante_numero = @participante_numero, participante_complemento = @participante_complemento, participante_categoria = @participante_categoria, participante_obs = @participante_obs, participante_conta_id = @conta_id, participante_status = @participante_status, participante_pais = @participante_pais, participante_insc_municipal = @participante_insc_municipal, participante_regime_tributario = @participante_regime_tributario, participante_suframa = @participante_suframa where participante_conta_id = @conta_id and participante_id = @participante_id;";
+                comando.Parameters.AddWithValue("@participante_nome", participante_nome);
+                comando.Parameters.AddWithValue("@participante_fantasia", participante_fantasia);
+                comando.Parameters.AddWithValue("@participante_codigo", participante_codigo);
+                comando.Parameters.AddWithValue("@participante_tipoPessoa", participante_tipoPessoa);
+                comando.Parameters.AddWithValue("@participante_clienteDesde", participante_clienteDesde);
+                comando.Parameters.AddWithValue("@participante_contribuinte", participante_contribuinte);
+                comando.Parameters.AddWithValue("@participante_inscricaoEstadual", participante_inscricaoEstadual);
+                comando.Parameters.AddWithValue("@participante_cnpj_cpf", participante_cnpj_cpf);
+                comando.Parameters.AddWithValue("@participante_rg", participante_rg);
+                comando.Parameters.AddWithValue("@participante_orgaoEmissor", participante_orgaoEmissor);
+                comando.Parameters.AddWithValue("@participante_cep", participante_cep);
+                comando.Parameters.AddWithValue("@participante_uf", participante_uf);
+                comando.Parameters.AddWithValue("@participante_cidade", participante_cidade);
+                comando.Parameters.AddWithValue("@participante_bairro", participante_bairro);
+                comando.Parameters.AddWithValue("@participante_logradouro", participante_logradouro);
+                comando.Parameters.AddWithValue("@participante_numero", participante_numero);
+                comando.Parameters.AddWithValue("@participante_complemento", participante_complemento);
+                comando.Parameters.AddWithValue("@participante_categoria", participante_categoria);
+                comando.Parameters.AddWithValue("@participante_obs", participante_obs);
+                comando.Parameters.AddWithValue("@participante_conta_id", conta_id);
+                comando.Parameters.AddWithValue("@participante_pais", participante_pais);
+                comando.Parameters.AddWithValue("@participante_status", participante_status);
+                comando.Parameters.AddWithValue("@participante_id", participante_id);
+                comando.Parameters.AddWithValue("@participante_insc_municipal", participante_insc_municipal);
+                comando.Parameters.AddWithValue("@participante_regime_tributario", participante_regime_tributario);
+                comando.Parameters.AddWithValue("@participante_suframa", participante_suframa);
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -479,42 +509,21 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "update participante set " +
-                    "participante_status = 'Deletado' where participante_conta_id = @conta_id and participante_id = @participante_id";
-                comando.Parameters.AddWithValue("@string participante_nome", participante_nome);
-                comando.Parameters.AddWithValue("@string participante_fantasia", participante_fantasia);
-                comando.Parameters.AddWithValue("@string participante_codigo", participante_codigo);
-                comando.Parameters.AddWithValue("@string participante_tipoPessoa", participante_tipoPessoa);
-                comando.Parameters.AddWithValue("@Date participante_clienteDesde", participante_clienteDesde);
-                comando.Parameters.AddWithValue("@int participante_contribuinte", participante_contribuinte);
-                comando.Parameters.AddWithValue("@string participante_inscricaoEstadual", participante_inscricaoEstadual);
-                comando.Parameters.AddWithValue("@string participante_cnpj_cpf", participante_cnpj_cpf);
-                comando.Parameters.AddWithValue("@string participante_rg", participante_rg);
-                comando.Parameters.AddWithValue("@string participante_orgaoEmissor", participante_orgaoEmissor);
-                comando.Parameters.AddWithValue("@string participante_cep", participante_cep);
-                comando.Parameters.AddWithValue("@int participante_uf", participante_uf);
-                comando.Parameters.AddWithValue("@string participante_cidade", participante_cidade);
-                comando.Parameters.AddWithValue("@string participante_bairro", participante_bairro);
-                comando.Parameters.AddWithValue("@string participante_logradouro", participante_logradouro);
-                comando.Parameters.AddWithValue("@string participante_numero", participante_numero);
-                comando.Parameters.AddWithValue("@string participante_complemento", participante_complemento);
-                comando.Parameters.AddWithValue("@int participante_categoria", participante_categoria);
-                comando.Parameters.AddWithValue("@string participante_obs", participante_obs);
-                comando.Parameters.AddWithValue("@int participante_conta_id", participante_conta_id);
-                comando.Parameters.AddWithValue("@int participante_pais", participante_pais);
-                comando.Parameters.AddWithValue("@string participante_status", participante_status);
+                comando.CommandText = "update participante set participante_status = 'Deletado' where participante_conta_id = @conta_id and participante_id = @participante_id;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@participante_id", partecipante_id);                
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
-                string msg = "Alteração do participante nome: " + participante_nome + " Alterado com sucesso";
-                log.log("Participante", "alterarParticipante", "Sucesso", msg, conta_id, usuario_id);
+                string msg = "Exclusão do participante nome: " + participante_nome + " Excluído com sucesso";
+                log.log("Participante", "deletarParticipante", "Sucesso", msg, conta_id, usuario_id);
             }
             catch (Exception e)
             {
-                retorno = "Erro ao alterar o participante. Tente novamente. Se persistir, entre em contato com o suporte!";
+                retorno = "Erro ao excluir o participante. Tente novamente. Se persistir, entre em contato com o suporte!";
 
                 string msg = e.Message.Substring(0, 300);
-                log.log("Participante", "alterarParticipantes", "Erro", msg, conta_id, usuario_id);
+                log.log("Participante", "deletarParticipante", "Erro", msg, conta_id, usuario_id);
             }
             finally
             {

@@ -71,6 +71,18 @@ namespace gestaoContadorcomvc.Components
                     retorno = "Configurações Contábeis";
                     openNav = "aberto";
                 }
+                if (pagina.Contains("Participante/Index"))
+                {
+                    retorno = "Cliente/Fornecedor";                    
+                }
+                if (pagina.Contains("Participante/Create"))
+                {
+                    retorno = "Incluir Cliente/Fornecedor";
+                }
+                if (pagina.Contains("Participante/Edit"))
+                {
+                    retorno = "Alterar Cliente/Fornecedor";
+                }
             }
 
             ViewData["openNav"] = openNav;

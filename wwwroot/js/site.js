@@ -22,6 +22,11 @@ function Page() {
         document.getElementById('data_final').value = ultimoDia.toLocaleDateString();
     }
 
+    //Tela create Participante
+    let tipo_Pessoa = document.getElementById("participante_tipoPessoa");
+    if (tipo_Pessoa) {
+        tipoPessoa(tipo_Pessoa.value);
+    }
 }
 
 function ValidaRegistro(id) {
@@ -456,6 +461,82 @@ function gerarDataFinal(vlr) {
     document.getElementById('data_final').value = ultimoDia.toLocaleDateString();
 }
 
+//Manipulação do validados de formulários
 $.validator.setDefaults({ ignore: '' }); //Setar informação para validação verificar campos hidden
+
+//Fim Manipulação do validados de formulários
+
+//Participante
+function tipoPessoa(vlr) {
+    if (vlr == 1) {
+        document.getElementById('label_cnpj_cpf').innerHTML = "CPF";
+        document.getElementById('grupo_regime').style.display = 'none';
+        document.getElementById('grupo_rg').style.display = 'block';
+        document.getElementById('grupo_orgaoEmissor').style.display = 'block';
+        document.getElementById('grupo_contribuinte').style.display = 'block';
+        document.getElementById('grupo_ie').style.display = 'block';
+        document.getElementById('grupo_im').style.display = 'block';
+    }
+    if (vlr == 2) {
+        document.getElementById('label_cnpj_cpf').innerHTML = "CNPJ";
+        document.getElementById('grupo_regime').style.display = 'block';
+        document.getElementById('grupo_rg').style.display = 'none';
+        document.getElementById('grupo_orgaoEmissor').style.display = 'none';
+        document.getElementById('grupo_contribuinte').style.display = 'block';
+        document.getElementById('grupo_ie').style.display = 'block';
+        document.getElementById('grupo_im').style.display = 'block';
+    }
+    if (vlr == 3) {
+        document.getElementById('label_cnpj_cpf').innerHTML = "Identificação Estrangeiro";
+        document.getElementById('grupo_regime').style.display = 'none';
+        document.getElementById('grupo_rg').style.display = 'none';
+        document.getElementById('grupo_orgaoEmissor').style.display = 'none';
+        document.getElementById('grupo_contribuinte').style.display = 'none';
+        document.getElementById('grupo_ie').style.display = 'none';
+        document.getElementById('grupo_im').style.display = 'none';
+    }
+}
+
+function mascaraCNPJ_cpf(id, vlr) {
+    let tipo = document.getElementById('participante_tipoPessoa');
+    let campo = document.getElementById(id);
+
+    let tamanho = vlr.length;
+
+    if (tipo.value == 1) {
+        if (tamanho == 3) {
+            campo.value = vlr + ".";
+        }
+        if (tamanho == 7) {
+            campo.value = vlr + ".";
+        }
+        if (tamanho == 11) {
+            campo.value = vlr + "-";
+        }
+        if (tamanho > 14) {
+            campo.value = vlr.substring(0, 14);
+            alert("Quantidade de dígitos do CPF inválido");
+        }
+    }
+
+    if (tipo.value == 2) {
+        if (tamanho == 2) {
+            campo.value = vlr + ".";
+        }
+        if (tamanho == 6) {
+            campo.value = vlr + ".";
+        }
+        if (tamanho == 10) {
+            campo.value = vlr + "/";
+        }
+        if (tamanho == 15) {
+            campo.value = vlr + "-";
+        }
+        if (tamanho > 18) {
+            campo.value = vlr.substring(0, 18);
+            alert("Quantidade de dígitos do CNPJ inválido");
+        }
+    }
+}
 
 
