@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -78,12 +79,14 @@ namespace gestaoContadorcomvc.Controllers
         }
 
         // POST: LancamentoController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost]       
         public ActionResult Create(IFormCollection collection)
         {
+            //lanc dados
             try
             {
+
+
                 return RedirectToAction(nameof(Index));
             }
             catch

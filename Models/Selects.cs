@@ -15,26 +15,20 @@ namespace gestaoContadorcomvc.Models
         public string text { get; set; }
         public bool disabled { get; set; }
 
-        ////Método para listar bancos
-        //public List<Selects> getBancos()
-        //{
-        //    List<Selects> selectBancos = new List<Selects>();
-        //    ContaPadrao contaPadrao = new ContaPadrao();
-        //    List<ContaPadrao> bancos = new List<ContaPadrao>();
-
-        //    bancos = contaPadrao.listaBancos();
-
-        //    foreach (var item in bancos)
-        //    {                
-        //        selectBancos.Add(new Selects
-        //        {
-        //            value = item.contaPadrao_id.ToString(),
-        //            text = (item.contaPadrao_descricao + " (" + item.contaPadrao_codigoBanco + ")")
-        //        });
-        //    }
-
-        //    return selectBancos;
-        //}
+        /*--------------------------*/
+        //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
+        public IConfigurationRoot GetConfiguration()
+        {
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            return builder.Build();
+        }
+        //Método para gerar a conexão
+        MySqlConnection conn;
+        public Selects()
+        {
+            var configuration = GetConfiguration();
+            conn = new MySqlConnection(configuration.GetSection("ConnectionStrings").GetSection("conexaocvc").Value);
+        }
 
         //Grupos das contas padrão
         public List<Selects> getGrupoContas()
@@ -62,22 +56,6 @@ namespace gestaoContadorcomvc.Models
             });
 
             return contas;
-        }
-
-
-        /*--------------------------*/
-        //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
-        public IConfigurationRoot GetConfiguration()
-        {
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-            return builder.Build();
-        }
-        //Método para gerar a conexão
-        MySqlConnection conn;
-        public Selects()
-        {
-            var configuration = GetConfiguration();
-            conn = new MySqlConnection(configuration.GetSection("ConnectionStrings").GetSection("conexaocvc").Value);
         }
 
         //Empresas contador
@@ -283,6 +261,61 @@ namespace gestaoContadorcomvc.Models
             }
 
             return planos;
+        }
+
+        //Categorias do cliente
+        public List<Selects> getCategoriasCliente(int conta_id)
+        {
+            List<Selects> categorias = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT c.categoria_id, c.categoria_classificacao, c.categoria_nome, c.categoria_tipo from categoria as c WHERE c.categoria_conta_id = @conta_id and c.categoria_status = 'Ativo';";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects categoria = new Selects();
+                        categoria.value = leitor["categoria_id"].ToString();
+                        categoria.text = leitor["categoria_classificacao"].ToString() + " - " + leitor["categoria_nome"].ToString();
+                        if (leitor["categoria_tipo"].ToString().Equals("Sintetica"))
+                        {
+                            disabled = true;
+                        }
+                        else
+                        {
+                            disabled = false;
+                        }
+
+                        categorias.Add(categoria);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return categorias;
         }
 
 

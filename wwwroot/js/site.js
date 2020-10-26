@@ -456,8 +456,6 @@ function gerarDataFinal(vlr) {
     document.getElementById('data_final').value = ultimoDia.toLocaleDateString();
 }
 
-$.validator.setDefaults({ ignore: '' });
-
-
+$.validator.setDefaults({ ignore: '' }); //Setar informação para validação verificar campos hidden
 
 
