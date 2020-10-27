@@ -9,6 +9,7 @@ using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace gestaoContadorcomvc.Controllers
 {
@@ -35,6 +36,13 @@ namespace gestaoContadorcomvc.Controllers
         [Autoriza(permissao = "produtosCreate")]
         public ActionResult Create()
         {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Selects select = new Selects();
+            ViewBag.origem = select.getOrigemMercadoria().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
+            ViewBag.tipoItem = select.getTipoItem().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "00" });
 
             return View();
         }
@@ -42,15 +50,60 @@ namespace gestaoContadorcomvc.Controllers
         // POST: ProdutosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(IFormCollection d)
         {
+            Vm_produtos vm_prod = new Vm_produtos();
+
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    TempData["msgProdutos"] = "Formulário com informação incorreta (Erro)!";
+
+                    return View(vm_prod);
+                }
+
+
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                
+                vm_prod.produtos_nome = d["produtos_nome"];
+                vm_prod.produtos_codigo = d["produtos_codigo"];
+                vm_prod.produtos_formato = d["produtos_formato"];
+                vm_prod.produtos_status = d["produtos_status"];
+                vm_prod.produtos_unidade = d["produtos_unidade"];
+                vm_prod.produtos_preco_venda = Convert.ToDecimal(d["produtos_preco_venda"].ToString().Replace(".", ","));
+                vm_prod.produtos_gtin_ean = d["produtos_gtin_ean"];
+                vm_prod.produtos_gtin_ean_trib = d["produtos_gtin_ean_trib"];
+                vm_prod.produtos_estoque_min = Convert.ToDecimal(d["produtos_estoque_min"].ToString().Replace(".",","));
+                vm_prod.produtos_estoque_max = Convert.ToDecimal(d["produtos_estoque_max"].ToString().Replace(".", ","));
+                vm_prod.produtos_estoque_qtd_inicial = Convert.ToDecimal(d["produtos_estoque_qtd_inicial"].ToString().Replace(".", ","));
+                vm_prod.produtos_estoque_preco_compra = Convert.ToDecimal(d["produtos_estoque_preco_compra"].ToString().Replace(".", ","));
+                vm_prod.produtos_estoque_custo_compra = Convert.ToDecimal(d["produtos_estoque_custo_compra"].ToString().Replace(".", ","));
+                vm_prod.produtos_origem = Convert.ToInt32(d["produtos_origem"]);
+                vm_prod.produtos_ncm = d["produtos_ncm"];
+                vm_prod.produtos_cest = d["produtos_cest"];
+                vm_prod.produtos_tipo_item = d["produtos_tipo_item"];
+                vm_prod.produtos_perc_tributos = Convert.ToDecimal(d["produtos_perc_tributos"].ToString().Replace(".", ","));
+                vm_prod.produtos_obs = d["produtos_obs"];
+
+                Produtos produto = new Produtos();
+
+                TempData["msgProdutos"] = produto.cadastraProduto(user.usuario_conta_id, user.usuario_id, vm_prod.produtos_codigo, vm_prod.produtos_nome, vm_prod.produtos_formato, vm_prod.produtos_unidade, vm_prod.produtos_preco_venda, vm_prod.produtos_gtin_ean, vm_prod.produtos_gtin_ean_trib, vm_prod.produtos_estoque_min, vm_prod.produtos_estoque_max, vm_prod.produtos_estoque_qtd_inicial, vm_prod.produtos_estoque_preco_compra, vm_prod.produtos_estoque_custo_compra, vm_prod.produtos_obs, vm_prod.produtos_origem, vm_prod.produtos_ncm, vm_prod.produtos_cest, vm_prod.produtos_tipo_item, vm_prod.produtos_perc_tributos);
+
+                if (TempData["msgProdutos"].ToString().Contains("Erro"))
+                {
+                    return View(vm_prod);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                TempData["msgProdutos"] = "Erro na gravação dos dados do produto!";
+
+                return View(vm_prod);
             }
         }
 

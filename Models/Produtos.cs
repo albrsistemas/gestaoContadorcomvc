@@ -248,46 +248,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "insert into participante" +
-                    " (produtos_codigo, " +
-                    "produtos_nome, " +
-                    "produtos_formato, " +
-                    "produtos_unidade, " +
-                    "produtos_preco_venda, " +
-                    "produtos_gtin_ean, " +
-                    "produtos_gtin_ean_trib, " +
-                    "produtos_estoque_min, " +
-                    "produtos_estoque_max, " +
-                    "produtos_estoque_qtd_inicial, " +
-                    "produtos_estoque_preco_compra, " +
-                    "produtos_estoque_custo_compra, " +
-                    "produtos_obs, " +
-                    "produtos_origem, " +
-                    "produtos_ncm, " +
-                    "produtos_cest, " +
-                    "produtos_tipo_item, " +
-                    "produtos_perc_tributos)" +
-                    "produtos_conta_id, " +                    
-                    " values (" +
-                    "@produtos_codigo, " +
-                    "@produtos_nome, " +
-                    "@produtos_formato, " +
-                    "@produtos_unidade, " +
-                    "@produtos_preco_venda, " +
-                    "@produtos_gtin_ean, " +
-                    "@produtos_gtin_ean_trib, " +
-                    "@produtos_estoque_min, " +
-                    "@produtos_estoque_max, " +
-                    "@produtos_estoque_qtd_inicial, " +
-                    "@produtos_estoque_preco_compra, " +
-                    "@produtos_estoque_custo_compra, " +
-                    "@produtos_obs, " +
-                    "@produtos_origem, " +
-                    "@produtos_ncm, " +
-                    "@produtos_cest, " +
-                    "@produtos_tipo_item, " +
-                    "@produtos_perc_tributos)" +
-                    "@produtos_conta_id, ";
+                comando.CommandText = "insert into produtos (produtos_codigo, produtos_nome, produtos_formato, produtos_unidade, produtos_preco_venda, produtos_gtin_ean, produtos_gtin_ean_trib, produtos_estoque_min, produtos_estoque_max, produtos_estoque_qtd_inicial, produtos_estoque_preco_compra, produtos_estoque_custo_compra, produtos_obs, produtos_origem, produtos_ncm, produtos_cest, produtos_tipo_item, produtos_perc_tributos, produtos_conta_id) values (@produtos_codigo, @produtos_nome, @produtos_formato, @produtos_unidade, @produtos_preco_venda, @produtos_gtin_ean, @produtos_gtin_ean_trib, @produtos_estoque_min, @produtos_estoque_max, @produtos_estoque_qtd_inicial, @produtos_estoque_preco_compra, @produtos_estoque_custo_compra, @produtos_obs, @produtos_origem, @produtos_ncm, @produtos_cest, @produtos_tipo_item, @produtos_perc_tributos, @produtos_conta_id)";
                 comando.Parameters.AddWithValue("@produtos_codigo", produtos_codigo);
                 comando.Parameters.AddWithValue("@produtos_nome", produtos_nome);
                 comando.Parameters.AddWithValue("@produtos_formato", produtos_formato);

@@ -538,5 +538,55 @@ function mascaraCNPJ_cpf(id, vlr) {
         }
     }
 }
+//Participante fim
+//Produtos
+function mascaraNCM(id, vlr) {    
+    let campo = document.getElementById(id);
+    let tamanho = vlr.length;
+
+    if (tamanho == 4) {
+        campo.value = vlr + ".";
+    }
+    if (tamanho == 7) {
+        campo.value = vlr + ".";
+    }
+    if (tamanho > 10) {
+        campo.value = vlr.substring(0, 10);
+        alert("Quantidade de dígitos da NCM inválido");
+    }   
+}
+
+function mascaraCEST(id, vlr) {
+    let campo = document.getElementById(id);
+    let tamanho = vlr.length;
+
+    if (tamanho == 2) {
+        campo.value = vlr + ".";
+    }
+    if (tamanho == 6) {
+        campo.value = vlr + ".";
+    }
+    if (tamanho > 9) {
+        campo.value = vlr.substring(0, 9);
+        alert("Quantidade de dígitos do CEST inválido");
+    }
+}
+
+function tamanhoDigitado(id, vlr, limit, msg) {
+    let tamanho = vlr.length;
+
+    if (tamanho <= limit) {
+        document.getElementById(msg).innerHTML = tamanho + ' de ' + limit;
+    } else {
+        document.getElementById(id).value = vlr.substring(0, limit);
+        alert('Quantidade de caractes execido!');
+    }
+
+
+    
+
+
+
+}
 
 

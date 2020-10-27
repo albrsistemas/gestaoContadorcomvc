@@ -515,6 +515,127 @@ namespace gestaoContadorcomvc.Models
             return status;
         }
 
+        //Metodo para lista de origem mercadoria
+        public List<Selects> getOrigemMercadoria()
+        {
+            List<Selects> origem = new List<Selects>();
+            origem.Add(new Selects
+            {
+                value = "0",
+                text = "0 - Nacional, exceto as indicadas nos códigos 3, 4, 5 e 8"
+            });
+            origem.Add(new Selects
+            {
+                value = "1",
+                text = "1 - Estrangeira - Importação direta, exceto a indicada no código 6"
+            });
+            origem.Add(new Selects
+            {
+                value = "2",
+                text = "2 - Estrangeira - Adquirida no mercado interno, exceto a indicada no código 7"
+            });
+            origem.Add(new Selects
+            {
+                value = "3",
+                text = "3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% e inferior ou igual a 70%"
+            });
+            origem.Add(new Selects
+            {
+                value = "4",
+                text = "4 - Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam as legislações citadas nos Ajustes"
+            });
+            origem.Add(new Selects
+            {
+                value = "5",
+                text = "5 - Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40% "
+            });
+            origem.Add(new Selects
+            {
+                value = "6",
+                text = "6 - Estrangeira - Importação direta, sem similar nacional, constante em lista da CAMEX e gás natural"
+            });
+            origem.Add(new Selects
+            {
+                value = "7",
+                text = "7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante lista CAMEX e gás natural"
+            });
+            origem.Add(new Selects
+            {
+                value = "8",
+                text = "8 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 70%"
+            });
+
+            return origem;
+        }
+
+        //Tipo item
+        public List<Selects> getTipoItem()
+        {
+            List<Selects> status = new List<Selects>();
+            status.Add(new Selects
+            {
+                value = "00",
+                text = "Mercadoria para Revenda"
+            });
+            status.Add(new Selects
+            {
+                value = "01",
+                text = "Matéria-Prima"
+            });
+            status.Add(new Selects
+            {
+                value = "02",
+                text = "Embalagem"
+            });
+            status.Add(new Selects
+            {
+                value = "03",
+                text = "Produto em Processo"
+            });
+            status.Add(new Selects
+            {
+                value = "04",
+                text = "Produto Acabado"
+            });
+            status.Add(new Selects
+            {
+                value = "05",
+                text = "Subproduto"
+            });
+            status.Add(new Selects
+            {
+                value = "06",
+                text = "Produto Intermediário"
+            });
+            status.Add(new Selects
+            {
+                value = "07",
+                text = "Material de Uso e Consumo"
+            });
+            status.Add(new Selects
+            {
+                value = "08",
+                text = "Ativo Imobilizado"
+            });
+            status.Add(new Selects
+            {
+                value = "09",
+                text = "Serviços"
+            });
+            status.Add(new Selects
+            {
+                value = "10",
+                text = "Outros insumos"
+            });
+            status.Add(new Selects
+            {
+                value = "99",
+                text = "Outras"
+            });
+
+            return status;
+        }
+
 
     }
 }
