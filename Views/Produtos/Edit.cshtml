@@ -1,5 +1,206 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_produtos
+
 @{
+    ViewData["Title"] = "Produtos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+@{
+    if (TempData["msgProdutos"] != null && TempData["msgProdutos"].ToString().Contains("sucesso"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Sucesso!</strong> @TempData["msgProdutos"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    if (TempData["msgProdutos"] != null && TempData["msgProdutos"].ToString().Contains("Erro"))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Erro!</strong> @TempData["msgProdutos"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
+
+<h2>Alterar Produto</h2>
+<hr class="hrLine" />
+
+<form asp-controller="Produtos" asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <fieldset>
+        <legend>Dados gerais</legend>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="produtos_nome" class="control-label"></label>
+                    <input asp-for="produtos_nome" class="form-control" />
+                    <span asp-validation-for="produtos_nome" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label asp-for="produtos_codigo" class="control-label"></label>
+                    <input asp-for="produtos_codigo" class="form-control" />
+                    <span asp-validation-for="produtos_codigo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label asp-for="produtos_formato" class="control-label"></label>
+                    <input asp-for="produtos_formato" class="form-control" value="Simples" readonly="readonly" />
+                    <span asp-validation-for="produtos_formato" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label asp-for="produtos_status" class="control-label"></label>
+                    <select asp-items="@ViewBag.status" value="@TempData["produtos_status"]" id="produtos_status" name="produtos_status" class="form-control"></select>                    
+                    <span asp-validation-for="produtos_status" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="produtos_unidade" class="control-label"></label>
+                    <input asp-for="produtos_unidade" class="form-control" />
+                    <span asp-validation-for="produtos_unidade" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="produtos_preco_venda" class="control-label"></label>
+                    <input type="text" asp-for="produtos_preco_venda" class="form-control" onblur="decimal(this.id, this.value, '6')" />
+                    <span asp-validation-for="produtos_preco_venda" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="produtos_gtin_ean" class="control-label"></label>
+                    <input asp-for="produtos_gtin_ean" class="form-control" />
+                    <span asp-validation-for="produtos_gtin_ean" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="produtos_gtin_ean_trib" class="control-label"></label>
+                    <input asp-for="produtos_gtin_ean_trib" class="form-control" />
+                    <span asp-validation-for="produtos_gtin_ean_trib" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Informações de estoque</legend>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="produtos_estoque_min" class="control-label"></label>
+                    <input asp-for="produtos_estoque_min" class="form-control" onblur="decimal(this.id, this.value, '6')"/>
+                    <span asp-validation-for="produtos_estoque_min" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="produtos_estoque_max" class="control-label"></label>
+                    <input asp-for="produtos_estoque_max" class="form-control" onblur="decimal(this.id, this.value, '6')"/>
+                    <span asp-validation-for="produtos_estoque_max" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label asp-for="produtos_estoque_qtd_inicial" class="control-label"></label>
+                    <input asp-for="produtos_estoque_qtd_inicial" class="form-control" onblur="decimal(this.id, this.value, '6')"/>
+                    <span asp-validation-for="produtos_estoque_qtd_inicial" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label asp-for="produtos_estoque_preco_compra" class="control-label"></label>
+                    <input asp-for="produtos_estoque_preco_compra" class="form-control" onblur="decimal(this.id, this.value, '6')" />
+                    <span asp-validation-for="produtos_estoque_preco_compra" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label asp-for="produtos_estoque_custo_compra" class="control-label"></label>
+                    <input asp-for="produtos_estoque_custo_compra" class="form-control" onblur="decimal(this.id, this.value, '6')" />
+                    <span asp-validation-for="produtos_estoque_custo_compra" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Informações tributárias</legend>
+        <div class="row">
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label asp-for="produtos_origem" class="control-label"></label>
+                    <select asp-items="@ViewBag.origem" value="@TempData["produtos_origem"]" id="produtos_origem" name="produtos_origem" class="form-control"></select>
+                    <span asp-validation-for="produtos_origem" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label asp-for="produtos_ncm" class="control-label"></label>
+                    <input asp-for="produtos_ncm" id="produtos_ncm" class="form-control" onkeyup="mascaraNCM(this.id, this.value)" placeholder="0000.00.00" />
+                    <span asp-validation-for="produtos_ncm" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label asp-for="produtos_cest" class="control-label"></label>
+                    <input asp-for="produtos_cest" class="form-control" onkeyup="mascaraCEST(this.id, this.value)" placeholder="00.000.00" />
+                    <span asp-validation-for="produtos_cest" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label asp-for="produtos_tipo_item" class="control-label"></label>
+                    <select asp-items="@ViewBag.tipoItem" value="@TempData["produtos_tipo_item"]" id="produtos_tipo_item" name="produtos_tipo_item" class="form-control"></select>
+                    <span asp-validation-for="produtos_tipo_item" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label asp-for="produtos_perc_tributos" class="control-label"></label>
+                    <input asp-for="produtos_perc_tributos" class="form-control" onblur="decimal(this.id, this.value, '6')" />
+                    <span asp-validation-for="produtos_perc_tributos" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Observações</legend>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <textarea asp-for="produtos_obs" id="produtos_obs" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_obs')"></textarea>
+                    <span class="text-info" id="msg_obs"></span>
+                    <span asp-validation-for="produtos_obs" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+
+    <input type="hidden" asp-for="produtos_id" />   
+
+    <br />
+
+    <button type="submit" class="btn btn-info">Gravar</button>
+    <a class="btn btn-secondary" asp-controller="Produtos" asp-action="Index">Cancelar</a>
+
+</form>

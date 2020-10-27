@@ -29,6 +29,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string produtos_unidade { get; set; }
 
         [Display(Name = "Preço Venda")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:###,##0.00}")]
         public Decimal produtos_preco_venda { get; set; }
 
         [Display(Name = "GTIN/EAN")]

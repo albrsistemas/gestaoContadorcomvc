@@ -581,12 +581,51 @@ function tamanhoDigitado(id, vlr, limit, msg) {
         document.getElementById(id).value = vlr.substring(0, limit);
         alert('Quantidade de caractes execido!');
     }
-
-
-    
-
-
-
 }
+
+function decimal(id, vlr, limit) {
+    let matriz = vlr.split(",");    
+
+    if (matriz.length > 1) {
+        let tamanho = matriz[1].length;
+
+        if (tamanho > 6) {
+            alert('Permitido até ' + limit + ' dígitos nas casas decimais!');
+            let cd = matriz[1].substring(0, limit);
+            let valor = matriz[0] + ',' + cd;
+            document.getElementById(id).value = valor;
+        }    
+    }
+}
+
+//Ajax com token: https://www.codigoexpresso.com.br/Home/Postagem/78
+/*
+ <script>
+    // Gera o token
+    function gettoken() {
+        var token = $('[name=__RequestVerificationToken]').val();
+        console.log(token);
+        return token;
+    };
+
+
+    // Exibe os dados do aluno gerando a chave de validação token
+    function DisplayAluno(idaluno) {
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("DisplayAluno","Home")',
+            data: { __RequestVerificationToken: gettoken(), 'idaluno': idaluno },
+            dataType: 'html',
+            cache: false,
+            async: true,
+            success: function (data) {
+                $('#divDisplayAluno').html(data);
+            }
+        });
+
+    };
+</script>
+ */
 
 
