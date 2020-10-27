@@ -33,9 +33,9 @@ namespace gestaoContadorcomvc.Controllers
 
             return View(vm_part);
         }
-                
 
-        // GET: ParticipanteController/Create
+
+        [Autoriza(permissao = "participanteCreate")]
         public ActionResult Create()
         {
             Usuario usuario = new Usuario();
@@ -91,7 +91,7 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
-        // GET: ParticipanteController/Edit/5
+        [Autoriza(permissao = "participanteEdit")]
         public ActionResult Edit(int id)
         {
             Usuario usuario = new Usuario();
@@ -150,7 +150,7 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
-        // GET: ParticipanteController/Delete/5
+        [Autoriza(permissao = "participanteDelete")]
         public ActionResult Delete(int id)
         {
             Participante participante = new Participante();

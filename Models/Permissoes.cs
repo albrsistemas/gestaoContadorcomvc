@@ -52,6 +52,12 @@ namespace gestaoContadorcomvc.Models
         public bool participanteCreate { get; set; }
         public bool participanteEdit { get; set; }
         public bool participanteDelete { get; set; }
+        //Produtos
+        public bool produtosList { get; set; }
+        public bool produtosCreate { get; set; }
+        public bool produtosEdit { get; set; }
+        public bool produtosDelete { get; set; }
+
 
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
         public IConfigurationRoot GetConfiguration()

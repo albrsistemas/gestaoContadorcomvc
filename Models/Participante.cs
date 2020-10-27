@@ -1,14 +1,11 @@
 ﻿using gestaoContadorcomvc.Models.SoftwareHouse;
 using gestaoContadorcomvc.Models.ViewModel;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
-using MySqlX.XDevAPI.Relational;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+
 namespace gestaoContadorcomvc.Models
 {
     public class Participante
@@ -515,7 +512,7 @@ namespace gestaoContadorcomvc.Models
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
-                string msg = "Exclusão do participante nome: " + participante_nome + " Excluído com sucesso";
+                string msg = "Exclusão do participante ID: " + partecipante_id + " Excluído com sucesso";
                 log.log("Participante", "deletarParticipante", "Sucesso", msg, conta_id, usuario_id);
             }
             catch (Exception e)
