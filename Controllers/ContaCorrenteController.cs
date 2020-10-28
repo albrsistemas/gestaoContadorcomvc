@@ -100,7 +100,7 @@ namespace gestaoContadorcomvc.Controllers
             vm_corrente = ccorrente.buscaContaCorrete(user.usuario_conta_id, user.usuario_id, id);
 
             Selects select = new Selects();
-            ViewBag.tipoContaCorrente = select.getTiposContaCorrente().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_corrente.ccorrente_status });
+            ViewBag.tipoContaCorrente = select.getTiposContaCorrente().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_corrente.ccorrente_tipo });
             ViewBag.status = select.getStatus().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_corrente.ccorrente_status });
 
 

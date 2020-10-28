@@ -589,7 +589,7 @@ function decimal(id, vlr, limit) {
     if (matriz.length > 1) {
         let tamanho = matriz[1].length;
 
-        if (tamanho > 6) {
+        if (tamanho > limit) {
             alert('Permitido até ' + limit + ' dígitos nas casas decimais!');
             let cd = matriz[1].substring(0, limit);
             let valor = matriz[0] + ',' + cd;
