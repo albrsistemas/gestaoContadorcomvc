@@ -486,27 +486,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "update produtos set " +
-                    "produtos_codigo = @produtos_codigo, " +
-                    "produtos_nome = @produtos_nome, " +
-                    "produtos_formato = @produtos_formato, " +
-                    "produtos_status = @produtos_status, " +
-                    "produtos_unidade = @produtos_unidade, " +
-                    "produtos_preco_venda = @produtos_preco_venda, " +
-                    "produtos_gtin_ean = @produtos_gtin_ean, " +
-                    "produtos_gtin_ean_trib = @produtos_gtin_ean_trib, " +
-                    "produtos_estoque_min = @produtos_estoque_min, " +
-                    "produtos_estoque_max = @produtos_estoque_max, " +
-                    "produtos_estoque_qtd_inicial = @produtos_estoque_qtd_inicial, " +
-                    "produtos_estoque_preco_compra = @produtos_estoque_preco_compra, " +
-                    "produtos_estoque_custo_compra = @produtos_estoque_custo_compra, " +
-                    "produtos_obs = @produtos_obs, " +
-                    "produtos_origem = @produtos_origem, " +
-                    "produtos_ncm = @produtos_ncm, " +
-                    "produtos_cest = @produtos_cest, " +
-                    "produtos_tipo_item = @produtos_tipo_item, " +
-                    "produtos_perc_tributos = @produtos_perc_tributos, " +
-                    "where produtos_id = @produtos_id";
+                comando.CommandText = "update produtos set produtos_codigo = @produtos_codigo, produtos_nome = @produtos_nome, produtos_formato = @produtos_formato, produtos_status = @produtos_status, produtos_unidade = @produtos_unidade, produtos_preco_venda = @produtos_preco_venda, produtos_gtin_ean = @produtos_gtin_ean, produtos_gtin_ean_trib = @produtos_gtin_ean_trib, produtos_estoque_min = @produtos_estoque_min, produtos_estoque_max = @produtos_estoque_max, produtos_estoque_qtd_inicial = @produtos_estoque_qtd_inicial, produtos_estoque_preco_compra = @produtos_estoque_preco_compra, produtos_estoque_custo_compra = @produtos_estoque_custo_compra, produtos_obs = @produtos_obs, produtos_origem = @produtos_origem, produtos_ncm = @produtos_ncm, produtos_cest = @produtos_cest, produtos_tipo_item = @produtos_tipo_item, produtos_perc_tributos = @produtos_perc_tributos where produtos_id = @produtos_id and produtos_conta_id = @conta_id";
                 comando.Parameters.AddWithValue("@produtos_codigo", produtos_codigo);
                 comando.Parameters.AddWithValue("@produtos_nome", produtos_nome);
                 comando.Parameters.AddWithValue("@produtos_formato", produtos_formato);
@@ -524,10 +504,10 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@produtos_ncm", produtos_ncm);
                 comando.Parameters.AddWithValue("@produtos_cest", produtos_cest);
                 comando.Parameters.AddWithValue("@produtos_tipo_item", produtos_tipo_item);
-                comando.Parameters.AddWithValue("@produtos_perc_tributos", produtos_perc_tributos);
-                comando.Parameters.AddWithValue("@produtos_conta_id", conta_id);
+                comando.Parameters.AddWithValue("@produtos_perc_tributos", produtos_perc_tributos);                
                 comando.Parameters.AddWithValue("@produtos_id", produtos_id);
                 comando.Parameters.AddWithValue("@produtos_status", produtos_status);
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 

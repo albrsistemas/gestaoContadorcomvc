@@ -594,7 +594,9 @@ function decimal(id, vlr, limit) {
             let cd = matriz[1].substring(0, limit);
             let valor = matriz[0] + ',' + cd;
             document.getElementById(id).value = valor;
-        }    
+        }
+    } else {
+        document.getElementById(id).value = valor.toFixed(2);
     }
 }
 

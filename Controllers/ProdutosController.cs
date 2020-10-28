@@ -164,6 +164,7 @@ namespace gestaoContadorcomvc.Controllers
                 vm_prod.produtos_tipo_item = d["produtos_tipo_item"];
                 vm_prod.produtos_perc_tributos = Convert.ToDecimal(d["produtos_perc_tributos"].ToString().Replace(".", ","));
                 vm_prod.produtos_obs = d["produtos_obs"];
+                vm_prod.produtos_id = Convert.ToInt32(d["produtos_id"]);
 
                 if (!ModelState.IsValid)
                 {
@@ -185,28 +186,49 @@ namespace gestaoContadorcomvc.Controllers
             }
             catch
             {
-                return View();
+                TempData["msgProdutos"] = "Erro na gravação dos dados do produto!";
+
+                return View(vm_prod);
             }
         }
 
         [Autoriza(permissao = "produtosDelete")]
         public ActionResult Delete(int id)
         {
-            return View();
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Produtos produto = new Produtos();
+            Vm_produtos vm_prod = new Vm_produtos();
+
+            vm_prod = produto.buscaProduto(user.usuario_id, user.usuario_conta_id, id);
+            vm_prod.user = user;
+
+            return View(vm_prod);
         }
 
         // POST: ProdutosController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int produtos_id, IFormCollection d)
         {
+            Produtos prod = new Produtos();
             try
             {
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+                TempData["msgProdutos"] = prod.deletarProduto(user.usuario_id, user.usuario_conta_id, produtos_id);
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                TempData["msgProdutos"] = "Erro ao tentar apagar o produto!";
+
+                return RedirectToAction(nameof(Index));
             }
         }
     }
