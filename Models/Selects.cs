@@ -636,6 +636,38 @@ namespace gestaoContadorcomvc.Models
             return status;
         }
 
+        //Tipos conta corrente
+        public List<Selects> getTiposContaCorrente()
+        {
+            List<Selects> tipo = new List<Selects>();
+            tipo.Add(new Selects
+            {
+                value = "Caixa",
+                text = "Caixa",
+                disabled = false
+            });
+            tipo.Add(new Selects
+            {
+                value = "Banco",
+                text = "Banco",
+                disabled = false
+            });
+            tipo.Add(new Selects
+            {
+                value = "Maquininha de Cartão",
+                text = "Maquininha de Cartão",
+                disabled = false
+            });
+            tipo.Add(new Selects
+            {
+                value = "Vale",
+                text = "Vale",
+                disabled = true
+            });
+
+            return tipo;
+        }
+
 
     }
 }

@@ -1,0 +1,82 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_conta_corrente
+
+@{
+    ViewData["Title"] = "Conta Corrente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    if (TempData["msgCCorrente"] != null && TempData["msgCCorrente"].ToString().Contains("sucesso"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Sucesso!</strong> @TempData["msgCCorrente"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    if (TempData["msgCCorrente"] != null && TempData["msgCCorrente"].ToString().Contains("Erro"))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Erro!</strong> @TempData["msgCCorrente"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
+
+<h2>Alterar Conta Corrente</h2>
+<hr class="hrLine" />
+
+<form asp-controller="ContaCorrente" asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-12 col-md-8">
+            <div class="form-group">
+                <label asp-for="ccorrente_nome" class="control-label"></label>
+                <input asp-for="ccorrente_nome" class="form-control" />
+                <span asp-validation-for="ccorrente_nome" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="ccorrente_status" class="control-label"></label>
+                <select asp-items="@ViewBag.status" value="@TempData["ccorrente_status"]" id="ccorrente_status" name="ccorrente_status" class="form-control"></select>
+                <span asp-validation-for="ccorrente_status" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="ccorrente_tipo" class="control-label"></label>
+                <select asp-items="@ViewBag.tipoContaCorrente" value="@TempData["ccorrente_tipo"]" id="ccorrente_tipo" name="ccorrente_tipo" class="form-control"></select>
+                <span asp-validation-for="ccorrente_tipo" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="ccorrente_saldo_abertura" class="control-label"></label>
+                <input type="text" value="@Model.ccorrente_saldo_abertura.ToString("N2")" id="ccorrente_saldo_abertura" name="ccorrente_saldo_abertura" class="form-control" onblur="decimal(this.id, this.value, '2')" />
+                <span asp-validation-for="ccorrente_saldo_abertura" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="ccorrente_masc_contabil" class="control-label"></label>
+                <input asp-for="ccorrente_masc_contabil" class="form-control" />
+                <span asp-validation-for="ccorrente_masc_contabil" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" asp-for="ccorrente_id" />
+
+    <br />
+
+    <button type="submit" class="btn btn-info">Gravar</button>
+    <a class="btn btn-secondary" asp-controller="ContaCorrente" asp-action="Index">Cancelar</a>
+
+</form>

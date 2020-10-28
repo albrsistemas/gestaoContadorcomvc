@@ -57,6 +57,11 @@ namespace gestaoContadorcomvc.Models
         public bool produtosCreate { get; set; }
         public bool produtosEdit { get; set; }
         public bool produtosDelete { get; set; }
+        //Conta Corrente
+        public bool ccorrenteList { get; set; }
+        public bool ccorrenteCreate { get; set; }
+        public bool ccorrenteEdit { get; set; }
+        public bool ccorrenteDelete { get; set; }
 
 
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      

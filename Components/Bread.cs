@@ -96,6 +96,19 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Alterar Produto";
                 }
+                //ContaCorrente
+                if (pagina.Contains("ContaCorrente/Index"))
+                {
+                    retorno = "Conta Corrente";
+                }
+                if (pagina.Contains("ContaCorrente/Create"))
+                {
+                    retorno = "Incluir Conta Corrente";
+                }
+                if (pagina.Contains("ContaCorrente/Edit"))
+                {
+                    retorno = "Alterar Conta Corrente";
+                }
             }
 
             ViewData["openNav"] = openNav;
