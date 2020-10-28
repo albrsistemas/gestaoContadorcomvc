@@ -83,6 +83,19 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Alterar Cliente/Fornecedor";
                 }
+                //Produtos
+                if (pagina.Contains("Produtos/Index"))
+                {
+                    retorno = "Produtos";
+                }
+                if (pagina.Contains("Produtos/Create"))
+                {
+                    retorno = "Incluir Produto";
+                }
+                if (pagina.Contains("Produtos/Edit"))
+                {
+                    retorno = "Alterar Produto";
+                }
             }
 
             ViewData["openNav"] = openNav;

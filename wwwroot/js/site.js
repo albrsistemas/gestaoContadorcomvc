@@ -595,8 +595,13 @@ function decimal(id, vlr, limit) {
             let valor = matriz[0] + ',' + cd;
             document.getElementById(id).value = valor;
         }
+
+        if (tamanho < 2) {
+            document.getElementById(id).value = ((vlr.toString().replace(",",".")) * 1).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+        }
+
     } else {
-        document.getElementById(id).value = valor.toFixed(2);
+        document.getElementById(id).value = (vlr * 1).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
     }
 }
 

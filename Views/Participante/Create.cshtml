@@ -75,7 +75,7 @@
             <div class="col-12 col-md-4">
                 <div class="form-group">
                     <label asp-for="participante_cnpj_cpf" class="control-label" id="label_cnpj_cpf"></label>
-                    <input asp-for="participante_cnpj_cpf" class="form-control" />
+                    <input asp-for="participante_cnpj_cpf" id="participante_cnpj_cpf" class="form-control" onkeyup="mascaraCNPJ_cpf(this.id, this.value)" />
                     <span asp-validation-for="participante_cnpj_cpf" class="text-danger"></span>
                 </div>
             </div>
