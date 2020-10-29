@@ -23,6 +23,8 @@ namespace gestaoContadorcomvc.Models
         public int fp_conta_id { get; set; }
         public DateTime fp_dataCriacao { get; set; }
         public string fp_status { get; set; }
+        public int fp_dia_fechamento_cartao { get; set; }
+        public int fp_dia_vencimento_cartao { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -225,10 +227,186 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Cadastrar forma de pagamento
+        public string cadastraFormaPagamento(
+            int conta_id,
+            int usuario_id,
+            string fp_nome,
+            string fp_meio_pgto_nfe,
+            bool fp_baixa_automatica,
+            string fp_vinc_conta_corrente,
+            string fp_identificacao,
+            string fp_tipo_integracao_nfe,
+            string fp_bandeira_cartao,
+            string fp_cnpj_credenciadora_cartao,
+            int fp_dia_fechamento_cartao,
+            int fp_dia_vencimento_cartao
+            )
+        {
+            string retorno = "Forma de pagamento cadastrada com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "INSERT into forma_pagamento (fp_nome, fp_meio_pgto_nfe, fp_baixa_automatica, fp_vinc_conta_corrente, fp_identificacao, fp_tipo_integracao_nfe, fp_bandeira_cartao, fp_cnpj_credenciadora_cartao, fp_conta_id, fp_dia_fechamento_cartao, fp_dia_vencimento_cartao) VALUES (@fp_nome, @fp_meio_pgto_nfe, @fp_baixa_automatica, @fp_vinc_conta_corrente, @fp_identificacao, @fp_tipo_integracao_nfe, @fp_bandeira_cartao, @fp_cnpj_credenciadora_cartao, @fp_conta_id, @fp_dia_fechamento_cartao, @fp_dia_vencimento_cartao);";
+                comando.Parameters.AddWithValue("@fp_nome", fp_nome);
+                comando.Parameters.AddWithValue("@fp_meio_pgto_nfe", fp_meio_pgto_nfe);
+                comando.Parameters.AddWithValue("@fp_baixa_automatica", fp_baixa_automatica);
+                comando.Parameters.AddWithValue("@fp_vinc_conta_corrente", fp_vinc_conta_corrente);
+                comando.Parameters.AddWithValue("@fp_identificacao", fp_identificacao);
+                comando.Parameters.AddWithValue("@fp_tipo_integracao_nfe", fp_tipo_integracao_nfe);
+                comando.Parameters.AddWithValue("@fp_bandeira_cartao", fp_bandeira_cartao);
+                comando.Parameters.AddWithValue("@fp_cnpj_credenciadora_cartao", fp_cnpj_credenciadora_cartao);
+                comando.Parameters.AddWithValue("@fp_conta_id", conta_id);
+                comando.Parameters.AddWithValue("@fp_dia_fechamento_cartao", fp_dia_fechamento_cartao);
+                comando.Parameters.AddWithValue("@fp_dia_vencimento_cartao", fp_dia_vencimento_cartao);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Cadastro de nova forma de pagamento nome: " + fp_nome + " Cadastrado com sucesso";
+                log.log("FormaPagamento", "cadastraFormaPagamento", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao cadastrar a forma de pagamento. Tente novamente. Se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("FormaPagamento", "cadastraFormaPagamento", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
 
         //Alterar forma de pagamento
+        public string alteraFormaPagamento(
+           int conta_id,
+           int usuario_id,
+           string fp_nome,
+           string fp_meio_pgto_nfe,
+           bool fp_baixa_automatica,
+           string fp_vinc_conta_corrente,
+           string fp_identificacao,
+           string fp_tipo_integracao_nfe,
+           string fp_bandeira_cartao,
+           string fp_cnpj_credenciadora_cartao,
+           int fp_dia_fechamento_cartao,
+           int fp_dia_vencimento_cartao,
+           int fp_status,
+           int fp_id
+           )
+        {
+            string retorno = "Forma de pagamento alterada com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "UPDATE forma_pagamento set fp_nome = @fp_nome, fp_meio_pgto_nfe = @fp_meio_pgto_nfe, fp_baixa_automatica = @fp_baixa_automatica, fp_vinc_conta_corrente = @fp_vinc_conta_corrente, fp_identificacao = @fp_identificacao, fp_tipo_integracao_nfe = @fp_tipo_integracao_nfe, fp_bandeira_cartao = @fp_bandeira_cartao, fp_cnpj_credenciadora_cartao = @fp_cnpj_credenciadora_cartao, fp_dia_fechamento_cartao = @fp_dia_fechamento_cartao, fp_dia_vencimento_cartao = @fp_dia_vencimento_cartao, fp_status = @fp_status WHERE fp_conta_id = @conta_id and fp_id = @fp_id;";
+                comando.Parameters.AddWithValue("@fp_nome", fp_nome);
+                comando.Parameters.AddWithValue("@fp_meio_pgto_nfe", fp_meio_pgto_nfe);
+                comando.Parameters.AddWithValue("@fp_baixa_automatica", fp_baixa_automatica);
+                comando.Parameters.AddWithValue("@fp_vinc_conta_corrente", fp_vinc_conta_corrente);
+                comando.Parameters.AddWithValue("@fp_identificacao", fp_identificacao);
+                comando.Parameters.AddWithValue("@fp_tipo_integracao_nfe", fp_tipo_integracao_nfe);
+                comando.Parameters.AddWithValue("@fp_bandeira_cartao", fp_bandeira_cartao);
+                comando.Parameters.AddWithValue("@fp_cnpj_credenciadora_cartao", fp_cnpj_credenciadora_cartao);
+                comando.Parameters.AddWithValue("@fp_conta_id", conta_id);
+                comando.Parameters.AddWithValue("@fp_dia_fechamento_cartao", fp_dia_fechamento_cartao);
+                comando.Parameters.AddWithValue("@fp_dia_vencimento_cartao", fp_dia_vencimento_cartao);
+                comando.Parameters.AddWithValue("@fp_status", fp_status);
+                comando.Parameters.AddWithValue("@fp_id", fp_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Alteração de forma de pagamento nome: " + fp_nome + " Alterada com sucesso";
+                log.log("FormaPagamento", "alteraFormaPagamento", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao alterar a forma de pagamento. Tente novamente. Se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("FormaPagamento", "alteraFormaPagamento", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
 
         //Deletar forma de pagamento
+        public string deletaFormaPagamento(
+           int conta_id,
+           int usuario_id,           
+           int fp_status,
+           int fp_id
+           )
+        {
+            string retorno = "Forma de pagamento excluída com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "UPDATE forma_pagamento set fp_status = @fp_status WHERE fp_conta_id = @conta_id and fp_id = @fp_id;";                
+                comando.Parameters.AddWithValue("@fp_conta_id", conta_id);                
+                comando.Parameters.AddWithValue("@fp_status", fp_status);
+                comando.Parameters.AddWithValue("@fp_id", fp_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Exclusão de forma de pagamento ID: " + fp_id + " Excluída com sucesso";
+                log.log("FormaPagamento", "deletaFormaPagamento", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao excluir a forma de pagamento. Tente novamente. Se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("FormaPagamento", "deletaFormaPagamento", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
 
 
     }

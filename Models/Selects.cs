@@ -668,6 +668,191 @@ namespace gestaoContadorcomvc.Models
             return tipo;
         }
 
+        //Lista meios de pagamento nfe
+        public List<Selects> getMeioPagamento()
+        {
+            List<Selects> mps = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from meio_pgto WHERE meio_pgto_status = 'Ativo';";
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects mp = new Selects();
+
+                        mp.value = leitor["meio_pgto_codigo"].ToString();
+                        mp.text = leitor["meio_pgto_descricao"].ToString();
+                        mp.disabled = false;
+
+                        mps.Add(mp);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return mps;
+        }
+
+        //Identificação forma de pagamento
+        public List<Selects> getTipoFormaPgto()
+        {
+            List<Selects> tipo = new List<Selects>();
+            tipo.Add(new Selects
+            {
+                value = "Pagamento",
+                text = "Pagamento",
+                disabled = false
+            });
+            tipo.Add(new Selects
+            {
+                value = "Recebimento",
+                text = "Recebimento",
+                disabled = false
+            });            
+
+            return tipo;
+        }
+
+        //Lista contas correntes do cliente
+        public List<Selects> getContasCorrente(int conta_id)
+        {
+            List<Selects> selects = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT cc.ccorrente_id, cc.ccorrente_nome from conta_corrente as cc WHERE cc.ccorrente_conta_id = @conta_id and cc.ccorrente_status = 'Ativo';";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects select = new Selects();
+
+                        select.value = leitor["ccorrente_id"].ToString();
+                        select.text = leitor["ccorrente_nome"].ToString();
+                        select.disabled = false;
+
+                        selects.Add(select);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return selects;
+        }
+
+        //Identificação forma de pagamento
+        public List<Selects> getIntegracaoCartao()
+        {
+            List<Selects> tipo = new List<Selects>();
+            tipo.Add(new Selects
+            {
+                value = "TEF",
+                text = "TEF",
+                disabled = false
+            });
+            tipo.Add(new Selects
+            {
+                value = "POS",
+                text = "POS",
+                disabled = false
+            });
+
+            return tipo;
+        }
+
+        //Lista bandeiras cartão
+        public List<Selects> getBandeirasCartao()
+        {
+            List<Selects> selects = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from bandeira_cartao WHERE bd_status = 'Ativo';";                
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects select = new Selects();
+
+                        select.value = leitor["bd_cod"].ToString();
+                        select.text = leitor["bd_nome"].ToString();
+                        select.disabled = false;
+
+                        selects.Add(select);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return selects;
+        }      
+
 
     }
 }

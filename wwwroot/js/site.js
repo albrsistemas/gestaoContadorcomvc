@@ -571,7 +571,9 @@ function mascaraCEST(id, vlr) {
         alert("Quantidade de dígitos do CEST inválido");
     }
 }
+//Produtos fim
 
+//Geral
 function tamanhoDigitado(id, vlr, limit, msg) {
     let tamanho = vlr.length;
 
@@ -604,6 +606,137 @@ function decimal(id, vlr, limit) {
         document.getElementById(id).value = (vlr * 1).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
     }
 }
+
+function mascaraCNPJ(id, vlr) {    
+    let campo = document.getElementById(id);
+
+    let tamanho = vlr.length;
+
+    if (tamanho == 2) {
+        campo.value = vlr + ".";
+    }
+    if (tamanho == 6) {
+        campo.value = vlr + ".";
+    }
+    if (tamanho == 10) {
+        campo.value = vlr + "/";
+    }
+    if (tamanho == 15) {
+        campo.value = vlr + "-";
+    }
+    if (tamanho > 18) {
+        campo.value = vlr.substring(0, 18);
+        alert("Quantidade de dígitos do CNPJ inválido");
+    }
+}
+
+function mascaraCPF(id, vlr) {
+    let campo = document.getElementById(id);
+
+    let tamanho = vlr.length;
+
+    if (tamanho == 3) {
+        campo.value = vlr + ".";
+    }
+    if (tamanho == 7) {
+        campo.value = vlr + ".";
+    }
+    if (tamanho == 11) {
+        campo.value = vlr + "-";
+    }
+    if (tamanho > 14) {
+        campo.value = vlr.substring(0, 14);
+        alert("Quantidade de dígitos do CPF inválido");
+    }
+}
+
+//Forma de pagamento
+function baixaAutomatica(id) {
+    let cb = document.getElementById(id);
+
+    let meioPgto = document.getElementById('fp_meio_pgto_nfe');
+
+    if (meioPgto.value == '01' || meioPgto.value == '04') {
+        if (cb.checked) {
+            document.getElementById('grupo_ccorrente').style.display = 'block';
+        } else {
+            document.getElementById('grupo_ccorrente').style.display = 'none';
+        }
+    } else {
+        alert('O meio de pagamento selecionado não permite baixa automática!');
+        cb.checked = false;
+    }
+}
+
+function meioPgto(vlr) {
+    let identificacao = document.getElementById('fp_identificacao');
+    let cb = document.getElementById('fp_baixa_automatica');
+
+    if (identificacao.value == 'Pagamento') {
+
+        if (vlr == '03') {
+            document.getElementById('legenda_cartoes').style.display = 'block';
+            document.getElementById('grupo_cartoes_pagamento').style.display = 'block';
+            document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+        } else {
+            document.getElementById('legenda_cartoes').style.display = 'none';
+            document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+            document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+        }
+    }
+
+    if (identificacao.value == 'Recebimento') {
+        if (vlr == '03' || vlr == '04') {
+            document.getElementById('legenda_cartoes').style.display = 'block';
+            document.getElementById('grupo_cartoes_recebimento').style.display = 'block';
+            document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+        } else {
+            document.getElementById('legenda_cartoes').style.display = 'none';
+            document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+            document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+        }
+    }
+
+    if (cb.checked) {
+        if (vlr != '01' && vlr != '04') {
+            cb.checked = false;
+            document.getElementById('grupo_ccorrente').style.display = 'none';
+            alert('O meio de pagamento selecionado não permite baixa automática!');
+        }
+    }
+}
+
+function identificacaoPgto(vlr) {
+    let meioPagto = document.getElementById('fp_meio_pgto_nfe');
+
+    if (vlr == 'Pagamento') {
+
+        if (meioPagto.value == '03') {
+            document.getElementById('legenda_cartoes').style.display = 'block';            
+            document.getElementById('grupo_cartoes_pagamento').style.display = 'block';
+            document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+        } else {
+            document.getElementById('legenda_cartoes').style.display = 'none';            
+            document.getElementById('grupo_cartoes_pagamento').style.display = 'none';            
+            document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+        }
+    }
+
+    if (vlr == 'Recebimento') {
+        if (meioPagto.value == '03' || identificacao.value == '04') {
+            document.getElementById('legenda_cartoes').style.display = 'block';
+            document.getElementById('grupo_cartoes_recebimento').style.display = 'block';
+            document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+        } else {
+            document.getElementById('legenda_cartoes').style.display = 'none';
+            document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+            document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+        }
+    }
+}
+
+
+//Forma de pagamento fim
 
 //Ajax com token: https://www.codigoexpresso.com.br/Home/Postagem/78
 /*
