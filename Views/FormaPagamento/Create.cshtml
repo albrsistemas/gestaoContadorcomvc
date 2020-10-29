@@ -49,39 +49,37 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-4">
             <div class="form-group">
                 <label asp-for="fp_identificacao" class="control-label"></label>
                 <select asp-items="@ViewBag.Identificacao" value="@TempData["fp_identificacao"]" id="fp_identificacao" name="fp_identificacao" class="form-control" onchange="identificacaoPgto(this.value)"></select>
                 <span asp-validation-for="fp_identificacao" class="text-danger"></span>
             </div>
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-4">
             <div class="form-group">
                 <label asp-for="fp_meio_pgto_nfe" class="control-label"></label>
                 <select asp-items="@ViewBag.meioPgto" value="@TempData["fp_meio_pgto_nfe"]" id="fp_meio_pgto_nfe" name="fp_meio_pgto_nfe" class="form-control" onchange="meioPgto(this.value)"></select>
                 <span asp-validation-for="fp_meio_pgto_nfe" class="text-danger"></span>
             </div>
         </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="fp_vinc_conta_corrente" class="control-label"></label>
+                <select asp-items="@ViewBag.ccorrente" value="@TempData["fp_vinc_conta_corrente"]" id="fp_vinc_conta_corrente" name="fp_vinc_conta_corrente" class="form-control"></select>
+                <span asp-validation-for="fp_vinc_conta_corrente" class="text-danger"></span>
+            </div>
+        </div>
     </div>    
     <div class="row" style="display:block" id="opc_baixa_automatica">        
-        <div class="col-12 col-md-12">
+        <div class="col-12 col-md-4">
             <div class="custom-control custom-switch">
                 <input type="checkbox" asp-for="fp_baixa_automatica" id="fp_baixa_automatica" class="custom-control-input" onchange="baixaAutomatica(this.id)">
                 <label class="custom-control-label" for="fp_baixa_automatica" style="user-select: none;">Gerar baixa automática</label>
             </div>
         </div>
     </div>
-    <br/>
-    <div class="row" style="display:none" id="grupo_ccorrente">        
-        <div class="col-12 col-md-12">
-            <div class="form-group">                
-                <label asp-for="fp_vinc_conta_corrente" class="control-label"></label>
-                <select asp-items="@ViewBag.ccorrente" value="@TempData["fp_vinc_conta_corrente"]" id="fp_vinc_conta_corrente" name="fp_vinc_conta_corrente" class="form-control"></select>
-                <span asp-validation-for="fp_vinc_conta_corrente" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
+    <br />        
     <fieldset>
         <legend style="display:none" id="legenda_cartoes">Informações de cartões</legend>
         <div class="row" style="display:none" id="grupo_cartoes_recebimento">
@@ -108,17 +106,17 @@
             </div>
         </div>
         <div class="row" style="display:none" id="grupo_cartoes_pagamento">
-            <div class="col-6">
+            <div class="col-12 col-md-6">
                 <div class="form-group">
                     <label asp-for="fp_dia_fechamento_cartao" class="control-label"></label>
                     <input asp-for="fp_dia_fechamento_cartao" class="form-control" disabled="disabled" />
                     <span asp-validation-for="fp_dia_fechamento_cartao" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6">
                 <div class="form-group">
                     <label asp-for="fp_dia_vencimento_cartao" class="control-label"></label>
-                    <input asp-for="fp_dia_vencimento_cartao" class="form-control" disabled="disabled"/>
+                    <input asp-for="fp_dia_vencimento_cartao" class="form-control" disabled="disabled" />
                     <span asp-validation-for="fp_dia_vencimento_cartao" class="text-danger"></span>
                 </div>
             </div>

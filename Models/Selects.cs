@@ -739,7 +739,7 @@ namespace gestaoContadorcomvc.Models
         //Lista contas correntes do cliente
         public List<Selects> getContasCorrente(int conta_id)
         {
-            List<Selects> selects = new List<Selects>();
+            List<Selects> selects = new List<Selects>();            
 
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
@@ -770,6 +770,12 @@ namespace gestaoContadorcomvc.Models
                         selects.Add(select);
                     }
                 }
+
+                Selects selectPadrao = new Selects();
+                selectPadrao.value = "0";
+                selectPadrao.text = "Diversos";
+                selectPadrao.disabled = false;
+                selects.Add(selectPadrao);
             }
             catch (Exception)
             {

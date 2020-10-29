@@ -109,6 +109,19 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Alterar Conta Corrente";
                 }
+                //Forma de pagamento
+                if (pagina.Contains("FormaPagamento/Index"))
+                {
+                    retorno = "Forma de Pagamento";
+                }
+                if (pagina.Contains("FormaPagamento/Create"))
+                {
+                    retorno = "Incluir Forma de Pagamento";
+                }
+                if (pagina.Contains("FormaPagamento/Edit"))
+                {
+                    retorno = "Alterar Forma de Pagamento";
+                }
             }
 
             ViewData["openNav"] = openNav;

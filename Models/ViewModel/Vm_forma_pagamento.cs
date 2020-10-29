@@ -19,7 +19,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         
         public bool fp_baixa_automatica { get; set; }
 
-        [Display(Name = "Baixa automática na conta corrente:")]
+        [Display(Name = "Conta Corrente Vinculada")]
         public string fp_vinc_conta_corrente { get; set; }
 
         [Display(Name = "Tipo")]

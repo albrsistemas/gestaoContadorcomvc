@@ -75,17 +75,10 @@ namespace gestaoContadorcomvc.Controllers
             vm_fp.fp_identificacao = d["fp_identificacao"];
             vm_fp.fp_meio_pgto_nfe = d["fp_meio_pgto_nfe"];
             vm_fp.fp_baixa_automatica = fp_baixa_automatica;
+            vm_fp.fp_vinc_conta_corrente = d["fp_vinc_conta_corrente"];
 
-            if (!vm_fp.fp_baixa_automatica)
-            {
-                vm_fp.fp_vinc_conta_corrente = "0";
-            }
-            else
-            {
-                vm_fp.fp_vinc_conta_corrente = d["fp_vinc_conta_corrente"];
-            }
 
-            if((vm_fp.fp_meio_pgto_nfe == "03" || vm_fp.fp_meio_pgto_nfe == "04") && vm_fp.fp_identificacao == "Recebimento")
+            if ((vm_fp.fp_meio_pgto_nfe == "03" || vm_fp.fp_meio_pgto_nfe == "04") && vm_fp.fp_identificacao == "Recebimento")
             {
                 vm_fp.fp_tipo_integracao_nfe = d["fp_tipo_integracao_nfe"];
                 vm_fp.fp_bandeira_cartao = d["fp_bandeira_cartao"];

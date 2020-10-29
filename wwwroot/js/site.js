@@ -653,18 +653,40 @@ function mascaraCPF(id, vlr) {
 //Forma de pagamento
 function baixaAutomatica(id) {
     let cb = document.getElementById(id);
-
     let meioPgto = document.getElementById('fp_meio_pgto_nfe');
+    let identificacao = document.getElementById('fp_identificacao');
 
-    if (meioPgto.value == '01' || meioPgto.value == '04') {
-        if (cb.checked) {
-            document.getElementById('grupo_ccorrente').style.display = 'block';
-        } else {
-            document.getElementById('grupo_ccorrente').style.display = 'none';
+    if (identificacao.value == "Recebimento") {
+        if (meioPgto.value == '03' || meioPgto.value == '04') {
+            if (!cb.checked) {
+                alert('Recebimento no cartão é obrigatório a baixa automática!');
+                cb.checked = true;
+            }
         }
-    } else {
-        alert('O meio de pagamento selecionado não permite baixa automática!');
-        cb.checked = false;
+
+        if (meioPgto.value == '02' || meioPgto.value == '05' || meioPgto.value == '15') {
+            if (cb.checked) {
+                alert('O meio de pagamento selecionado não permite baixa automática!');
+                cb.checked = false;
+            }
+        }
+
+    }
+
+    if (identificacao.value == "Pagamento") {
+        if (meioPgto.value == '03' || meioPgto.value == '02' || meioPgto.value == '05' || meioPgto.value == '15') {
+            if (cb.checked) {
+                alert('O meio de pagamento selecionado não permite baixa automática!');
+                cb.checked = false;
+            }
+        }
+
+        if (meioPgto.value == '04') {
+            if (!cb.checked) {
+                alert('O meio de pagamento selecionado é obrigatória a baixa automática!');
+                cb.checked = true;
+            }
+        }
     }
 }
 
@@ -682,7 +704,7 @@ function meioPgto(vlr) {
             document.getElementById('grupo_cartoes_pagamento').style.display = 'block';
             document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
             diaFecha.removeAttribute("disabled");
-            diaVenc.removeAttribute("disabled");
+            diaVenc.removeAttribute("disabled");            
         } else {
             document.getElementById('legenda_cartoes').style.display = 'none';
             document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
@@ -690,26 +712,37 @@ function meioPgto(vlr) {
             diaFecha.setAttribute("disabled", "disabled");
             diaVenc.setAttribute("disabled", "disabled");
         }
+
+        if (vlr == '02' || vlr == '03' || vlr == '05' || vlr == '15') {
+            cb.checked = false;
+        }
+
+        if (vlr == '04') {
+            cb.checked = true;
+        }
     }
 
     if (identificacao.value == 'Recebimento') {
         if (vlr == '03' || vlr == '04') {
             document.getElementById('legenda_cartoes').style.display = 'block';
             document.getElementById('grupo_cartoes_recebimento').style.display = 'block';
-            document.getElementById('grupo_cartoes_pagamento').style.display = 'none';            
+            document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+            cb.checked = true;
         } else {
             document.getElementById('legenda_cartoes').style.display = 'none';
             document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
-            document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+            document.getElementById('grupo_cartoes_pagamento').style.display = 'none';            
         }
-    }
 
-    if (cb.checked) {
-        if (vlr != '01' && vlr != '04') {
+        if (vlr == '02' || vlr == '05' || vlr == '15') {
             cb.checked = false;
-            document.getElementById('grupo_ccorrente').style.display = 'none';
-            alert('O meio de pagamento selecionado não permite baixa automática!');
         }
+
+        if (vlr == '03' || vlr == '04') {
+            cb.checked = true;
+        }
+
+
     }
 }
 
@@ -733,10 +766,18 @@ function identificacaoPgto(vlr) {
             diaFecha.removeAttribute("disabled");
             diaVenc.removeAttribute("disabled");
         }
+
+        if (meioPagto.value == '02' || meioPagto.value == '03' || meioPagto.value == '05' || meioPagto.value == '15') {
+            cb.checked = false;
+        }
+
+        if (meioPagto.value == '04') {
+            cb.checked = true;
+        }
     }
 
     if (vlr == 'Recebimento') {
-        if (meioPagto.value == '03' || identificacao.value == '04') {
+        if (meioPagto.value == '03' || meioPagto.value == '04') {
             document.getElementById('legenda_cartoes').style.display = 'block';
             document.getElementById('grupo_cartoes_recebimento').style.display = 'block';
             document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
@@ -748,6 +789,14 @@ function identificacaoPgto(vlr) {
             document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
             diaFecha.setAttribute("disabled", "disabled");
             diaVenc.setAttribute("disabled", "disabled");
+        }
+
+        if (meioPagto.value == '02' || meioPagto.value == '05' || meioPagto.value == '15') {
+            cb.checked = false;
+        }
+
+        if (meioPagto.value == '03' || meioPagto.value == '04') {
+            cb.checked = true;
         }
     }
 }
