@@ -30,7 +30,7 @@
 <h2>Nova Forma de Pagamento</h2>
 <hr class="hrLine" />
 
-<form asp-controller="FormaPagamento" asp-action="Create">
+<form asp-controller="FormaPagamento" asp-action="Create" id="formaPgto">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <div class="col-12 col-md-8">
@@ -111,14 +111,14 @@
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="fp_dia_fechamento_cartao" class="control-label"></label>
-                    <input asp-for="fp_dia_fechamento_cartao" class="form-control" />
+                    <input asp-for="fp_dia_fechamento_cartao" class="form-control" disabled="disabled" />
                     <span asp-validation-for="fp_dia_fechamento_cartao" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="fp_dia_vencimento_cartao" class="control-label"></label>
-                    <input asp-for="fp_dia_vencimento_cartao" class="form-control"/>
+                    <input asp-for="fp_dia_vencimento_cartao" class="form-control" disabled="disabled"/>
                     <span asp-validation-for="fp_dia_vencimento_cartao" class="text-danger"></span>
                 </div>
             </div>

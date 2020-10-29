@@ -27,7 +27,7 @@ namespace gestaoContadorcomvc.Controllers
             FormaPagamento fp = new FormaPagamento();
             Vm_forma_pagamento vm_fp = new Vm_forma_pagamento();
 
-            vm_fp.formasPagamento = fp.listFormasPagamento(user.usuario_conta_id, user.usuario_id);
+            vm_fp.formasPagamento = fp.listFormasPagamentoViewIndex(user.usuario_conta_id, user.usuario_id);
             vm_fp.user = user;
 
             return View(vm_fp);
@@ -54,7 +54,7 @@ namespace gestaoContadorcomvc.Controllers
         // POST: FormaPagamentoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection d)
+        public ActionResult Create(IFormCollection d, bool fp_baixa_automatica)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -74,13 +74,42 @@ namespace gestaoContadorcomvc.Controllers
             vm_fp.fp_status = d["fp_status"];
             vm_fp.fp_identificacao = d["fp_identificacao"];
             vm_fp.fp_meio_pgto_nfe = d["fp_meio_pgto_nfe"];
-            vm_fp.fp_baixa_automatica = Convert.ToBoolean(d["fp_baixa_automatica"]);
-            vm_fp.fp_vinc_conta_corrente = d["fp_vinc_conta_corrente"];
-            vm_fp.fp_tipo_integracao_nfe = d["fp_tipo_integracao_nfe"];
-            vm_fp.fp_bandeira_cartao = d["fp_bandeira_cartao"];
-            vm_fp.fp_cnpj_credenciadora_cartao = d["fp_cnpj_credenciadora_cartao"];
-            vm_fp.fp_dia_fechamento_cartao = Convert.ToInt32(d["fp_dia_fechamento_cartao"]);
-            vm_fp.fp_dia_vencimento_cartao = Convert.ToInt32(d["fp_dia_vencimento_cartao"]);
+            vm_fp.fp_baixa_automatica = fp_baixa_automatica;
+
+            if (!vm_fp.fp_baixa_automatica)
+            {
+                vm_fp.fp_vinc_conta_corrente = "0";
+            }
+            else
+            {
+                vm_fp.fp_vinc_conta_corrente = d["fp_vinc_conta_corrente"];
+            }
+
+            if((vm_fp.fp_meio_pgto_nfe == "03" || vm_fp.fp_meio_pgto_nfe == "04") && vm_fp.fp_identificacao == "Recebimento")
+            {
+                vm_fp.fp_tipo_integracao_nfe = d["fp_tipo_integracao_nfe"];
+                vm_fp.fp_bandeira_cartao = d["fp_bandeira_cartao"];
+                vm_fp.fp_cnpj_credenciadora_cartao = d["fp_cnpj_credenciadora_cartao"];
+            }
+            else
+            {
+                vm_fp.fp_tipo_integracao_nfe = "0";
+                vm_fp.fp_bandeira_cartao = "0";
+                vm_fp.fp_cnpj_credenciadora_cartao = "Não se aplica";
+            }
+
+            if (vm_fp.fp_identificacao == "Pagamento" && vm_fp.fp_meio_pgto_nfe == "03")
+            {
+                vm_fp.fp_dia_fechamento_cartao = Convert.ToInt32(d["fp_dia_fechamento_cartao"]);
+                vm_fp.fp_dia_vencimento_cartao = Convert.ToInt32(d["fp_dia_vencimento_cartao"]);
+            }
+            else
+            {
+                vm_fp.fp_dia_fechamento_cartao = 0;
+                vm_fp.fp_dia_vencimento_cartao = 0;
+            }
+
+            
 
             try
             {

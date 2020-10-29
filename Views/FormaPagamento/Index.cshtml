@@ -73,7 +73,7 @@
                 <div class="row">
                     <div class="col-12 col-md-4"><strong>Nome</strong></div>
                     <div class="col-12 col-md-3"><strong>Tipo de Pagamento</strong></div>
-                    <div class="col-12 col-md-3"><strong>Destino</strong></div>
+                    <div class="col-12 col-md-3"><strong>Baixa Automática</strong></div>
                     <div class="col-12 col-md-2"><strong>Aplicável à</strong></div>
                 </div>
             </div>
@@ -93,14 +93,14 @@
             <div class="col-list-body">
                 <div class="row">
                     <div class="col-12 line_list_title_mobile"><strong>Nome: </strong>@item.fp_nome</div>
-                    <div class="col-12 line_list_title_mobile"><strong>Tipo de Pagamento: </strong>@item.fp_meio_pgto_nfe</div>
-                    <div class="col-12 line_list_title_mobile"><strong>Destino: </strong>@item.destino</div>
-                    <div class="col-12 line_list_title_mobile"><strong>Aplicável à: </strong>@item.fp_identificacao</div>
+                    <div class="col-12 line_list_title_mobile"><strong>Tipo de Pagamento: </strong>@item.meioPgto</div>
+                    <div class="col-12 line_list_title_mobile"><strong>Baixa Automática: </strong>@item.destino</div>
+                    <div class="col-12 line_list_title_mobile"><strong>Aplicável à: </strong>@item.aplicavel</div>
 
                     <div class="col-4 line_list_title_full">@item.fp_nome</div>
-                    <div class="col-3 line_list_title_full">@item.fp_meio_pgto_nfe</div>
+                    <div class="col-3 line_list_title_full">@item.meioPgto</div>
                     <div class="col-3 line_list_title_full">@item.destino</div>
-                    <div class="col-2 line_list_title_full">@item.fp_identificacao</div>
+                    <div class="col-2 line_list_title_full">@item.aplicavel</div>
                 </div>
             </div>
             <div class="col-list-rigth" style="padding-right: 10px;">

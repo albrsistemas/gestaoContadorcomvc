@@ -672,16 +672,23 @@ function meioPgto(vlr) {
     let identificacao = document.getElementById('fp_identificacao');
     let cb = document.getElementById('fp_baixa_automatica');
 
+    let diaFecha = document.getElementById('fp_dia_fechamento_cartao');
+    let diaVenc = document.getElementById('fp_dia_vencimento_cartao');
+
     if (identificacao.value == 'Pagamento') {
 
         if (vlr == '03') {
             document.getElementById('legenda_cartoes').style.display = 'block';
             document.getElementById('grupo_cartoes_pagamento').style.display = 'block';
             document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+            diaFecha.removeAttribute("disabled");
+            diaVenc.removeAttribute("disabled");
         } else {
             document.getElementById('legenda_cartoes').style.display = 'none';
             document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
             document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+            diaFecha.setAttribute("disabled", "disabled");
+            diaVenc.setAttribute("disabled", "disabled");
         }
     }
 
@@ -689,7 +696,7 @@ function meioPgto(vlr) {
         if (vlr == '03' || vlr == '04') {
             document.getElementById('legenda_cartoes').style.display = 'block';
             document.getElementById('grupo_cartoes_recebimento').style.display = 'block';
-            document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+            document.getElementById('grupo_cartoes_pagamento').style.display = 'none';            
         } else {
             document.getElementById('legenda_cartoes').style.display = 'none';
             document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
@@ -708,6 +715,8 @@ function meioPgto(vlr) {
 
 function identificacaoPgto(vlr) {
     let meioPagto = document.getElementById('fp_meio_pgto_nfe');
+    let diaFecha = document.getElementById('fp_dia_fechamento_cartao');
+    let diaVenc = document.getElementById('fp_dia_vencimento_cartao');
 
     if (vlr == 'Pagamento') {
 
@@ -715,10 +724,14 @@ function identificacaoPgto(vlr) {
             document.getElementById('legenda_cartoes').style.display = 'block';            
             document.getElementById('grupo_cartoes_pagamento').style.display = 'block';
             document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+            diaFecha.removeAttribute("disabled");
+            diaVenc.removeAttribute("disabled");
         } else {
             document.getElementById('legenda_cartoes').style.display = 'none';            
             document.getElementById('grupo_cartoes_pagamento').style.display = 'none';            
             document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+            diaFecha.removeAttribute("disabled");
+            diaVenc.removeAttribute("disabled");
         }
     }
 
@@ -727,10 +740,14 @@ function identificacaoPgto(vlr) {
             document.getElementById('legenda_cartoes').style.display = 'block';
             document.getElementById('grupo_cartoes_recebimento').style.display = 'block';
             document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+            diaFecha.setAttribute("disabled", "disabled");
+            diaVenc.setAttribute("disabled", "disabled");
         } else {
             document.getElementById('legenda_cartoes').style.display = 'none';
             document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
             document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+            diaFecha.setAttribute("disabled", "disabled");
+            diaVenc.setAttribute("disabled", "disabled");
         }
     }
 }

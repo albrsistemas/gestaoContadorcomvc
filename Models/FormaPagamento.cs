@@ -407,6 +407,67 @@ namespace gestaoContadorcomvc.Models
             return retorno;
         }
 
+        //Listar forma de pagamento para view index
+        public List<Vm_forma_pagamento> listFormasPagamentoViewIndex(int conta_id, int usuario_id)
+        {
+            List<Vm_forma_pagamento> fps = new List<Vm_forma_pagamento>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT fp.fp_nome as nome, mp.meio_pgto_descricao, COALESCE(cc.ccorrente_nome,0) as destino, fp.fp_identificacao as aplicavel from forma_pagamento as fp LEFT JOIN meio_pgto as mp on fp.fp_meio_pgto_nfe = mp.meio_pgto_id LEFT JOIN conta_corrente as cc on fp.fp_vinc_conta_corrente = cc.ccorrente_id WHERE fp.fp_conta_id = @conta_id and fp.fp_status = 'Ativo' ORDER by fp.fp_identificacao DESC;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Vm_forma_pagamento fp = new Vm_forma_pagamento();
+
+                        fp.fp_nome = leitor["nome"].ToString();
+                        fp.meioPgto = leitor["meio_pgto_descricao"].ToString();
+                        fp.aplicavel = leitor["aplicavel"].ToString();
+                        string dest = leitor["destino"].ToString();
+
+                        if(dest.Equals("0"))
+                        {
+                            fp.destino = "Não";                            
+                        }
+                        else
+                        {
+                            fp.destino = dest;
+                        }
+
+                        fps.Add(fp);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message.Substring(0, 300);
+                log.log("FormaPagamento", "listFormasPagamento", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return fps;
+        }
+
 
 
     }
