@@ -150,8 +150,8 @@ namespace gestaoContadorcomvc.Models
             comando.Transaction = Transacao;
 
             try
-            {
-                comando.CommandText = "SELECT * from forma_pagamento where fp_conta_id = @conta_id and fp_id = @fp_id';";
+            {   
+                comando.CommandText = "SELECT forma_pagamento.*, COALESCE(cc.ccorrente_tipo,0) as ccorrente_tipo from forma_pagamento LEFT JOIN conta_corrente as cc on cc.ccorrente_id = forma_pagamento.fp_vinc_conta_corrente where fp_conta_id = @conta_id and fp_id = @fp_id;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@fp_id", fp_id);
                 comando.ExecuteNonQuery();
@@ -207,6 +207,7 @@ namespace gestaoContadorcomvc.Models
                         fp.fp_bandeira_cartao = leitor["fp_bandeira_cartao"].ToString();
                         fp.fp_cnpj_credenciadora_cartao = leitor["fp_cnpj_credenciadora_cartao"].ToString();
                         fp.fp_status = leitor["fp_status"].ToString();                        
+                        fp.ccorrente_tipo = leitor["ccorrente_tipo"].ToString();                        
                     }
                 }
             }
@@ -305,7 +306,7 @@ namespace gestaoContadorcomvc.Models
            string fp_cnpj_credenciadora_cartao,
            int fp_dia_fechamento_cartao,
            int fp_dia_vencimento_cartao,
-           int fp_status,
+           string fp_status,
            int fp_id
            )
         {
@@ -320,7 +321,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "UPDATE forma_pagamento set fp_nome = @fp_nome, fp_meio_pgto_nfe = @fp_meio_pgto_nfe, fp_baixa_automatica = @fp_baixa_automatica, fp_vinc_conta_corrente = @fp_vinc_conta_corrente, fp_identificacao = @fp_identificacao, fp_tipo_integracao_nfe = @fp_tipo_integracao_nfe, fp_bandeira_cartao = @fp_bandeira_cartao, fp_cnpj_credenciadora_cartao = @fp_cnpj_credenciadora_cartao, fp_dia_fechamento_cartao = @fp_dia_fechamento_cartao, fp_dia_vencimento_cartao = @fp_dia_vencimento_cartao, fp_status = @fp_status WHERE fp_conta_id = @conta_id and fp_id = @fp_id;";
+                comando.CommandText = "update forma_pagamento set fp_nome = @fp_nome, fp_meio_pgto_nfe = @fp_meio_pgto_nfe, fp_baixa_automatica = @fp_baixa_automatica, fp_vinc_conta_corrente = @fp_vinc_conta_corrente, fp_identificacao = @fp_identificacao, fp_tipo_integracao_nfe = @fp_tipo_integracao_nfe, fp_bandeira_cartao = @fp_bandeira_cartao, fp_cnpj_credenciadora_cartao = @fp_cnpj_credenciadora_cartao, fp_dia_fechamento_cartao = @fp_dia_fechamento_cartao, fp_dia_vencimento_cartao = @fp_dia_vencimento_cartao, fp_status = @fp_status WHERE fp_conta_id = @conta_id and fp_id = @fp_id;";
                 comando.Parameters.AddWithValue("@fp_nome", fp_nome);
                 comando.Parameters.AddWithValue("@fp_meio_pgto_nfe", fp_meio_pgto_nfe);
                 comando.Parameters.AddWithValue("@fp_baixa_automatica", fp_baixa_automatica);
@@ -328,11 +329,11 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@fp_identificacao", fp_identificacao);
                 comando.Parameters.AddWithValue("@fp_tipo_integracao_nfe", fp_tipo_integracao_nfe);
                 comando.Parameters.AddWithValue("@fp_bandeira_cartao", fp_bandeira_cartao);
-                comando.Parameters.AddWithValue("@fp_cnpj_credenciadora_cartao", fp_cnpj_credenciadora_cartao);
-                comando.Parameters.AddWithValue("@fp_conta_id", conta_id);
+                comando.Parameters.AddWithValue("@fp_cnpj_credenciadora_cartao", fp_cnpj_credenciadora_cartao);                
                 comando.Parameters.AddWithValue("@fp_dia_fechamento_cartao", fp_dia_fechamento_cartao);
                 comando.Parameters.AddWithValue("@fp_dia_vencimento_cartao", fp_dia_vencimento_cartao);
                 comando.Parameters.AddWithValue("@fp_status", fp_status);
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@fp_id", fp_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
@@ -362,8 +363,7 @@ namespace gestaoContadorcomvc.Models
         //Deletar forma de pagamento
         public string deletaFormaPagamento(
            int conta_id,
-           int usuario_id,           
-           int fp_status,
+           int usuario_id,                      
            int fp_id
            )
         {
@@ -378,9 +378,8 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "UPDATE forma_pagamento set fp_status = @fp_status WHERE fp_conta_id = @conta_id and fp_id = @fp_id;";                
-                comando.Parameters.AddWithValue("@fp_conta_id", conta_id);                
-                comando.Parameters.AddWithValue("@fp_status", fp_status);
+                comando.CommandText = "update forma_pagamento set fp_status = 'Deletado' WHERE fp_conta_id = @conta_id and fp_id = @fp_id;";                
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@fp_id", fp_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
@@ -421,7 +420,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT fp.fp_nome as nome, mp.meio_pgto_descricao, COALESCE(cc.ccorrente_nome,0) as destino, fp.fp_identificacao as aplicavel from forma_pagamento as fp LEFT JOIN meio_pgto as mp on fp.fp_meio_pgto_nfe = mp.meio_pgto_codigo LEFT JOIN conta_corrente as cc on fp.fp_vinc_conta_corrente = cc.ccorrente_id WHERE fp.fp_conta_id = @conta_id and fp.fp_status = 'Ativo' ORDER by fp.fp_identificacao DESC;";
+                comando.CommandText = "SELECT fp.fp_id, fp.fp_nome as nome, mp.meio_pgto_descricao, COALESCE(cc.ccorrente_nome,0) as destino, fp.fp_identificacao as aplicavel from forma_pagamento as fp LEFT JOIN meio_pgto as mp on fp.fp_meio_pgto_nfe = mp.meio_pgto_codigo LEFT JOIN conta_corrente as cc on fp.fp_vinc_conta_corrente = cc.ccorrente_id WHERE fp.fp_conta_id = @conta_id and fp.fp_status = 'Ativo' ORDER by fp.fp_identificacao DESC;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
@@ -433,6 +432,15 @@ namespace gestaoContadorcomvc.Models
                     while (leitor.Read())
                     {
                         Vm_forma_pagamento fp = new Vm_forma_pagamento();
+
+                        if (DBNull.Value != leitor["fp_id"])
+                        {
+                            fp.fp_id = Convert.ToInt32(leitor["fp_id"]);
+                        }
+                        else
+                        {
+                            fp.fp_id = 0;
+                        }
 
                         fp.fp_nome = leitor["nome"].ToString();
                         fp.meioPgto = leitor["meio_pgto_descricao"].ToString();

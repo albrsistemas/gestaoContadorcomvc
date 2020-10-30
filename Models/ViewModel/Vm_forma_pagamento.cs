@@ -20,6 +20,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public bool fp_baixa_automatica { get; set; }
 
         [Display(Name = "Conta Corrente Vinculada")]
+        [Required(ErrorMessage = "A conta corrente é requerida")]
         public string fp_vinc_conta_corrente { get; set; }
 
         [Display(Name = "Tipo")]
@@ -54,5 +55,6 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string destino { get; set; }
         public string aplicavel { get; set; }
         public string meioPgto { get; set; }
+        public string ccorrente_tipo { get; set; }
     }
 }

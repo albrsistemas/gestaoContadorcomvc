@@ -744,12 +744,16 @@ function meioPgto(vlr) {
 
 
     }
+
+    carregarSelectCC(identificacao.value, vlr);
+
 }
 
 function identificacaoPgto(vlr) {
     let meioPagto = document.getElementById('fp_meio_pgto_nfe');
     let diaFecha = document.getElementById('fp_dia_fechamento_cartao');
     let diaVenc = document.getElementById('fp_dia_vencimento_cartao');
+    let cb = document.getElementById('fp_baixa_automatica');
 
     if (vlr == 'Pagamento') {
 
@@ -799,7 +803,49 @@ function identificacaoPgto(vlr) {
             cb.checked = true;
         }
     }
+
+    carregarSelectCC(vlr, meioPagto.value);
+
+
 }
+
+function carregarSelectCC(identificacao, meioPgto) {    
+    $.ajax({
+        url: "/FormaPagamento/gerarSelectMeioPgto",
+        data: { __RequestVerificationToken: gettoken(), identificacao: identificacao, meioPgto: meioPgto },
+        type: 'POST',
+        dataType: 'json',
+        beforeSend: function (XMLHttpRequest) {
+            document.getElementById('text_ccorrente').innerHTML = "Gerando lista de contas corrente";
+            document.getElementById('sub').setAttribute("disabled", "disabled");
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert("erro");
+        },
+        success: function (data, textStatus, XMLHttpRequest) {
+            var results = JSON.parse(data);            
+            $('#fp_vinc_conta_corrente').children('option').remove(); //Remove todos os itens do select
+
+            for (i = 0; i < results.length; i++) { //Adiciona os item recebidos no results no select
+                $('#fp_vinc_conta_corrente').append($("<option></option>").attr("value", results[i].value).text(results[i].text));
+            }
+
+            if (results[0].value == "0") {
+                document.getElementById('fp_vinc_conta_corrente').setAttribute("disabled", "disabled");
+            } else {
+                document.getElementById('fp_vinc_conta_corrente').removeAttribute("disabled");
+            }
+
+            document.getElementById('text_ccorrente').innerHTML = "";
+            document.getElementById('sub').removeAttribute("disabled");
+        }
+    });    
+}
+
+function gettoken() {
+    var token = $('[name=__RequestVerificationToken]').val();    
+    return token;
+};
 
 
 //Forma de pagamento fim

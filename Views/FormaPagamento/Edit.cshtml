@@ -27,10 +27,10 @@
     }
 }
 
-<h2>Nova Forma de Pagamento</h2>
+<h2>Alterar Forma de Pagamento</h2>
 <hr class="hrLine" />
 
-<form asp-controller="FormaPagamento" asp-action="Create" id="formaPgto">
+<form asp-controller="FormaPagamento" asp-action="Edit" id="formaPgto">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <div class="col-12 col-md-8">
@@ -43,7 +43,7 @@
         <div class="col-12 col-md-4">
             <div class="form-group">
                 <label asp-for="fp_status" class="control-label"></label>
-                <input asp-for="fp_status" class="form-control" value="Ativo" readonly="readonly" />
+                <select asp-items="@ViewBag.status" value="@TempData["fp_status"]" id="fp_status" name="fp_status" class="form-control"></select>
                 <span asp-validation-for="fp_status" class="text-danger"></span>
             </div>
         </div>
@@ -71,8 +71,8 @@
                 <span asp-validation-for="fp_vinc_conta_corrente" class="text-danger"></span>
             </div>
         </div>
-    </div>    
-    <div class="row" style="display:block" id="opc_baixa_automatica">        
+    </div>
+    <div class="row" style="display:block" id="opc_baixa_automatica">
         <div class="col-12 col-md-4">
             <div class="custom-control custom-switch">
                 <input type="checkbox" asp-for="fp_baixa_automatica" id="fp_baixa_automatica" class="custom-control-input" onchange="baixaAutomatica(this.id)">
@@ -80,7 +80,7 @@
             </div>
         </div>
     </div>
-    <br />        
+    <br />
     <fieldset>
         <legend style="display:none" id="legenda_cartoes">Informações de cartões</legend>
         <div class="row" style="display:none" id="grupo_cartoes_recebimento">

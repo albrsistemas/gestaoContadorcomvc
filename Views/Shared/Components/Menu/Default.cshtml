@@ -19,11 +19,15 @@
                         @if (usuario.Role == "adm" || usuario._permissoes.usuarioList)
                         {<a class='dropdown-item' asp-controller='Usuario' asp-action='Index'>Usuários</a>}
                         @if (usuario.Role == "adm" || usuario._permissoes.categoriaList)
-                        {<a class="dropdown-item" asp-controller='Categoria' asp-action='Index'>Categorias</a>}                        
-                        <a class="dropdown-item" asp-controller='ContaCorrente' asp-action='Index'>Conta Corrente</a>
-                        <a class="dropdown-item" asp-controller='FormaPagamento' asp-action='Index'>Formas de Pagamento</a>
-                        <a class="dropdown-item" asp-controller='Participante' asp-action='Index'>Participante</a>
-                        <a class="dropdown-item" asp-controller='Produtos' asp-action='Index'>Produtos</a>
+                        {<a class="dropdown-item" asp-controller='Categoria' asp-action='Index'>Categorias</a>}
+                        @if (usuario.Role == "adm" || usuario._permissoes.ccorrenteList)
+                        {<a class="dropdown-item" asp-controller='ContaCorrente' asp-action='Index'>Conta Corrente</a>}
+                        @if (usuario.Role == "adm" || usuario._permissoes.fpList)
+                        {<a class="dropdown-item" asp-controller='FormaPagamento' asp-action='Index'>Formas de Pagamento</a>}
+                        @if (usuario.Role == "adm" || usuario._permissoes.participanteList)
+                        {<a class="dropdown-item" asp-controller='Participante' asp-action='Index'>Participante</a>}
+                        @if (usuario.Role == "adm" || usuario._permissoes.produtosList)
+                        {<a class="dropdown-item" asp-controller='Produtos' asp-action='Index'>Produtos</a>}
                     </div>
                 </li>
             }
