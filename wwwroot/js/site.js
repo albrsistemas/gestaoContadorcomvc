@@ -538,6 +538,18 @@ function mascaraCNPJ_cpf(id, vlr) {
         }
     }
 }
+
+function contribICMS(vlr) {
+    let ie = document.getElementById('participante_inscricaoEstadual');
+    if (vlr == 9) {
+        ie.value = "";
+        ie.setAttribute("disabled", "disabled");
+    } else {
+        ie.removeAttribute("disabled");
+    }
+}
+
+
 //Participante fim
 //Produtos
 function mascaraNCM(id, vlr) {    

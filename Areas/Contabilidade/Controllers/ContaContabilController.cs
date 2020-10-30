@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using gestaoContadorcomvc.Areas.Contabilidade.Models;
 using gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel;
 using gestaoContadorcomvc.Filtros;
+using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
@@ -58,6 +60,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 
             TempData["plano"] = plano;
 
+            Selects select = new Selects();
+            ViewBag.ccontabil_natureza = select.getNaturezaContabil().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1" });
+
             return View();
         }
 
@@ -81,7 +86,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 
                 ContaContabil ccontabil = new ContaContabil();
 
-                TempData["retornoContasContabeis"] = ccontabil.cadastrarContaContabil(user.usuario_conta_id, user.usuario_id, collection["plano_id"], collection["ccontabil_classificacao"], collection["ccontabil_nivel"], collection["ccontabil_nome"], collection["ccontabil_apelido"]);
+                TempData["retornoContasContabeis"] = ccontabil.cadastrarContaContabil(user.usuario_conta_id, user.usuario_id, collection["plano_id"], collection["ccontabil_classificacao"], collection["ccontabil_nivel"], collection["ccontabil_nome"], collection["ccontabil_apelido"], collection["ccontabil_natureza"]);
 
                 return RedirectToAction("Index", new { plano_id = Convert.ToInt32(collection["plano_id"]) });
             }
@@ -108,6 +113,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             vm_ContaContabil conta = new vm_ContaContabil();
             conta = contaContabil.buscaContaContabeisPorID(user.usuario_conta_id, user.usuario_id, ccontabil_id);
 
+            Selects select = new Selects();
+            ViewBag.ccontabil_natureza = select.getNaturezaContabil().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == conta.ccontabil_natureza.ToString() });
+
             return View(conta);
         }
 
@@ -131,7 +139,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 
                 ContaContabil contaContabil = new ContaContabil();
 
-                TempData["retornoContasContabeis"] = contaContabil.editarContaContabil(user.usuario_conta_id, user.usuario_id, collection["plano_id"], collection["ccontabil_id"], collection["ccontabil_nome"], collection["ccontabil_apelido"]);
+                TempData["retornoContasContabeis"] = contaContabil.editarContaContabil(user.usuario_conta_id, user.usuario_id, collection["plano_id"], collection["ccontabil_id"], collection["ccontabil_nome"], collection["ccontabil_apelido"], collection["ccontabil_natureza"]);
 
                 return RedirectToAction("Index", new { plano_id = Convert.ToInt32(collection["plano_id"]) });
             }

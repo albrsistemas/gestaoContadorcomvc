@@ -31,11 +31,15 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel
         [Display(Name = "Nível")]
         [Required(ErrorMessage = "O nível é obrigatório.")]
         public int ccontabil_nivel { get; set; }
+
+        [Display(Name = "Natureza Contábil")]
+        [Required(ErrorMessage = "A natureza é obrigatória.")]
+        public int ccontabil_natureza { get; set; }
         public string ccontabil_grupo { get; set; }
         public string ccontabil_tipo { get; set; }
         public DateTime ccontabil_dataCriacao { get; set; }
         public DateTime ccontabil_dataInativacao { get; set; }
-        public string ccontabil_status { get; set; }
+        public string ccontabil_status { get; set; }        
         public IEnumerable<gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel.vm_ContaContabil> contasContabeis { get; set; }
         public Vm_usuario user { get; set; }
         public PlanoContas plano { get; set; }

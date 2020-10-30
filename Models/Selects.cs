@@ -909,6 +909,26 @@ namespace gestaoContadorcomvc.Models
             return selects;
         }
 
+        //Natureza contábil das contas
+        public List<Selects> getNaturezaContabil()
+        {
+            List<Selects> tipo = new List<Selects>();
+            tipo.Add(new Selects
+            {
+                value = "1",
+                text = "Devedora",
+                disabled = false
+            });
+            tipo.Add(new Selects
+            {
+                value = "-1",
+                text = "Credora",
+                disabled = false
+            });
+
+            return tipo;
+        }
+
 
     }
 }

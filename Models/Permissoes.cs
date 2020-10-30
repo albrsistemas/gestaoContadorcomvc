@@ -405,6 +405,23 @@ namespace gestaoContadorcomvc.Models
                         {
                             permissao.clienteCopiaPlano = false;
                         }
+                        //Incluídos em 30/10/2020
+                        permissao.participanteList = Convert.ToBoolean(leitor["participanteList"]);
+                        permissao.participanteCreate = Convert.ToBoolean(leitor["participanteCreate"]);
+                        permissao.participanteEdit = Convert.ToBoolean(leitor["participanteEdit"]);
+                        permissao.participanteDelete = Convert.ToBoolean(leitor["participanteDelete"]);
+                        permissao.produtosList = Convert.ToBoolean(leitor["produtosList"]);
+                        permissao.produtosCreate = Convert.ToBoolean(leitor["produtosCreate"]);
+                        permissao.produtosEdit = Convert.ToBoolean(leitor["produtosEdit"]);
+                        permissao.produtosDelete = Convert.ToBoolean(leitor["produtosDelete"]);
+                        permissao.ccorrenteList = Convert.ToBoolean(leitor["ccorrenteList"]);
+                        permissao.ccorrenteCreate = Convert.ToBoolean(leitor["ccorrenteCreate"]);
+                        permissao.ccorrenteEdit = Convert.ToBoolean(leitor["ccorrenteEdit"]);
+                        permissao.ccorrenteDelete = Convert.ToBoolean(leitor["ccorrenteDelete"]);
+                        permissao.fpList = Convert.ToBoolean(leitor["fpList"]);
+                        permissao.fpCreate = Convert.ToBoolean(leitor["fpCreate"]);
+                        permissao.fpEdit = Convert.ToBoolean(leitor["fpEdit"]);
+                        permissao.fpDelete = Convert.ToBoolean(leitor["fpDelete"]);
                     }
                 }
             }

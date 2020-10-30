@@ -50,6 +50,13 @@
                                         <span asp-validation-for="ccontabil_apelido" class="text-danger"></span>
                                     </div>
                                 </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label asp-for="ccontabil_natureza" class="control-label"></label>
+                                        <select asp-items="@ViewBag.ccontabil_natureza" value="@TempData["ccontabil_natureza"]" id="ccontabil_natureza" name="ccontabil_natureza" class="form-control"></select>
+                                        <span asp-validation-for="ccontabil_natureza" class="text-danger"></span>
+                                    </div>
+                                </div>
                             </div>
                         }
                     </div>
