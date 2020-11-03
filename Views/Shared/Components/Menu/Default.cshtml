@@ -38,11 +38,12 @@
                 Lançamento
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="#">Orçamento</a>
-                <a class="dropdown-item" href="#">Compra</a>
+                <a class="dropdown-item" href="#">Orçamento Financeiro</a>
+                @if (usuario.Role == "adm" || usuario._permissoes.compraList)
+                {<a class="dropdown-item" asp-controller='Compra' asp-action='Create'>Compra</a>}                
                 <a class="dropdown-item" href="#">Venda</a>
                 <a class="dropdown-item" href="#">Prestação de Serviço</a>
-                <a class="dropdown-item" href="#">Empréstimos/Financiamentos</a>                
+                <a class="dropdown-item" href="#">Empréstimos/Financiamentos</a>
             </div>
         </li>
         <li class="nav-item dropdown">
