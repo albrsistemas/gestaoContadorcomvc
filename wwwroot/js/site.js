@@ -1,4 +1,67 @@
-﻿//Onload página layout
+﻿//Variaveis globais
+var operacao = {
+    operacao: {
+        op_id: 0,
+        op_tipo: '',
+        op_data: '',
+        op_previsao_entrega: '',
+        op_data_saida: '',
+        op_obs: '',
+        op_numero_ordem: '',
+        op_categoria_id: 0
+    },
+    participante: {
+        op_part_id: 0,
+        op_part_nome: '',
+        op_part_tipo: '',
+        op_part_cnpj_cpf: '',
+        op_part_cep: '',
+        op_part_cidade: '',
+        op_part_bairro: '',
+        op_part_logradouro: '',
+        op_part_numero: '',
+        op_part_complemento: '',
+        op_paisesIBGE_codigo: 0,
+        op_uf_ibge_codigo: 0
+    },
+    itens: [],
+    retencoes: {
+        op_ret_id: 0,
+        op_ret_pis: 0,
+        op_ret_cofins: 0,
+        op_ret_csll: 0,
+        op_ret_irrf: 0,
+        op_ret_inss: 0,
+        op_ret_issqn: 0,
+    },
+    totais: {
+        op_totais_id: 0,
+        op_totais_preco_itens: 0,
+        op_totais_frete: 0,
+        op_totais_seguro: 0,
+        op_totais_desp_aces: 0,
+        op_totais_desconto: 0,
+        op_totais_itens: 0,
+        op_totais_qtd_itens: 0,
+        op_totais_op_id: 0,
+        op_totais_retencoes: 0,
+        op_totais_total_op: 0,
+        op_totais_ipi: 0,
+        op_totais_icms_st: 0,
+        op_totais_saldoLiquidacao: 0
+    },
+    parcelas: [],
+    transportador: {
+        op_transportador_id: 0,
+        op_transportador_nome: '',
+        op_transportador_cnpj_cpf: '',
+        op_transportador_modalidade_frete: '',
+        op_transportador_volume_qtd: 0,
+        op_transportador_volume_peso_bruto: 0,
+    },
+};
+
+//Onload página layout
 function Page() {
 
     //Atribuindo valor padrão a campos da tela novo lançamento contábil
@@ -641,7 +704,9 @@ function tamanhoDigitado(id, vlr, limit, msg) {
 }
 
 function decimal(id, vlr, limit) {
-    let matriz = vlr.split(",");    
+    let matriz = vlr.split(","); 
+    //console.log(vlr);
+    //console.log(matriz);
 
     if (matriz.length > 1) {
         let tamanho = matriz[1].length;
@@ -925,6 +990,7 @@ function consultaParticipante(id) { //Parada
                 },
                 success: function (data, textStatus, XMLHttpRequest) {
                     var results = JSON.parse(data);
+                    console.log(results);
                     var autocompleteObjects = [];
                     for (var i = 0; i < results.length; i++) {
                         var object = {                            
@@ -1022,6 +1088,7 @@ function consultaProdutos(id, contexto) { //Parada
                             codigo: results[i].produtos_codigo,
                             valorCompra: results[i].produtos_estoque_preco_compra,
                             valorVenda: results[i].produtos_preco_venda,
+                            unidade: results[i].produtos_unidade,
                         };
                         autocompleteObjects.push(object);
                     }
@@ -1036,12 +1103,12 @@ function consultaProdutos(id, contexto) { //Parada
             if (document.getElementById('produto_id')) {
                 document.getElementById('produto_id').value = ui.item.id;
             }
+            if (document.getElementById('unidade')) {
+                document.getElementById('unidade').value = ui.item.unidade;
+            }
             if (document.getElementById('prod_codigo')) {
                 document.getElementById('prod_codigo').value = ui.item.codigo;
-            }
-            if (document.getElementById('prod_quantidade')) {
-                decimal('prod_quantidade', '1','6');                
-            }
+            }            
             if (contexto == 'compra') {
                 if (document.getElementById('prod_valor')) {
                     console.log(ui.item.valorCompra.toString().replace(".",","));
@@ -1055,8 +1122,9 @@ function consultaProdutos(id, contexto) { //Parada
                     decimal('prod_valorTotal', ui.item.valorVenda.toString().replace(".", ","), '6');
                 }
             }
-
-            $("#prod_quantidade").focus();
+            if (document.getElementById('prod_quantidade')) {
+                decimal('prod_quantidade', '1', '6');
+            }           
         }
     });
 }
@@ -1068,65 +1136,137 @@ function incluir_item() {
     let prod_valor = document.getElementById('prod_valor').value;
     let prod_quantidade = document.getElementById('prod_quantidade').value;
     let prod_valorTotal = document.getElementById('prod_valorTotal').value;
-    
-    let item = "" +
-        "<div class=\"row item_" + id + "\">" +
-        "<div class=\"col-10\" style=\"padding-right: 0px;\">" +
-        "<input type =\"text\" class=\"include_item\" style=\"width: 40%\" id=\"prod_descricao_" + id + "\" readonly=\"readonly\" value=\"" + prod_descricao + "\" />" +
-        "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_codigo_" + id + "\" readonly=\"readonly\" value=\"" + prod_codigo + "\"/>" +
-        "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_valor_" + id + "\" readonly=\"readonly\" value=\"" + prod_valor + "\"/>" +
-        "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_quantidade_" + id + "\" readonly=\"readonly\" value=\"" + prod_quantidade + "\"/>" +
-        "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_valorTotal_" + id + "\" readonly=\"readonly\" value=\"" + prod_valorTotal + "\"/>" +
-        "<input type =\"hidden\" id=\"produto_id_" + id + "\" value=\"\" />" +
-        "</div>" +
-        "<div class=\"col-2\" style=\"text-align: right;padding-top: 6px;padding-left: 0px;\">" +
-        "<svg width =\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-pencil\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\" data-toggle=\"modal\" data-target=\"#modal_item\">" +
-        "<path fill - rule=\"evenodd\" d=\"M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z\" />" +
-        "</svg>" +
-        "<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-trash\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
-        "<path d =\"M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z\" />" +
-        "<path fill - rule=\"evenodd\" d=\"M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z\" />" +
-        "</svg>" +
-        "</div>" +
-        "</div>";
+    let prod_unidade = document.getElementById('unidade').value;
 
-    if (id > 0) {
-        $('#box_itens').append(item);
+
+    if (id > 0) {        
         document.getElementById('produto_id').value = 0;
+        document.getElementById('prod_descricao').value = "";
+        document.getElementById('prod_codigo').value = "";
+        document.getElementById('prod_valor').value = "";
+        document.getElementById('prod_quantidade').value = "";
+        document.getElementById('prod_valorTotal').value = "";
+
+        let numero_controle = id + Math.floor(Math.random() * 100000) + 1;
+
+        let item_produto = {
+            op_item_numero_controle: numero_controle, //id é o produto_id selecionado. Adicionaod ao objeto para fins de controle (localiza-lo no momento da edição dos dados);
+            op_item_produto_id: 0,
+            op_item_id: 0,
+            op_item_codigo: prod_codigo,
+            op_item_nome: prod_descricao,
+            op_item_unidade: prod_unidade,
+            op_item_preco: prod_valor,
+            op_item_gtin_ean: '',
+            op_item_gtin_ean_trib: '',
+            op_item_obs: '',
+            op_item_qtd: prod_quantidade,
+            op_item_frete: '0,00',
+            op_item_seguros: '0,00',
+            op_item_desp_aces: '0,00',
+            op_item_desconto: '0,00',
+            op_item_vlr_ipi: '0,00',
+            op_item_vlr_icms_st: '0,00',
+            op_item_cod_fornecedor: '',
+            op_item_valor_total: prod_valorTotal,
+        };
+        operacao.itens.push(item_produto);
+
+        let item = "" +
+            "<div class=\"row item_" + id + "\">" +
+            "<div class=\"col-10\" style=\"padding-right: 0px;\">" +
+            "<input type =\"text\" class=\"include_item\" style=\"width: 40%\" id=\"prod_descricao_" + id + "\" readonly=\"readonly\" value=\"" + prod_descricao + "\" />" +
+            "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_codigo_" + id + "\" readonly=\"readonly\" value=\"" + prod_codigo + "\"/>" +
+            "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_valor_" + id + "\" readonly=\"readonly\" value=\"" + prod_valor + "\"/>" +
+            "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_quantidade_" + id + "\" readonly=\"readonly\" value=\"" + prod_quantidade + "\"/>" +
+            "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_valorTotal_" + id + "\" readonly=\"readonly\" value=\"" + prod_valorTotal + "\"/>" +
+            "<input type =\"hidden\" id=\"produto_id_" + id + "\" value=\"\" />" +
+            "<input type =\"hidden\" id=\"" + numero_controle + "\" value=\"\" />" +
+            "</div>" +
+            "<div class=\"col-2\" style=\"text-align: right;padding-top: 6px;padding-left: 0px;\">" +
+            "<svg id=\"E" + numero_controle + "\" onclick=\"edit_item(this.id)\" width =\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-pencil\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
+            "<path fill - rule=\"evenodd\" d=\"M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z\" />" +
+            "</svg>" +
+            "<svg id=\"D" + numero_controle + "\" width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-trash\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
+            "<path d =\"M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z\" />" +
+            "<path fill - rule=\"evenodd\" d=\"M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z\" />" +
+            "</svg>" +
+            "</div>" +
+            "</div>";
+
+        $('#box_itens').append(item);
+
+        document.getElementById('prod_descricao').focus();
+    } else {
+        document.getElementById('prod_descricao').focus();
     }    
 }
 
+function ajusta_item(id, vlr) {
+    let qtd = document.getElementById('prod_quantidade').value;
+    let vlrProd = document.getElementById('prod_valor').value;
+    let total = qtd.toString().replace(",", ".") * vlrProd.toString().replace(",", ".");
 
-//Forma de pagamento fim
+    decimal('prod_valorTotal', total.toString().replace(".", ","), '6');
+    decimal(id, vlr, '6');    
+}
 
-//Ajax com token: https://www.codigoexpresso.com.br/Home/Postagem/78
-/*
- <script>
-    // Gera o token
-    function gettoken() {
-        var token = $('[name=__RequestVerificationToken]').val();
-        console.log(token);
-        return token;
-    };
+function changeItens(id, vlr, inputTotalizador) {
+    let preco = document.getElementById('op_item_preco').value.toString().replace('.', '').replace(',', '.') * 1;
+    let qtd = document.getElementById('op_item_qtd').value.toString().replace('.', '').replace(',', '.') * 1;
+    let frete = document.getElementById('op_item_frete').value.toString().replace('.', '').replace(',', '.') * 1;
+    let seguros = document.getElementById('op_item_seguros').value.toString().replace('.', '').replace(',', '.') * 1;
+    let despesas = document.getElementById('op_item_desp_aces').value.toString().replace('.', '').replace(',', '.') * 1;
+    let descontos = document.getElementById('op_item_desconto').value.toString().replace('.', '').replace(',', '.') * 1;
+    
+    let total = (preco * qtd) + frete + seguros + despesas - descontos;    
 
+    decimal(id, vlr.toString().replace('.', ','), '6');
+    decimal('item_valor_total', total.toString().replace('.',','),'6');
+}
 
-    // Exibe os dados do aluno gerando a chave de validação token
-    function DisplayAluno(idaluno) {
+function edit_item(id) {
+    let codigo = id.substring(1, 15);
+    let item = operacao.itens.find(item => item.op_item_numero_controle == codigo);    
 
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("DisplayAluno","Home")',
-            data: { __RequestVerificationToken: gettoken(), 'idaluno': idaluno },
-            dataType: 'html',
-            cache: false,
-            async: true,
-            success: function (data) {
-                $('#divDisplayAluno').html(data);
-            }
-        });
+    document.getElementById('op_item_numero_controle_edicao_item').value = item.op_item_numero_controle;
+    document.getElementById('op_item_nome').value = item.op_item_nome;
+    document.getElementById('op_item_codigo').value = item.op_item_codigo;
+    document.getElementById('op_item_cod_fornecedor').value = item.op_item_cod_fornecedor;
+    document.getElementById('op_item_unidade').value = item.op_item_unidade;
+    decimal('op_item_preco', item.op_item_preco.toString().replace('.',''), '6');
+    decimal('op_item_qtd', item.op_item_qtd.toString().replace('.', ''), '6');
+    decimal('item_valor_total', item.op_item_valor_total.toString().replace('.', ''), '6');
+    decimal('op_item_frete', item.op_item_frete.toString().replace('.', ''), '6');
+    decimal('op_item_seguros', item.op_item_seguros.toString().replace('.', ''), '6');
+    decimal('op_item_desp_aces', item.op_item_desp_aces.toString().replace('.', ''), '6');
+    decimal('op_item_desconto', item.op_item_desconto.toString().replace('.', ''), '6');
+    decimal('op_item_vlr_ipi', item.op_item_vlr_ipi.toString().replace('.', ''), '6');
+    decimal('op_item_vlr_icms_st', item.op_item_vlr_icms_st.toString().replace('.', ''), '6');
 
-    };
-</script>
- */
+    $('#modal_item').modal('show');
+}
 
+function gravar_item() {
+    let op_item_numero_controle = document.getElementById('op_item_numero_controle_edicao_item').value * 1;
 
+    for (let i = 0; i < operacao.itens.length; i++) {
+        if (operacao.itens[i].op_item_numero_controle == op_item_numero_controle) {
+            operacao.itens[i].op_item_codigo = document.getElementById('op_item_codigo').value;
+            operacao.itens[i].op_item_nome = document.getElementById('op_item_nome').value;
+            operacao.itens[i].op_item_unidade = document.getElementById('op_item_unidade').value;
+            operacao.itens[i].op_item_preco = document.getElementById('op_item_preco').value;
+            operacao.itens[i].op_item_qtd = document.getElementById('op_item_qtd').value;
+            operacao.itens[i].op_item_frete = document.getElementById('op_item_frete').value;
+            operacao.itens[i].op_item_seguros = document.getElementById('op_item_seguros').value;
+            operacao.itens[i].op_item_desp_aces = document.getElementById('op_item_desp_aces').value;
+            operacao.itens[i].op_item_desconto = document.getElementById('op_item_desconto').value;
+            operacao.itens[i].op_item_vlr_ipi = document.getElementById('op_item_vlr_ipi').value;
+            operacao.itens[i].op_item_vlr_icms_st = document.getElementById('op_item_vlr_icms_st').value;
+            operacao.itens[i].op_item_cod_fornecedor = document.getElementById('op_item_cod_fornecedor').value;
+            operacao.itens[i].op_item_valor_total = document.getElementById('item_valor_total').value;            
+            break;
+        }                          
+    }
+    $('#modal_item').modal('hide');
+}

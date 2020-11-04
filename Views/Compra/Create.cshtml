@@ -105,14 +105,15 @@
             </div>
             <div class="col-10" style="padding-right: 0px;">
                 <input type="text" class="include_item" style="width: 40%" id="prod_descricao" onkeyup="consultaProdutos(this.id, 'compra')" placeholder="Digite o nome ou código do produto" />
-                <input type="text" class="include_item" style="width: 15%" id="prod_codigo" readonly="readonly"/>
-                <input type="text" class="include_item" style="width: 15%" id="prod_valor" onblur="decimal(this.id, this.value,'6')"/>
-                <input type="text" class="include_item" style="width: 15%" id="prod_quantidade" onblur="incluir_item()" />
-                <input type="text" class="include_item" style="width: 15%" id="prod_valorTotal" readonly="readonly"/>
+                <input type="text" class="include_item" style="width: 15%" id="prod_codigo" readonly="readonly" />
+                <input type="text" class="include_item" style="width: 15%" id="prod_valor" onblur="ajusta_item(this.id, this.value)" />
+                <input type="text" class="include_item" style="width: 15%" id="prod_quantidade" onblur="ajusta_item(this.id, this.value)" />
+                <input type="text" class="include_item" style="width: 15%" id="prod_valorTotal" readonly="readonly" onblur="incluir_item()" />
                 <input type="hidden" id="produto_id" value="0" />
+                <input type="hidden" id="unidade" value="" />
             </div>
             <div class="col-2" style="text-align: right;padding-top: 6px;padding-left: 0px;">
-                
+
             </div>
         </div>
         <div id="box_itens" style="margin-top: 10px;"></div>
@@ -230,7 +231,7 @@
                 <select asp-items="@ViewBag.formaPgto" value="@TempData["forma_pgto"]" id="forma_pgto" name="forma_pgto" class="include_item" style="width: 25%"></select>
                 <input type="text" class="include_item" style="width: 15%" />
             </div>
-            <div class="col-2" style="text-align: right;padding-top: 6px;padding-left: 0px;">                
+            <div class="col-2" style="text-align: right;padding-top: 6px;padding-left: 0px;">
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer">
                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
                     <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
@@ -379,7 +380,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label asp-for="participante.op_part_bairro" class="control-label"></label>
-                                    <input asp-for="participante.op_part_bairro" class="form-control" id="bairro"/>
+                                    <input asp-for="participante.op_part_bairro" class="form-control" id="bairro" />
                                     <span asp-validation-for="participante.op_part_bairro" class="text-danger"></span>
                                 </div>
                             </div>
@@ -388,7 +389,7 @@
                             <div class="col-12 col-md-5">
                                 <div class="form-group">
                                     <label asp-for="participante.op_part_cidade" class="control-label"></label>
-                                    <input asp-for="participante.op_part_cidade" class="form-control" id="cidade"/>
+                                    <input asp-for="participante.op_part_cidade" class="form-control" id="cidade" />
                                     <span asp-validation-for="participante.op_part_cidade" class="text-danger"></span>
                                 </div>
                             </div>
@@ -429,7 +430,7 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label asp-for="item.op_item_nome" class="control-label"></label>
-                                <input asp-for="item.op_item_nome" class="form-control" />
+                                <input asp-for="item.op_item_nome" id="op_item_nome" class="form-control" />
                                 <span asp-validation-for="item.op_item_nome" class="text-danger"></span>
                             </div>
                         </div>
@@ -438,14 +439,14 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label asp-for="item.op_item_codigo" class="control-label"></label>
-                                <input asp-for="item.op_item_codigo" class="form-control" />
+                                <input asp-for="item.op_item_codigo" id="op_item_codigo" class="form-control" />
                                 <span asp-validation-for="item.op_item_codigo" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label asp-for="item.op_item_cod_fornecedor" class="control-label"></label>
-                                <input asp-for="item.op_item_cod_fornecedor" class="form-control" />
+                                <input asp-for="item.op_item_cod_fornecedor" id="op_item_cod_fornecedor" class="form-control" />
                                 <span asp-validation-for="item.op_item_cod_fornecedor" class="text-danger"></span>
                             </div>
                         </div>
@@ -454,28 +455,28 @@
                         <div class="col-6 col-md-3">
                             <div class="form-group">
                                 <label asp-for="item.op_item_unidade" class="control-label"></label>
-                                <input asp-for="item.op_item_unidade" class="form-control" />
+                                <input asp-for="item.op_item_unidade" id="op_item_unidade" class="form-control" />
                                 <span asp-validation-for="item.op_item_unidade" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="form-group">
                                 <label asp-for="item.op_item_preco" class="control-label"></label>
-                                <input asp-for="item.op_item_preco" class="form-control" />
+                                <input asp-for="item.op_item_preco" id="op_item_preco" class="form-control" onchange="changeItens(this.id, this.value)" />
                                 <span asp-validation-for="item.op_item_preco" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="form-group">
                                 <label asp-for="item.op_item_qtd" class="control-label"></label>
-                                <input asp-for="item.op_item_qtd" class="form-control" />
+                                <input asp-for="item.op_item_qtd" id="op_item_qtd" class="form-control" onchange="changeItens(this.id, this.value)" />
                                 <span asp-validation-for="item.op_item_qtd" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Valor Total</label>
-                                <input id="item_valor_total" class="form-control" />                                
+                                <input id="item_valor_total" class="form-control" readonly="readonly" />
                             </div>
                         </div>
                     </div>
@@ -485,28 +486,28 @@
                             <div class="col-6 col-md-3">
                                 <div class="form-group">
                                     <label asp-for="item.op_item_frete" class="control-label"></label>
-                                    <input asp-for="item.op_item_frete" class="form-control" />
+                                    <input asp-for="item.op_item_frete" id="op_item_frete" class="form-control" onchange="changeItens(this.id, this.value)" />
                                     <span asp-validation-for="item.op_item_frete" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-6 col-md-3">
                                 <div class="form-group">
                                     <label asp-for="item.op_item_seguros" class="control-label"></label>
-                                    <input asp-for="item.op_item_seguros" class="form-control" />
+                                    <input asp-for="item.op_item_seguros" id="op_item_seguros" class="form-control" onchange="changeItens(this.id, this.value)" />
                                     <span asp-validation-for="item.op_item_seguros" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-6 col-md-3">
                                 <div class="form-group">
                                     <label asp-for="item.op_item_desp_aces" class="control-label"></label>
-                                    <input asp-for="item.op_item_desp_aces" class="form-control" />
+                                    <input asp-for="item.op_item_desp_aces" id="op_item_desp_aces" class="form-control" onchange="changeItens(this.id, this.value)" />
                                     <span asp-validation-for="item.op_item_desp_aces" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-6 col-md-3">
                                 <div class="form-group">
                                     <label asp-for="item.op_item_desconto" class="control-label"></label>
-                                    <input asp-for="item.op_item_desconto" class="form-control" />
+                                    <input asp-for="item.op_item_desconto" id="op_item_desconto" class="form-control" onchange="changeItens(this.id, this.value)" />
                                     <span asp-validation-for="item.op_item_desconto" class="text-danger"></span>
                                 </div>
                             </div>
@@ -518,22 +519,41 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label asp-for="item.op_item_vlr_ipi" class="control-label"></label>
-                                    <input asp-for="item.op_item_vlr_ipi" class="form-control" />
+                                    <input asp-for="item.op_item_vlr_ipi" id="op_item_vlr_ipi" class="form-control" onchange="decimal(this.id, this.value, '6')" />
                                     <span asp-validation-for="item.op_item_vlr_ipi" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
                                     <label asp-for="item.op_item_vlr_icms_st" class="control-label"></label>
-                                    <input asp-for="item.op_item_vlr_icms_st" class="form-control" />
+                                    <input asp-for="item.op_item_vlr_icms_st" id="op_item_vlr_icms_st" class="form-control" onchange="decimal(this.id, this.value, '6')" />
                                     <span asp-validation-for="item.op_item_vlr_icms_st" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
                     </fieldset>
+                    <input type="hidden" id="op_item_numero_controle_edicao_item" />
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-info">Gravar</button>
+                    <button type="button" class="btn btn-info" onclick="gravar_item()">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Remover item-->
+    <div class="modal fade" id="modal_item_delete" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Item</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Confirma a exclusão do item?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" onclick="remover_item()">Gravar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
