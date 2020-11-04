@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
 {
@@ -230,6 +231,21 @@ namespace gestaoContadorcomvc.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult consultaProdutos(IFormCollection d)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            
+            Produtos p = new Produtos();
+            List<Vm_produtos> vm_p = new List<Vm_produtos>();
+            vm_p = p.listaProdutosPorTermo(user.usuario_id, user.usuario_conta_id, d["termo"]);
+
+            return Json(JsonConvert.SerializeObject(vm_p));
         }
     }
 }

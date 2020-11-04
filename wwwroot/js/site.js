@@ -469,31 +469,74 @@ $.validator.setDefaults({ ignore: '' }); //Setar informação para validação v
 //Participante
 function tipoPessoa(vlr) {
     if (vlr == 1) {
-        document.getElementById('label_cnpj_cpf').innerHTML = "CPF";
-        document.getElementById('grupo_regime').style.display = 'none';
-        document.getElementById('grupo_rg').style.display = 'block';
-        document.getElementById('grupo_orgaoEmissor').style.display = 'block';
-        document.getElementById('grupo_contribuinte').style.display = 'block';
-        document.getElementById('grupo_ie').style.display = 'block';
-        document.getElementById('grupo_im').style.display = 'block';
+        if (document.getElementById('label_cnpj_cpf')) {
+            document.getElementById('label_cnpj_cpf').innerHTML = "CPF";
+        }        
+        if (document.getElementById('grupo_regime')) {
+            document.getElementById('grupo_regime').style.display = 'none';
+        }
+        if (document.getElementById('grupo_rg')) {
+            document.getElementById('grupo_rg').style.display = 'block';
+        }
+        if (document.getElementById('grupo_orgaoEmissor')) {
+            document.getElementById('grupo_orgaoEmissor').style.display = 'block';
+        }
+        if (document.getElementById('grupo_contribuinte')) {
+            document.getElementById('grupo_contribuinte').style.display = 'block';
+        }
+        if (document.getElementById('grupo_ie')) {
+            document.getElementById('grupo_ie').style.display = 'block';
+        }
+        if (document.getElementById('grupo_im')) {
+            document.getElementById('grupo_im').style.display = 'block';
+        }
+        
     }
     if (vlr == 2) {
-        document.getElementById('label_cnpj_cpf').innerHTML = "CNPJ";
-        document.getElementById('grupo_regime').style.display = 'block';
-        document.getElementById('grupo_rg').style.display = 'none';
-        document.getElementById('grupo_orgaoEmissor').style.display = 'none';
-        document.getElementById('grupo_contribuinte').style.display = 'block';
-        document.getElementById('grupo_ie').style.display = 'block';
-        document.getElementById('grupo_im').style.display = 'block';
+        if (document.getElementById('label_cnpj_cpf')) {
+            document.getElementById('label_cnpj_cpf').innerHTML = "CNPJ";
+        }
+        if (document.getElementById('grupo_regime')) {
+            document.getElementById('grupo_regime').style.display = 'block';
+        }
+        if (document.getElementById('grupo_rg')) {
+            document.getElementById('grupo_rg').style.display = 'none';
+        }
+        if (document.getElementById('grupo_orgaoEmissor')) {
+            document.getElementById('grupo_orgaoEmissor').style.display = 'none';
+        }
+        if (document.getElementById('grupo_contribuinte')) {
+            document.getElementById('grupo_contribuinte').style.display = 'block';
+        }
+        if (document.getElementById('grupo_ie')) {
+            document.getElementById('grupo_ie').style.display = 'block';
+        }
+        if (document.getElementById('grupo_im')) {
+            document.getElementById('grupo_im').style.display = 'block';
+        }
     }
     if (vlr == 3) {
-        document.getElementById('label_cnpj_cpf').innerHTML = "Identificação Estrangeiro";
-        document.getElementById('grupo_regime').style.display = 'none';
-        document.getElementById('grupo_rg').style.display = 'none';
-        document.getElementById('grupo_orgaoEmissor').style.display = 'none';
-        document.getElementById('grupo_contribuinte').style.display = 'none';
-        document.getElementById('grupo_ie').style.display = 'none';
-        document.getElementById('grupo_im').style.display = 'none';
+        if (document.getElementById('label_cnpj_cpf')) {
+            document.getElementById('label_cnpj_cpf').innerHTML = "Identificação Estrangeiro";
+        }
+        if (document.getElementById('grupo_regime')) {
+            document.getElementById('grupo_regime').style.display = 'none';
+        }
+        if (document.getElementById('grupo_rg')) {
+            document.getElementById('grupo_rg').style.display = 'none';
+        }
+        if (document.getElementById('grupo_orgaoEmissor')) {
+            document.getElementById('grupo_orgaoEmissor').style.display = 'none';
+        }
+        if (document.getElementById('grupo_contribuinte')) {
+            document.getElementById('grupo_contribuinte').style.display = 'none';
+        }
+        if (document.getElementById('grupo_ie')) {
+            document.getElementById('grupo_ie').style.display = 'none';
+        }
+        if (document.getElementById('grupo_im')) {
+            document.getElementById('grupo_im').style.display = 'none';
+        }
     }
 }
 
@@ -614,8 +657,13 @@ function decimal(id, vlr, limit) {
             document.getElementById(id).value = ((vlr.toString().replace(",",".")) * 1).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
         }
 
+        if (tamanho >= 2 && tamanho <= limit) {
+            document.getElementById(id).value = ((vlr.toString().replace(",", ".")) * 1).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+        }
+
+
     } else {
-        document.getElementById(id).value = (vlr * 1).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+        document.getElementById(id).value = ((vlr.toString().replace(",", ".")) * 1).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
     }
 }
 
@@ -858,6 +906,195 @@ function gettoken() {
     var token = $('[name=__RequestVerificationToken]').val();    
     return token;
 };
+
+//Autocomplete lista de participantes
+function consultaParticipante(id) { //Parada
+    let id_campo = "#" + id;
+    $(id_campo).autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Participante/consultaParticipante",
+                data: { __RequestVerificationToken: gettoken(), termo: request.term },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("erro");
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    var results = JSON.parse(data);
+                    var autocompleteObjects = [];
+                    for (var i = 0; i < results.length; i++) {
+                        var object = {                            
+                            value: results[i].participante_nome,
+                            label: results[i].participante_nome + " - " + results[i].participante_cnpj_cpf,
+
+                            id: results[i].participante_id,
+                            nome: results[i].participante_nome,
+                            tipo: results[i].participante_tipoPessoa,
+                            cnpj_cpf: results[i].participante_cnpj_cpf,
+                            cep: results[i].participante_cep,
+                            rua: results[i].participante_logradouro,
+                            numero: results[i].participante_numero,
+                            complemento: results[i].participante_complemento,
+                            bairro: results[i].participante_bairro,
+                            cidade: results[i].participante_cidade,
+                            uf: results[i].participante_uf,
+                            pais: results[i].participante_pais,
+                            categoria_id: results[i].participante_categoria,
+                        };                        
+                        autocompleteObjects.push(object);
+                    }
+
+                    // Invoke the response callback.
+                    response(autocompleteObjects);
+                }
+            });
+        },
+        minLength: 3,
+        select: function (event, ui) {            
+            if (document.getElementById('nome')) {
+                document.getElementById('nome').value = ui.item.nome;
+            }
+            if (document.getElementById('participante_tipoPessoa')) {
+                document.getElementById('participante_tipoPessoa').value = ui.item.tipo;                
+            }
+            if (document.getElementById('op_part_cnpj_cpf')) {
+                document.getElementById('op_part_cnpj_cpf').value = ui.item.cnpj_cpf;
+            }
+            if (document.getElementById('cep')) {
+                document.getElementById('cep').value = ui.item.cep;
+            }
+            if (document.getElementById('rua')) {
+                document.getElementById('rua').value = ui.item.rua;
+            }
+            if (document.getElementById('numero')) {
+                document.getElementById('numero').value = ui.item.numero;
+            }
+            if (document.getElementById('complemento')) {
+                document.getElementById('complemento').value = ui.item.complemento;
+            }
+            if (document.getElementById('bairro')) {
+                document.getElementById('bairro').value = ui.item.bairro;
+            }
+            if (document.getElementById('cidade')) {
+                document.getElementById('cidade').value = ui.item.cidade;
+            }
+            if (document.getElementById('uf')) {
+                document.getElementById('uf').value = ui.item.uf;
+            }
+            if (document.getElementById('op_paisesIBGE_codigo')) {
+                document.getElementById('op_paisesIBGE_codigo').value = ui.item.pais;
+            }
+            if (document.getElementById('op_categoria_id')) {
+                document.getElementById('op_categoria_id').value = ui.item.categoria_id;
+            }
+        }
+    });
+}
+
+//Autocomplete lista de produtos
+function consultaProdutos(id, contexto) { //Parada
+    let id_campo = "#" + id;
+    $(id_campo).autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Produtos/consultaProdutos",
+                data: { __RequestVerificationToken: gettoken(), termo: request.term },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("erro");
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    var results = JSON.parse(data);
+                    var autocompleteObjects = [];
+                    for (var i = 0; i < results.length; i++) {
+                        var object = {
+                            value: results[i].produtos_nome,
+                            label: results[i].produtos_nome + " - " + results[i].produtos_codigo,
+                            id: results[i].produtos_id,
+                            codigo: results[i].produtos_codigo,
+                            valorCompra: results[i].produtos_estoque_preco_compra,
+                            valorVenda: results[i].produtos_preco_venda,
+                        };
+                        autocompleteObjects.push(object);
+                    }
+
+                    // Invoke the response callback.
+                    response(autocompleteObjects);
+                }
+            });
+        },
+        minLength: 3,
+        select: function (event, ui) {              
+            if (document.getElementById('produto_id')) {
+                document.getElementById('produto_id').value = ui.item.id;
+            }
+            if (document.getElementById('prod_codigo')) {
+                document.getElementById('prod_codigo').value = ui.item.codigo;
+            }
+            if (document.getElementById('prod_quantidade')) {
+                decimal('prod_quantidade', '1','6');                
+            }
+            if (contexto == 'compra') {
+                if (document.getElementById('prod_valor')) {
+                    console.log(ui.item.valorCompra.toString().replace(".",","));
+                    decimal('prod_valor', ui.item.valorCompra.toString().replace(".", ","), '6');
+                    decimal('prod_valorTotal', ui.item.valorCompra.toString().replace(".", ","), '6');                    
+                }
+            }
+            if (contexto == 'venda') {
+                if (document.getElementById('prod_valor')) {
+                    decimal('prod_valor', ui.item.valorVenda.toString().replace(".", ","), '6');
+                    decimal('prod_valorTotal', ui.item.valorVenda.toString().replace(".", ","), '6');
+                }
+            }
+
+            $("#prod_quantidade").focus();
+        }
+    });
+}
+
+function incluir_item() {
+    let id = document.getElementById('produto_id').value;
+    let prod_descricao = document.getElementById('prod_descricao').value;
+    let prod_codigo = document.getElementById('prod_codigo').value;
+    let prod_valor = document.getElementById('prod_valor').value;
+    let prod_quantidade = document.getElementById('prod_quantidade').value;
+    let prod_valorTotal = document.getElementById('prod_valorTotal').value;
+    
+    let item = "" +
+        "<div class=\"row item_" + id + "\">" +
+        "<div class=\"col-10\" style=\"padding-right: 0px;\">" +
+        "<input type =\"text\" class=\"include_item\" style=\"width: 40%\" id=\"prod_descricao_" + id + "\" readonly=\"readonly\" value=\"" + prod_descricao + "\" />" +
+        "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_codigo_" + id + "\" readonly=\"readonly\" value=\"" + prod_codigo + "\"/>" +
+        "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_valor_" + id + "\" readonly=\"readonly\" value=\"" + prod_valor + "\"/>" +
+        "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_quantidade_" + id + "\" readonly=\"readonly\" value=\"" + prod_quantidade + "\"/>" +
+        "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_valorTotal_" + id + "\" readonly=\"readonly\" value=\"" + prod_valorTotal + "\"/>" +
+        "<input type =\"hidden\" id=\"produto_id_" + id + "\" value=\"\" />" +
+        "</div>" +
+        "<div class=\"col-2\" style=\"text-align: right;padding-top: 6px;padding-left: 0px;\">" +
+        "<svg width =\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-pencil\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\" data-toggle=\"modal\" data-target=\"#modal_item\">" +
+        "<path fill - rule=\"evenodd\" d=\"M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z\" />" +
+        "</svg>" +
+        "<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-trash\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
+        "<path d =\"M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z\" />" +
+        "<path fill - rule=\"evenodd\" d=\"M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z\" />" +
+        "</svg>" +
+        "</div>" +
+        "</div>";
+
+    if (id > 0) {
+        $('#box_itens').append(item);
+        document.getElementById('produto_id').value = 0;
+    }    
+}
 
 
 //Forma de pagamento fim

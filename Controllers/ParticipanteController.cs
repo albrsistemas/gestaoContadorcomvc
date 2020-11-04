@@ -189,5 +189,20 @@ namespace gestaoContadorcomvc.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult consultaParticipante(IFormCollection d)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Participante p = new Participante();
+            List<Vm_participante> vm_p = new List<Vm_participante>();
+            vm_p = p.listaParticipantesPorTermo(user.usuario_id, user.usuario_conta_id, d["termo"]);
+
+            return Json(JsonConvert.SerializeObject(vm_p));
+        }
     }
 }

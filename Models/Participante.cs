@@ -533,6 +533,155 @@ namespace gestaoContadorcomvc.Models
             return retorno;
         }
 
+        //Listar por termo (autocomple de participante)
+        public List<Vm_participante> listaParticipantesPorTermo(int usuario_id, int conta_id, string termo)
+        {
+            List<Vm_participante> participantes = new List<Vm_participante>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from participante where participante_conta_id = @conta_id and participante_status = 'Ativo' and (participante.participante_nome LIKE concat(@termo,'%') || participante.participante_cnpj_cpf LIKE concat(@termo,'%'));";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@termo", termo);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Vm_participante participante = new Vm_participante();
+
+                        if (DBNull.Value != leitor["participante_id"])
+                        {
+                            participante.participante_id = Convert.ToInt32(leitor["participante_id"]);
+                        }
+                        else
+                        {
+                            participante.participante_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["participante_contribuinte"])
+                        {
+                            participante.participante_contribuinte = Convert.ToInt32(leitor["participante_contribuinte"]);
+                        }
+                        else
+                        {
+                            participante.participante_contribuinte = 0;
+                        }
+
+                        if (DBNull.Value != leitor["participante_uf"])
+                        {
+                            participante.participante_uf = Convert.ToInt32(leitor["participante_uf"]);
+                        }
+                        else
+                        {
+                            participante.participante_uf = 0;
+                        }
+
+                        if (DBNull.Value != leitor["participante_categoria"])
+                        {
+                            participante.participante_categoria = Convert.ToInt32(leitor["participante_categoria"]);
+                        }
+                        else
+                        {
+                            participante.participante_categoria = 0;
+                        }
+
+                        if (DBNull.Value != leitor["participante_conta_id"])
+                        {
+                            participante.participante_conta_id = Convert.ToInt32(leitor["participante_conta_id"]);
+                        }
+                        else
+                        {
+                            participante.participante_conta_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["participante_pais"])
+                        {
+                            participante.participante_pais = Convert.ToInt32(leitor["participante_pais"]);
+                        }
+                        else
+                        {
+                            participante.participante_pais = 0;
+                        }
+
+                        if (DBNull.Value != leitor["participante_regime_tributario"])
+                        {
+                            participante.participante_regime_tributario = Convert.ToInt32(leitor["participante_regime_tributario"]);
+                        }
+                        else
+                        {
+                            participante.participante_regime_tributario = 0;
+                        }
+
+                        if (DBNull.Value != leitor["participante_dataCriacao"])
+                        {
+                            participante.participante_dataCriacao = Convert.ToDateTime(leitor["participante_dataCriacao"]);
+                        }
+                        else
+                        {
+                            participante.participante_dataCriacao = new DateTime();
+                        }
+
+                        if (DBNull.Value != leitor["participante_clienteDesde"])
+                        {
+                            participante.participante_clienteDesde = Convert.ToDateTime(leitor["participante_clienteDesde"]);
+                        }
+                        else
+                        {
+                            participante.participante_clienteDesde = new DateTime();
+                        }
+
+                        participante.participante_nome = leitor["participante_nome"].ToString();
+                        participante.participante_fantasia = leitor["participante_fantasia"].ToString();
+                        participante.participante_codigo = leitor["participante_codigo"].ToString();
+                        participante.participante_tipoPessoa = leitor["participante_tipoPessoa"].ToString();
+                        participante.participante_inscricaoEstadual = leitor["participante_inscricaoEstadual"].ToString();
+                        participante.participante_cnpj_cpf = leitor["participante_cnpj_cpf"].ToString();
+                        participante.participante_rg = leitor["participante_rg"].ToString();
+                        participante.participante_orgaoEmissor = leitor["participante_orgaoEmissor"].ToString();
+                        participante.participante_cep = leitor["participante_cep"].ToString();
+                        participante.participante_cidade = leitor["participante_cidade"].ToString();
+                        participante.participante_bairro = leitor["participante_bairro"].ToString();
+                        participante.participante_logradouro = leitor["participante_logradouro"].ToString();
+                        participante.participante_numero = leitor["participante_numero"].ToString();
+                        participante.participante_complemento = leitor["participante_complemento"].ToString();
+                        participante.participante_obs = leitor["participante_obs"].ToString();
+                        participante.participante_status = leitor["participante_status"].ToString();
+                        participante.participante_insc_municipal = leitor["participante_insc_municipal"].ToString();
+                        participante.participante_suframa = leitor["participante_suframa"].ToString();
+
+
+                        participantes.Add(participante);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message.Substring(0, 300);
+                log.log("Participante", "listaParticipantes", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return participantes;
+        }
+
 
     }
 }

@@ -572,5 +572,84 @@ namespace gestaoContadorcomvc.Models
 
             return retorno;
         }
+
+
+        //Listar produtos para autocomple das telas de compra, venda, etc
+        public List<Vm_produtos> listaProdutosPorTermo(int usuario_id, int conta_id, string termo)
+        {
+            List<Vm_produtos> produtos = new List<Vm_produtos>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT produtos.produtos_id, produtos.produtos_codigo, produtos.produtos_nome, produtos.produtos_estoque_preco_compra, produtos.produtos_preco_venda from produtos where produtos_conta_id = @conta_id and produtos_status = 'Ativo' and (produtos.produtos_nome LIKE concat(@termo,'%') or produtos.produtos_codigo LIKE concat(@termo,'%'));";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@termo", termo);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Vm_produtos produto = new Vm_produtos();
+
+                        if (DBNull.Value != leitor["produtos_id"])
+                        {
+                            produto.produtos_id = Convert.ToInt32(leitor["produtos_id"]);
+                        }
+                        else
+                        {
+                            produto.produtos_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["produtos_preco_venda"])
+                        {
+                            produto.produtos_preco_venda = Convert.ToDecimal(leitor["produtos_preco_venda"]);
+                        }
+                        else
+                        {
+                            produto.produtos_preco_venda = 0;
+                        }
+                        if (DBNull.Value != leitor["produtos_estoque_preco_compra"])
+                        {
+                            produto.produtos_estoque_preco_compra = Convert.ToDecimal(leitor["produtos_estoque_preco_compra"]);
+                        }
+                        else
+                        {
+                            produto.produtos_estoque_preco_compra = 0;
+                        }
+
+                        produto.produtos_codigo = leitor["produtos_codigo"].ToString();
+                        produto.produtos_nome = leitor["produtos_nome"].ToString();                        
+
+                        produtos.Add(produto);
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message.Substring(0, 300);
+                log.log("Produtos", "listaProdutos", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return produtos;
+        }
     }
 }

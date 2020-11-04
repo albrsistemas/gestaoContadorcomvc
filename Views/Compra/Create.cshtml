@@ -80,7 +80,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" autofocus name="fornecedor" id="fornecedor" placeholder="Iniciais do nome fornecedor" aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <input type="text" class="form-control" autofocus name="fornecedor" id="fornecedor" placeholder="Iniciais do nome ou cnpj/cpf do fornecedor" onkeyup="consultaParticipante(this.id)" aria-label="Recipient's username" aria-describedby="button-addon2">
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="button" id="button-addon2" data-toggle="modal" data-target="#modal_fornecedor">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -104,22 +104,18 @@
                 <div class="include_item_label" style="width: 15%">Valor Total</div>
             </div>
             <div class="col-10" style="padding-right: 0px;">
-                <input type="text" class="include_item" style="width: 40%" />
-                <input type="text" class="include_item" style="width: 15%" />
-                <input type="text" class="include_item" style="width: 15%" />
-                <input type="text" class="include_item" style="width: 15%" />
-                <input type="text" class="include_item" style="width: 15%" />
+                <input type="text" class="include_item" style="width: 40%" id="prod_descricao" onkeyup="consultaProdutos(this.id, 'compra')" placeholder="Digite o nome ou código do produto" />
+                <input type="text" class="include_item" style="width: 15%" id="prod_codigo" readonly="readonly"/>
+                <input type="text" class="include_item" style="width: 15%" id="prod_valor" onblur="decimal(this.id, this.value,'6')"/>
+                <input type="text" class="include_item" style="width: 15%" id="prod_quantidade" onblur="incluir_item()" />
+                <input type="text" class="include_item" style="width: 15%" id="prod_valorTotal" readonly="readonly"/>
+                <input type="hidden" id="produto_id" value="0" />
             </div>
             <div class="col-2" style="text-align: right;padding-top: 6px;padding-left: 0px;">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer" data-toggle="modal" data-target="#modal_item">
-                    <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                </svg>
-                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer">
-                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                </svg>
+                
             </div>
         </div>
+        <div id="box_itens" style="margin-top: 10px;"></div>
         <br />
     </fieldset>
     <fieldset>
@@ -326,7 +322,7 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label asp-for="participante.op_part_nome" class="control-label"></label>
-                                <input asp-for="participante.op_part_nome" class="form-control" />
+                                <input asp-for="participante.op_part_nome" id="nome" class="form-control" />
                                 <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>
                             </div>
                         </div>
@@ -335,13 +331,13 @@
                         <div class="col-12 col-md-4">
                             <div class="form-group">
                                 <label asp-for="participante.op_part_tipo" class="control-label"></label>
-                                <select asp-items="@ViewBag.tipoPessoa" value="@TempData["op_part_tipo"]" id="op_part_tipo" name="op_part_tipo" onchange="tipoPessoa(this.value)" class="form-control"></select>
+                                <select asp-items="@ViewBag.tipoPessoa" value="@TempData["op_part_tipo"]" id="participante_tipoPessoa" name="op_part_tipo" onchange="tipoPessoa(this.value)" class="form-control"></select> <!--ID alterado para 'participante_tipoPessoa' em razão da função 'mascaraCNPJ_CPF' que usa a informação deste campo-->
                                 <span asp-validation-for="participante.op_part_tipo" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-12 col-md-8">
                             <div class="form-group">
-                                <label asp-for="participante.op_part_cnpj_cpf" class="control-label" id="label_cnpj_cpf"></label>
+                                <label asp-for="participante.op_part_cnpj_cpf" class="control-label" id="label_cnpj_cpf">CPF</label>
                                 <input asp-for="participante.op_part_cnpj_cpf" id="op_part_cnpj_cpf" class="form-control" onkeyup="mascaraCNPJ_cpf(this.id, this.value)" />
                                 <span asp-validation-for="participante.op_part_cnpj_cpf" class="text-danger"></span>
                             </div>
@@ -353,21 +349,21 @@
                             <div class="col-12 col-md-2">
                                 <div class="form-group">
                                     <label asp-for="participante.op_part_cep" class="control-label"></label>
-                                    <input asp-for="participante.op_part_cep" class="form-control" />
+                                    <input asp-for="participante.op_part_cep" id="cep" class="form-control" />
                                     <span asp-validation-for="participante.op_part_cep" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-12 col-md-8">
                                 <div class="form-group">
                                     <label asp-for="participante.op_part_logradouro" class="control-label"></label>
-                                    <input asp-for="participante.op_part_logradouro" class="form-control" />
+                                    <input asp-for="participante.op_part_logradouro" class="form-control" id="rua" />
                                     <span asp-validation-for="participante.op_part_logradouro" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-12 col-md-2">
                                 <div class="form-group">
                                     <label asp-for="participante.op_part_numero" class="control-label"></label>
-                                    <input asp-for="participante.op_part_numero" class="form-control" />
+                                    <input asp-for="participante.op_part_numero" id="numero" class="form-control" />
                                     <span asp-validation-for="participante.op_part_numero" class="text-danger"></span>
                                 </div>
                             </div>
@@ -376,14 +372,14 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label asp-for="participante.op_part_complemento" class="control-label"></label>
-                                    <input asp-for="participante.op_part_complemento" class="form-control" />
+                                    <input asp-for="participante.op_part_complemento" id="complemento" class="form-control" />
                                     <span asp-validation-for="participante.op_part_complemento" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label asp-for="participante.op_part_bairro" class="control-label"></label>
-                                    <input asp-for="participante.op_part_bairro" class="form-control" />
+                                    <input asp-for="participante.op_part_bairro" class="form-control" id="bairro"/>
                                     <span asp-validation-for="participante.op_part_bairro" class="text-danger"></span>
                                 </div>
                             </div>
@@ -392,14 +388,14 @@
                             <div class="col-12 col-md-5">
                                 <div class="form-group">
                                     <label asp-for="participante.op_part_cidade" class="control-label"></label>
-                                    <input asp-for="participante.op_part_cidade" class="form-control" />
+                                    <input asp-for="participante.op_part_cidade" class="form-control" id="cidade"/>
                                     <span asp-validation-for="participante.op_part_cidade" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-12 col-md-2">
                                 <div class="form-group">
                                     <label asp-for="participante.op_uf_ibge_codigo" class="control-label"></label>
-                                    <select asp-items="@ViewBag.ufIbge" value="@TempData["op_uf_ibge_codigo"]" id="op_uf_ibge_codigo" name="op_uf_ibge_codigo" class="form-control"></select>
+                                    <select asp-items="@ViewBag.ufIbge" value="@TempData["op_uf_ibge_codigo"]" id="uf" name="op_uf_ibge_codigo" class="form-control"></select>
                                     <span asp-validation-for="participante.op_uf_ibge_codigo" class="text-danger"></span>
                                 </div>
                             </div>

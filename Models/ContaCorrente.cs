@@ -49,14 +49,13 @@ namespace gestaoContadorcomvc.Models
             MySqlTransaction Transacao;
             Transacao = conn.BeginTransaction();
             comando.Connection = conn;
-            comando.Transaction = Transacao;
+            comando.Transaction = Transacao;            
 
             try
             {
                 comando.CommandText = "SELECT * from conta_corrente where ccorrente_conta_id = @conta_id and ccorrente_status = 'Ativo';";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
-                comando.ExecuteNonQuery();
-                Transacao.Commit();
+                comando.ExecuteNonQuery(); 
 
                 var leitor = comando.ExecuteReader();
 

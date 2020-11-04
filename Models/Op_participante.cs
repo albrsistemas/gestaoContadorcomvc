@@ -17,7 +17,7 @@ namespace gestaoContadorcomvc.Models
         [Display(Name = "Tipo Pessoa")]
         public string op_part_tipo { get; set; }
 
-        [Display(Name = "Documento")]
+        [Display(Name = "CPF")]
         public string op_part_cnpj_cpf { get; set; }
 
         [Display(Name = "CEP")]
