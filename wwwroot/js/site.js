@@ -1168,7 +1168,7 @@ function incluir_item() {
             op_item_vlr_icms_st: '0,00',
             op_item_cod_fornecedor: '',
             op_item_valor_total: prod_valorTotal,
-            op_item_statusControleBanco: 'insert',
+            controleEdit: 'insert',
             op_item_id_banco: 0,
         };
         operacao.itens.push(item_produto);
@@ -1301,8 +1301,8 @@ function delete_item(id, confirma) {
 
         for (let i = 0; i < operacao.itens.length; i++) {
             if (operacao.itens[i].op_item_numero_controle == codigo) {
-                if (operacao.itens[i].op_item_statusControleBanco == 'update') {
-                    operacao.itens[i].op_item_statusControleBanco = 'delete';
+                if (operacao.itens[i].controleEdit == 'update') {
+                    operacao.itens[i].controleEdit = 'delete';
                     //remove linha da view
                     let item_linha = 'item_' + item.op_item_produto_id;
                     document.getElementById(item_linha).remove();
@@ -1330,7 +1330,7 @@ function totaisOperacao() {
     let op_totais_ipi = 0;    
 
     for (let i = 0; i < operacao.itens.length; i++) {
-        if (operacao.itens[i].op_item_statusControleBanco != 'delele') {            
+        if (operacao.itens[i].controleEdit != 'delele') {            
             op_totais_frete += ((operacao.itens[i].op_item_frete).toString().replace('.', '').replace(',', '.') * 1);
             op_totais_seguro += ((operacao.itens[i].op_item_seguros).toString().replace('.', '').replace(',', '.') * 1);
             op_totais_desp_aces += ((operacao.itens[i].op_item_desp_aces).toString().replace('.', '').replace(',', '.') * 1);
@@ -1360,4 +1360,97 @@ function totaisOperacao() {
     operacao.totais.op_totais_total_op = document.getElementById('op_totais_total_op').value;
     operacao.totais.op_totais_icms_st = document.getElementById('op_totais_icms_st').value;
     operacao.totais.op_item_vlr_ipi = document.getElementById('op_totais_ipi').value;
+}
+
+function gerarParcela() {
+    let formaPgto = document.getElementById('forma_pgto');
+    let condicaoPgto = (document.getElementById('condicoes_pgto').value).split(',');
+    let totalCompra = ((document.getElementById('op_totais_total_op').value).toString().replace('.', '').replace(',', '.')) * 1;
+    let op_data = document.getElementById('op_data').value;
+    let data = new Date(Date.parse(op_data.substring(6, 10) + "/" + (op_data.substring(3, 5)) + "/" + op_data.substring(0, 2)));     
+    let s = document.querySelector('#forma_pgto'); //Forma de pagamento selecionada;        
+    let optionsTxt = "";
+
+    
+    for (let x = 0; x < s.children.length; x++) {
+        let item = s.children[x].outerHTML;
+        let textoItem = s.children[x].innerText;
+        let selecionado = s.selectedOptions[0].innerText;
+
+        let txt = "";
+        if (textoItem == selecionado) {
+            txt = item.substring(0, 16) + "\" selected='selected'" + item.substring(17, 200);
+        } else {
+            txt = item;
+        }      
+
+        optionsTxt += txt;
+    }
+    
+    
+    console.log(totalCompra);
+    if (totalCompra == 'NaN') {
+        alert('Operação não possui valor');
+    }
+
+    if (op_data == "" || op_data == null || op_data == 'undefined') {
+        alert('Informe a data da operação');        
+    } else {
+        for (let i = 0; i < condicaoPgto.length; i++) {
+            let vencimento = new Date();
+            vencimento = data;
+            vencimento.setDate(vencimento.getDate() + parseInt(condicaoPgto[i]));
+
+            let Op_parcelas = {
+                op_parcela_dias: condicaoPgto[i],
+                op_parcela_vencimento: vencimento.toLocaleDateString(),
+                op_parcela_fp_id: formaPgto.value,
+                op_parcela_valor: (totalCompra / condicaoPgto.length).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }),
+                op_parcela_obs: '',
+                op_parcela_saldo: '',
+                op_parcela_op_id: '',
+                op_parcela_id: '',
+                controleEdit: 'insert',
+            };
+
+            operacao.parcelas.push(Op_parcelas);
+
+            let parcela = "" +
+                "<div class=\"row\" id=\"parcela_\"" + i + "\">" +               
+                "<div class=\"col-10\" style=\"padding-right: 0px;\">" +
+                "<input id=\"dias_parcela_" + i + "\" type =\"text\" class=\"include_item\" style=\"width: 10%;padding:0px;text-align:center\" value=\"" + Op_parcelas.op_parcela_dias + "\" />" +
+                "<input id=\"venc_parcela_" + i + "\" type =\"text\" class=\"include_item datepicker\" style=\"width: 25%\" value=\"" + Op_parcelas.op_parcela_vencimento + "\" />" +
+                "<input id=\"vlr_parcela_" + i + "\" type =\"text\" class=\"include_item\" style=\"width: 25%\" value=\"" + Op_parcelas.op_parcela_valor + "\" />" +
+                "<select id=\"fp_parcela_" + i + "\" class=\"include_item\" style=\"width: 25%\">" + optionsTxt + "</select>" +
+                "<input id=\"obs_parcela_" + i + "\" type =\"text\" class=\"include_item\" style=\"width: 15%\" />" +
+                "</div>" +
+                "<div class=\"col-2\" style=\"text-align: right;padding-top: 6px;padding-left: 0px;\">" +
+                "<svg width =\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-trash\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
+                "<path d =\"M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z\" />" +
+                "<path fill - rule=\"evenodd\" d=\"M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z\" />" +
+                "</svg>" +
+                "</div>" +
+                "</div>";
+           
+            $('#parcelas').append(parcela);
+
+            $(".datepicker").datepicker({
+                buttonImageOnly: true,
+                dateFormat: 'dd-mm-yyyy',
+                changeMonth: false,
+                changeYear: false,
+                dateFormat: 'dd/mm/yy',
+                dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'],
+                dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+            });
+        }
+    }
+    
+    
+    
+
+
 }

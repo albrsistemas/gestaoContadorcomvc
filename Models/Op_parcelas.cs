@@ -15,5 +15,6 @@ namespace gestaoContadorcomvc.Models
         public Decimal op_parcela_valor { get; set; }
         public Decimal op_parcela_saldo { get; set; }
         public string op_parcela_obs { get; set; }
+        public string controleEdit { get; set; } //Campo criado para controle edição. Não consta no banco de dados.
     }
 }

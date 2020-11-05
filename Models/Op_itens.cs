@@ -54,5 +54,6 @@ namespace gestaoContadorcomvc.Models
 
         [Display(Name = "Código do Fornecedor")]
         public string op_item_cod_fornecedor { get; set; } //Código do produto no fornecedor
+        public string controleEdit { get; set; } //Campo criado para controle edição. Não consta no banco de dados.
     }
 }
