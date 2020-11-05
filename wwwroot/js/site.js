@@ -1110,8 +1110,7 @@ function consultaProdutos(id, contexto) { //Parada
                 document.getElementById('prod_codigo').value = ui.item.codigo;
             }            
             if (contexto == 'compra') {
-                if (document.getElementById('prod_valor')) {
-                    console.log(ui.item.valorCompra.toString().replace(".",","));
+                if (document.getElementById('prod_valor')) {                    
                     decimal('prod_valor', ui.item.valorCompra.toString().replace(".", ","), '6');
                     decimal('prod_valorTotal', ui.item.valorCompra.toString().replace(".", ","), '6');                    
                 }
@@ -1151,7 +1150,7 @@ function incluir_item() {
 
         let item_produto = {
             op_item_numero_controle: numero_controle, //id é o produto_id selecionado. Adicionaod ao objeto para fins de controle (localiza-lo no momento da edição dos dados);
-            op_item_produto_id: 0,
+            op_item_produto_id: id,
             op_item_id: 0,
             op_item_codigo: prod_codigo,
             op_item_nome: prod_descricao,
@@ -1169,11 +1168,13 @@ function incluir_item() {
             op_item_vlr_icms_st: '0,00',
             op_item_cod_fornecedor: '',
             op_item_valor_total: prod_valorTotal,
+            op_item_statusControleBanco: 'insert',
+            op_item_id_banco: 0,
         };
         operacao.itens.push(item_produto);
 
         let item = "" +
-            "<div class=\"row item_" + id + "\">" +
+            "<div id=\"item_" + id + "\" class=\"row item_" + id + "\">" +
             "<div class=\"col-10\" style=\"padding-right: 0px;\">" +
             "<input type =\"text\" class=\"include_item\" style=\"width: 40%\" id=\"prod_descricao_" + id + "\" readonly=\"readonly\" value=\"" + prod_descricao + "\" />" +
             "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_codigo_" + id + "\" readonly=\"readonly\" value=\"" + prod_codigo + "\"/>" +
@@ -1187,7 +1188,7 @@ function incluir_item() {
             "<svg id=\"E" + numero_controle + "\" onclick=\"edit_item(this.id)\" width =\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-pencil\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
             "<path fill - rule=\"evenodd\" d=\"M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z\" />" +
             "</svg>" +
-            "<svg id=\"D" + numero_controle + "\" width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-trash\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
+            "<svg id=\"D" + numero_controle + "\" onclick=\"delete_item(this.id, 'confirmação')\" width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-trash\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
             "<path d =\"M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z\" />" +
             "<path fill - rule=\"evenodd\" d=\"M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z\" />" +
             "</svg>" +
@@ -1197,6 +1198,8 @@ function incluir_item() {
         $('#box_itens').append(item);
 
         document.getElementById('prod_descricao').focus();
+
+        totaisOperacao();
     } else {
         document.getElementById('prod_descricao').focus();
     }    
@@ -1219,7 +1222,7 @@ function changeItens(id, vlr, inputTotalizador) {
     let despesas = document.getElementById('op_item_desp_aces').value.toString().replace('.', '').replace(',', '.') * 1;
     let descontos = document.getElementById('op_item_desconto').value.toString().replace('.', '').replace(',', '.') * 1;
     
-    let total = (preco * qtd) + frete + seguros + despesas - descontos;    
+    let total = (preco * qtd);    
 
     decimal(id, vlr.toString().replace('.', ','), '6');
     decimal('item_valor_total', total.toString().replace('.',','),'6');
@@ -1252,6 +1255,7 @@ function gravar_item() {
 
     for (let i = 0; i < operacao.itens.length; i++) {
         if (operacao.itens[i].op_item_numero_controle == op_item_numero_controle) {
+            //atualiza objeto
             operacao.itens[i].op_item_codigo = document.getElementById('op_item_codigo').value;
             operacao.itens[i].op_item_nome = document.getElementById('op_item_nome').value;
             operacao.itens[i].op_item_unidade = document.getElementById('op_item_unidade').value;
@@ -1264,9 +1268,96 @@ function gravar_item() {
             operacao.itens[i].op_item_vlr_ipi = document.getElementById('op_item_vlr_ipi').value;
             operacao.itens[i].op_item_vlr_icms_st = document.getElementById('op_item_vlr_icms_st').value;
             operacao.itens[i].op_item_cod_fornecedor = document.getElementById('op_item_cod_fornecedor').value;
-            operacao.itens[i].op_item_valor_total = document.getElementById('item_valor_total').value;            
+            operacao.itens[i].op_item_valor_total = document.getElementById('item_valor_total').value;
+            //atualiza a view            
+            document.getElementById('prod_descricao_' + operacao.itens[i].op_item_produto_id).value = operacao.itens[i].op_item_nome;
+            document.getElementById('prod_codigo_' + operacao.itens[i].op_item_produto_id).value = operacao.itens[i].op_item_codigo;
+            document.getElementById('prod_valor_' + operacao.itens[i].op_item_produto_id).value = operacao.itens[i].op_item_preco;
+            document.getElementById('prod_quantidade_' + operacao.itens[i].op_item_produto_id).value = operacao.itens[i].op_item_qtd;
+            document.getElementById('prod_valorTotal_' + operacao.itens[i].op_item_produto_id).value = operacao.itens[i].op_item_valor_total;
+            //calcula os totais
+            totaisOperacao();
             break;
         }                          
     }
     $('#modal_item').modal('hide');
+}
+
+function delete_item(id, confirma) {
+    let codigo = id.substring(1, 15);
+    
+    if (confirma == 'confirmação') {
+        document.getElementById('item_delete').value = codigo;
+
+        $('#modal_item_delete').modal('show');
+    }
+
+    if (confirma == 'confirmado') {
+        let codigo = document.getElementById('item_delete').value;
+        $('#modal_item_delete').modal('hide');
+
+        let item = operacao.itens.find(item => item.op_item_numero_controle == codigo);
+
+
+        for (let i = 0; i < operacao.itens.length; i++) {
+            if (operacao.itens[i].op_item_numero_controle == codigo) {
+                if (operacao.itens[i].op_item_statusControleBanco == 'update') {
+                    operacao.itens[i].op_item_statusControleBanco = 'delete';
+                    //remove linha da view
+                    let item_linha = 'item_' + item.op_item_produto_id;
+                    document.getElementById(item_linha).remove();
+                    totaisOperacao();
+                } else {
+                    //remove item do objeto operacao da matriz itens
+                    operacao.itens.splice(i, 1);
+                    //remove linha da view
+                    let item_linha = 'item_' + item.op_item_produto_id;
+                    document.getElementById(item_linha).remove();
+                    totaisOperacao();
+                }
+            }
+        }
+    }
+}
+
+function totaisOperacao() {
+    let op_totais_frete = 0;
+    let op_totais_seguro = 0;
+    let op_totais_desp_aces = 0;
+    let op_totais_desconto = 0;
+    let op_totais_preco_itens = 0;    
+    let op_totais_icms_st = 0;    
+    let op_totais_ipi = 0;    
+
+    for (let i = 0; i < operacao.itens.length; i++) {
+        if (operacao.itens[i].op_item_statusControleBanco != 'delele') {            
+            op_totais_frete += ((operacao.itens[i].op_item_frete).toString().replace('.', '').replace(',', '.') * 1);
+            op_totais_seguro += ((operacao.itens[i].op_item_seguros).toString().replace('.', '').replace(',', '.') * 1);
+            op_totais_desp_aces += ((operacao.itens[i].op_item_desp_aces).toString().replace('.', '').replace(',', '.') * 1);
+            op_totais_desconto += ((operacao.itens[i].op_item_desconto).toString().replace('.', '').replace(',', '.') * 1);
+            op_totais_preco_itens += ((operacao.itens[i].op_item_valor_total).toString().replace('.', '').replace(',', '.') * 1);            
+            op_totais_icms_st += ((operacao.itens[i].op_item_vlr_icms_st).toString().replace('.', '').replace(',', '.') * 1);            
+            op_totais_ipi += ((operacao.itens[i].op_item_vlr_ipi).toString().replace('.', '').replace(',', '.') * 1);            
+        }
+    }
+
+    let op_totais_total_op = op_totais_preco_itens + op_totais_frete + op_totais_seguro + op_totais_desp_aces - op_totais_desconto + op_totais_icms_st + op_totais_ipi;
+
+    decimal('op_totais_frete', op_totais_frete.toString().replace('.',','), '6');
+    decimal('op_totais_seguro', op_totais_seguro.toString().replace('.',','), '6');
+    decimal('op_totais_desp_aces', op_totais_desp_aces.toString().replace('.',','), '6');
+    decimal('op_totais_desconto', op_totais_desconto.toString().replace('.',','), '6');
+    decimal('op_totais_preco_itens', op_totais_preco_itens.toString().replace('.',','), '6');
+    decimal('op_totais_total_op', op_totais_total_op.toString().replace('.', ','), '6');
+    decimal('op_totais_icms_st', op_totais_icms_st.toString().replace('.', ','), '6');
+    decimal('op_totais_ipi', op_totais_ipi.toString().replace('.', ','), '6');
+
+    operacao.totais.op_totais_preco_itens = document.getElementById('op_totais_preco_itens').value;
+    operacao.totais.op_totais_frete = document.getElementById('op_totais_frete').value;
+    operacao.totais.op_totais_seguro = document.getElementById('op_totais_seguro').value;
+    operacao.totais.op_totais_desp_aces = document.getElementById('op_totais_desp_aces').value;
+    operacao.totais.op_totais_desconto = document.getElementById('op_totais_desconto').value;
+    operacao.totais.op_totais_total_op = document.getElementById('op_totais_total_op').value;
+    operacao.totais.op_totais_icms_st = document.getElementById('op_totais_icms_st').value;
+    operacao.totais.op_item_vlr_ipi = document.getElementById('op_totais_ipi').value;
 }

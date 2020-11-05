@@ -125,39 +125,53 @@
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="totais.op_totais_frete" class="control-label"></label>
-                    <input asp-for="totais.op_totais_frete" class="form-control" />
+                    <input asp-for="totais.op_totais_frete" id="op_totais_frete" class="form-control" />
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="totais.op_totais_seguro" class="control-label"></label>
-                    <input asp-for="totais.op_totais_seguro" class="form-control" />
+                    <input asp-for="totais.op_totais_seguro" id="op_totais_seguro" class="form-control" />
                 </div>
             </div>
+            <div class="col-6 col-md-6">
+                <div class="form-group">
+                    <label asp-for="totais.op_totais_icms_st" class="control-label">ICMS-ST</label>
+                    <input asp-for="totais.op_totais_icms_st" id="op_totais_icms_st" class="form-control" readonly="readonly" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="totais.op_totais_desp_aces" class="control-label"></label>
-                    <input asp-for="totais.op_totais_desp_aces" class="form-control" />
+                    <input asp-for="totais.op_totais_desp_aces" id="op_totais_desp_aces" class="form-control" />
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="totais.op_totais_desconto" class="control-label"></label>
-                    <input asp-for="totais.op_totais_desconto" class="form-control" />
+                    <input asp-for="totais.op_totais_desconto" id="op_totais_desconto" class="form-control" />
                 </div>
             </div>
-        </div>
+            <div class="col-6 col-md-6">
+                <div class="form-group">
+                    <label asp-for="totais.op_totais_ipi" class="control-label">IPI</label>
+                    <input asp-for="totais.op_totais_ipi" id="op_totais_ipi" class="form-control" readonly="readonly" />
+                </div>
+            </div>
+        </div>        
         <div class="row">
             <div class="col-6 col-md-6">
                 <div class="form-group">
                     <label asp-for="totais.op_totais_preco_itens" class="control-label">Total dos Itens</label>
-                    <input asp-for="totais.op_totais_preco_itens" class="form-control" readonly="readonly" />
+                    <input asp-for="totais.op_totais_preco_itens" id="op_totais_preco_itens" class="form-control" readonly="readonly" />
                 </div>
             </div>
             <div class="col-6 col-md-6">
                 <div class="form-group">
                     <label asp-for="totais.op_totais_total_op" class="control-label">Total da Compra</label>
-                    <input asp-for="totais.op_totais_total_op" class="form-control" readonly="readonly" />
+                    <input asp-for="totais.op_totais_total_op" id="op_totais_total_op" class="form-control" readonly="readonly" />
                 </div>
             </div>
         </div>
@@ -544,16 +558,17 @@
 
     <!--Remover item-->
     <div class="modal fade" id="modal_item_delete" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="staticBackdropLabel">Item</h5>
                 </div>
                 <div class="modal-body">
                     <p>Confirma a exclusão do item?</p>
+                    <input type="hidden" id="item_delete" />
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-info" onclick="remover_item()">Gravar</button>
+                    <button type="button" class="btn btn-danger" onclick="delete_item('0','confirmado')">Excluir</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
