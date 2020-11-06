@@ -48,6 +48,11 @@
         padding-top: 5px;
         text-align: right;
     }
+    select[readonly]{
+        background: #eee;
+        pointer-events: none;
+        touch-action: none;
+    }
 </style>
 
 @{
@@ -261,44 +266,45 @@
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
+                    <label class="control-label">Frete por conta</label>
+                    <select asp-items="@ViewBag.modFrete" value="@TempData["op_transportador_modalidade_frete"]" id="op_transportador_modalidade_frete" name="op_transportador_modalidade_frete" class="form-control" onchange="modFrete(this.value)"></select>
+                    <span asp-validation-for="transportador.op_transportador_modalidade_frete" class="text-danger"></span>
+                </div>
+            </div>            
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-8">
+                <div class="form-group">
                     <label asp-for="transportador.op_transportador_nome" class="control-label"></label>
-                    <input asp-for="transportador.op_transportador_nome" class="form-control" />
+                    <input asp-for="transportador.op_transportador_nome" id="op_transportador_nome" class="form-control" onkeyup="getTransportador(this.id)" />
                     <span asp-validation-for="transportador.op_transportador_nome" class="text-danger"></span>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-4">
                 <div class="form-group">
-                    <label asp-for="transportador.op_transportador_cnpj_cpf" class="control-label"></label>
-                    <input asp-for="transportador.op_transportador_cnpj_cpf" class="form-control" />
+                    <label asp-for="transportador.op_transportador_cnpj_cpf" class="control-label">CNPJ/CPF</label>
+                    <input asp-for="transportador.op_transportador_cnpj_cpf" id="op_transportador_cnpj_cpf" class="form-control" />
                     <span asp-validation-for="transportador.op_transportador_cnpj_cpf" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <label class="control-label">Frete por conta</label>
-                    <select asp-items="@ViewBag.modFrete" value="@TempData["op_transportador_modalidade_frete"]" id="op_transportador_modalidade_frete" name="op_transportador_modalidade_frete" class="form-control"></select>
-                    <span asp-validation-for="transportador.op_transportador_modalidade_frete" class="text-danger"></span>
-                </div>
-            </div>
+            </div>            
         </div>
         <div class="row">
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="transportador.op_transportador_volume_qtd" class="control-label"></label>
-                    <input asp-for="transportador.op_transportador_volume_qtd" class="form-control" />
-                    <span asp-validation-for="transportador.op_transportador_volume_qtd" class="text-danger"></span>
+                    <input asp-for="transportador.op_transportador_volume_qtd" id="op_transportador_volume_qtd" class="form-control" />
+                    <span asp-validation-for="transportador.op_transportador_volume_qtd" id="op_transportador_volume_qtd" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="transportador.op_transportador_volume_peso_bruto" class="control-label"></label>
-                    <input asp-for="transportador.op_transportador_volume_peso_bruto" class="form-control" />
+                    <input asp-for="transportador.op_transportador_volume_peso_bruto" id="op_transportador_volume_peso_bruto" class="form-control" />
                     <span asp-validation-for="transportador.op_transportador_volume_peso_bruto" class="text-danger"></span>
                 </div>
             </div>
         </div>
+        <input type="hidden" asp-for="transportador.op_transportador_participante_id" id="op_transportador_participante_id" />
     </fieldset>
     <fieldset>
         <legend>Observações</legend>
@@ -339,14 +345,14 @@
                         <div class="col-12 col-md-4">
                             <div class="form-group">
                                 <label asp-for="participante.op_part_tipo" class="control-label"></label>
-                                <select asp-items="@ViewBag.tipoPessoa" value="@TempData["op_part_tipo"]" id="participante_tipoPessoa" name="op_part_tipo" onchange="tipoPessoa(this.value)" class="form-control"></select> <!--ID alterado para 'participante_tipoPessoa' em razão da função 'mascaraCNPJ_CPF' que usa a informação deste campo-->
+                                <select readonly="readonly" asp-items="@ViewBag.tipoPessoa" value="@TempData["op_part_tipo"]" id="participante_tipoPessoa" name="op_part_tipo" onchange="tipoPessoa(this.value)" class="form-control"></select> <!--ID alterado para 'participante_tipoPessoa' em razão da função 'mascaraCNPJ_CPF' que usa a informação deste campo-->
                                 <span asp-validation-for="participante.op_part_tipo" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-12 col-md-8">
                             <div class="form-group">
                                 <label asp-for="participante.op_part_cnpj_cpf" class="control-label" id="label_cnpj_cpf">CPF</label>
-                                <input asp-for="participante.op_part_cnpj_cpf" id="op_part_cnpj_cpf" class="form-control" onkeyup="mascaraCNPJ_cpf(this.id, this.value)" />
+                                <input asp-for="participante.op_part_cnpj_cpf" id="op_part_cnpj_cpf" class="form-control" onkeyup="mascaraCNPJ_cpf(this.id, this.value)" readonly="readonly" />
                                 <span asp-validation-for="participante.op_part_cnpj_cpf" class="text-danger"></span>
                             </div>
                         </div>
@@ -418,7 +424,7 @@
                     </fieldset>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-info">Gravar</button>
+                    <button type="button" class="btn btn-info" onclick="dadorParticipante()" >Gravar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>

@@ -22,7 +22,8 @@ var operacao = {
         op_part_numero: '',
         op_part_complemento: '',
         op_paisesIBGE_codigo: 0,
-        op_uf_ibge_codigo: 0
+        op_uf_ibge_codigo: 0,
+        op_part_participante_id: 0,
     },
     itens: [],
     retencoes: {
@@ -58,6 +59,7 @@ var operacao = {
         op_transportador_modalidade_frete: '',
         op_transportador_volume_qtd: 0,
         op_transportador_volume_peso_bruto: 0,
+        op_transportador_participante_id: 0,
     },
 };
 
@@ -989,8 +991,7 @@ function consultaParticipante(id) { //Parada
                     alert("erro");
                 },
                 success: function (data, textStatus, XMLHttpRequest) {
-                    var results = JSON.parse(data);
-                    console.log(results);
+                    var results = JSON.parse(data);                    
                     var autocompleteObjects = [];
                     for (var i = 0; i < results.length; i++) {
                         var object = {                            
@@ -1057,6 +1058,9 @@ function consultaParticipante(id) { //Parada
             if (document.getElementById('op_categoria_id')) {
                 document.getElementById('op_categoria_id').value = ui.item.categoria_id;
             }
+
+            dadorParticipante(ui.item.id);
+            modal_fornecedor
         }
     });
 }
@@ -1670,4 +1674,125 @@ function update_nova_parcela(id, vlr) {
     if (numero_controle[0] == 'vlrParcela') {
         decimal(id, vlr, '6');
     }        
+}
+
+function modFrete(vlr) {    
+
+    if (vlr == '9') {
+        document.getElementById('op_transportador_nome').value = "";
+        document.getElementById('op_transportador_cnpj_cpf').value = "";
+        document.getElementById('op_transportador_volume_qtd').value = "";
+        document.getElementById('op_transportador_volume_peso_bruto').value = "";
+
+        document.getElementById('op_transportador_nome').disabled = true;
+        document.getElementById('op_transportador_cnpj_cpf').disabled = true;
+        document.getElementById('op_transportador_volume_qtd').disabled = true;
+        document.getElementById('op_transportador_volume_peso_bruto').disabled = true;
+    } else {
+        document.getElementById('op_transportador_nome').disabled = false;
+        document.getElementById('op_transportador_cnpj_cpf').disabled = false;
+        document.getElementById('op_transportador_volume_qtd').disabled = false;
+        document.getElementById('op_transportador_volume_peso_bruto').disabled = false;
+    }
+}
+
+function getTransportador(id) {
+    let id_campo = "#" + id;    
+    $(id_campo).autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Participante/consultaParticipante",
+                data: { __RequestVerificationToken: gettoken(), termo: request.term },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("erro");
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    var results = JSON.parse(data);                    
+                    var autocompleteObjects = [];
+                    for (var i = 0; i < results.length; i++) {
+                        var object = {
+                            value: results[i].participante_nome,
+                            label: results[i].participante_nome + " - " + results[i].participante_cnpj_cpf,
+
+                            id: results[i].participante_id,
+                            nome: results[i].participante_nome,
+                            tipo: results[i].participante_tipoPessoa,
+                            cnpj_cpf: results[i].participante_cnpj_cpf,
+                            cep: results[i].participante_cep,
+                            rua: results[i].participante_logradouro,
+                            numero: results[i].participante_numero,
+                            complemento: results[i].participante_complemento,
+                            bairro: results[i].participante_bairro,
+                            cidade: results[i].participante_cidade,
+                            uf: results[i].participante_uf,
+                            pais: results[i].participante_pais,
+                            categoria_id: results[i].participante_categoria,
+                        };
+                        autocompleteObjects.push(object);
+                    }
+
+                    // Invoke the response callback.
+                    response(autocompleteObjects);
+                }
+            });
+        },
+        minLength: 3,
+        select: function (event, ui) {
+            if (document.getElementById('op_transportador_nome')) {
+                document.getElementById('op_transportador_nome').value = ui.item.nome;
+            }            
+            if (document.getElementById('op_transportador_cnpj_cpf')) {
+                document.getElementById('op_transportador_cnpj_cpf').value = ui.item.cnpj_cpf;
+            }
+            if (document.getElementById('op_transportador_participante_id')) {
+                document.getElementById('op_transportador_participante_id').value = ui.item.id;
+            }            
+        }
+    });
+}
+
+function dadorParticipante(op_part_participante_id) {
+    if (document.getElementById('nome')) {
+        operacao.participante.op_part_nome = document.getElementById('nome').value;
+    }
+    if (document.getElementById('participante_tipoPessoa')) {
+        operacao.participante.op_part_tipo = document.getElementById('participante_tipoPessoa').value;
+    }
+    if (document.getElementById('op_part_cnpj_cpf')) {
+        operacao.participante.op_part_cnpj_cpf = document.getElementById('op_part_cnpj_cpf').value;
+    }
+    if (document.getElementById('cep')) {
+        operacao.participante.op_part_cep = document.getElementById('cep').value;
+    }
+    if (document.getElementById('rua')) {
+        operacao.participante.op_part_logradouro = document.getElementById('rua').value;
+    }
+    if (document.getElementById('numero')) {
+        operacao.participante.op_part_numero = document.getElementById('numero').value;
+    }
+    if (document.getElementById('complemento')) {
+        operacao.participante.op_part_complemento = document.getElementById('complemento').value;
+    }
+    if (document.getElementById('bairro')) {
+        operacao.participante.op_part_bairro = document.getElementById('bairro').value;
+    }
+    if (document.getElementById('cidade')) {
+        operacao.participante.op_part_cidade = document.getElementById('cidade').value;
+    }
+    if (document.getElementById('uf')) {
+        operacao.participante.op_uf_ibge_codigo = document.getElementById('uf').value;
+    }
+    if (document.getElementById('op_paisesIBGE_codigo')) {
+        operacao.participante.op_paisesIBGE_codigo = document.getElementById('op_paisesIBGE_codigo').value;
+    }
+
+    operacao.participante.op_part_participante_id = op_part_participante_id;
+
+    $('#modal_fornecedor').modal('hide');
+
 }

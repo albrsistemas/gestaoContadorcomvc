@@ -979,6 +979,44 @@ namespace gestaoContadorcomvc.Models
             return selects;
         }
 
+        //Método para listar modalidades de frete
+        public List<Selects> getModFrete()
+        {
+            List<Selects> modFrete = new List<Selects>();
+            modFrete.Add(new Selects
+            {
+                value = "0",
+                text = "Contratação do Frete por conta do Remetente (CIF)"
+            });
+            modFrete.Add(new Selects
+            {
+                value = "1",
+                text = "Contratação do Frete por conta do Destinatário (FOB)"
+            });
+            modFrete.Add(new Selects
+            {
+                value = "2",
+                text = "Contratação do Frete por conta de Terceiros"
+            });
+            modFrete.Add(new Selects
+            {
+                value = "3",
+                text = "Transporte Próprio por conta do Remetente"
+            });
+            modFrete.Add(new Selects
+            {
+                value = "4",
+                text = "Transporte Próprio por conta do Destinatário"
+            });
+            modFrete.Add(new Selects
+            {
+                value = "9",
+                text = "Sem Ocorrência de Transporte"
+            });
+
+            return modFrete;
+        }
+
 
     }
 }

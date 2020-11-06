@@ -23,5 +23,7 @@ namespace gestaoContadorcomvc.Models
         [Display(Name = "Peso Bruto")]
         public Decimal op_transportador_volume_peso_bruto { get; set; }
         public int op_transportador_op_id { get; set; }
+
+        public int op_transportador_participante_id { get; set; } 
     }
 }

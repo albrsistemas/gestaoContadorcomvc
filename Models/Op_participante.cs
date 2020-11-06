@@ -44,5 +44,6 @@ namespace gestaoContadorcomvc.Models
         [Display(Name = "UF")]
         public int op_uf_ibge_codigo { get; set; }
         public int op_id { get; set; }
+        public int op_part_participante_id { get; set; }
     }
 }
