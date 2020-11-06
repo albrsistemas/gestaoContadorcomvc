@@ -1899,13 +1899,13 @@ function validaItens() {
             if ((operacao.itens[i].op_item_qtd.toString().replace('.', '').replace(',', '.') * 1) == 0 || operacao.itens[i].op_item_qtd == null) {
                 retorno += 'Item número ' + (i + 1) + ': campo Quantidade está vázio.;';
             }
-        }
-
-        return retorno;
+        }        
     }
 
     if (retorno == "") {
         return true;
+    } else {
+        return retorno;
     }
 }
 
@@ -1941,6 +1941,9 @@ function validaParcelas() {
 
 function gravarOperacao() {
     let validacao = [];
+    let erros = [];
+    
+
     for (let i = 0; i < validacao.length; i++) {
         validacao[i].pop();
     }
@@ -1960,17 +1963,23 @@ function gravarOperacao() {
 
     for (let i = 0; i < validacao.length; i++) {
         if (validacao[i] != true) {
+            erros.push(validacao[i]);
             $('#msg_valid').append('<span class="text-danger">' + validacao[i] + '</span></br>');
         }
     }
-
-    if (validacao.length > 0) {
+    console.log(validacao);
+    console.log(erros);
+    if (erros.length > 0) {
         alert('Há informações incorretas nos dados preenchidos. Verifique a lista erros no final da página!');
     } else {
         //Postar o formulário de compra
+
+        alert('Tudo ok. Para os próximos episódios teremos a persistência no banco de dados!');
+
+        /*
         $.ajax({
             url: "/Compra/Create",
-            data: { __RequestVerificationToken: gettoken(), operacao: operacao},
+            data: { __RequestVerificationToken: gettoken(), compra: operacao},
             type: 'POST',
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
@@ -1981,25 +1990,10 @@ function gravarOperacao() {
             },
             success: function (data, textStatus, XMLHttpRequest) {
                 var results = JSON.parse(data);
-
-                /*
-                $('#fp_vinc_conta_corrente').children('option').remove(); //Remove todos os itens do select
-
-                for (i = 0; i < results.length; i++) { //Adiciona os item recebidos no results no select
-                    $('#fp_vinc_conta_corrente').append($("<option></option>").attr("value", results[i].value).text(results[i].text));
-                }
-
-                if (results[0].value == "0") {
-                    document.getElementById('fp_vinc_conta_corrente').setAttribute("disabled", "disabled");
-                } else {
-                    document.getElementById('fp_vinc_conta_corrente').removeAttribute("disabled");
-                }
-
-                document.getElementById('text_ccorrente').innerHTML = "";
-                document.getElementById('sub').removeAttribute("disabled");
-                */
+                
             }
         });
+        */
     }
     
 }
