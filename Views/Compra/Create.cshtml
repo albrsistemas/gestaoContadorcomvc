@@ -160,7 +160,7 @@
                     <input asp-for="totais.op_totais_ipi" id="op_totais_ipi" class="form-control" readonly="readonly" />
                 </div>
             </div>
-        </div>        
+        </div>
         <div class="row">
             <div class="col-6 col-md-6">
                 <div class="form-group">
@@ -238,12 +238,15 @@
                 <div class="include_item_label" style="width: 25%">Forma</div>
                 <div class="include_item_label" style="width: 15%">Obs.:</div>
             </div>
+            <div class="col-2">
+
+            </div>
         </div>
         <div class="parcela" id="parcelas">
-            
+
         </div>
-        <div class="incluirParcela" id="incluirParcela">
-            <label class="text-info">
+        <div class="incluirParcela" id="incluirParcela" >
+            <label class="text-info" onclick="novaParcela('open')" style="cursor:pointer">
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                     <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
@@ -559,6 +562,59 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" onclick="delete_item('0','confirmado')">Excluir</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Remover parcela-->
+    <div class="modal fade" id="modal_parcela_delete" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Parcela</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Confirma a exclusão da parcela?</p>
+                    <input type="hidden" id="parcela_delete" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="delete_parcela('0','confirmado')">Excluir</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--add parcela-->
+    <div class="modal fade" id="modal_parcela_insert" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Inserir parcela</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-10" style=\"padding-right: 0px;\">
+                            <div class="include_item_label" style="width: 10%">Dias</div>
+                            <div class="include_item_label" style="width: 25%">Vencimento</div>
+                            <div class="include_item_label" style="width: 25%">Valor</div>
+                            <div class="include_item_label" style="width: 25%">Forma</div>
+                            <div class="include_item_label" style="width: 15%">Obs.:</div>
+                        </div>
+                        <div class="col-2">
+
+                        </div>
+                    </div>
+                    <div id="novaParcela">
+
+                    </div>
+                    <input type="hidden" id="parcela_numeroControle" />
+                    <input type="hidden" id="data_operacao" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" onclick="novaParcela('gravar')">Gravar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
