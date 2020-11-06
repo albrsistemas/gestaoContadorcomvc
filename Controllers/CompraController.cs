@@ -46,7 +46,7 @@ namespace gestaoContadorcomvc.Controllers
         // POST: CompraController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(IFormCollection collection, Operacao operacao)
         {
             try
             {

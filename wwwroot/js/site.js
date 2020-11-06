@@ -975,7 +975,7 @@ function gettoken() {
 };
 
 //Autocomplete lista de participantes
-function consultaParticipante(id) { //Parada
+function consultaParticipante(id) {
     let id_campo = "#" + id;
     $(id_campo).autocomplete({
         source: function (request, response) {
@@ -1059,14 +1059,14 @@ function consultaParticipante(id) { //Parada
                 document.getElementById('op_categoria_id').value = ui.item.categoria_id;
             }
 
-            dadorParticipante(ui.item.id);
+            dadorParticipante('insert',ui.item.id);
             modal_fornecedor
         }
     });
 }
 
 //Autocomplete lista de produtos
-function consultaProdutos(id, contexto) { //Parada
+function consultaProdutos(id, contexto) {
     let id_campo = "#" + id;
     $(id_campo).autocomplete({
         source: function (request, response) {
@@ -1756,7 +1756,7 @@ function getTransportador(id) {
     });
 }
 
-function dadorParticipante(op_part_participante_id) {
+function dadorParticipante(contexto, op_part_participante_id) {
     if (document.getElementById('nome')) {
         operacao.participante.op_part_nome = document.getElementById('nome').value;
     }
@@ -1791,8 +1791,215 @@ function dadorParticipante(op_part_participante_id) {
         operacao.participante.op_paisesIBGE_codigo = document.getElementById('op_paisesIBGE_codigo').value;
     }
 
-    operacao.participante.op_part_participante_id = op_part_participante_id;
+    if (contexto == 'insert') {
+        operacao.participante.op_part_participante_id = op_part_participante_id;
+    }
 
     $('#modal_fornecedor').modal('hide');
+}
 
+function dadosOperacao() {
+    if (document.getElementById('op_numero_ordem')) {
+        operacao.operacao.op_numero_ordem = document.getElementById('op_numero_ordem').value;
+    }
+    if (document.getElementById('op_data')) {
+        operacao.operacao.op_data = document.getElementById('op_data').value;
+    }
+    if (document.getElementById('op_previsao_entrega')) {
+        operacao.operacao.op_previsao_entrega = document.getElementById('op_previsao_entrega').value;
+    }
+    if (document.getElementById('op_obs')) {
+        operacao.operacao.op_obs = document.getElementById('op_obs').value;
+    }
+    if (document.getElementById('op_categoria_id')) {
+        operacao.operacao.op_categoria_id = document.getElementById('op_categoria_id').value;
+    }
+
+    let data = document.getElementById('op_data').value.split('/');
+    let d = new Date(data[2], data[1], data[0]);
+    if (d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1) {
+        return 'Data da compra é inválida;';
+    }
+
+    return true;
+}
+
+function dadosTransportador() {
+    let mod = document.getElementById('op_transportador_modalidade_frete').value;
+    let nome = document.getElementById('op_transportador_nome').value;
+    let cnpj_cpf = document.getElementById('op_transportador_cnpj_cpf').value;
+    let participante_id = document.getElementById('op_transportador_participante_id').value;
+
+    operacao.transportador.op_transportador_modalidade_frete = mod;
+    operacao.transportador.op_transportador_participante_id = participante_id;
+
+    if (mod != '9') {
+        if (nome == "" || nome == null || cnpj_cpf == "" || cnpj_cpf == null) {
+            return 'Campo nome ou CNPJ/CPF do transportador estão vazios!';
+        }
+        if (participante_id == "" || participante_id == null) {
+            return 'O transportador não corresponde a um participante válido';
+        }
+
+        if (document.getElementById('op_transportador_nome')) {
+            operacao.transportador.op_transportador_nome = document.getElementById('op_transportador_nome').value;
+        }
+        if (document.getElementById('op_transportador_cnpj_cpf')) {
+            operacao.transportador.op_transportador_cnpj_cpf = document.getElementById('op_transportador_cnpj_cpf').value;
+        }
+        if (document.getElementById('op_transportador_volume_qtd')) {
+            operacao.transportador.op_transportador_volume_qtd = document.getElementById('op_transportador_volume_qtd').value;
+        }
+        if (document.getElementById('op_transportador_volume_peso_bruto')) {
+            operacao.transportador.op_transportador_volume_peso_bruto = document.getElementById('op_transportador_volume_peso_bruto').value;
+        }
+    }
+
+    return true;    
+}
+
+function validaParticipante() {
+    
+    if (operacao.participante.op_part_participante_id == "" || operacao.participante.op_part_participante_id == null) {
+        return 'O participante não corresponde a um cadastro válido.';
+    }
+
+    if (operacao.participante.op_part_nome == "" || operacao.participante.op_part_nome == null) {
+        return 'Nome do participante está vazio.';
+    }
+
+    if (operacao.participante.op_part_cnpj_cpf == "" || operacao.participante.op_part_cnpj_cpf == null) {
+        return 'CNPJ ou CPF do participante está vazio.';
+    }
+
+    return true;
+}
+
+function validaItens() {
+    let retorno = '';
+    if (operacao.itens.length == 0) {
+        return 'Obrigatório informar pelo menos um item na compra';
+    }
+
+    if ((operacao.itens.length > 0)) {
+        for (let i = 0; i < operacao.itens.length; i++) {
+            if (operacao.itens[i].op_item_nome == "" || operacao.itens[i].op_item_nome == null) {
+                retorno += 'Item número ' + (i + 1) + ': campo Nome está vázio.;';
+            }
+            if (operacao.itens[i].op_item_codigo == "" || operacao.itens[i].op_item_codigo == null) {
+                retorno += 'Item número ' + (i + 1) + ': campo Código Empresa está vázio.;';
+            }            
+            if (operacao.itens[i].op_item_unidade == "" || operacao.itens[i].op_item_unidade == null) {
+                retorno += 'Item número ' + (i + 1) + ': campo Unidade está vázio.;';
+            }
+
+            if ((operacao.itens[i].op_item_preco.toString().replace('.', '').replace(',','.') * 1) == 0 || operacao.itens[i].op_item_preco == null) {
+                retorno += 'Item número ' + (i + 1) + ': campo Preço está vázio.;';
+            }
+            if ((operacao.itens[i].op_item_qtd.toString().replace('.', '').replace(',', '.') * 1) == 0 || operacao.itens[i].op_item_qtd == null) {
+                retorno += 'Item número ' + (i + 1) + ': campo Quantidade está vázio.;';
+            }
+        }
+
+        return retorno;
+    }
+
+    if (retorno == "") {
+        return true;
+    }
+}
+
+function validaParcelas() {
+
+    let retorno = "";
+
+    if (operacao.parcelas.length == 0) {
+        retorno = 'Ínforme ao menos numa parcela!;';
+    } else{
+        for (let i = 0; i < operacao.parcelas.length; i++) {
+            if ((operacao.parcelas[i].op_parcela_valor.toString().replace('.', '').replace(',', '.') * 1) == 0 || operacao.parcelas[i].op_parcela_valor == "" || operacao.parcelas[i].op_parcela_valor == null) {
+                retorno = 'Parcela número ' + (i + 1) + ': Valor não pode ser vázio ou zero.;';
+            }
+                        
+            let data = (operacao.parcelas[i].op_parcela_vencimento).split('/');
+            let d = new Date(data[2], data[1], data[0]);
+            if (d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1) {
+                retorno = 'Parcela número ' + (i + 1) + ': Data inválida.;';
+            }
+            
+
+        }
+    }
+
+    if (retorno == "") {
+        return true;
+    } else {
+        return retorno;
+    }
+}
+
+
+function gravarOperacao() {
+    let validacao = [];
+    for (let i = 0; i < validacao.length; i++) {
+        validacao[i].pop();
+    }
+    document.getElementById('msg_valid').innerHTML = "";
+
+    validacao.push(dadosTransportador());
+    validacao.push(dadosOperacao());
+    validacao.push(validaParticipante());
+    if (validaItens() != true) {
+        let itens = validaItens().split(';');
+        validacao = validacao.concat(itens);
+    }    
+    if (validaParcelas() != true) {        
+        let parcelas = validaParcelas().split(';');
+        validacao = validacao.concat(parcelas);
+    }
+
+    for (let i = 0; i < validacao.length; i++) {
+        if (validacao[i] != true) {
+            $('#msg_valid').append('<span class="text-danger">' + validacao[i] + '</span></br>');
+        }
+    }
+
+    if (validacao.length > 0) {
+        alert('Há informações incorretas nos dados preenchidos. Verifique a lista erros no final da página!');
+    } else {
+        //Postar o formulário de compra
+        $.ajax({
+            url: "/Compra/Create",
+            data: { __RequestVerificationToken: gettoken(), operacao: operacao},
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("erro");
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                var results = JSON.parse(data);
+
+                /*
+                $('#fp_vinc_conta_corrente').children('option').remove(); //Remove todos os itens do select
+
+                for (i = 0; i < results.length; i++) { //Adiciona os item recebidos no results no select
+                    $('#fp_vinc_conta_corrente').append($("<option></option>").attr("value", results[i].value).text(results[i].text));
+                }
+
+                if (results[0].value == "0") {
+                    document.getElementById('fp_vinc_conta_corrente').setAttribute("disabled", "disabled");
+                } else {
+                    document.getElementById('fp_vinc_conta_corrente').removeAttribute("disabled");
+                }
+
+                document.getElementById('text_ccorrente').innerHTML = "";
+                document.getElementById('sub').removeAttribute("disabled");
+                */
+            }
+        });
+    }
+    
 }

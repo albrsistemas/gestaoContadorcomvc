@@ -187,7 +187,7 @@
             <div class="col-4 col-md-2">
                 <div class="form-group">
                     <label asp-for="operacao.op_numero_ordem" class="control-label">Número Compra</label>
-                    <input asp-for="operacao.op_numero_ordem" class="form-control" readonly="readonly" />
+                    <input asp-for="operacao.op_numero_ordem" id="op_numero_ordem" class="form-control" readonly="readonly" />
                 </div>
             </div>
             <div class="col-4 col-md-3">
@@ -200,7 +200,7 @@
             <div class="col-4 col-md-3">
                 <div class="form-group">
                     <label asp-for="operacao.op_previsao_entrega" class="control-label">Data Prevista Entrega</label>
-                    <input type="text" name="operacao.op_previsao_entrega" id="op_data_saida" class="form-control datepicker" />
+                    <input type="text" name="operacao.op_previsao_entrega" id="op_previsao_entrega" class="form-control datepicker" />
                     <span asp-validation-for="operacao.op_previsao_entrega" class="text-danger"></span>
                 </div>
             </div>
@@ -276,7 +276,7 @@
             <div class="col-12 col-md-8">
                 <div class="form-group">
                     <label asp-for="transportador.op_transportador_nome" class="control-label"></label>
-                    <input asp-for="transportador.op_transportador_nome" id="op_transportador_nome" class="form-control" onkeyup="getTransportador(this.id)" />
+                    <input asp-for="transportador.op_transportador_nome" id="op_transportador_nome" class="form-control" onkeyup="getTransportador(this.id)" placeholder="Digite as iniciais do nome ou cnpj/cpf" />
                     <span asp-validation-for="transportador.op_transportador_nome" class="text-danger"></span>
                 </div>
             </div>
@@ -424,7 +424,7 @@
                     </fieldset>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-info" onclick="dadorParticipante()" >Gravar</button>
+                    <button type="button" class="btn btn-info" onclick="dadorParticipante('edit', 0)" >Gravar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
@@ -629,11 +629,18 @@
 
     <br />
 
-    <button type="submit" class="btn btn-info" id="sub">Gravar</button>
+    <button type="submit" class="btn btn-info" id="sub" onclick="gravarOperacao()">Gravar</button>
     <a class="btn btn-secondary" asp-controller="#" asp-action="#">Cancelar</a>
 
     <div class="displey_validacao">
-        <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>
+        <div class="row">
+            <div class="col-12">
+                <div class="msg_valid" id="msg_valid">
+
+                </div>
+            </div>
+        </div>
+        <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>        
     </div>
 </form>
 
