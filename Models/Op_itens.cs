@@ -52,6 +52,9 @@ namespace gestaoContadorcomvc.Models
         [Display(Name = "ICMS_ST")]
         public Decimal op_item_vlr_icms_st { get; set; }
 
+        public int op_item_produto_id { get; set; } //id do produto cadastrado
+        public Decimal op_item_valor_total { get; set; } //Valor total do item
+
         [Display(Name = "Código do Fornecedor")]
         public string op_item_cod_fornecedor { get; set; } //Código do produto no fornecedor
         public string controleEdit { get; set; } //Campo criado para controle edição. Não consta no banco de dados.

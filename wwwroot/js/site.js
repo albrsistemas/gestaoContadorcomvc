@@ -1974,12 +1974,11 @@ function gravarOperacao() {
     } else {
         //Postar o formulário de compra
 
-        alert('Tudo ok. Para os próximos episódios teremos a persistência no banco de dados!');
-
-        /*
+        //alert('Tudo ok. Para os próximos episódios teremos a persistência no banco de dados!');
+        
         $.ajax({
             url: "/Compra/Create",
-            data: { __RequestVerificationToken: gettoken(), compra: operacao},
+            data: { __RequestVerificationToken: gettoken(), op: operacao},
             type: 'POST',
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
@@ -1990,10 +1989,16 @@ function gravarOperacao() {
             },
             success: function (data, textStatus, XMLHttpRequest) {
                 var results = JSON.parse(data);
-                
+                if (results.includes('Sucesso')) {
+                    alert('Compra cadastrada com sucesso!');
+                }
+
+                if (results.includes('Erro')) {
+                    alert('Houve um problema na gravação da compra. Tente gravar novamente. Se persistir entre em contato com o suporte!');
+                }
             }
         });
-        */
+        
     }
     
 }

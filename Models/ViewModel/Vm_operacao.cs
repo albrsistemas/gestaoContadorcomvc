@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Permissions;
 using System.Threading.Tasks;
 
 namespace gestaoContadorcomvc.Models.ViewModel
 {
-    public class Vm_compra
+    public class Vm_operacao
     {
         public Operacao operacao { get; set; }
         public Op_participante participante { get; set; }
@@ -14,7 +13,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public Op_retencoes retencoes { get; set; }
         public Op_totais totais { get; set; }
         public List<Op_parcelas> parcelas { get; set; }
-        public Op_transportador transportador { get; set; }                
+        public Op_transportador transportador { get; set; }
         public IEnumerable<Vm_compra> compras { get; set; }
         public Vm_usuario user { get; set; }
 

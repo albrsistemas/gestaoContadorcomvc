@@ -8,6 +8,7 @@ using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
 {
@@ -46,11 +47,19 @@ namespace gestaoContadorcomvc.Controllers
         // POST: CompraController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection, Vm_compra compra)
+        public ActionResult Create(IFormCollection collection, Vm_operacao op)
         {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                op.operacao.op_tipo = "Compra";
+                Operacao operacao = new Operacao();
+                string retorno = operacao.cadastraOperacao(user.usuario_id, user.usuario_conta_id, op);
+
+                return Json(JsonConvert.SerializeObject(retorno));
             }
             catch
             {
