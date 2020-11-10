@@ -17,13 +17,16 @@ namespace gestaoContadorcomvc.Controllers
         // GET: CompraController
         public ActionResult Index()
         {
-            return View();
-        }
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
-        // GET: CompraController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
+            Operacao operacao = new Operacao();                        
+            Vm_operacao op = new Vm_operacao();
+            op.operacoes = operacao.listaOperacao(user.usuario_id, user.usuario_conta_id, "Compra");
+            op.user = user;
+
+            return View(op);
         }
 
         // GET: CompraController/Create
@@ -70,6 +73,15 @@ namespace gestaoContadorcomvc.Controllers
         // GET: CompraController/Edit/5
         public ActionResult Edit(int id)
         {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Operacao op = new Operacao();
+            Vm_operacao vm_op = new Vm_operacao();
+
+            vm_op = op.buscaOperacao(user.usuario_id, user.usuario_conta_id, id);
+
             return View();
         }
 

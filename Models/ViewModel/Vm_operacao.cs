@@ -15,6 +15,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public List<Op_parcelas> parcelas { get; set; }
         public Op_transportador transportador { get; set; }
         public IEnumerable<Vm_compra> compras { get; set; }
+        public IEnumerable<Vm_operacao> operacoes { get; set; }
         public Vm_usuario user { get; set; }
 
         //Campos necessários nas views
@@ -22,5 +23,9 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string condicoes_pgto { get; set; }
         public Op_itens item { get; set; }
         public List<Vm_participante> participantes { get; set; } //autocomplete
+
+        
+        
+
     }
 }
