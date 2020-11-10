@@ -193,6 +193,20 @@ namespace gestaoContadorcomvc.Models
                         cmd.ExecuteNonQuery();
                     }
                 }
+
+                //transportador
+                comando.CommandText = "INSERT into op_transportador (op_transportador_nome, op_transportador_cnpj_cpf, op_transportador_modalidade_frete, op_transportador_volume_qtd, op_transportador_volume_peso_bruto, op_transportador_op_id, op_transportador_participante_id) VALUES (@op_transportador_nome, @op_transportador_cnpj_cpf, @op_transportador_modalidade_frete, @op_transportador_volume_qtd, @op_transportador_volume_peso_bruto, @op_transportador_op_id, @op_transportador_participante_id);";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@op_transportador_nome", op.transportador.op_transportador_nome);
+                comando.Parameters.AddWithValue("@op_transportador_cnpj_cpf", op.transportador.op_transportador_cnpj_cpf);
+                comando.Parameters.AddWithValue("@op_transportador_modalidade_frete", op.transportador.op_transportador_modalidade_frete);
+                comando.Parameters.AddWithValue("@op_transportador_volume_qtd", op.transportador.op_transportador_volume_qtd);
+                comando.Parameters.AddWithValue("@op_transportador_volume_peso_bruto", op.transportador.op_transportador_volume_peso_bruto);
+                comando.Parameters.AddWithValue("@op_transportador_op_id", id);
+                comando.Parameters.AddWithValue("@op_transportador_participante_id", op.transportador.op_transportador_participante_id);
+
+
+
                 Transacao.Commit();
 
                 string msg = "Cadastro de operação ID: " + id + " Cadastrado com sucesso";

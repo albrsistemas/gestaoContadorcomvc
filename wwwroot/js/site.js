@@ -1152,58 +1152,70 @@ function incluir_item() {
 
         let numero_controle = id + Math.floor(Math.random() * 100000) + 1;
 
-        let item_produto = {
-            op_item_numero_controle: numero_controle, //id é o produto_id selecionado. Adicionaod ao objeto para fins de controle (localiza-lo no momento da edição dos dados);
-            op_item_produto_id: id,
-            op_item_id: 0,
-            op_item_codigo: prod_codigo,
-            op_item_nome: prod_descricao,
-            op_item_unidade: prod_unidade,
-            op_item_preco: prod_valor,
-            op_item_gtin_ean: '',
-            op_item_gtin_ean_trib: '',
-            op_item_obs: '',
-            op_item_qtd: prod_quantidade,
-            op_item_frete: '0,00',
-            op_item_seguros: '0,00',
-            op_item_desp_aces: '0,00',
-            op_item_desconto: '0,00',
-            op_item_vlr_ipi: '0,00',
-            op_item_vlr_icms_st: '0,00',
-            op_item_cod_fornecedor: '',
-            op_item_valor_total: prod_valorTotal,
-            controleEdit: 'insert',
-            op_item_id_banco: 0,
-        };
-        operacao.itens.push(item_produto);
+        if (isNaN((prod_valor.toString().replace('.', '').replace(',', '.') * 1)) || isNaN((prod_quantidade.toString().replace('.', '').replace(',', '.') * 1)) || isNaN((prod_valorTotal.toString().replace('.', '').replace(',', '.') * 1))) {
+            alert('Valor incorreto no valor unitário, quantidade ou total do item');
+            document.getElementById('prod_descricao').focus();
+        } else {
+            let item_produto = {
+                op_item_numero_controle: numero_controle, //id é o produto_id selecionado. Adicionaod ao objeto para fins de controle (localiza-lo no momento da edição dos dados);
+                op_item_produto_id: id,
+                op_item_id: 0,
+                op_item_codigo: prod_codigo,
+                op_item_nome: prod_descricao,
+                op_item_unidade: prod_unidade,
+                op_item_preco: prod_valor,
+                op_item_gtin_ean: '',
+                op_item_gtin_ean_trib: '',
+                op_item_obs: '',
+                op_item_qtd: prod_quantidade,
+                op_item_frete: '0,00',
+                op_item_seguros: '0,00',
+                op_item_desp_aces: '0,00',
+                op_item_desconto: '0,00',
+                op_item_vlr_ipi: '0,00',
+                op_item_vlr_icms_st: '0,00',
+                op_item_cod_fornecedor: '',
+                op_item_valor_total: prod_valorTotal,
+                controleEdit: 'insert',
+                op_item_id_banco: 0,
+            };
+            operacao.itens.push(item_produto);
 
-        let item = "" +
-            "<div id=\"item_" + id + "\" class=\"row item_" + id + "\">" +
-            "<div class=\"col-10\" style=\"padding-right: 0px;\">" +
-            "<input type =\"text\" class=\"include_item\" style=\"width: 40%\" id=\"prod_descricao_" + id + "\" readonly=\"readonly\" value=\"" + prod_descricao + "\" />" +
-            "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_codigo_" + id + "\" readonly=\"readonly\" value=\"" + prod_codigo + "\"/>" +
-            "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_valor_" + id + "\" readonly=\"readonly\" value=\"" + prod_valor + "\"/>" +
-            "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_quantidade_" + id + "\" readonly=\"readonly\" value=\"" + prod_quantidade + "\"/>" +
-            "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_valorTotal_" + id + "\" readonly=\"readonly\" value=\"" + prod_valorTotal + "\"/>" +
-            "<input type =\"hidden\" id=\"produto_id_" + id + "\" value=\"\" />" +
-            "<input type =\"hidden\" id=\"" + numero_controle + "\" value=\"\" />" +
-            "</div>" +
-            "<div class=\"col-2\" style=\"text-align: right;padding-top: 6px;padding-left: 0px;\">" +
-            "<svg id=\"E" + numero_controle + "\" onclick=\"edit_item(this.id)\" width =\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-pencil\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
-            "<path fill - rule=\"evenodd\" d=\"M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z\" />" +
-            "</svg>" +
-            "<svg id=\"D" + numero_controle + "\" onclick=\"delete_item(this.id, 'confirmação')\" width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-trash\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
-            "<path d =\"M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z\" />" +
-            "<path fill - rule=\"evenodd\" d=\"M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z\" />" +
-            "</svg>" +
-            "</div>" +
-            "</div>";
+            let item = "" +
+                "<div id=\"item_" + id + "\" class=\"row item_" + id + "\">" +
+                "<div class=\"col-10\" style=\"padding-right: 0px;\">" +
+                "<input type =\"text\" class=\"include_item\" style=\"width: 40%\" id=\"prod_descricao_" + id + "\" readonly=\"readonly\" value=\"" + prod_descricao + "\" />" +
+                "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_codigo_" + id + "\" readonly=\"readonly\" value=\"" + prod_codigo + "\"/>" +
+                "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_valor_" + id + "\" readonly=\"readonly\" value=\"" + prod_valor + "\"/>" +
+                "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_quantidade_" + id + "\" readonly=\"readonly\" value=\"" + prod_quantidade + "\"/>" +
+                "<input type =\"text\" class=\"include_item\" style=\"width: 15%\" id=\"prod_valorTotal_" + id + "\" readonly=\"readonly\" value=\"" + prod_valorTotal + "\"/>" +
+                "<input type =\"hidden\" id=\"produto_id_" + id + "\" value=\"\" />" +
+                "<input type =\"hidden\" id=\"" + numero_controle + "\" value=\"\" />" +
+                "</div>" +
+                "<div class=\"col-2\" style=\"text-align: right;padding-top: 6px;padding-left: 0px;\">" +
+                "<svg id=\"E" + numero_controle + "\" onclick=\"edit_item(this.id)\" width =\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-pencil\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
+                "<path fill - rule=\"evenodd\" d=\"M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z\" />" +
+                "</svg>" +
+                "<svg id=\"D" + numero_controle + "\" onclick=\"delete_item(this.id, 'confirmação')\" width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-trash\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
+                "<path d =\"M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z\" />" +
+                "<path fill - rule=\"evenodd\" d=\"M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z\" />" +
+                "</svg>" +
+                "</div>" +
+                "</div>";
 
-        $('#box_itens').append(item);
+            $('#box_itens').append(item);
 
-        document.getElementById('prod_descricao').focus();
+            //Inserindo em totais total de itens
+            operacao.totais.op_totais_itens += 1;
+            //Inserindo em totais a soma das quantidades totais
+            let qtd_total = (operacao.totais.op_totais_qtd_itens.toString().replace('.', '').replace(',', '.') * 1) + (prod_quantidade.toString().replace('.', '').replace(',', '.') * 1);
+            operacao.totais.op_totais_qtd_itens = qtd_total.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
 
-        totaisOperacao();
+            document.getElementById('prod_descricao').focus();
+
+            totaisOperacao();
+        }
+        
     } else {
         document.getElementById('prod_descricao').focus();
     }    
@@ -1321,6 +1333,12 @@ function delete_item(id, confirma) {
                 }
             }
         }
+
+        //Inserindo em totais total de itens
+        operacao.totais.op_totais_itens -= 1;
+        //Inserindo em totais a soma das quantidades totais
+        let qtd_total = (operacao.totais.op_totais_qtd_itens.toString().replace('.', '').replace(',', '.') * 1) - (item.op_item_qtd.toString().replace('.', '').replace(',', '.') * 1);
+        operacao.totais.op_totais_qtd_itens = qtd_total.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
     }
 }
 
@@ -1982,19 +2000,35 @@ function gravarOperacao() {
             type: 'POST',
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
-                
+                document.getElementById('staticLabel').innerHTML = "";
+                document.getElementById('staticLabel').innerHTML = "Compra";
+                document.getElementById('conteudo').innerHTML = "";
+                document.getElementById('conteudo').innerHTML = "<p>Gravando compra, aguarde...</p>";
+                document.getElementById('rodape').innerHTML = "";                
+                $('#modal_mensagem').modal('show');
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 alert("erro");
             },
             success: function (data, textStatus, XMLHttpRequest) {
+                console.log(textStatus);
+                console.log(XMLHttpRequest);
                 var results = JSON.parse(data);
+
                 if (results.includes('Sucesso')) {
-                    alert('Compra cadastrada com sucesso!');
+                    $('#modal_mensagem').modal('hide');                   
+                    $('#modal_mensagem_sucesso').modal('show');
                 }
 
                 if (results.includes('Erro')) {
-                    alert('Houve um problema na gravação da compra. Tente gravar novamente. Se persistir entre em contato com o suporte!');
+                    $('#modal_mensagem').modal('hide');
+                    document.getElementById('staticLabel').innerHTML = "";
+                    document.getElementById('staticLabel').innerHTML = "Compra";
+                    document.getElementById('conteudo').innerHTML = "";
+                    document.getElementById('conteudo').innerHTML = "<p>Houve um problema na gravação da compra. Tente gravar novamente. Se persistir entre em contato com o suporte!</p>";
+                    document.getElementById('rodape').innerHTML = "";
+                    document.getElementById('rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
+                    $('#modal_mensagem').modal('show');
                 }
             }
         });
