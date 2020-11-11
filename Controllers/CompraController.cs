@@ -66,7 +66,7 @@ namespace gestaoContadorcomvc.Controllers
             }
             catch
             {
-                return View();
+                return Json(JsonConvert.SerializeObject("Erro. caiu no catch"));
             }
         }
 
@@ -119,11 +119,19 @@ namespace gestaoContadorcomvc.Controllers
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+                op.operacao.op_tipo = "Compra";
+                Operacao operacao = new Operacao();
+                string retorno = operacao.alterarOperacao(user.usuario_id, user.usuario_conta_id, op);
+
+                return Json(JsonConvert.SerializeObject(retorno));
             }
             catch
             {
-                return View();
+                return Json(JsonConvert.SerializeObject("Erro. caiu no catch"));
             }
         }
 

@@ -134,6 +134,8 @@ function carregarEdit(id) {
                 operacao.parcelas[i].op_parcela_saldo = operacao.parcelas[i].op_parcela_saldo.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
                 operacao.parcelas[i].op_parcela_valor = operacao.parcelas[i].op_parcela_valor.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }); 
                 operacao.parcelas[i].op_parcela_numero_controle = operacao.parcelas[i].op_parcela_id;
+                let data = operacao.parcelas[i].op_parcela_vencimento.substring(0, 10).split('-');                
+                operacao.parcelas[i].op_parcela_vencimento = data[2] + '/' + data[1] + '/' + data[0];
 
                 let id = '#fpParcela_' + operacao.parcelas[i].op_parcela_id;
                 $(id).val(operacao.parcelas[i].op_parcela_fp_id.toString());
@@ -2004,22 +2006,26 @@ function validaItens() {
 function validaParcelas() {
 
     let retorno = "";
+    let contador = 1;
 
     if (operacao.parcelas.length == 0) {
         retorno = 'Ínforme ao menos numa parcela!;';
     } else{
         for (let i = 0; i < operacao.parcelas.length; i++) {
-            if ((operacao.parcelas[i].op_parcela_valor.toString().replace('.', '').replace(',', '.') * 1) == 0 || operacao.parcelas[i].op_parcela_valor == "" || operacao.parcelas[i].op_parcela_valor == null) {
-                retorno = 'Parcela número ' + (i + 1) + ': Valor não pode ser vázio ou zero.;';
-            }
-                        
-            let data = (operacao.parcelas[i].op_parcela_vencimento).split('/');
-            let d = new Date(data[2], data[1], data[0]);
-            if (d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1) {
-                retorno = 'Parcela número ' + (i + 1) + ': Data inválida.;';
-            }
-            
+            if (operacao.parcelas[i].controleEdit == 'insert' || operacao.parcelas[i].controleEdit == 'update') {
 
+                if ((operacao.parcelas[i].op_parcela_valor.toString().replace('.', '').replace(',', '.') * 1) == 0 || operacao.parcelas[i].op_parcela_valor == "" || operacao.parcelas[i].op_parcela_valor == null) {
+                    retorno = 'Parcela número ' + contador + ': Valor não pode ser vázio ou zero.;';
+                }
+
+                let data = (operacao.parcelas[i].op_parcela_vencimento).split('/');
+                let d = new Date(data[2], data[1], data[0]);
+                if (d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1) {
+                    retorno = 'Parcela número ' + contador + ': Data inválida.;';
+                }
+
+                contador += 1;
+            }
         }
     }
 
