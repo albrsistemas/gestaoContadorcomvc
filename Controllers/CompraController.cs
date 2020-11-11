@@ -81,14 +81,41 @@ namespace gestaoContadorcomvc.Controllers
             Vm_operacao vm_op = new Vm_operacao();
 
             vm_op = op.buscaOperacao(user.usuario_id, user.usuario_conta_id, id);
+            vm_op.user = user;
 
-            return View();
+
+            Selects select = new Selects();
+            ViewBag.tipoPessoa = select.getTipoPessoa().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_part_tipo });
+            ViewBag.ufIbge = select.getUF_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_uf_ibge_codigo.ToString() });
+            ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_paisesIBGE_codigo.ToString() });
+            ViewBag.categoria = select.getCategoriasCliente(user.usuario_conta_id, true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.operacao.op_categoria_id.ToString() });
+            ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.modFrete = select.getModFrete().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.transportador.op_transportador_modalidade_frete });
+
+            return View(vm_op);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult consultaCompra(int id)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Operacao op = new Operacao();
+            Vm_operacao vm_op = new Vm_operacao();
+
+            vm_op = op.buscaOperacao(user.usuario_id, user.usuario_conta_id, id);
+            vm_op.user = user;
+
+            return Json(JsonConvert.SerializeObject(vm_op));
         }
 
         // POST: CompraController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Vm_operacao op)
         {
             try
             {

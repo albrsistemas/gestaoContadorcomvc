@@ -92,7 +92,81 @@ function Page() {
     if (tipo_Pessoa) {
         tipoPessoa(tipo_Pessoa.value);
     }
+    //Carregar página do edit compra
+    if (document.getElementById('carregamentoCompra')) {
+        carregarEdit(document.getElementById('carregamentoCompra').value);
+    }
 }
+
+function carregarEdit(id) {
+    $.ajax({
+        url: "/Compra/consultaCompra",
+        data: { __RequestVerificationToken: gettoken(), id: id },
+        type: 'POST',
+        dataType: 'json',
+        beforeSend: function (XMLHttpRequest) {
+            /*
+            document.getElementById('carr_body').innerHTML = "";
+            document.getElementById('carr_body').innerHTML = "<p>Carregando...</p>";
+            $('#modal_carregamento').modal('show');
+            */
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert("erro no carregamento da página!");
+        },
+        success: function (data, textStatus, XMLHttpRequest) {            
+            var results = JSON.parse(data);            
+            operacao = results;
+            for (let i = 0; i < operacao.itens.length; i++) {
+                operacao.itens[i].op_item_desconto = operacao.itens[i].op_item_desconto.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+                operacao.itens[i].op_item_desp_aces = operacao.itens[i].op_item_desp_aces.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+                operacao.itens[i].op_item_frete = operacao.itens[i].op_item_frete.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+                operacao.itens[i].op_item_preco = operacao.itens[i].op_item_preco.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+                operacao.itens[i].op_item_qtd = operacao.itens[i].op_item_qtd.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+                operacao.itens[i].op_item_seguros = operacao.itens[i].op_item_seguros.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+                operacao.itens[i].op_item_valor_total = operacao.itens[i].op_item_valor_total.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+                operacao.itens[i].op_item_vlr_icms_st = operacao.itens[i].op_item_vlr_icms_st.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+                operacao.itens[i].op_item_vlr_ipi = operacao.itens[i].op_item_vlr_ipi.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+                operacao.itens[i].op_item_numero_controle = operacao.itens[i].op_item_id;
+            }
+
+            for (let i = 0; i < operacao.parcelas.length; i++) {
+                operacao.parcelas[i].op_parcela_saldo = operacao.parcelas[i].op_parcela_saldo.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+                operacao.parcelas[i].op_parcela_valor = operacao.parcelas[i].op_parcela_valor.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }); 
+                operacao.parcelas[i].op_parcela_numero_controle = operacao.parcelas[i].op_parcela_id;
+
+                let id = '#fpParcela_' + operacao.parcelas[i].op_parcela_id;
+                $(id).val(operacao.parcelas[i].op_parcela_fp_id.toString());
+            }
+            //retenções
+            operacao.retencoes.op_ret_pis = operacao.retencoes.op_ret_pis.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.retencoes.op_ret_cofins = operacao.retencoes.op_ret_cofins.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.retencoes.op_ret_csll = operacao.retencoes.op_ret_csll.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.retencoes.op_ret_inss = operacao.retencoes.op_ret_inss.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.retencoes.op_ret_irrf = operacao.retencoes.op_ret_irrf.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.retencoes.op_ret_issqn = operacao.retencoes.op_ret_issqn.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            //totais
+            operacao.totais.op_totais_desconto = operacao.totais.op_totais_desconto.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.totais.op_totais_desp_aces = operacao.totais.op_totais_desp_aces.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.totais.op_totais_frete = operacao.totais.op_totais_frete.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.totais.op_totais_icms_st = operacao.totais.op_totais_icms_st.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.totais.op_totais_ipi = operacao.totais.op_totais_ipi.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.totais.op_totais_preco_itens = operacao.totais.op_totais_preco_itens.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.totais.op_totais_qtd_itens = operacao.totais.op_totais_qtd_itens.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.totais.op_totais_retencoes = operacao.totais.op_totais_retencoes.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.totais.op_totais_saldoLiquidacao = operacao.totais.op_totais_saldoLiquidacao.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.totais.op_totais_seguro = operacao.totais.op_totais_seguro.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.totais.op_totais_total_op = operacao.totais.op_totais_total_op.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            //transportador
+            operacao.transportador.op_transportador_volume_peso_bruto = operacao.transportador.op_transportador_volume_peso_bruto.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            operacao.transportador.op_transportador_volume_qtd = operacao.transportador.op_transportador_volume_qtd.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            //$('#modal_carregamento').modal('hide');
+
+        }
+    });
+}
+
+
 
 function ValidaRegistro(id) {
     if (id == "pj") {
@@ -1159,7 +1233,7 @@ function incluir_item() {
             let item_produto = {
                 op_item_numero_controle: numero_controle, //id é o produto_id selecionado. Adicionaod ao objeto para fins de controle (localiza-lo no momento da edição dos dados);
                 op_item_produto_id: id,
-                op_item_id: 0,
+                op_item_id: numero_controle,
                 op_item_codigo: prod_codigo,
                 op_item_nome: prod_descricao,
                 op_item_unidade: prod_unidade,
@@ -1352,7 +1426,7 @@ function totaisOperacao() {
     let op_totais_ipi = 0;    
 
     for (let i = 0; i < operacao.itens.length; i++) {
-        if (operacao.itens[i].controleEdit != 'delele') {            
+        if (operacao.itens[i].controleEdit == 'update' || operacao.itens[i].controleEdit == 'insert') {
             op_totais_frete += ((operacao.itens[i].op_item_frete).toString().replace('.', '').replace(',', '.') * 1);
             op_totais_seguro += ((operacao.itens[i].op_item_seguros).toString().replace('.', '').replace(',', '.') * 1);
             op_totais_desp_aces += ((operacao.itens[i].op_item_desp_aces).toString().replace('.', '').replace(',', '.') * 1);
@@ -1957,7 +2031,7 @@ function validaParcelas() {
 }
 
 
-function gravarOperacao() {
+function gravarOperacao(contexto) {
     let validacao = [];
     let erros = [];
     
@@ -1984,18 +2058,17 @@ function gravarOperacao() {
             erros.push(validacao[i]);
             $('#msg_valid').append('<span class="text-danger">' + validacao[i] + '</span></br>');
         }
-    }
-    console.log(validacao);
-    console.log(erros);
+    }    
+
     if (erros.length > 0) {
         alert('Há informações incorretas nos dados preenchidos. Verifique a lista erros no final da página!');
     } else {
         //Postar o formulário de compra
 
-        //alert('Tudo ok. Para os próximos episódios teremos a persistência no banco de dados!');
+        //alert('Tudo ok. Para os próximos episódios teremos a persistência no banco de dados!');        
         
         $.ajax({
-            url: "/Compra/Create",
+            url: "/Compra/" + contexto,
             data: { __RequestVerificationToken: gettoken(), op: operacao},
             type: 'POST',
             dataType: 'json',

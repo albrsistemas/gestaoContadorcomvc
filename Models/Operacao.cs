@@ -883,6 +883,7 @@ namespace gestaoContadorcomvc.Models
                         item.op_item_gtin_ean = leitor_2["op_item_gtin_ean"].ToString();
                         item.op_item_gtin_ean_trib = leitor_2["op_item_gtin_ean_trib"].ToString();
                         item.op_item_cod_fornecedor = leitor_2["op_item_cod_fornecedor"].ToString();
+                        item.controleEdit = "update";
 
                         itens.Add(item);
                     }
@@ -972,6 +973,7 @@ namespace gestaoContadorcomvc.Models
                         }
 
                         parcela.op_parcela_obs = leitor_3["op_parcela_obs"].ToString();
+                        parcela.controleEdit = "update";
 
                         parcelas.Add(parcela);
                     }
