@@ -43,7 +43,7 @@ namespace gestaoContadorcomvc.Models
 
         public string cadastraOperacao(int usuario_id, int conta_id, Vm_operacao op)
         {
-            string retorno = "Sucesso";
+            string retorno = "Operação cadastrada com sucesso!";
 
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
@@ -883,6 +883,7 @@ namespace gestaoContadorcomvc.Models
                         item.op_item_gtin_ean = leitor_2["op_item_gtin_ean"].ToString();
                         item.op_item_gtin_ean_trib = leitor_2["op_item_gtin_ean_trib"].ToString();
                         item.op_item_cod_fornecedor = leitor_2["op_item_cod_fornecedor"].ToString();
+                        item.op_item_unidade = leitor_2["op_item_unidade"].ToString();
                         item.controleEdit = "update";
 
                         itens.Add(item);
@@ -1003,7 +1004,7 @@ namespace gestaoContadorcomvc.Models
         //Alterar operação
         public string alterarOperacao(int usuario_id, int conta_id, Vm_operacao op)
         {
-            string retorno = "Sucesso";           
+            string retorno = "Operação alterada com sucesso!";           
 
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
@@ -1019,18 +1020,25 @@ namespace gestaoContadorcomvc.Models
                 MySqlCommand cmdp = conn.CreateCommand();
                 cmdp.Connection = conn;
                 cmdp.Transaction = Transacao;
+
+                cmdp.CommandText = "SELECT * from op_parcelas_baixa as b where b.oppb_op_id = @op;";
+                cmdp.Parameters.AddWithValue("@op", op.operacao.op_id);
+
                 leitor = cmdp.ExecuteReader();
+
                 if (leitor.HasRows)
                 {
-                    retorno = "Erro. Opercação não pode ser alterada devido a existencia de baixas nas parcelas ralaionadas!";
+                    retorno = "Erro. Opercação não pode ser alterada devido a existencia de baixas nas parcelas. Exclua as baixas antes de efetuar alteração!";
+                    leitor.Close();
                 }
                 else
                 {
+                    leitor.Close();
                     //Operação
                     comando.CommandText = "UPDATE operacao set op_data = @op_data, op_obs = @op_obs, op_previsao_entrega = @op_previsao_entrega, op_data_saida = @op_data_saida, op_categoria_id = @op_categoria_id where operacao.op_conta_id = @conta_id and operacao.op_id = @op_id;";
                     comando.Parameters.AddWithValue("@op_id", op.operacao.op_id);
                     comando.Parameters.AddWithValue("@op_data", op.operacao.op_data);
-                    comando.Parameters.AddWithValue("@op_conta_id", conta_id);
+                    comando.Parameters.AddWithValue("@conta_id", conta_id);
                     comando.Parameters.AddWithValue("@op_obs", op.operacao.op_obs);
                     comando.Parameters.AddWithValue("@op_previsao_entrega", op.operacao.op_previsao_entrega);
                     comando.Parameters.AddWithValue("@op_data_saida", op.operacao.op_data_saida);
@@ -1214,8 +1222,6 @@ namespace gestaoContadorcomvc.Models
                     log.log("Operacao", "cadastraOperacao", "Sucesso", msg, conta_id, usuario_id);
 
                 }
-                leitor.Close();               
-
                 Transacao.Commit();
             }
             catch (Exception e)

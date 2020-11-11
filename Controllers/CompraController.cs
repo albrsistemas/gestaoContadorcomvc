@@ -56,17 +56,19 @@ namespace gestaoContadorcomvc.Controllers
             Vm_usuario user = new Vm_usuario();
             user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
+            string retorno = "";
+
             try
             {
                 op.operacao.op_tipo = "Compra";
                 Operacao operacao = new Operacao();
-                string retorno = operacao.cadastraOperacao(user.usuario_id, user.usuario_conta_id, op);
+                retorno = operacao.cadastraOperacao(user.usuario_id, user.usuario_conta_id, op);
 
                 return Json(JsonConvert.SerializeObject(retorno));
             }
             catch
             {
-                return Json(JsonConvert.SerializeObject("Erro. caiu no catch"));
+                return Json(JsonConvert.SerializeObject(retorno));
             }
         }
 
@@ -117,6 +119,8 @@ namespace gestaoContadorcomvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Vm_operacao op)
         {
+            string retorno = "";
+
             try
             {
                 Usuario usuario = new Usuario();
@@ -125,13 +129,13 @@ namespace gestaoContadorcomvc.Controllers
 
                 op.operacao.op_tipo = "Compra";
                 Operacao operacao = new Operacao();
-                string retorno = operacao.alterarOperacao(user.usuario_id, user.usuario_conta_id, op);
+                retorno = operacao.alterarOperacao(user.usuario_id, user.usuario_conta_id, op);
 
                 return Json(JsonConvert.SerializeObject(retorno));
             }
             catch
             {
-                return Json(JsonConvert.SerializeObject("Erro. caiu no catch"));
+                return Json(JsonConvert.SerializeObject(retorno));
             }
         }
 

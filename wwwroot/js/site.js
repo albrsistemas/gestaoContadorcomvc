@@ -105,11 +105,10 @@ function carregarEdit(id) {
         type: 'POST',
         dataType: 'json',
         beforeSend: function (XMLHttpRequest) {
-            /*
-            document.getElementById('carr_body').innerHTML = "";
-            document.getElementById('carr_body').innerHTML = "<p>Carregando...</p>";
-            $('#modal_carregamento').modal('show');
-            */
+            document.getElementsByTagName('svg').disabled = true;
+            document.getElementById('sub').disabled = true;
+            document.getElementById('carregamento').style.display = "block";
+            document.getElementById('carregamento').innerHTML = "carregando...";
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             alert("erro no carregamento da página!");
@@ -162,7 +161,12 @@ function carregarEdit(id) {
             //transportador
             operacao.transportador.op_transportador_volume_peso_bruto = operacao.transportador.op_transportador_volume_peso_bruto.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
             operacao.transportador.op_transportador_volume_qtd = operacao.transportador.op_transportador_volume_qtd.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
-            //$('#modal_carregamento').modal('hide');
+
+            //Reabilitando pós carregamento
+            document.getElementsByTagName('svg').disabled = false;
+            document.getElementById('sub').disabled = false;
+            document.getElementById('carregamento').innerHTML = "";
+            document.getElementById('carregamento').style.display = "nome";
 
         }
     });
@@ -2094,20 +2098,38 @@ function gravarOperacao(contexto) {
                 console.log(XMLHttpRequest);
                 var results = JSON.parse(data);
 
-                if (results.includes('Sucesso')) {
-                    $('#modal_mensagem').modal('hide');                   
-                    $('#modal_mensagem_sucesso').modal('show');
+                if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                    $('#modal_mensagem').modal('hide');
+                    document.getElementById('mensagem_retorno_label').innerHTML = "";
+                    document.getElementById('mensagem_retorno_label').innerHTML = "ERRO";
+                    document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
+                    document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON +"</p>";
+                    document.getElementById('mensagem_retorno_rodape').innerHTML = "";
+                    document.getElementById('mensagem_retorno_rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
+                    $('#modal_mensagem_retorno').modal('show');
+
+                    return;
                 }
 
-                if (results.includes('Erro')) {
+                if (XMLHttpRequest.responseJSON.includes('alterada com sucesso')) {
                     $('#modal_mensagem').modal('hide');
-                    document.getElementById('staticLabel').innerHTML = "";
-                    document.getElementById('staticLabel').innerHTML = "Compra";
-                    document.getElementById('conteudo').innerHTML = "";
-                    document.getElementById('conteudo').innerHTML = "<p>Houve um problema na gravação da compra. Tente gravar novamente. Se persistir entre em contato com o suporte!</p>";
-                    document.getElementById('rodape').innerHTML = "";
-                    document.getElementById('rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
-                    $('#modal_mensagem').modal('show');
+                    document.getElementById('mensagem_retorno_label').innerHTML = "";
+                    document.getElementById('mensagem_retorno_label').innerHTML = "Operação";
+                    document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
+                    document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON + "</p>";
+                    document.getElementById('mensagem_retorno_rodape').innerHTML = "";
+                    document.getElementById('mensagem_retorno_rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
+                    $('#modal_mensagem_retorno').modal('show');
+
+                    return;
+                }
+
+
+                if (XMLHttpRequest.responseJSON.includes('cadastrada com sucesso')) {
+                    $('#modal_mensagem').modal('hide');                   
+                    $('#modal_mensagem_sucesso').modal('show');
+
+                    return;
                 }
             }
         });

@@ -87,6 +87,7 @@
 
 <h2>Alterar Compra</h2>
 <hr class="hrLine" />
+<span class="text-primary" id="carregamento"></span>
 <form asp-controller="Compra" asp-action="Edit" id="form_compra">
     <input type="hidden" id="carregamentoCompra" asp-for="operacao.op_id" />
     <fieldset>
@@ -290,7 +291,7 @@
                         <div class="col-10" style="padding-right: 0px;">
                             <input id="diasParcela_@p.op_parcela_id" onchange="update_parcela(this.id, this.value)" type="text" class="include_item" style="width: 10%;padding:0px;text-align:center" value="@p.op_parcela_dias" />
                             <input id="vencParcela_@p.op_parcela_id" onchange="update_parcela(this.id, this.value)" type="text" class="include_item datepicker" style="width: 25%" value="@p.op_parcela_vencimento.ToShortDateString()" />
-                            <input id="vlrParcela_@p.op_parcela_id" onchange="update_parcela(this.id, this.value)" type="text" class="include_item" style="width: 25%" value="@p.op_parcela_valor.ToString("N")" />                            
+                            <input id="vlrParcela_@p.op_parcela_id" onchange="update_parcela(this.id, this.value)" type="text" class="include_item" style="width: 25%" value="@p.op_parcela_valor.ToString("N")" />
                             <select asp-items="@ViewBag.formaPgto" id="fpParcela_@p.op_parcela_id" onchange="update_parcela(this.id, this.value)" class="include_item" style="width: 25%"></select>
                             <input id="obsParcela_@p.op_parcela_id" onchange="update_parcela(this.id, this.value)" type="text" class="include_item" style="width: 15%" />
                         </div>
@@ -664,13 +665,30 @@
         </div>
     </div>
 
+    <!--Aguardando gravar-->
+    <div class="modal fade" id="modal_mensagem_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mensagem_retorno_label"></h5>
+                </div>
+                <div class="modal-body" id="mensagem_retorno_conteudo">
+
+                </div>
+                <div class="modal-footer" id="mensagem_retorno_rodape">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!--Carregando edit-->
     <div class="modal fade" id="modal_carregamento" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm">
-            <div class="modal-content">               
+            <div class="modal-content">
                 <div class="modal-body" id="carr_body">
 
-                </div>                
+                </div>
             </div>
         </div>
     </div>
