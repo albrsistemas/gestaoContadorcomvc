@@ -45,5 +45,11 @@ namespace gestaoContadorcomvc.Models
         public int op_uf_ibge_codigo { get; set; }
         public int op_id { get; set; }
         public int op_part_participante_id { get; set; }
+
+        //Atributos de controle         
+        public bool existe { get; set; } //Atributo de controle de edição
+        public string controleEdit { get; set; } //Atributo de controle de edição
+
+
     }
 }

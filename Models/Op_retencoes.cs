@@ -15,5 +15,7 @@ namespace gestaoContadorcomvc.Models
         public Decimal op_ret_inss { get; set; }
         public Decimal op_ret_issqn { get; set; }
         public int op_ret_op_id { get; set; }
+
+        public bool existe { get; set; } //Atributo de controle de edição
     }
 }

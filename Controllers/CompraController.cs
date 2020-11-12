@@ -135,6 +135,8 @@ namespace gestaoContadorcomvc.Controllers
             }
             catch
             {
+                retorno = "Erro. Ocorreu uma falha na alteração da operação!";
+
                 return Json(JsonConvert.SerializeObject(retorno));
             }
         }

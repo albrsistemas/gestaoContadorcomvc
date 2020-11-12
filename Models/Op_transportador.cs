@@ -24,6 +24,8 @@ namespace gestaoContadorcomvc.Models
         public Decimal op_transportador_volume_peso_bruto { get; set; }
         public int op_transportador_op_id { get; set; }
 
-        public int op_transportador_participante_id { get; set; } 
+        public int op_transportador_participante_id { get; set; }
+
+        public bool existe { get; set; } //Atributo de controle de edição
     }
 }

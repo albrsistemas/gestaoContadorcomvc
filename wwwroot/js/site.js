@@ -8,7 +8,10 @@ var operacao = {
         op_data_saida: '',
         op_obs: '',
         op_numero_ordem: '',
-        op_categoria_id: 0
+        op_categoria_id: 0,
+        op_comParticipante: false,
+        op_comRetencoes: false,
+        op_comTransportador: false,
     },
     participante: {
         op_part_id: 0,
@@ -23,7 +26,9 @@ var operacao = {
         op_part_complemento: '',
         op_paisesIBGE_codigo: 0,
         op_uf_ibge_codigo: 0,
-        op_part_participante_id: 0,
+        op_part_participante_id: 0,        
+        existe: false,
+        controleEdit: '',
     },
     itens: [],
     retencoes: {
@@ -2041,7 +2046,20 @@ function validaParcelas() {
 }
 
 
-function gravarOperacao(contexto) {
+function gravarOperacao(contexto, tipo_operacao) {
+    //Inserção de atributos de controle
+    if (tipo_operacao == 'Compra') {        
+        operacao.operacao.op_comRetencoes = false;
+        operacao.operacao.op_comParticipante = true;
+        operacao.operacao.op_comTransportador = true;
+
+        if (contexto == 'Create') {
+            operacao.participante.existe = false;            
+        }
+    }
+
+
+
     let validacao = [];
     let erros = [];
     
@@ -2098,19 +2116,6 @@ function gravarOperacao(contexto) {
                 console.log(XMLHttpRequest);
                 var results = JSON.parse(data);
 
-                if (XMLHttpRequest.responseJSON.includes('Erro')) {
-                    $('#modal_mensagem').modal('hide');
-                    document.getElementById('mensagem_retorno_label').innerHTML = "";
-                    document.getElementById('mensagem_retorno_label').innerHTML = "ERRO";
-                    document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
-                    document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON +"</p>";
-                    document.getElementById('mensagem_retorno_rodape').innerHTML = "";
-                    document.getElementById('mensagem_retorno_rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
-                    $('#modal_mensagem_retorno').modal('show');
-
-                    return;
-                }
-
                 if (XMLHttpRequest.responseJSON.includes('alterada com sucesso')) {
                     $('#modal_mensagem').modal('hide');
                     document.getElementById('mensagem_retorno_label').innerHTML = "";
@@ -2118,7 +2123,7 @@ function gravarOperacao(contexto) {
                     document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
                     document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON + "</p>";
                     document.getElementById('mensagem_retorno_rodape').innerHTML = "";
-                    document.getElementById('mensagem_retorno_rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
+                    document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" asp-controller="Compra" asp-action="Index">Fechar</a>';
                     $('#modal_mensagem_retorno').modal('show');
 
                     return;
@@ -2128,6 +2133,19 @@ function gravarOperacao(contexto) {
                 if (XMLHttpRequest.responseJSON.includes('cadastrada com sucesso')) {
                     $('#modal_mensagem').modal('hide');                   
                     $('#modal_mensagem_sucesso').modal('show');
+
+                    return;
+                }
+
+                if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                    $('#modal_mensagem').modal('hide');
+                    document.getElementById('mensagem_retorno_label').innerHTML = "";
+                    document.getElementById('mensagem_retorno_label').innerHTML = "ERRO";
+                    document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
+                    document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON + "</p>";
+                    document.getElementById('mensagem_retorno_rodape').innerHTML = "";
+                    document.getElementById('mensagem_retorno_rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
+                    $('#modal_mensagem_retorno').modal('show');
 
                     return;
                 }

@@ -21,7 +21,10 @@ namespace gestaoContadorcomvc.Models
         public string op_obs { get; set; }
         public int op_numero_ordem { get; set; }
         public int op_categoria_id { get; set; }
-        
+        public bool op_comParticipante { get; set; }
+        public bool op_comRetencoes { get; set; }
+        public bool op_comTransportador { get; set; }
+
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
         public IConfigurationRoot GetConfiguration()
@@ -56,7 +59,7 @@ namespace gestaoContadorcomvc.Models
             try
             {
                 //Operação
-                comando.CommandText = "call pr_operacao(@op_tipo, @op_data, @op_conta_id, @op_obs, @op_previsao_entrega, @op_data_saida, @op_categoria_id);";                
+                comando.CommandText = "call pr_operacao(@op_tipo, @op_data, @op_conta_id, @op_obs, @op_previsao_entrega, @op_data_saida, @op_categoria_id, @op_comParticipante, @op_comRetencoes, @op_comTransportador);";                
                 comando.Parameters.AddWithValue("@op_tipo", op.operacao.op_tipo);
                 comando.Parameters.AddWithValue("@op_data", op.operacao.op_data);
                 comando.Parameters.AddWithValue("@op_conta_id", conta_id);
@@ -64,6 +67,9 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@op_previsao_entrega", op.operacao.op_previsao_entrega);
                 comando.Parameters.AddWithValue("@op_data_saida", op.operacao.op_data_saida);
                 comando.Parameters.AddWithValue("@op_categoria_id", op.operacao.op_categoria_id);
+                comando.Parameters.AddWithValue("@op_comParticipante", op.operacao.op_comParticipante);
+                comando.Parameters.AddWithValue("@op_comRetencoes", op.operacao.op_comRetencoes);
+                comando.Parameters.AddWithValue("@op_comTransportador", op.operacao.op_comTransportador);
                 comando.ExecuteNonQuery();
 
 
@@ -438,6 +444,19 @@ namespace gestaoContadorcomvc.Models
                             op.operacao.op_categoria_id = 0;
                         }
 
+                        if (DBNull.Value != leitor["op_categoria_id"])
+                        {
+                            op.operacao.op_categoria_id = Convert.ToInt32(leitor["op_categoria_id"]);
+                        }
+                        else
+                        {
+                            op.operacao.op_categoria_id = 0;
+                        }
+
+                        op.operacao.op_comParticipante = Convert.ToBoolean(leitor["op_comParticipante"]);
+                        op.operacao.op_comRetencoes = Convert.ToBoolean(leitor["op_comRetencoes"]);
+                        op.operacao.op_comTransportador = Convert.ToBoolean(leitor["op_comTransportador"]);
+
                         op.operacao.op_tipo = leitor["op_tipo"].ToString();
                         op.operacao.op_obs = leitor["op_obs"].ToString();
 
@@ -748,6 +767,34 @@ namespace gestaoContadorcomvc.Models
                         op.transportador.op_transportador_cnpj_cpf = leitor["op_transportador_cnpj_cpf"].ToString();
                     }
 
+                    //Inserção de atributos de controle
+                    if(op.participante.op_part_id == 0)
+                    {
+                        op.participante.existe = false;
+                    }
+                    else
+                    {
+                        op.participante.existe = true;
+                    }                   
+
+                    if (op.retencoes.op_ret_id == 0)
+                    {
+                        op.retencoes.existe = false;
+                    }
+                    else
+                    {
+                        op.retencoes.existe = true;
+                    }
+
+                    if (op.transportador.op_transportador_id == 0)
+                    {
+                        op.transportador.existe = false;
+                    }
+                    else
+                    {
+                        op.transportador.existe = true;
+                    }
+
                     leitor.Close();
                 }
 
@@ -1046,24 +1093,55 @@ namespace gestaoContadorcomvc.Models
                     comando.ExecuteNonQuery();
 
                     //participante
-                    if (op.participante.op_part_cnpj_cpf != "")
+                    if(op.operacao.op_comParticipante)
                     {
-                        comando.CommandText = "UPDATE op_participante set op_paisesIBGE_codigo = @op_paisesIBGE_codigo, op_uf_ibge_codigo = @op_uf_ibge_codigo, op_part_participante_id = @op_part_participante_id, op_part_cep = @op_part_cep, op_part_nome = @op_part_nome, op_part_logradouro = @op_part_logradouro, op_part_numero = @op_part_numero, op_part_tipo = @op_part_tipo, op_part_cnpj_cpf = @op_part_cnpj_cpf, op_part_complemento = @op_part_complemento, op_part_bairro = @op_part_bairro, op_part_cidade = @op_part_cidade where op_participante.op_part_id = @op_part_id;";
-                        comando.Parameters.AddWithValue("@op_part_nome", op.participante.op_part_nome);
-                        comando.Parameters.AddWithValue("@op_part_tipo", op.participante.op_part_tipo);
-                        comando.Parameters.AddWithValue("@op_part_cnpj_cpf", op.participante.op_part_cnpj_cpf);
-                        comando.Parameters.AddWithValue("@op_part_cep", op.participante.op_part_cep);
-                        comando.Parameters.AddWithValue("@op_part_cidade", op.participante.op_part_cidade);
-                        comando.Parameters.AddWithValue("@op_part_bairro", op.participante.op_part_bairro);
-                        comando.Parameters.AddWithValue("@op_part_logradouro", op.participante.op_part_logradouro);
-                        comando.Parameters.AddWithValue("@op_part_numero", op.participante.op_part_numero);
-                        comando.Parameters.AddWithValue("@op_part_complemento", op.participante.op_part_complemento);
-                        comando.Parameters.AddWithValue("@op_paisesIBGE_codigo", op.participante.op_paisesIBGE_codigo);
-                        comando.Parameters.AddWithValue("@op_uf_ibge_codigo", op.participante.op_uf_ibge_codigo);
-                        comando.Parameters.AddWithValue("@op_part_participante_id", op.participante.op_part_participante_id);
-                        comando.Parameters.AddWithValue("@op_part_id", op.participante.op_part_id);
-                        comando.ExecuteNonQuery();
+                        if (op.participante.existe)
+                        {
+                            comando.CommandText = "UPDATE op_participante set op_paisesIBGE_codigo = @op_paisesIBGE_codigo, op_uf_ibge_codigo = @op_uf_ibge_codigo, op_part_participante_id = @op_part_participante_id, op_part_cep = @op_part_cep, op_part_nome = @op_part_nome, op_part_logradouro = @op_part_logradouro, op_part_numero = @op_part_numero, op_part_tipo = @op_part_tipo, op_part_cnpj_cpf = @op_part_cnpj_cpf, op_part_complemento = @op_part_complemento, op_part_bairro = @op_part_bairro, op_part_cidade = @op_part_cidade where op_participante.op_part_id = @op_part_id;";
+                            comando.Parameters.AddWithValue("@op_part_nome", op.participante.op_part_nome);
+                            comando.Parameters.AddWithValue("@op_part_tipo", op.participante.op_part_tipo);
+                            comando.Parameters.AddWithValue("@op_part_cnpj_cpf", op.participante.op_part_cnpj_cpf);
+                            comando.Parameters.AddWithValue("@op_part_cep", op.participante.op_part_cep);
+                            comando.Parameters.AddWithValue("@op_part_cidade", op.participante.op_part_cidade);
+                            comando.Parameters.AddWithValue("@op_part_bairro", op.participante.op_part_bairro);
+                            comando.Parameters.AddWithValue("@op_part_logradouro", op.participante.op_part_logradouro);
+                            comando.Parameters.AddWithValue("@op_part_numero", op.participante.op_part_numero);
+                            comando.Parameters.AddWithValue("@op_part_complemento", op.participante.op_part_complemento);
+                            comando.Parameters.AddWithValue("@op_paisesIBGE_codigo", op.participante.op_paisesIBGE_codigo);
+                            comando.Parameters.AddWithValue("@op_uf_ibge_codigo", op.participante.op_uf_ibge_codigo);
+                            comando.Parameters.AddWithValue("@op_part_participante_id", op.participante.op_part_participante_id);
+                            comando.Parameters.AddWithValue("@op_part_id", op.participante.op_part_id);
+                            comando.ExecuteNonQuery();
+                        }
+                        else
+                        {
+                            comando.CommandText = "insert into op_participante (op_part_nome, op_part_tipo, op_part_cnpj_cpf, op_part_cep, op_part_cidade, op_part_bairro, op_part_logradouro, op_part_numero, op_part_complemento, op_paisesIBGE_codigo, op_uf_ibge_codigo, op_id, op_part_participante_id) values (@op_part_nome, @op_part_tipo, @op_part_cnpj_cpf, @op_part_cep, @op_part_cidade, @op_part_bairro, @op_part_logradouro, @op_part_numero, @op_part_complemento, @op_paisesIBGE_codigo, @op_uf_ibge_codigo, @op_id, @op_part_participante_id);";
+                            comando.Parameters.AddWithValue("@op_part_nome", op.participante.op_part_nome);
+                            comando.Parameters.AddWithValue("@op_part_tipo", op.participante.op_part_tipo);
+                            comando.Parameters.AddWithValue("@op_part_cnpj_cpf", op.participante.op_part_cnpj_cpf);
+                            comando.Parameters.AddWithValue("@op_part_cep", op.participante.op_part_cep);
+                            comando.Parameters.AddWithValue("@op_part_cidade", op.participante.op_part_cidade);
+                            comando.Parameters.AddWithValue("@op_part_bairro", op.participante.op_part_bairro);
+                            comando.Parameters.AddWithValue("@op_part_logradouro", op.participante.op_part_logradouro);
+                            comando.Parameters.AddWithValue("@op_part_numero", op.participante.op_part_numero);
+                            comando.Parameters.AddWithValue("@op_part_complemento", op.participante.op_part_complemento);
+                            comando.Parameters.AddWithValue("@op_paisesIBGE_codigo", op.participante.op_paisesIBGE_codigo);
+                            comando.Parameters.AddWithValue("@op_uf_ibge_codigo", op.participante.op_uf_ibge_codigo);
+                            comando.Parameters.AddWithValue("@op_part_participante_id", op.participante.op_part_participante_id);
+                            comando.Parameters.AddWithValue("@op_id", op.operacao.op_id);
+                            comando.ExecuteNonQuery();
+                        }
                     }
+                    else
+                    {
+                        if (op.participante.existe)
+                        {
+                            comando.CommandText = "DELETE from op_participante where op_participante.op_part_id = @id_participante;";
+                            comando.Parameters.AddWithValue("@id_participante", op.participante.op_part_id);
+                            comando.ExecuteNonQuery();
+                        }
+                    }
+                    
 
                     //Itens
                     if (op.itens.Count > 0)
@@ -1150,26 +1228,51 @@ namespace gestaoContadorcomvc.Models
                     comando.ExecuteNonQuery();
 
                     //retenções
-                    comando.CommandText = "UPDATE op_retencoes set op_ret_pis = @op_ret_pis, op_ret_cofins = @op_ret_cofins, op_ret_csll = @op_ret_csll, op_ret_irrf = @op_ret_irrf, op_ret_inss = @op_ret_inss, op_ret_issqn = @op_ret_issqn, op_ret_id = @op_ret_id where op_retencoes.op_ret_id = @op_ret_id;";
-                    comando.Parameters.AddWithValue("@op_ret_id", op.retencoes.op_ret_id);
-                    comando.Parameters.AddWithValue("@op_ret_pis", op.retencoes.op_ret_pis);
-                    comando.Parameters.AddWithValue("@op_ret_cofins", op.retencoes.op_ret_cofins);
-                    comando.Parameters.AddWithValue("@op_ret_csll", op.retencoes.op_ret_csll);
-                    comando.Parameters.AddWithValue("@op_ret_irrf", op.retencoes.op_ret_irrf);
-                    comando.Parameters.AddWithValue("@op_ret_inss", op.retencoes.op_ret_inss);
-                    comando.Parameters.AddWithValue("@op_ret_issqn", op.retencoes.op_ret_issqn);
-                    comando.ExecuteNonQuery();
+                    if (op.operacao.op_comRetencoes)
+                    {
+                        if (op.retencoes.existe)
+                        {
+                            comando.CommandText = "UPDATE op_retencoes set op_ret_pis = @op_ret_pis, op_ret_cofins = @op_ret_cofins, op_ret_csll = @op_ret_csll, op_ret_irrf = @op_ret_irrf, op_ret_inss = @op_ret_inss, op_ret_issqn = @op_ret_issqn, op_ret_id = @op_ret_id where op_retencoes.op_ret_id = @op_ret_id;";
+                            comando.Parameters.AddWithValue("@op_ret_id", op.retencoes.op_ret_id);
+                            comando.Parameters.AddWithValue("@op_ret_pis", op.retencoes.op_ret_pis);
+                            comando.Parameters.AddWithValue("@op_ret_cofins", op.retencoes.op_ret_cofins);
+                            comando.Parameters.AddWithValue("@op_ret_csll", op.retencoes.op_ret_csll);
+                            comando.Parameters.AddWithValue("@op_ret_irrf", op.retencoes.op_ret_irrf);
+                            comando.Parameters.AddWithValue("@op_ret_inss", op.retencoes.op_ret_inss);
+                            comando.Parameters.AddWithValue("@op_ret_issqn", op.retencoes.op_ret_issqn);
+                            comando.ExecuteNonQuery();
+                        }
+                        else
+                        {
+                            comando.CommandText = "insert into op_retencoes (op_ret_pis, op_ret_cofins, op_ret_csll, op_ret_irrf, op_ret_inss, op_ret_issqn, op_ret_op_id) values (@op_ret_pis, @op_ret_cofins, @op_ret_csll, @op_ret_irrf, @op_ret_inss, @op_ret_issqn, @op_ret_op_id);";
+                            comando.Parameters.AddWithValue("@op_ret_op_id", op.operacao.op_id);
+                            comando.Parameters.AddWithValue("@op_ret_pis", op.retencoes.op_ret_pis);
+                            comando.Parameters.AddWithValue("@op_ret_cofins", op.retencoes.op_ret_cofins);
+                            comando.Parameters.AddWithValue("@op_ret_csll", op.retencoes.op_ret_csll);
+                            comando.Parameters.AddWithValue("@op_ret_irrf", op.retencoes.op_ret_irrf);
+                            comando.Parameters.AddWithValue("@op_ret_inss", op.retencoes.op_ret_inss);
+                            comando.Parameters.AddWithValue("@op_ret_issqn", op.retencoes.op_ret_issqn);
+                            comando.ExecuteNonQuery();
+                        }
+                    }
+                    else
+                    {
+                        if (op.retencoes.existe)
+                        {
+                            comando.CommandText = "DELETE from op_retencoes WHERE op_retencoes.op_ret_id = @id_retencoes;";
+                            comando.Parameters.AddWithValue("@id_retencoes", op.retencoes.op_ret_id);
+                            comando.ExecuteNonQuery();
+                        }
+                    }
+                    
 
                     if (op.parcelas.Count > 0)
                     {
                         //Deletenado todas as parcelas da operação gravadas no banco
-                        MySqlCommand deleteParcelas = conn.CreateCommand();
-                        deleteParcelas.Connection = conn;
-                        deleteParcelas.Transaction = Transacao;
 
-                        deleteParcelas.CommandText = "DELETE from op_parcelas WHERE op_parcelas.op_parcela_op_id = @operacao_id;";
-                        deleteParcelas.Parameters.AddWithValue("@operacao_id", op.operacao.op_id);
-                        deleteParcelas.ExecuteNonQuery();
+                        comando.CommandText = "DELETE from op_parcelas WHERE op_parcelas.op_parcela_op_id = @operacao_id;";
+                        comando.Parameters.AddWithValue("@operacao_id", op.operacao.op_id);
+                        comando.ExecuteNonQuery();
 
                         //Inserindo todas as novas parcelas no banco de dados
                         for (int i = 0; i < op.parcelas.Count; i++)
@@ -1208,15 +1311,43 @@ namespace gestaoContadorcomvc.Models
                     }
 
                     //transportador
-                    comando.CommandText = "UPDATE op_transportador set op_transportador_volume_qtd = @op_transportador_volume_qtd, op_transportador_volume_peso_bruto = @op_transportador_volume_peso_bruto, op_transportador_participante_id = @op_transportador_participante_id, op_transportador_nome = @op_transportador_nome, op_transportador_modalidade_frete = @op_transportador_modalidade_frete, op_transportador_cnpj_cpf = @op_transportador_cnpj_cpf where op_transportador.op_transportador_id = @op_transportador_id;";                    
-                    comando.Parameters.AddWithValue("@op_transportador_nome", op.transportador.op_transportador_nome);
-                    comando.Parameters.AddWithValue("@op_transportador_cnpj_cpf", op.transportador.op_transportador_cnpj_cpf);
-                    comando.Parameters.AddWithValue("@op_transportador_modalidade_frete", op.transportador.op_transportador_modalidade_frete);
-                    comando.Parameters.AddWithValue("@op_transportador_volume_qtd", op.transportador.op_transportador_volume_qtd);
-                    comando.Parameters.AddWithValue("@op_transportador_volume_peso_bruto", op.transportador.op_transportador_volume_peso_bruto);
-                    comando.Parameters.AddWithValue("@op_transportador_id", op.transportador.op_transportador_id);
-                    comando.Parameters.AddWithValue("@op_transportador_participante_id", op.transportador.op_transportador_participante_id);
-                    comando.ExecuteNonQuery();
+                    if (op.operacao.op_comTransportador)
+                    {
+                        if (op.transportador.existe)
+                        {
+                            comando.CommandText = "UPDATE op_transportador set op_transportador_volume_qtd = @op_transportador_volume_qtd, op_transportador_volume_peso_bruto = @op_transportador_volume_peso_bruto, op_transportador_participante_id = @op_transportador_participante_id, op_transportador_nome = @op_transportador_nome, op_transportador_modalidade_frete = @op_transportador_modalidade_frete, op_transportador_cnpj_cpf = @op_transportador_cnpj_cpf where op_transportador.op_transportador_id = @op_transportador_id;";
+                            comando.Parameters.AddWithValue("@op_transportador_nome", op.transportador.op_transportador_nome);
+                            comando.Parameters.AddWithValue("@op_transportador_cnpj_cpf", op.transportador.op_transportador_cnpj_cpf);
+                            comando.Parameters.AddWithValue("@op_transportador_modalidade_frete", op.transportador.op_transportador_modalidade_frete);
+                            comando.Parameters.AddWithValue("@op_transportador_volume_qtd", op.transportador.op_transportador_volume_qtd);
+                            comando.Parameters.AddWithValue("@op_transportador_volume_peso_bruto", op.transportador.op_transportador_volume_peso_bruto);
+                            comando.Parameters.AddWithValue("@op_transportador_id", op.transportador.op_transportador_id);
+                            comando.Parameters.AddWithValue("@op_transportador_participante_id", op.transportador.op_transportador_participante_id);
+                            comando.ExecuteNonQuery();
+                        }
+                        else
+                        {
+                            comando.CommandText = "INSERT into op_transportador (op_transportador_nome, op_transportador_cnpj_cpf, op_transportador_modalidade_frete, op_transportador_volume_qtd, op_transportador_volume_peso_bruto, op_transportador_op_id, op_transportador_participante_id) VALUES (@op_transportador_nome, @op_transportador_cnpj_cpf, @op_transportador_modalidade_frete, @op_transportador_volume_qtd, @op_transportador_volume_peso_bruto, @op_transportador_op_id, @op_transportador_participante_id);";
+                            comando.Parameters.AddWithValue("@conta_id", conta_id);
+                            comando.Parameters.AddWithValue("@op_transportador_nome", op.transportador.op_transportador_nome);
+                            comando.Parameters.AddWithValue("@op_transportador_cnpj_cpf", op.transportador.op_transportador_cnpj_cpf);
+                            comando.Parameters.AddWithValue("@op_transportador_modalidade_frete", op.transportador.op_transportador_modalidade_frete);
+                            comando.Parameters.AddWithValue("@op_transportador_volume_qtd", op.transportador.op_transportador_volume_qtd);
+                            comando.Parameters.AddWithValue("@op_transportador_volume_peso_bruto", op.transportador.op_transportador_volume_peso_bruto);
+                            comando.Parameters.AddWithValue("@op_transportador_op_id", op.operacao.op_id);
+                            comando.Parameters.AddWithValue("@op_transportador_participante_id", op.transportador.op_transportador_participante_id);
+                            comando.ExecuteNonQuery();
+                        }
+                    }
+                    else
+                    {
+                        if (op.transportador.existe)
+                        {
+                            comando.CommandText = "DELETE from op_transportador WHERE op_transportador.op_transportador_id = @id_transportador;";
+                            comando.Parameters.AddWithValue("@id_transportador", op.transportador.op_transportador_id);
+                            comando.ExecuteNonQuery();
+                        }
+                    }                   
 
                     string msg = "Alteração de operação ID: " + op.operacao.op_id + " Alterada com sucesso";
                     log.log("Operacao", "cadastraOperacao", "Sucesso", msg, conta_id, usuario_id);
