@@ -24,6 +24,7 @@ namespace gestaoContadorcomvc.Models
         public bool op_comParticipante { get; set; }
         public bool op_comRetencoes { get; set; }
         public bool op_comTransportador { get; set; }
+        public bool possui_parcelas { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -348,6 +349,37 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
+                //Objetos da operação
+                Operacao operacao = new Operacao();
+                Op_totais totais = new Op_totais();
+                Op_participante participante = new Op_participante();
+                Op_transportador transportador = new Op_transportador();
+                Op_retencoes retencoes = new Op_retencoes();
+                op.operacao = operacao;
+                op.totais = totais;
+                op.participante = participante;
+                op.transportador = transportador;
+                op.retencoes = retencoes;
+
+
+                MySqlDataReader buscaParcela;
+
+                MySqlCommand cmdpar = conn.CreateCommand();
+                cmdpar.Connection = conn;
+                cmdpar.Transaction = Transacao;
+
+                cmdpar.CommandText = "SELECT * from op_parcelas_baixa as b where b.oppb_op_id = @op;";
+                cmdpar.Parameters.AddWithValue("@op", op_id);
+
+                buscaParcela = cmdpar.ExecuteReader();
+
+                if (buscaParcela.HasRows)
+                {
+                    operacao.possui_parcelas = true;                    
+                }
+
+                buscaParcela.Close();
+
                 comando.CommandText = "SELECT op.*, p.*, t.*, tr.*, ret.* from operacao as op LEFT join op_participante as p on p.op_id = op.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = op.op_id LEFT join op_transportador as tr on tr.op_transportador_op_id = op.op_id LEFT join op_retencoes as ret on ret.op_ret_op_id = op.op_id WHERE op.op_conta_id = @conta_id and op.op_id = @op_id;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@op_id", op_id);
@@ -359,18 +391,6 @@ namespace gestaoContadorcomvc.Models
                 {
                     while (leitor.Read())
                     {   
-                        Operacao operacao = new Operacao();
-                        Op_totais totais = new Op_totais();
-                        Op_participante participante = new Op_participante();
-                        Op_transportador transportador = new Op_transportador();
-                        Op_retencoes retencoes = new Op_retencoes();
-                        op.operacao = operacao;
-                        op.totais = totais;
-                        op.participante = participante;
-                        op.transportador = transportador;
-                        op.retencoes = retencoes;
-
-
                         //Operação
                         if (DBNull.Value != leitor["op_id"])
                         {

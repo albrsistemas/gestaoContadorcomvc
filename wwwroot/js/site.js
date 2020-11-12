@@ -12,6 +12,7 @@ var operacao = {
         op_comParticipante: false,
         op_comRetencoes: false,
         op_comTransportador: false,
+        possui_parcelas: false,
     },
     participante: {
         op_part_id: 0,
@@ -103,15 +104,16 @@ function Page() {
     }
 }
 
-function carregarEdit(id) {
+function carregarEdit(id) {   
     $.ajax({
         url: "/Compra/consultaCompra",
         data: { __RequestVerificationToken: gettoken(), id: id },
         type: 'POST',
         dataType: 'json',
-        beforeSend: function (XMLHttpRequest) {
-            document.getElementsByTagName('svg').disabled = true;
-            document.getElementById('sub').disabled = true;
+        beforeSend: function (XMLHttpRequest) {            
+            if (document.getElementById('sub')) {
+                document.getElementById('sub').disabled = true;
+            }
             document.getElementById('carregamento').style.display = "block";
             document.getElementById('carregamento').innerHTML = "carregando...";
         },
@@ -169,9 +171,20 @@ function carregarEdit(id) {
 
             //Reabilitando pós carregamento
             document.getElementsByTagName('svg').disabled = false;
-            document.getElementById('sub').disabled = false;
+            if (document.getElementById('sub')) {
+                document.getElementById('sub').disabled = false;
+            }            
             document.getElementById('carregamento').innerHTML = "";
             document.getElementById('carregamento').style.display = "nome";
+
+            if (operacao.operacao.possui_parcelas) { 
+                document.getElementById('carregamento').innerHTML = "";
+                document.getElementById('carregamento').style.display = "block";
+                document.getElementById('carregamento').innerHTML = "Esta operação possui baixas e não pode ser alterada!";
+            }
+
+
+
 
         }
     });
@@ -2123,7 +2136,7 @@ function gravarOperacao(contexto, tipo_operacao) {
                     document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
                     document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON + "</p>";
                     document.getElementById('mensagem_retorno_rodape').innerHTML = "";
-                    document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" asp-controller="Compra" asp-action="Index">Fechar</a>';
+                    document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/Compra/Index">Fechar</a>';
                     $('#modal_mensagem_retorno').modal('show');
 
                     return;
