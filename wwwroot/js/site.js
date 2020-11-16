@@ -190,6 +190,11 @@ function carregarEdit(id) {
     });
 }
 
+//habilita tooltip
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+});
+
 
 
 function ValidaRegistro(id) {
@@ -1483,11 +1488,12 @@ function totaisOperacao() {
 }
 
 function gerarParcela() {
+    document.getElementById('parcelas').innerHTML = "";    
     let formaPgto = document.getElementById('forma_pgto');
     let condicaoPgto = (document.getElementById('condicoes_pgto').value).split(',');
     let totalCompra = ((document.getElementById('op_totais_total_op').value).toString().replace('.', '').replace(',', '.')) * 1;
     let op_data = document.getElementById('op_data').value;
-    let data = new Date(Date.parse(op_data.substring(6, 10) + "/" + (op_data.substring(3, 5)) + "/" + op_data.substring(0, 2)));     
+    let data = new Date(Date.parse(op_data.substring(6, 10) + "/" + (op_data.substring(3, 5)) + "/" + op_data.substring(0, 2)));    
     let s = document.querySelector('#forma_pgto'); //Forma de pagamento selecionada;        
     let optionsTxt = "";
     
@@ -1514,9 +1520,8 @@ function gerarParcela() {
         alert('Informe a data da operação');        
     } else {
         for (let i = 0; i < condicaoPgto.length; i++) {
-            let vencimento = new Date();
-            vencimento = data;
-            vencimento.setDate(vencimento.getDate() + parseInt(condicaoPgto[i]));
+            let vencimento = new Date();                    
+            vencimento.setDate(data.getDate() + parseInt(condicaoPgto[i]));
 
             let numero_controle = i + Math.floor(Math.random() * 100000) + 1;
 

@@ -7,9 +7,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
 {
     public class Vm_contas_pagar
     {
-        public IEnumerable<ContasPagar> cp_hoje { get; set; }
-        public IEnumerable<ContasPagar> cp_atrasadas { get; set; }
-        public IEnumerable<ContasPagar> cp_proximas { get; set; }
+        public IEnumerable<ContasPagar> contasPagar { get; set; }        
         public Vm_usuario user { get; set; }
     }
 }

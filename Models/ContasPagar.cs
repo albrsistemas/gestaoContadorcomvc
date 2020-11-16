@@ -19,6 +19,7 @@ namespace gestaoContadorcomvc.Models
         public Decimal valorOriginal { get; set; }
         public Decimal baixas { get; set; }
         public Decimal saldo { get; set; }
+        public int prazo { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -41,10 +42,8 @@ namespace gestaoContadorcomvc.Models
 
         //lista contas a pagar para index
         public Vm_contas_pagar listaContasPagar(int usuario_id, int conta_id)
-        {
-            List<ContasPagar> hoje = new List<ContasPagar>();
-            List<ContasPagar> atrasadas = new List<ContasPagar>();
-            List<ContasPagar> proximas = new List<ContasPagar>();
+        {   
+            List<ContasPagar> cps = new List<ContasPagar>();
             Vm_contas_pagar cp = new Vm_contas_pagar();
 
             conn.Open();
@@ -58,9 +57,9 @@ namespace gestaoContadorcomvc.Models
             {
                 DateTime today = DateTime.Today;
 
-                comando.CommandText = "SELECT p.op_parcela_op_id as operacao_, p.op_parcela_vencimento as vencimento, pa.op_part_nome as fornecedor, concat(operacao.op_tipo,' número: ', operacao.op_numero_ordem) as referencia, p.op_parcela_valor as valorOriginal, (SELECT COALESCE(sum(b.oppb_valor), 0.00) from op_parcelas_baixa as b WHERE b.oppb_op_parcela_id = p.op_parcela_id) as baixas, (SELECT COALESCE(sum(valorOriginal - baixas), 0.00)) as saldo, (SELECT IF(vencimento = @data_inicial, 'YES', 'NO')) as hoje, (SELECT IF(vencimento < @data_inicial, 'YES', 'NO')) as atrasadas, (SELECT IF(vencimento > @data_inicial, 'YES', 'NO')) as proximas from op_parcelas as p LEFT join op_participante as pa on pa.op_id = p.op_parcela_op_id left JOIN operacao on operacao.op_id = p.op_parcela_op_id WHERE operacao.op_conta_id = @conta_id and operacao.op_tipo = 'Compra';";
+                comando.CommandText = "SELECT cp.*, case WHEN vencimento<@hoje THEN '2' WHEN vencimento = @hoje THEN '1' ELSE '3' END as prazo from view_contaspagar as cp WHERE conta_id = @conta_id and tipo = 'Compra' and(fp_meio_pgto_nfe != '02' and fp_meio_pgto_nfe != '03') and saldo > 0 ORDER by prazo, vencimento ASC;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
-                comando.Parameters.AddWithValue("@data_inicial", today);
+                comando.Parameters.AddWithValue("@hoje", today);
                 Transacao.Commit();
 
                 var leitor = comando.ExecuteReader();
@@ -128,30 +127,20 @@ namespace gestaoContadorcomvc.Models
                             conta.saldo = 0;
                         }
 
-                        string hoje_ = leitor["hoje"].ToString();
-                        string atr = leitor["atrasadas"].ToString();
-                        string pro = leitor["proximas"].ToString();
-
-                        if(hoje_ == "YES")
+                        if (DBNull.Value != leitor["prazo"])
                         {
-                            hoje.Add(conta);
+                            conta.prazo = Convert.ToInt32(leitor["prazo"]);
+                        }
+                        else
+                        {
+                            conta.prazo = 0;
                         }
 
-                        if (atr == "YES")
-                        {
-                            atrasadas.Add(conta);
-                        }
-
-                        if (pro == "YES")
-                        {
-                            proximas.Add(conta);
-                        }
+                        cps.Add(conta);
                     }
                 } 
-
-                cp.cp_hoje = hoje;
-                cp.cp_atrasadas = atrasadas;
-                cp.cp_proximas = proximas;                
+                
+                cp.contasPagar = cps;
             }
             catch (Exception e)
             {
