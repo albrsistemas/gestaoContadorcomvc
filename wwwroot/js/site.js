@@ -2173,3 +2173,81 @@ function gravarOperacao(contexto, tipo_operacao) {
     }
     
 }
+
+//Baixa contas a pgar
+$(".createBaixa").click(function () {
+    var parcela_id = $(this).attr("data-parcela_id");        
+    $("#modal").load("/Baixa/Create?parcela_id=" + parcela_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$.validator.methods.number = function (value, element) {
+    return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+}
+
+function validaBaixa() {
+
+    retorno = true;
+
+    let saldo = document.getElementById('saldo_parcela').value;
+    let valor = document.getElementById('valor').value;
+
+    if (valor > saldo) {
+        retorno = 'O Valor do Pagamento não pode ser superior ao Saldo a Pagar da parcela!';
+    }
+
+
+    return retorno;
+}
+
+function gravarBaixa() {
+    if (validaBaixa() != true) {
+        $('#msg_valid').append('<span class="text-danger">' + validaBaixa() + '</span></br>');
+    } else {
+        collection = {
+            valor: document.getElementById('valor').value,
+            juros: document.getElementById('juros').value,
+            multa: document.getElementById('multa').value,
+            desconto: document.getElementById('desconto').value,
+            obs: document.getElementById('parcela_obs').value,
+            contacorrente_id: document.getElementById('contacorrente_id').value,
+            data: document.getElementById('data').value,
+            parcela_id: document.getElementById('parcela_id').value,
+            contexto: 'ContasPagar',
+        };
+
+        $.ajax({
+            url: "/Baixa/Create",
+            data: { __RequestVerificationToken: gettoken(), collection: collection },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("erro");
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                console.log(textStatus);
+                console.log(XMLHttpRequest);
+                var results = JSON.parse(data);
+
+                if (XMLHttpRequest.responseJSON.includes('Erro')) {                    
+                    document.getElementById('mensagem_retorno_label').innerHTML = "";
+                    document.getElementById('mensagem_retorno_label').innerHTML = "ERRO";
+                    document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
+                    document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON + "</p>";
+                    document.getElementById('mensagem_retorno_rodape').innerHTML = "";
+                    document.getElementById('mensagem_retorno_rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
+                    $('#modal_mensagem_retorno').modal('show');
+
+                    return;
+                }
+            }
+        });
+    }
+
+
+
+}

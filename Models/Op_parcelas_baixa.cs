@@ -1,18 +1,183 @@
-﻿using System;
+﻿using gestaoContadorcomvc.Models.SoftwareHouse;
+using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Asn1.Crmf;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace gestaoContadorcomvc.Models
 {
     public class Op_parcelas_baixa
     {
         public int oppb_id { get; set; }
+        public int oppb_op_parcela_id { get; set; }
+        public int oppb_op_id { get; set; }
         public DateTime oppb_data { get; set; }
         public DateTime oppb_dataCriacao { get; set; }
         public Decimal oppb_valor { get; set; }
         public string oppb_obs { get; set; }
-        public int oppb_op_parcela_id { get; set; }
-        public int oppb_op_id { get; set; }
+        public Decimal oppb_juros { get; set; }
+        public Decimal oppb_multa { get; set; }
+        public Decimal oppb_desconto { get; set; }
+
+        /*--------------------------*/
+        //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
+        public IConfigurationRoot GetConfiguration()
+        {
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            return builder.Build();
+        }
+        //Método para gerar a conexão
+        MySqlConnection conn;
+        public Op_parcelas_baixa()
+        {
+            var configuration = GetConfiguration();
+            conn = new MySqlConnection(configuration.GetSection("ConnectionStrings").GetSection("conexaocvc").Value);
+        }
+
+        //MÉTODOS
+        //objeto de log para uso nos métodos
+        Log log = new Log();
+
+        //Busca parcela a ser baixada
+        public Vm_op_parcelas_baixa buscaDados_para_Baixa(int conta_id, int usuario_id, int parcela_id)
+        {
+            Vm_op_parcelas_baixa vm_baixa = new Vm_op_parcelas_baixa();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT p.*, concat('Parcela com vencimento em ', DATE_FORMAT(p.op_parcela_vencimento, '%d/%m/%Y'),' referente ',op.op_tipo,' número 6.') as referencia, (SELECT COALESCE(sum(op_parcelas_baixa.oppb_valor), 0.00) from op_parcelas_baixa WHERE op_parcelas_baixa.oppb_op_parcela_id = p.op_parcela_id) as saldo from op_parcelas as p LEFT JOIN operacao as op on op.op_id = p.op_parcela_op_id where op.op_conta_id = @conta_id and p.op_parcela_id = @parcela_id;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@parcela_id", parcela_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        vm_baixa.referencia = leitor["referencia"].ToString();
+
+                        if (DBNull.Value != leitor["op_parcela_vencimento"])
+                        {
+                            vm_baixa.vencimento = Convert.ToDateTime(leitor["op_parcela_vencimento"]);
+                        }
+                        else
+                        {
+                            vm_baixa.vencimento = new DateTime();
+                        }
+
+                        if (DBNull.Value != leitor["op_parcela_valor"])
+                        {
+                            vm_baixa.valor_parcela_original = Convert.ToDecimal(leitor["op_parcela_valor"]);
+                        }
+                        else
+                        {
+                            vm_baixa.valor_parcela_original = 0;
+                        }
+
+                        if (DBNull.Value != leitor["saldo"])
+                        {
+                            vm_baixa.saldo_parcela = Convert.ToDecimal(leitor["saldo"]);
+                        }
+                        else
+                        {
+                            vm_baixa.saldo_parcela = 0;
+                        }
+
+                        if (DBNull.Value != leitor["op_parcela_id"])
+                        {
+                            vm_baixa.parcela_id = Convert.ToInt32(leitor["op_parcela_id"]);
+                        }
+                        else
+                        {
+                            vm_baixa.parcela_id = 0;
+                        }
+
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message.Substring(0, 300);
+                log.log("ContaCorrente", "buscaContaCorrente", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return vm_baixa;
+        }
+
+        //gravar baixa
+        public string cadastrarBaixa(
+            int usuario_id,
+            int conta_id,
+            int parcela_id,
+            int contaCorrente,
+            DateTime data,
+            Decimal valor,
+            string memorando
+            )
+        {
+            string retorno = "Baixa realizada com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "call pr_baixaParcela (@conta_id, @parcela_id, @contaCorrente, @data, @valor, @memorando);";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@parcela_id", parcela_id);
+                comando.Parameters.AddWithValue("@contaCorrente", contaCorrente);
+                comando.Parameters.AddWithValue("@data", data);
+                comando.Parameters.AddWithValue("@valor", valor);
+                comando.Parameters.AddWithValue("@memorando", memorando);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Baixa parcela ID: " + parcela_id + " baixada com sucesso";
+                log.log("Op_parcelas_baixa", "cadastrarBaixa", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao realizar a baixa. Tente novamente. Se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("Op_parcelas_baixa", "cadastrarBaixa", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
     }
 }

@@ -20,6 +20,7 @@ namespace gestaoContadorcomvc.Models
         public Decimal baixas { get; set; }
         public Decimal saldo { get; set; }
         public int prazo { get; set; }
+        public int parcela_id { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -69,6 +70,15 @@ namespace gestaoContadorcomvc.Models
                     while (leitor.Read())
                     {
                         ContasPagar conta = new ContasPagar();
+
+                        if (DBNull.Value != leitor["parcela_id"])
+                        {
+                            conta.parcela_id = Convert.ToInt32(leitor["parcela_id"]);
+                        }
+                        else
+                        {
+                            conta.parcela_id = 0;
+                        }
 
                         if (DBNull.Value != leitor["operacao_"])
                         {
