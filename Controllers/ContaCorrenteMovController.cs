@@ -26,11 +26,13 @@ namespace gestaoContadorcomvc.Controllers
             TempData["dataInicio"] = today.AddDays(-30).ToShortDateString();
             TempData["dataFim"] = today.ToShortDateString();
 
-            Vm_conta_corrente_mov vm_ccm = new Vm_conta_corrente_mov();
-            List<Vm_conta_corrente_mov> lista = new List<Vm_conta_corrente_mov>();
-            vm_ccm.conta_corrente_movimento = lista;
+            Vm_fluxo_caixa vm_fc = new Vm_fluxo_caixa();            
+            Fluxo_caixa fc = new Fluxo_caixa();
+            List<Fluxo_caixa> lista = new List<Fluxo_caixa>();
+            vm_fc.fluxo = lista;
+            vm_fc.user = user;
 
-            return View(vm_ccm);
+            return View(vm_fc);
         }
 
         [HttpPost]
@@ -43,17 +45,17 @@ namespace gestaoContadorcomvc.Controllers
                 Vm_usuario user = new Vm_usuario();
                 user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
-                Conta_corrente_mov ccm = new Conta_corrente_mov();
-                Vm_conta_corrente_mov vm_ccm = new Vm_conta_corrente_mov();
-                vm_ccm.user = user;
-                vm_ccm.conta_corrente_movimento = ccm.listaCCM(user.usuario_id, user.usuario_conta_id, contacorrente_id, dataInicio, dataFim);
+                Vm_fluxo_caixa vm_fc = new Vm_fluxo_caixa();
+                Fluxo_caixa fc = new Fluxo_caixa();
+                vm_fc = fc.fluxoCaixa(user.usuario_id, user.usuario_conta_id, contacorrente_id, dataInicio, dataFim);
+                vm_fc.user = user;
 
                 Selects select = new Selects();
                 ViewBag.ccorrente = select.getContasCorrente(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == contacorrente_id.ToString() });
                 TempData["dataInicio"] = dataInicio.ToShortDateString();
                 TempData["dataFim"] = dataFim.ToShortDateString();
 
-                return View(vm_ccm);
+                return View(vm_fc);
             }
             catch
             {

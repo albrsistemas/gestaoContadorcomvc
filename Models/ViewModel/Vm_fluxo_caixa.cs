@@ -9,6 +9,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
     {
         public Decimal saldo_abertura { get; set; }
         public Decimal saldo_movimentos { get; set; }        
-        public List<Fluxo_caixa> fluxo { get; set; }
+        public IEnumerable<Fluxo_caixa> fluxo { get; set; }
+        public Vm_usuario user { get; set; }
     }
 }

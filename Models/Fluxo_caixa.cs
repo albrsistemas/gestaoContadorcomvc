@@ -49,6 +49,7 @@ namespace gestaoContadorcomvc.Models
             comando.Transaction = Transacao;
             MySqlDataReader saldo;
             MySqlDataReader movimentos;
+            MySqlDataReader fluxo;
 
             try
             {
@@ -69,7 +70,7 @@ namespace gestaoContadorcomvc.Models
                 saldo.Close();
 
                 //Movimentos anteriores a data inicial
-                comando.CommandText = "SELECT sum(if(yccm.ccm_movimento = 'Recebimento', yccm.ccm_valor, -yccm.ccm_valor)) as movimentos from conta_corrente_mov as yccm WHERE yccm.ccm_conta_id = @conta_id_2 and yccm.ccm_ccorrente_id = @contaCorrente_2 and yccm.ccm_data < @dataInicial_2;;";
+                comando.CommandText = "SELECT sum(if(yccm.ccm_movimento = 'Recebimento', yccm.ccm_valor, -yccm.ccm_valor)) as movimentos from conta_corrente_mov as yccm WHERE yccm.ccm_conta_id = @conta_id_2 and yccm.ccm_ccorrente_id = @contaCorrente_2 and yccm.ccm_data < @dataInicial_2;";
                 comando.Parameters.AddWithValue("@contaCorrente_2", contaCorrente);
                 comando.Parameters.AddWithValue("@conta_id_2", conta_id);
                 comando.Parameters.AddWithValue("@dataInicial_2", dataInicial);
@@ -85,66 +86,58 @@ namespace gestaoContadorcomvc.Models
                 }
                 movimentos.Close();
 
+                //Fluxo de lançamentos do período
+                comando.CommandText = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, xccm.ccm_memorando as memorando, if(xccm.ccm_movimento = 'Recebimento', xccm.ccm_valor, -xccm.ccm_valor) as valor from conta_corrente_mov as xccm WHERE xccm.ccm_conta_id = @conta_id_3 and xccm.ccm_ccorrente_id = @contaCorrente_3 and xccm.ccm_data BETWEEN @dataInicial_3 AND @dataFinal ORDER by xccm.ccm_data ASC;";
+                comando.Parameters.AddWithValue("@contaCorrente_3", contaCorrente);
+                comando.Parameters.AddWithValue("@conta_id_3", conta_id);
+                comando.Parameters.AddWithValue("@dataInicial_3", dataInicial);
+                comando.Parameters.AddWithValue("@dataFinal", dataFinal);
+                comando.ExecuteNonQuery();
 
+                fluxo = comando.ExecuteReader();
+                if (fluxo.HasRows)
+                {
+                    while (fluxo.Read())
+                    {
+                        Fluxo_caixa fluxo_cx = new Fluxo_caixa();
 
+                        if (DBNull.Value != fluxo["id"])
+                        {
+                            fluxo_cx.id = Convert.ToInt32(fluxo["id"]);
+                        }
+                        else
+                        {
+                            fluxo_cx.id = 0;
+                        }
 
+                        if (DBNull.Value != fluxo["data"])
+                        {
+                            fluxo_cx.data = Convert.ToDateTime(fluxo["data"]);
+                        }
+                        else
+                        {
+                            fluxo_cx.data = new DateTime();
+                        }
 
+                        fluxo_cx.memorando = fluxo["memorando"].ToString();
 
+                        if (DBNull.Value != fluxo["valor"])
+                        {
+                            fluxo_cx.valor = Convert.ToDecimal(fluxo["valor"]);
+                        }
+                        else
+                        {
+                            fluxo_cx.valor = 0;
+                        }
 
+                        fc.Add(fluxo_cx);
+                    }
+
+                    vm_fc.fluxo = fc;
+                }
+                fluxo.Close();
 
                 Transacao.Commit();
-
-                var leitor = comando.ExecuteReader();
-
-                if (leitor.HasRows)
-                {
-                    while (leitor.Read())
-                    {
-                        Vm_conta_corrente_mov mov = new Vm_conta_corrente_mov();
-
-                        if (DBNull.Value != leitor["abertura"])
-                        {
-                            mov.abertura = Convert.ToDecimal(leitor["abertura"]);
-                        }
-                        else
-                        {
-                            mov.abertura = 0;
-                        }
-
-                        if (DBNull.Value != leitor["data"])
-                        {
-                            mov.data = Convert.ToDateTime(leitor["data"]);
-                        }
-                        else
-                        {
-                            mov.data = new DateTime();
-                        }
-
-                        mov.categoria = leitor["categoria"].ToString();
-                        mov.memorando = leitor["memorando"].ToString();
-                        mov.participante = leitor["cliente_fornecedor"].ToString();
-
-                        if (DBNull.Value != leitor["valor"])
-                        {
-                            mov.valor = Convert.ToDecimal(leitor["valor"]);
-                        }
-                        else
-                        {
-                            mov.valor = 0;
-                        }
-
-                        if (DBNull.Value != leitor["saldo"])
-                        {
-                            mov.saldo = Convert.ToDecimal(leitor["saldo"]);
-                        }
-                        else
-                        {
-                            mov.saldo = 0;
-                        }
-
-                        ccms.Add(mov);
-                    }
-                }
             }
             catch (Exception e)
             {
@@ -159,10 +152,7 @@ namespace gestaoContadorcomvc.Models
                 }
             }
 
-            return ccms;
+            return vm_fc;
         }
-
-
-
     }
 }
