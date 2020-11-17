@@ -70,7 +70,7 @@ namespace gestaoContadorcomvc.Models
                 saldo.Close();
 
                 //Movimentos anteriores a data inicial
-                comando.CommandText = "SELECT sum(if(yccm.ccm_movimento = 'Recebimento', yccm.ccm_valor, -yccm.ccm_valor)) as movimentos from conta_corrente_mov as yccm WHERE yccm.ccm_conta_id = @conta_id_2 and yccm.ccm_ccorrente_id = @contaCorrente_2 and yccm.ccm_data < @dataInicial_2;";
+                comando.CommandText = "SELECT COALESCE(sum(if(yccm.ccm_movimento = 'Recebimento', yccm.ccm_valor, -yccm.ccm_valor)),0.00) as movimentos from conta_corrente_mov as yccm WHERE yccm.ccm_conta_id = @conta_id_2 and yccm.ccm_ccorrente_id = @contaCorrente_2 and yccm.ccm_data < @dataInicial_2;";
                 comando.Parameters.AddWithValue("@contaCorrente_2", contaCorrente);
                 comando.Parameters.AddWithValue("@conta_id_2", conta_id);
                 comando.Parameters.AddWithValue("@dataInicial_2", dataInicial);
@@ -81,7 +81,7 @@ namespace gestaoContadorcomvc.Models
                 {
                     while (movimentos.Read())
                     {
-                        vm_fc.saldo_movimentos = Convert.ToDecimal(saldo["movimentos"]);
+                        vm_fc.saldo_movimentos = Convert.ToDecimal(movimentos["movimentos"]);
                     }
                 }
                 movimentos.Close();
@@ -132,10 +132,10 @@ namespace gestaoContadorcomvc.Models
 
                         fc.Add(fluxo_cx);
                     }
-
-                    vm_fc.fluxo = fc;
                 }
                 fluxo.Close();
+
+                vm_fc.fluxo = fc;
 
                 Transacao.Commit();
             }

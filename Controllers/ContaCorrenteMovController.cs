@@ -21,7 +21,7 @@ namespace gestaoContadorcomvc.Controllers
             user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             Selects select = new Selects();
-            ViewBag.ccorrente = select.getContasCorrente(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.ccorrente = select.getContasCorrenteConta_id(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             DateTime today = DateTime.Today;
             TempData["dataInicio"] = today.AddDays(-30).ToShortDateString();
             TempData["dataFim"] = today.ToShortDateString();
@@ -51,7 +51,7 @@ namespace gestaoContadorcomvc.Controllers
                 vm_fc.user = user;
 
                 Selects select = new Selects();
-                ViewBag.ccorrente = select.getContasCorrente(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == contacorrente_id.ToString() });
+                ViewBag.ccorrente = select.getContasCorrenteConta_id(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == contacorrente_id.ToString() });
                 TempData["dataInicio"] = dataInicio.ToShortDateString();
                 TempData["dataFim"] = dataFim.ToShortDateString();
 

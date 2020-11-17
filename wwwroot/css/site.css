@@ -345,7 +345,27 @@ input[type=number] {
 }
 /*Fim*/
 /*Fim estilo LineList*/
+/*Botão da tela index do controle contra corrente Fluxo de Caixa*/
+.btn_fc {
+    margin-bottom: 10px;
+    width: 100%;
+}
+.saldo_inicial { /*Tela index do controle de conta corrente*/
+    text-align: right;
+    font-weight: bold;
+}
+
 @media (min-width: 768px) {
+    /*Botão da tela index do controle contra corrente Fluxo de Caixa*/
+    .btn_fc {
+        margin-top: 32px;
+        width: auto;
+    }
+    .saldo_inicial { /*Tela index do controle de conta corrente*/
+        text-align: right;
+        padding-right: 91px;
+        font-weight: bold;
+    }
     /*Niveis das contas contábeis dos planos de contas do contador*/
     .line_list_title_mobile {
         display: none;

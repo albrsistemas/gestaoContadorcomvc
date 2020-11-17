@@ -736,7 +736,7 @@ namespace gestaoContadorcomvc.Models
             return tipo;
         }
 
-        //Lista contas correntes do cliente
+        //Lista contas correntes do cliente // Para uso na forma de pagamentos
         public List<Selects> getContasCorrente(int conta_id)
         {
             List<Selects> selects = new List<Selects>();            
@@ -776,6 +776,55 @@ namespace gestaoContadorcomvc.Models
                 selectPadrao.text = "Diversos";
                 selectPadrao.disabled = false;
                 selects.Add(selectPadrao);
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return selects;
+        }
+
+        //Lista contas correntes do cliente
+        public List<Selects> getContasCorrenteConta_id(int conta_id)
+        {
+            List<Selects> selects = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT cc.ccorrente_id, cc.ccorrente_nome from conta_corrente as cc WHERE cc.ccorrente_conta_id = @conta_id and cc.ccorrente_status = 'Ativo';";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects select = new Selects();
+
+                        select.value = leitor["ccorrente_id"].ToString();
+                        select.text = leitor["ccorrente_nome"].ToString();
+                        select.disabled = false;
+
+                        selects.Add(select);
+                    }
+                }
             }
             catch (Exception)
             {
