@@ -45,7 +45,7 @@ namespace gestaoContadorcomvc.Controllers
         // POST: BaixaController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(IFormCollection collection, Decimal valor, Decimal juros, Decimal multa, Decimal desconto, string obs, int contacorrente_id, DateTime data, int parcela_id, string contexto)
         {
             string retorno = "";
             try
@@ -57,11 +57,11 @@ namespace gestaoContadorcomvc.Controllers
                 Vm_op_parcelas_baixa vm_baixa = new Vm_op_parcelas_baixa();
                 Op_parcelas_baixa b = new Op_parcelas_baixa();
 
-                retorno = b.cadastrarBaixa(user.usuario_id, user.usuario_conta_id, Convert.ToInt32(collection["parcela_id"]), Convert.ToInt32(collection["contacorrente_id"]), Convert.ToDateTime(collection["data"]), Convert.ToDecimal(collection["valor"]), collection["obs"]);
+                retorno = b.cadastrarBaixa(user.usuario_id, user.usuario_conta_id, parcela_id, contacorrente_id, data, valor, obs);
 
                 TempData["msgCP"] = retorno;
 
-                return RedirectToAction("Index", collection["contexto"]);
+                return RedirectToAction("Index", "ContasPagar");
             }
             catch
             {
@@ -72,7 +72,7 @@ namespace gestaoContadorcomvc.Controllers
 
                 TempData["msgCP"] = retorno;
 
-                return RedirectToAction("Index", collection["contexto"]);
+                return RedirectToAction("Index", "ContasPagar");
             }
         }
 

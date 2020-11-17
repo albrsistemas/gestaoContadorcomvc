@@ -2205,6 +2205,17 @@ function gravarBaixa() {
     if (validaBaixa() != true) {
         $('#msg_valid').append('<span class="text-danger">' + validaBaixa() + '</span></br>');
     } else {
+        valor = document.getElementById('valor').value;
+        juros = document.getElementById('juros').value;
+        multa = document.getElementById('multa').value;
+        desconto = document.getElementById('desconto').value;
+        obs = document.getElementById('parcela_obs').value;
+        contacorrente_id = document.getElementById('contacorrente_id').value;
+        data = document.getElementById('data').value;
+        parcela_id = document.getElementById('parcela_id').value;
+        contexto = 'ContasPagar';
+
+        /*
         collection = {
             valor: document.getElementById('valor').value,
             juros: document.getElementById('juros').value,
@@ -2215,11 +2226,11 @@ function gravarBaixa() {
             data: document.getElementById('data').value,
             parcela_id: document.getElementById('parcela_id').value,
             contexto: 'ContasPagar',
-        };
+        };*/
 
         $.ajax({
             url: "/Baixa/Create",
-            data: { __RequestVerificationToken: gettoken(), collection: collection },
+            data: { __RequestVerificationToken: gettoken(), valor: valor, juros: juros, multa: multa, desconto: desconto, obs: obs, contacorrente_id: contacorrente_id, data: data, parcela_id: parcela_id, contexto: contexto  },
             type: 'POST',
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
