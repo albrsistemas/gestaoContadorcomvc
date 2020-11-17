@@ -34,6 +34,10 @@
     legend {
         margin-top: 15px;
     }
+    line_list_title_full {
+        display: flex !important;
+        align-items: center !important;
+    }
 </style>
 
 @{
@@ -61,29 +65,33 @@
 <h2>Movimento de Conta Corrente</h2>
 <hr class="hrLine" />
 
-<div class="row">
-    <form asp-controller="ContaCorrenteMov" asp-action="Index">
-        <div class="col-9">
-            <div class="row">
-                <div class="col-12 col-md-6">
-                    <label class="control-label">Conta Corrente</label>
-                    <select asp-items="@ViewBag.ccorrente" value="@TempData["contacorrente_id"]" id="contacorrente_id" name="contacorrente_id" class="form-control"></select>
-                </div>
-                <div class="col-6 col-md-3">
-                    <label class="control-label">Data Inicial</label>
-                    <input name="dataInicio" class="form-control datepicker" value="@TempData["dataInicio"]" />
-                </div>
-                <div class="col-6 col-md-3">
-                    <label class="control-label">Data Final</label>
-                    <input name="dataFim" class="form-control datepicker" value="@TempData["dataFim"]" />
-                </div>
+
+<form asp-controller="ContaCorrenteMov" asp-action="Index">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="form-group">
+                <label class="control-label">Conta Corrente</label>
+                <select asp-items="@ViewBag.ccorrente" value="@TempData["contacorrente_id"]" id="contacorrente_id" name="contacorrente_id" class="form-control"></select>
             </div>
         </div>
-        <div class="col-3">
-            <button type="submit" class="btn btn-info" id="sub">Selecionar</button>
+        <div class="col-6 col-md-2">
+            <div class="form-group">
+                <label class="control-label">Data Inicial</label>
+                <input name="dataInicio" class="form-control datepicker" value="@TempData["dataInicio"]" />
+            </div>
         </div>
-    </form>
-</div>
+        <div class="col-6 col-md-2">
+            <div class="form-group">
+                <label class="control-label">Data Final</label>
+                <input name="dataFim" class="form-control datepicker" value="@TempData["dataFim"]" />
+            </div>
+        </div>
+        <div class="col-12 col-md-2" style="text-align:right">            
+            <button type="submit" class="btn btn-info" style="margin-top:32px;">Selecionar</button>
+        </div>
+    </div>
+</form>
+
 
 <div class="list-header">
     <div class="line-list titulo">
@@ -106,7 +114,7 @@
         </div>
     </div>
 </div>
-@{
+@{    
     foreach (var item in Model.conta_corrente_movimento)
     {
         <div class="line-list">
@@ -133,11 +141,11 @@
                     @{
                         if (item.saldo < 0)
                         {
-                            <div class="col-12 line_list_title_mobile"><strong>Valor: </strong><span style="color:red;">@item.saldo.ToString("N2")</span></div>
+                            <div class="col-12 line_list_title_mobile"><strong>Saldo: </strong><span style="color:red;">@item.saldo.ToString("N2")</span></div>
                         }
                         else
                         {
-                            <div class="col-12 line_list_title_mobile"><strong>Valor: </strong><span style="color:black;">@item.saldo.ToString("N2")</span></div>
+                            <div class="col-12 line_list_title_mobile"><strong>Saldo: </strong><span style="color:black;">@item.saldo.ToString("N2")</span></div>
                         }
                     }
 
@@ -145,12 +153,30 @@
                     <div class="col-2 line_list_title_full">@item.categoria</div>
                     <div class="col-2 line_list_title_full">@item.memorando</div>
                     <div class="col-2 line_list_title_full">@item.participante</div>
-                    <div class="col-2 line_list_title_full" style="text-align:right;">@item.valor.ToString("N2")</div>
-                    <div class="col-2 line_list_title_full" style="text-align:right;">@item.saldo.ToString("N2")</div>                    
+                    @{
+                        if (item.valor < 0)
+                        {
+                            <div class="col-2 line_list_title_full" style="text-align:right;color:red;">@item.valor.ToString("N2")</div>
+                        }
+                        else
+                        {
+                            <div class="col-2 line_list_title_full" style="text-align:right;color:black;">@item.valor.ToString("N2")</div>
+                        }
+
+                        if (item.saldo < 0)
+                        {
+                            <div class="col-2 line_list_title_full" style="text-align:right;color:red;">@item.saldo.ToString("N2")</div>
+                        }
+                        else
+                        {
+                            <div class="col-2 line_list_title_full" style="text-align:right;color:black;">@item.saldo.ToString("N2")</div>
+                        }
+                    }
+
                 </div>
             </div>
-            <div class="col-list-rigth" style="padding-right: 10px;">                
-                    
+            <div class="col-list-rigth" style="padding-right: 10px;">
+
             </div>
         </div>
     }

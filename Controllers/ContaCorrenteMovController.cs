@@ -23,10 +23,14 @@ namespace gestaoContadorcomvc.Controllers
             Selects select = new Selects();
             ViewBag.ccorrente = select.getContasCorrente(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             DateTime today = DateTime.Today;
-            TempData["dataInicio"] = today;
-            TempData["dataFim"] = today.AddDays(-30);
+            TempData["dataInicio"] = today.AddDays(-30).ToShortDateString();
+            TempData["dataFim"] = today.ToShortDateString();
 
-            return View();
+            Vm_conta_corrente_mov vm_ccm = new Vm_conta_corrente_mov();
+            List<Vm_conta_corrente_mov> lista = new List<Vm_conta_corrente_mov>();
+            vm_ccm.conta_corrente_movimento = lista;
+
+            return View(vm_ccm);
         }
 
         [HttpPost]
@@ -46,8 +50,8 @@ namespace gestaoContadorcomvc.Controllers
 
                 Selects select = new Selects();
                 ViewBag.ccorrente = select.getContasCorrente(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == contacorrente_id.ToString() });
-                TempData["dataInicio"] = dataInicio;
-                TempData["dataFim"] = dataFim;
+                TempData["dataInicio"] = dataInicio.ToShortDateString();
+                TempData["dataFim"] = dataFim.ToShortDateString();
 
                 return View(vm_ccm);
             }

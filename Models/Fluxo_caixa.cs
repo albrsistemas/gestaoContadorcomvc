@@ -9,17 +9,12 @@ using System.IO;
 
 namespace gestaoContadorcomvc.Models
 {
-    public class Conta_corrente_mov
+    public class Fluxo_caixa
     {
-        public int ccm_id { get; set; }
-        public int ccm_conta_id { get; set; }
-        public int ccm_ccorrente_id { get; set; }
-        public string ccm_movimento { get; set; }
-        public string ccm_contra_partida_tipo { get; set; }
-        public int ccm_contra_partida_id { get; set; }
-        public DateTime ccm_data { get; set; }
-        public DateTime ccm_dataCriacao { get; set; }
-        public Decimal ccm_valor { get; set; }
+        public int id { get; set; }
+        public DateTime data { get; set; }
+        public string memorando { get; set; }
+        public Decimal valor { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -30,7 +25,7 @@ namespace gestaoContadorcomvc.Models
         }
         //Método para gerar a conexão
         MySqlConnection conn;
-        public Conta_corrente_mov()
+        public Fluxo_caixa()
         {
             var configuration = GetConfiguration();
             conn = new MySqlConnection(configuration.GetSection("ConnectionStrings").GetSection("conexaocvc").Value);
@@ -40,10 +35,11 @@ namespace gestaoContadorcomvc.Models
         //objeto de log para uso nos métodos
         Log log = new Log();
 
-        //Lista movimento conta corrente
-        public List<Vm_conta_corrente_mov> listaCCM(int usuario_id, int conta_id, int contacorrente_id, DateTime dataInicio, DateTime dataFim)
-        {   
-            List<Vm_conta_corrente_mov> ccms = new List<Vm_conta_corrente_mov>();
+        //Listar fluxo de caixa
+        public Vm_fluxo_caixa fluxoCaixa(int usuario_id, int conta_id, int contaCorrente, DateTime dataInicial, DateTime dataFinal)
+        {
+            Vm_fluxo_caixa vm_fc = new Vm_fluxo_caixa();
+            List<Fluxo_caixa> fc = new List<Fluxo_caixa>();            
 
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
@@ -51,14 +47,51 @@ namespace gestaoContadorcomvc.Models
             Transacao = conn.BeginTransaction();
             comando.Connection = conn;
             comando.Transaction = Transacao;
+            MySqlDataReader saldo;
+            MySqlDataReader movimentos;
 
             try
             {
-                comando.CommandText = "call pr_fluxoCaixa(@conta_id,@contacorrente_id,@dataInicio,@dataFim);";
+                //Saldo de abertura
+                comando.CommandText = "SELECT COALESCE(cc.ccorrente_saldo_abertura, 0.00) as saldoAbertura from conta_corrente as cc WHERE cc.ccorrente_conta_id = @conta_id and cc.ccorrente_id = @contaCorrente;";
+                comando.Parameters.AddWithValue("@contaCorrente", contaCorrente);
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
-                comando.Parameters.AddWithValue("@contacorrente_id", contacorrente_id);
-                comando.Parameters.AddWithValue("@dataInicio", dataInicio);
-                comando.Parameters.AddWithValue("@dataFim", dataFim);
+                comando.ExecuteNonQuery();
+
+                saldo = comando.ExecuteReader();
+                if (saldo.HasRows)
+                {
+                    while (saldo.Read())
+                    {
+                        vm_fc.saldo_abertura = Convert.ToDecimal(saldo["saldoAbertura"]);
+                    }
+                }
+                saldo.Close();
+
+                //Movimentos anteriores a data inicial
+                comando.CommandText = "SELECT sum(if(yccm.ccm_movimento = 'Recebimento', yccm.ccm_valor, -yccm.ccm_valor)) as movimentos from conta_corrente_mov as yccm WHERE yccm.ccm_conta_id = @conta_id_2 and yccm.ccm_ccorrente_id = @contaCorrente_2 and yccm.ccm_data < @dataInicial_2;;";
+                comando.Parameters.AddWithValue("@contaCorrente_2", contaCorrente);
+                comando.Parameters.AddWithValue("@conta_id_2", conta_id);
+                comando.Parameters.AddWithValue("@dataInicial_2", dataInicial);
+                comando.ExecuteNonQuery();
+
+                movimentos = comando.ExecuteReader();
+                if (movimentos.HasRows)
+                {
+                    while (movimentos.Read())
+                    {
+                        vm_fc.saldo_movimentos = Convert.ToDecimal(saldo["movimentos"]);
+                    }
+                }
+                movimentos.Close();
+
+
+
+
+
+
+
+
                 Transacao.Commit();
 
                 var leitor = comando.ExecuteReader();
@@ -109,9 +142,9 @@ namespace gestaoContadorcomvc.Models
                             mov.saldo = 0;
                         }
 
-                        ccms.Add(mov);   
-                    }                    
-                }               
+                        ccms.Add(mov);
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -128,6 +161,7 @@ namespace gestaoContadorcomvc.Models
 
             return ccms;
         }
+
 
 
     }
