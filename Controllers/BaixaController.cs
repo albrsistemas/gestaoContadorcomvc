@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
@@ -26,7 +27,7 @@ namespace gestaoContadorcomvc.Controllers
         //    return View();
         //}
 
-        // GET: BaixaController/Create
+        [Autoriza(permissao = "baixaCreate")]
         public ActionResult Create(int parcela_id)
         {
             Usuario usuario = new Usuario();
@@ -74,7 +75,8 @@ namespace gestaoContadorcomvc.Controllers
                 return Json(JsonConvert.SerializeObject(retorno));
             }
         }
-                
+
+        [Autoriza(permissao = "baixaEdit")]
         public ActionResult Edit(int baixa_id, string local, DateTime dataInicio, DateTime dataFim, int contacorrente_id)
         {
             Usuario usuario = new Usuario();

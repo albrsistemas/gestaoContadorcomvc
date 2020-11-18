@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
@@ -13,6 +14,7 @@ namespace gestaoContadorcomvc.Controllers
     [Authorize]
     public class ContasPagarController : Controller
     {
+        [Autoriza(permissao = "ContasPList")]
         public IActionResult Index()
         {
             Usuario usuario = new Usuario();

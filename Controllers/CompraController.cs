@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
@@ -32,6 +33,7 @@ namespace gestaoContadorcomvc.Controllers
         }
 
         // GET: CompraController/Create
+        [Autoriza(permissao = "compraCreate")]
         public ActionResult Create()
         {
             Usuario usuario = new Usuario();
@@ -74,6 +76,7 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
+        [Autoriza(permissao = "compraEdit")]
         public ActionResult Details(int id)
         {
             Usuario usuario = new Usuario();
@@ -97,7 +100,7 @@ namespace gestaoContadorcomvc.Controllers
             return View(vm_op);
         }
 
-        // GET: CompraController/Edit/5
+        [Autoriza(permissao = "compraEdit")]
         public ActionResult Edit(int id)
         {
             Usuario usuario = new Usuario();
@@ -173,7 +176,7 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
-        // GET: CompraController/Delete/5
+        [Autoriza(permissao = "compraDelete")]
         public ActionResult Delete(int id)
         {
             return View();

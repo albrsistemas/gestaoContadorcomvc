@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
@@ -15,7 +16,7 @@ namespace gestaoContadorcomvc.Controllers
     [Authorize]
     public class ContaCorrenteMovController : Controller
     {
-        // GET: ContaCorrenteMovController
+        [Autoriza(permissao = "CCMList")]
         public ActionResult Index(DateTime dataInicio, DateTime dataFim, int contacorrente_id)
         {
             Usuario usuario = new Usuario();
