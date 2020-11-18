@@ -3,6 +3,7 @@ using System.Linq;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,6 +11,7 @@ using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
 {
+    [Authorize]
     public class BaixaController : Controller
     {
         // GET: BaixaController
@@ -91,6 +93,8 @@ namespace gestaoContadorcomvc.Controllers
             TempData["dataInicio"] = dataInicio.ToShortDateString();
             TempData["dataFim"] = dataFim.ToShortDateString();
             TempData["contacorrente_id"] = contacorrente_id;
+
+            vm_baixa.user = user;
 
             return View(vm_baixa);
         }

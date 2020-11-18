@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,6 +13,7 @@ using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
 {
+    [Authorize]
     public class CompraController : Controller
     {
         // GET: CompraController

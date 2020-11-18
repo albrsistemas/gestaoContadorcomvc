@@ -67,12 +67,20 @@ namespace gestaoContadorcomvc.Models
         public bool fpCreate { get; set; }
         public bool fpEdit { get; set; }
         public bool fpDelete { get; set; }
-        //Compras
+        //Compras Ok
         public bool compraList { get; set; }
         public bool compraCreate { get; set; }
         public bool compraEdit { get; set; }
         public bool compraDelete { get; set; }
-
+        //Contas a Pagar ok
+        public bool ContasPList { get; set; }
+        //Conta Corrente ok
+        public bool CCMList { get; set; }
+        //Baixas ok
+        public bool baixaList { get; set; }
+        public bool baixaCreate { get; set; }
+        public bool baixaEdit { get; set; }
+        public bool baixaDelete { get; set; }
 
 
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      

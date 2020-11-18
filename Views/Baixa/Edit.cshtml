@@ -107,8 +107,14 @@
                     @{
                         if (TempData["local"] != null)
                         {
-                        <button type="button" class="btn btn-info" onclick="gravarBaixa('Edit','@(TempData["local"].ToString())','@(TempData["contacorrente_id"].ToString())','@(TempData["dataInicio"].ToString())','@(TempData["dataFim"].ToString())')">Alterar</button>
-                        <button type="button" class="btn btn-danger" onclick="deleteBaixa('confirmar','@(TempData["local"].ToString())','@(TempData["contacorrente_id"].ToString())','@(TempData["dataInicio"].ToString())','@(TempData["dataFim"].ToString())')">Excluir</button>
+                            if (Model.user.Role == "adm" || Model.user._permissoes.baixaEdit)
+                            {
+                                <button type="button" class="btn btn-info" onclick="gravarBaixa('Edit','@(TempData["local"].ToString())','@(TempData["contacorrente_id"].ToString())','@(TempData["dataInicio"].ToString())','@(TempData["dataFim"].ToString())')">Alterar</button>
+                            }
+                            if (Model.user.Role == "adm" || Model.user._permissoes.baixaDelete)
+                            {
+                                <button type="button" class="btn btn-danger" onclick="deleteBaixa('confirmar','@(TempData["local"].ToString())','@(TempData["contacorrente_id"].ToString())','@(TempData["dataInicio"].ToString())','@(TempData["dataFim"].ToString())')">Excluir</button>
+                            }
                         }
                     }
                 </div>

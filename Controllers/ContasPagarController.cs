@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace gestaoContadorcomvc.Controllers
 {
+    [Authorize]
     public class ContasPagarController : Controller
     {
         public IActionResult Index()

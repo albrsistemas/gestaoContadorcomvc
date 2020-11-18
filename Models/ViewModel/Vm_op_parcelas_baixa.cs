@@ -19,6 +19,8 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public Decimal multa { get; set; }
         public Decimal desconto { get; set; }
         public string obs { get; set; }
-        public int contaCorrente { get; set; }                       
+        public int contaCorrente { get; set; }
+        public IEnumerable<Vm_op_parcelas_baixa> baixas { get; set; }
+        public Vm_usuario user { get; set; }
     }
 }

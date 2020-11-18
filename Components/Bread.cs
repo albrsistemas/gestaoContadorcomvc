@@ -122,6 +122,34 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Alterar Forma de Pagamento";
                 }
+                //Compras
+                if (pagina.Contains("Compra/Index"))
+                {
+                    retorno = "Compras";
+                }
+                if (pagina.Contains("Compra/Create"))
+                {
+                    retorno = "Incluir Compra";
+                }
+                if (pagina.Contains("Compra/Edit"))
+                {
+                    retorno = "Alterar Compra";
+                }
+                if (pagina.Contains("Compra/Details"))
+                {
+                    retorno = "Detelhes Compra";
+                }
+                //Contas a pagar
+                if (pagina.Contains("ContasPagar/Index"))
+                {
+                    retorno = "Contas a Pagar";
+                }
+                //Conta Corrente
+                if (pagina.Contains("ContaCorrenteMov/Index"))
+                {
+                    retorno = "Conta Corrente Movimento";
+                }
+
             }
 
             ViewData["openNav"] = openNav;
