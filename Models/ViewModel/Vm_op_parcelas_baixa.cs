@@ -7,6 +7,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
 {
     public class Vm_op_parcelas_baixa
     {
+        public int baixa_id { get; set; }
         public int parcela_id { get; set; }
         public string referencia { get; set; }
         public DateTime vencimento { get; set; }

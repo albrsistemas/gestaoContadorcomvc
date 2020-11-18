@@ -32,6 +32,8 @@ namespace gestaoContadorcomvc.Controllers
             vm_fc.fluxo = lista;
             vm_fc.user = user;
 
+            TempData["msg"] = "Selecione uma conta corrente e período para gerar fluxo de caixa!";
+
             return View(vm_fc);
         }
 
@@ -54,6 +56,7 @@ namespace gestaoContadorcomvc.Controllers
                 ViewBag.ccorrente = select.getContasCorrenteConta_id(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == contacorrente_id.ToString() });
                 TempData["dataInicio"] = dataInicio.ToShortDateString();
                 TempData["dataFim"] = dataFim.ToShortDateString();
+                TempData["msg"] = "Não há lançamentos para esta conta corrente neste período!";
 
                 return View(vm_fc);
             }

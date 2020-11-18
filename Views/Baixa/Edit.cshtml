@@ -6,9 +6,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Baixa de Parcela</h4>
+                <h4 class="modal-title">Alterar Baixa de Parcela</h4>
             </div>
-            <form asp-controller="Baixa" asp-action="Create">
+            <form asp-controller="Baixa" asp-action="Edit">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
@@ -19,15 +19,15 @@
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
-                                <label asp-for="valor_parcela_original" class="control-label">Valor Original</label>
+                                <label asp-for="valor_parcela_original" class="control-label">Valor Original Parcela</label>
                                 <input value="@Model.valor_parcela_original.ToString("N")" name="valor_parcela_original" class="form-control" readonly="readonly" />
                                 <span asp-validation-for="valor_parcela_original" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label asp-for="saldo_parcela" class="control-label">Saldo a Pagar</label>
-                                <input value="@((Model.valor_parcela_original - Model.saldo_parcela).ToString("N"))" name="saldo_parcela" id="saldo_parcela" class="form-control" readonly="readonly" />
+                                <label asp-for="saldo_parcela" class="control-label">Limite de Pagamento</label>
+                                <input value="@((Model.valor_parcela_original - (Model.saldo_parcela - Model.valor)).ToString("N"))" name="saldo_parcela" id="saldo_parcela" class="form-control" readonly="readonly" />
                                 <span asp-validation-for="saldo_parcela" class="text-danger"></span>
                             </div>
                         </div>
@@ -68,6 +68,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
+                                <label class="control-label">Memorando</label>
                                 <textarea asp-for="obs" id="parcela_obs" rows="3" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '200','msg_obs')"></textarea>
                                 <span class="text-info" id="msg_obs"></span>
                                 <span asp-validation-for="obs" class="text-danger"></span>
@@ -77,7 +78,6 @@
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
-                                <label class="control-label">Memorando</label>
                                 <label asp-for="data" class="control-label">Data Pagamento</label>
                                 <input value="@(Model.data.ToShortDateString())" name="data" id="data" class="form-control datepicker" />
                                 <span asp-validation-for="desconto" class="text-danger"></span>
@@ -104,7 +104,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-info" onclick="gravarBaixa('Create')">Gravar</button>
+                    <button type="button" class="btn btn-info" onclick="gravarBaixa('Edit')">Gravar</button>
                 </div>
 
             </form>
@@ -122,7 +122,7 @@
             <div class="modal-body">
                 <p>Baixa cadastrada com sucesso!</p>
             </div>
-            <div class="modal-footer">                
+            <div class="modal-footer">
                 <a class="btn btn-secondary" asp-controller="ContasPagar" asp-action="Index">OK</a>
             </div>
         </div>

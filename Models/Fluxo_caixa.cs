@@ -15,6 +15,9 @@ namespace gestaoContadorcomvc.Models
         public DateTime data { get; set; }
         public string memorando { get; set; }
         public Decimal valor { get; set; }
+        public int op_id { get; set; }
+        public int baixa_id { get; set; }
+        public string contra_partida_tipo { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -87,7 +90,7 @@ namespace gestaoContadorcomvc.Models
                 movimentos.Close();
 
                 //Fluxo de lançamentos do período
-                comando.CommandText = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, xccm.ccm_memorando as memorando, if(xccm.ccm_movimento = 'Recebimento', xccm.ccm_valor, -xccm.ccm_valor) as valor from conta_corrente_mov as xccm WHERE xccm.ccm_conta_id = @conta_id_3 and xccm.ccm_ccorrente_id = @contaCorrente_3 and xccm.ccm_data BETWEEN @dataInicial_3 AND @dataFinal ORDER by xccm.ccm_data ASC;";
+                comando.CommandText = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, xccm.ccm_memorando as memorando, if(xccm.ccm_movimento = 'Recebimento', xccm.ccm_valor, -xccm.ccm_valor) as valor, xccm.ccm_op_id as op_id, xccm.ccm_oppb_id as baixa_id, xccm.ccm_contra_partida_tipo as contra_partida_tipo, xccm.ccm_contra_partida_id from conta_corrente_mov as xccm WHERE xccm.ccm_conta_id = @conta_id_3 and xccm.ccm_ccorrente_id = @contaCorrente_3 and xccm.ccm_data BETWEEN @dataInicial_3 AND @dataFinal ORDER by xccm.ccm_data ASC;";
                 comando.Parameters.AddWithValue("@contaCorrente_3", contaCorrente);
                 comando.Parameters.AddWithValue("@conta_id_3", conta_id);
                 comando.Parameters.AddWithValue("@dataInicial_3", dataInicial);
@@ -129,6 +132,26 @@ namespace gestaoContadorcomvc.Models
                         {
                             fluxo_cx.valor = 0;
                         }
+
+                        if (DBNull.Value != fluxo["op_id"])
+                        {
+                            fluxo_cx.op_id = Convert.ToInt32(fluxo["op_id"]);
+                        }
+                        else
+                        {
+                            fluxo_cx.op_id = 0;
+                        }
+
+                        if (DBNull.Value != fluxo["baixa_id"])
+                        {
+                            fluxo_cx.baixa_id = Convert.ToInt32(fluxo["baixa_id"]);
+                        }
+                        else
+                        {
+                            fluxo_cx.baixa_id = 0;
+                        }
+
+                        fluxo_cx.contra_partida_tipo = fluxo["contra_partida_tipo"].ToString();
 
                         fc.Add(fluxo_cx);
                     }

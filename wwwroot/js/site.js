@@ -2182,29 +2182,84 @@ $(".createBaixa").click(function () {
     })
 });
 
+$(".editBaixa").click(function () {
+    var baixa_id = $(this).attr("data-baixa_id");
+    $("#modal").load("/Baixa/Edit?baixa_id=" + baixa_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
 $.validator.methods.number = function (value, element) {
     return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
 }
 
-function validaBaixa() {
+function validaBaixa(contexto_requisicao) {    
+    let retorno = '';
 
-    retorno = true;
+    let saldo = (document.getElementById('saldo_parcela').value.toString().replace('.', '').replace(',', '.') * 1);
+    let valor = (document.getElementById('valor').value.toString().replace('.', '').replace(',', '.') * 1);
 
-    let saldo = document.getElementById('saldo_parcela').value;
-    let valor = document.getElementById('valor').value;
+    let juros = (document.getElementById('juros').value.toString().replace('.', '').replace(',', '.') * 1);
+    let multa = (document.getElementById('multa').value.toString().replace('.', '').replace(',', '.') * 1);
+    let desconto = (document.getElementById('desconto').value.toString().replace('.', '').replace(',', '.') * 1);
+    let obs = document.getElementById('parcela_obs').value;    
 
     if (valor > saldo) {
-        retorno = 'O Valor do Pagamento não pode ser superior ao Saldo a Pagar da parcela!';
+
+        if (contexto_requisicao == 'Create') {
+            retorno += 'O Valor do Pagamento não pode ser superior ao Saldo a Pagar da parcela!;';           
+        }
+
+        if (contexto_requisicao == 'Edit') {
+            retorno += 'O Valor do Pagamento não pode ser superior ao Limite de Pagamento!';            
+        }
     }
 
+    if (valor <= 0) {
+        retorno += 'O campo valor não pode ser inferior ou igual a zero!;'; 
+    }
+
+    if (juros < 0 || multa < 0 || desconto < 0) {
+        retorno += 'Os juros, multa e descoto não pode ser inferiror a zero!;'; 
+    }
+
+    if (obs.length < 4) {
+        retorno += 'Obrigatório informar o memorando com no mínimo 4 caracteres!;'; 
+    }
+
+    let data = document.getElementById('data').value.split('/');
+    let d = new Date(data[2], data[1], data[0]);
+    if (d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1) {
+        retorno += 'Data Pagamento é inválida!;';
+    }
 
     return retorno;
 }
 
-function gravarBaixa() {
-    if (validaBaixa() != true) {
-        $('#msg_valid').append('<span class="text-danger">' + validaBaixa() + '</span></br>');
-    } else {
+function gravarBaixa(contexto_requisicao) {
+    //Limpeza da div de erros
+    document.getElementById('msg_valid').innerHTML = "";
+
+    let validacao = [];
+    let erros = [];
+    //Limpara a matrix validação;
+    for (let i = 0; i < validacao.length; i++) {
+        validacao[i].pop();
+    }
+
+    //Popula matrix validação com o retorno da validação validaBaixa
+    validacao = validaBaixa(contexto_requisicao).split(';');
+
+    //limpa os retorno true e alimenta a matriz de erros com os retornos diferentes de true
+    for (let i = 0; i < validacao.length; i++) {
+        if (validacao[i] != true) {
+            erros.push(validacao[i]);
+            $('#msg_valid').append('<span class="text-danger">' + validacao[i] + '</span></br>');
+        }
+    }   
+
+    if (erros.length == 0) //Gera a requisição somente se os erros não existirem
+    {
         valor = document.getElementById('valor').value;
         juros = document.getElementById('juros').value;
         multa = document.getElementById('multa').value;
@@ -2213,36 +2268,32 @@ function gravarBaixa() {
         contacorrente_id = document.getElementById('contacorrente_id').value;
         data = document.getElementById('data').value;
         parcela_id = document.getElementById('parcela_id').value;
+        baixa_id = document.getElementById('baixa_id').value;
         contexto = 'ContasPagar';
 
-        /*
-        collection = {
-            valor: document.getElementById('valor').value,
-            juros: document.getElementById('juros').value,
-            multa: document.getElementById('multa').value,
-            desconto: document.getElementById('desconto').value,
-            obs: document.getElementById('parcela_obs').value,
-            contacorrente_id: document.getElementById('contacorrente_id').value,
-            data: document.getElementById('data').value,
-            parcela_id: document.getElementById('parcela_id').value,
-            contexto: 'ContasPagar',
-        };*/
-
         $.ajax({
-            url: "/Baixa/Create",
-            data: { __RequestVerificationToken: gettoken(), valor: valor, juros: juros, multa: multa, desconto: desconto, obs: obs, contacorrente_id: contacorrente_id, data: data, parcela_id: parcela_id, contexto: contexto  },
+            url: "/Baixa/" + contexto_requisicao,
+            data: { __RequestVerificationToken: gettoken(), valor: valor, juros: juros, multa: multa, desconto: desconto, obs: obs, contacorrente_id: contacorrente_id, data: data, parcela_id: parcela_id, contexto: contexto, baixa_id: baixa_id  },
             type: 'POST',
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
                 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest);
+                console.log(textStatus);
+                console.log(errorThrown);
                 alert("erro");
             },
             success: function (data, textStatus, XMLHttpRequest) {
                 console.log(textStatus);
                 console.log(XMLHttpRequest);
                 var results = JSON.parse(data);
+
+                if (XMLHttpRequest.responseJSON.includes('sucesso')) {                                        
+                    $('#modal_mensagem_sucesso').modal('show');
+                    return;
+                }
 
                 if (XMLHttpRequest.responseJSON.includes('Erro')) {                    
                     document.getElementById('mensagem_retorno_label').innerHTML = "";
@@ -2252,7 +2303,6 @@ function gravarBaixa() {
                     document.getElementById('mensagem_retorno_rodape').innerHTML = "";
                     document.getElementById('mensagem_retorno_rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
                     $('#modal_mensagem_retorno').modal('show');
-
                     return;
                 }
             }
