@@ -72,6 +72,9 @@ var operacao = {
 //Onload página layout
 function Page() {
 
+    //executa o datapicker existentes
+    execDatapicker();
+
     //Atribuindo valor padrão a campos da tela novo lançamento contábil
     let Element_vlr = document.getElementById("lancamento_valor_create");
     let Element_data = document.getElementById("lancamento_data_create");
@@ -2129,9 +2132,7 @@ function gravarOperacao(contexto, tipo_operacao) {
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 alert("erro");
             },
-            success: function (data, textStatus, XMLHttpRequest) {
-                console.log(textStatus);
-                console.log(XMLHttpRequest);
+            success: function (data, textStatus, XMLHttpRequest) {                
                 var results = JSON.parse(data);
 
                 if (XMLHttpRequest.responseJSON.includes('alterada com sucesso')) {
@@ -2184,7 +2185,16 @@ $(".createBaixa").click(function () {
 
 $(".editBaixa").click(function () {
     var baixa_id = $(this).attr("data-baixa_id");
-    $("#modal").load("/Baixa/Edit?baixa_id=" + baixa_id, function () {
+    var local = $(this).attr("data-local");
+    var contacorrente_id = $(this).attr("data-contacorrente_id");
+    var dataInicio = $(this).attr("data-dataInicio");
+    var dataFim = $(this).attr("data-dataFim");
+    //var ndataInicio = new Date(dataInicio.substr(6, 4) + ',' + dataInicio.substr(3, 2) + ',' + dataInicio.substr(0, 2));
+    //var ndataFim = new Date(dataFim.substr(6, 4) + ',' + dataFim.substr(3, 2) + ',' + dataFim.substr(0, 2));
+    var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
+    var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
+
+    $("#modal").load("/Baixa/Edit?baixa_id=" + baixa_id + "&local=" + local + "&contacorrente_id=" + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim, function () {
         $("#modal").modal('show');
     })
 });
@@ -2194,7 +2204,7 @@ $.validator.methods.number = function (value, element) {
 }
 
 function validaBaixa(contexto_requisicao) {    
-    let retorno = '';
+    let retorno = "";
 
     let saldo = (document.getElementById('saldo_parcela').value.toString().replace('.', '').replace(',', '.') * 1);
     let valor = (document.getElementById('valor').value.toString().replace('.', '').replace(',', '.') * 1);
@@ -2233,10 +2243,15 @@ function validaBaixa(contexto_requisicao) {
         retorno += 'Data Pagamento é inválida!;';
     }
 
-    return retorno;
+
+    if (retorno == "") {
+        return true;
+    } else {
+        return retorno;
+    }
 }
 
-function gravarBaixa(contexto_requisicao) {
+function gravarBaixa(contexto_requisicao, local, contaCorrete_id, dataInicio, dataFim) {    
     //Limpeza da div de erros
     document.getElementById('msg_valid').innerHTML = "";
 
@@ -2248,7 +2263,10 @@ function gravarBaixa(contexto_requisicao) {
     }
 
     //Popula matrix validação com o retorno da validação validaBaixa
-    validacao = validaBaixa(contexto_requisicao).split(';');
+    let retValida = validaBaixa(contexto_requisicao);
+    if (retValida != true) {
+        validacao = retValida.split(';');
+    }    
 
     //limpa os retorno true e alimenta a matriz de erros com os retornos diferentes de true
     for (let i = 0; i < validacao.length; i++) {
@@ -2259,7 +2277,7 @@ function gravarBaixa(contexto_requisicao) {
     }   
 
     if (erros.length == 0) //Gera a requisição somente se os erros não existirem
-    {
+    {        
         valor = document.getElementById('valor').value;
         juros = document.getElementById('juros').value;
         multa = document.getElementById('multa').value;
@@ -2269,7 +2287,7 @@ function gravarBaixa(contexto_requisicao) {
         data = document.getElementById('data').value;
         parcela_id = document.getElementById('parcela_id').value;
         baixa_id = document.getElementById('baixa_id').value;
-        contexto = 'ContasPagar';
+        contexto = 'ContasPagar';       
 
         $.ajax({
             url: "/Baixa/" + contexto_requisicao,
@@ -2279,22 +2297,15 @@ function gravarBaixa(contexto_requisicao) {
             beforeSend: function (XMLHttpRequest) {
                 
             },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log(XMLHttpRequest);
-                console.log(textStatus);
-                console.log(errorThrown);
+            error: function (XMLHttpRequest, textStatus, errorThrown) {                
                 alert("erro");
             },
-            success: function (data, textStatus, XMLHttpRequest) {
-                console.log(textStatus);
-                console.log(XMLHttpRequest);
+            success: function (data, textStatus, XMLHttpRequest) {                
                 var results = JSON.parse(data);
-
-                if (XMLHttpRequest.responseJSON.includes('sucesso')) {                                        
+                if (XMLHttpRequest.responseJSON.includes('Baixa realizada com sucesso!')) {                                        
                     $('#modal_mensagem_sucesso').modal('show');
                     return;
                 }
-
                 if (XMLHttpRequest.responseJSON.includes('Erro')) {                    
                     document.getElementById('mensagem_retorno_label').innerHTML = "";
                     document.getElementById('mensagem_retorno_label').innerHTML = "ERRO";
@@ -2305,10 +2316,66 @@ function gravarBaixa(contexto_requisicao) {
                     $('#modal_mensagem_retorno').modal('show');
                     return;
                 }
+                if (XMLHttpRequest.responseJSON.includes('Baixa alterada com sucesso!')) {                    
+                    var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
+                    var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
+
+                    if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+                        window.location.href = "https://localhost:44339/ContaCorrenteMov/Index?dataInicio=" + ndataInicio + "&dataFim=" + ndataFim + "&contacorrente_id=" + contaCorrete_id;
+                    } else {
+                        window.location.href = "https://contadorcomvc.com.br/ContaCorrenteMov/Index?dataInicio=" + ndataInicio + "&dataFim=" + ndataFim + "&contacorrente_id=" + contaCorrete_id;
+                    }
+                }
+
             }
         });
     }
+}
 
+function deleteBaixa(contexto, local, contaCorrete_id, dataInicio, dataFim) {    
+    baixa_id = document.getElementById('baixa_id').value;
 
+    if (contexto == 'confirmar') {
+        $('#modal_mensagem_delete').modal('show');
+        return;
+    }
 
+    if (contexto == 'confirmado') {
+        console.log(contexto);
+        $.ajax({
+            url: "/Baixa/Delete",
+            data: { __RequestVerificationToken: gettoken(), baixa_id: baixa_id },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("erro");
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                    document.getElementById('mensagem_retorno_label').innerHTML = "";
+                    document.getElementById('mensagem_retorno_label').innerHTML = "ERRO";
+                    document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
+                    document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON + "</p>";
+                    document.getElementById('mensagem_retorno_rodape').innerHTML = "";
+                    document.getElementById('mensagem_retorno_rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
+                    $('#modal_mensagem_retorno').modal('show');
+                    return;
+                }
+                if (XMLHttpRequest.responseJSON.includes('Baixa excluída com sucesso!')) {
+                    var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
+                    var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
+
+                    if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+                        window.location.href = "https://localhost:44339/ContaCorrenteMov/Index?dataInicio=" + ndataInicio + "&dataFim=" + ndataFim + "&contacorrente_id=" + contaCorrete_id;
+                    } else {
+                        window.location.href = "https://contadorcomvc.com.br/ContaCorrenteMov/Index?dataInicio=" + ndataInicio + "&dataFim=" + ndataFim + "&contacorrente_id=" + contaCorrete_id;
+                    }
+                }
+
+            }
+        });
+    }
 }

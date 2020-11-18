@@ -73,7 +73,7 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
                 
-        public ActionResult Edit(int baixa_id)
+        public ActionResult Edit(int baixa_id, string local, DateTime dataInicio, DateTime dataFim, int contacorrente_id)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -87,6 +87,11 @@ namespace gestaoContadorcomvc.Controllers
             Selects select = new Selects();
             ViewBag.ccorrente = select.getContasCorrenteConta_id(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_baixa.contaCorrente.ToString() });
 
+            TempData["local"] = local;
+            TempData["dataInicio"] = dataInicio.ToShortDateString();
+            TempData["dataFim"] = dataFim.ToShortDateString();
+            TempData["contacorrente_id"] = contacorrente_id;
+
             return View(vm_baixa);
         }
 
@@ -95,35 +100,60 @@ namespace gestaoContadorcomvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(IFormCollection collection, int baixa_id, Decimal valor, Decimal juros, Decimal multa, Decimal desconto, string obs, int contacorrente_id, DateTime data, int parcela_id, string contexto)
         {
+            string retorno = "";
             try
             {
-                return RedirectToAction(nameof(Index));
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+                Vm_op_parcelas_baixa vm_baixa = new Vm_op_parcelas_baixa();
+                Op_parcelas_baixa b = new Op_parcelas_baixa();
+
+                retorno = b.alterarBaixa(user.usuario_id, user.usuario_conta_id, baixa_id, contacorrente_id, data, valor, obs, juros, multa, desconto);
+
+                return Json(JsonConvert.SerializeObject(retorno));
             }
             catch
             {
-                return View();
+                if (retorno == "")
+                {
+                    retorno = "Erro ao gravar a alteração da baixa. Tente novamente. Se persistir entre em contato com o suporte!";
+                }
+
+                return Json(JsonConvert.SerializeObject(retorno));
             }
         }
+       
 
-        //// GET: BaixaController/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
+        // POST: BaixaController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int baixa_id)
+        {
+            string retorno = "";
+            try
+            {
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
-        //// POST: BaixaController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+                Vm_op_parcelas_baixa vm_baixa = new Vm_op_parcelas_baixa();
+                Op_parcelas_baixa b = new Op_parcelas_baixa();
+
+                retorno = b.excluirBaixa(user.usuario_id, user.usuario_conta_id, baixa_id);
+
+                return Json(JsonConvert.SerializeObject(retorno));
+            }
+            catch
+            {
+                if (retorno == "")
+                {
+                    retorno = "Erro ao realizar a exclusão da baixa. Tente novamente. Se persistir entre em contato com o suporte!";
+                }
+
+                return Json(JsonConvert.SerializeObject(retorno));
+            }
+        }
     }
 }

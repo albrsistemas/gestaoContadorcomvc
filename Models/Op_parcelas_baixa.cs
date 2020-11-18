@@ -56,7 +56,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT p.*, concat('Parcela com vencimento em ', DATE_FORMAT(p.op_parcela_vencimento, '%d/%m/%Y'),' referente ',op.op_tipo,' número 6.') as referencia, (SELECT COALESCE(sum(op_parcelas_baixa.oppb_valor), 0.00) from op_parcelas_baixa WHERE op_parcelas_baixa.oppb_op_parcela_id = p.op_parcela_id) as saldo from op_parcelas as p LEFT JOIN operacao as op on op.op_id = p.op_parcela_op_id where op.op_conta_id = @conta_id and p.op_parcela_id = @parcela_id;";
+                comando.CommandText = "SELECT p.*, concat('Parcela com vencimento em ', DATE_FORMAT(p.op_parcela_vencimento, '%d/%m/%Y'),' referente ',op.op_tipo,' número ',op.op_numero_ordem) as referencia, (SELECT COALESCE(sum(op_parcelas_baixa.oppb_valor), 0.00) from op_parcelas_baixa WHERE op_parcelas_baixa.oppb_op_parcela_id = p.op_parcela_id) as saldo from op_parcelas as p LEFT JOIN operacao as op on op.op_id = p.op_parcela_op_id where op.op_conta_id = @conta_id and p.op_parcela_id = @parcela_id;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@parcela_id", parcela_id);
                 comando.ExecuteNonQuery();
@@ -313,6 +313,8 @@ namespace gestaoContadorcomvc.Models
                             vm_baixa.baixa_id = 0;
                         }
 
+                        vm_baixa.obs = leitor["oppb_obs"].ToString();
+
                     }
 
                 }
@@ -331,6 +333,110 @@ namespace gestaoContadorcomvc.Models
             }
 
             return vm_baixa;
+        }
+
+        //alterar baixa
+        public string alterarBaixa(            
+            int usuario_id,
+            int conta_id,
+            int baixa_id,            
+            int contaCorrente,
+            DateTime data,
+            Decimal valor,
+            string memorando,
+            Decimal juros,
+            Decimal multa,
+            Decimal desconto
+            )
+        {
+            string retorno = "Baixa alterada com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "call pr_alteraBaixa (@baixa_id, @contaCorrente, @data, @valor, @memorando, @juros, @multa, @desconto)";                              
+                comando.Parameters.AddWithValue("@contaCorrente", contaCorrente);
+                comando.Parameters.AddWithValue("@data", data);
+                comando.Parameters.AddWithValue("@valor", valor);
+                comando.Parameters.AddWithValue("@memorando", memorando);
+                comando.Parameters.AddWithValue("@juros", juros);
+                comando.Parameters.AddWithValue("@multa", multa);
+                comando.Parameters.AddWithValue("@desconto", desconto);
+                comando.Parameters.AddWithValue("@baixa_id", baixa_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Alteração da baixa ID: " + baixa_id + " alterada com sucesso";
+                log.log("Op_parcelas_baixa", "alterarBaixa", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao realizar a alteração da baixa. Tente novamente. Se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("Op_parcelas_baixa", "alterarBaixa", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
+        //alterar baixa
+        public string excluirBaixa(
+            int usuario_id,
+            int conta_id,
+            int baixa_id            
+            )
+        {
+            string retorno = "Baixa excluída com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "call pr_excluirBaixa (@baixa_id)";            
+                comando.Parameters.AddWithValue("@baixa_id", baixa_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Exclusão da baixa ID: " + baixa_id + " excluida com sucesso";
+                log.log("Op_parcelas_baixa", "excluirBaixa", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao realizar a exclusão da baixa. Tente novamente. Se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("Op_parcelas_baixa", "excluirBaixa", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
         }
 
     }

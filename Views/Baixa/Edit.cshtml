@@ -104,7 +104,13 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-info" onclick="gravarBaixa('Edit')">Gravar</button>
+                    @{
+                        if (TempData["local"] != null)
+                        {
+                        <button type="button" class="btn btn-info" onclick="gravarBaixa('Edit','@(TempData["local"].ToString())','@(TempData["contacorrente_id"].ToString())','@(TempData["dataInicio"].ToString())','@(TempData["dataFim"].ToString())')">Alterar</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteBaixa('confirmar','@(TempData["local"].ToString())','@(TempData["contacorrente_id"].ToString())','@(TempData["dataInicio"].ToString())','@(TempData["dataFim"].ToString())')">Excluir</button>
+                        }
+                    }
                 </div>
 
             </form>
@@ -123,7 +129,26 @@
                 <p>Baixa cadastrada com sucesso!</p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-secondary" asp-controller="ContasPagar" asp-action="Index">OK</a>
+                <a class="btn btn-info" asp-controller="ContasPagar" asp-action="Index">OK</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Confirmação de Exclusão-->
+<div class="modal fade" id="modal_mensagem_delete" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Baixa</h5>
+            </div>
+            <div class="modal-body">
+                <p>Confirma a exclusão!</p>
+                <p>Após excluído a parcela retornará para o contas a pagar/receber</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="deleteBaixa('confirmado','@(TempData["local"].ToString())','@(TempData["contacorrente_id"].ToString())','@(TempData["dataInicio"].ToString())','@(TempData["dataFim"].ToString())')">Excluir</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
