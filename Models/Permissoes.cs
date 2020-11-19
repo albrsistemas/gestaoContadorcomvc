@@ -436,6 +436,17 @@ namespace gestaoContadorcomvc.Models
                         permissao.fpCreate = Convert.ToBoolean(leitor["fpCreate"]);
                         permissao.fpEdit = Convert.ToBoolean(leitor["fpEdit"]);
                         permissao.fpDelete = Convert.ToBoolean(leitor["fpDelete"]);
+                        //Incluido em 19/11/2020
+                        permissao.compraList = Convert.ToBoolean(leitor["compraList"]);
+                        permissao.compraCreate = Convert.ToBoolean(leitor["compraCreate"]);
+                        permissao.compraEdit = Convert.ToBoolean(leitor["compraEdit"]);
+                        permissao.compraDelete = Convert.ToBoolean(leitor["compraDelete"]);
+                        permissao.ContasPList = Convert.ToBoolean(leitor["ContasPList"]);
+                        permissao.CCMList = Convert.ToBoolean(leitor["CCMList"]);
+                        permissao.baixaList = Convert.ToBoolean(leitor["baixaList"]);
+                        permissao.baixaCreate = Convert.ToBoolean(leitor["baixaCreate"]);
+                        permissao.baixaEdit = Convert.ToBoolean(leitor["baixaEdit"]);
+                        permissao.baixaDelete = Convert.ToBoolean(leitor["baixaDelete"]);
                     }
                 }
             }
