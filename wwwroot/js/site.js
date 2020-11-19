@@ -2379,3 +2379,56 @@ function deleteBaixa(contexto, local, contaCorrete_id, dataInicio, dataFim) {
         });
     }
 }
+
+function filter_ccm() {
+    let b_filter = document.getElementById('b_filter_ccm').style.display;
+
+    if (b_filter == 'none' || b_filter == '' || b_filter == null) {
+        document.getElementById('b_filter_ccm').style.display = 'block';
+        document.getElementById('icon_ccm').innerHTML = '- Filtros';
+    } else {
+        document.getElementById('b_filter_ccm').style.display = 'none';
+        document.getElementById('icon_ccm').innerHTML = '+ Filtros';
+    }
+}
+
+function consultaParticipanteCCM(id) {
+    let id_campo = "#" + id;
+    $(id_campo).autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Participante/consultaParticipante",
+                data: { __RequestVerificationToken: gettoken(), termo: request.term },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("erro");
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    var results = JSON.parse(data);
+                    var autocompleteObjects = [];
+                    for (var i = 0; i < results.length; i++) {
+                        var object = {
+                            value: results[i].participante_nome,
+                            label: results[i].participante_nome + " - " + results[i].participante_cnpj_cpf,
+                            id: results[i].participante_id,                            
+                        };
+                        autocompleteObjects.push(object);
+                    }
+
+                    // Invoke the response callback.
+                    response(autocompleteObjects);
+                }
+            });
+        },
+        minLength: 3,
+        select: function (event, ui) {
+            if (document.getElementById('participante_id')) {
+                document.getElementById('participante_id').value = ui.item.id;
+            }            
+        }
+    });
+}

@@ -51,12 +51,21 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Home Page";
                 }
-
+                //Usuário
                 if (pagina.Contains("Usuario/Index"))
                 {
                     retorno = "Usuário";
                 }
+                if (pagina.Contains("Usuario/Create"))
+                {
+                    retorno = "Incluir Usuário";
+                }
+                if (pagina.Contains("Usuario/Edit"))
+                {
+                    retorno = "Alterar Usuário";
+                }
 
+                //Categorias
                 if (pagina.Contains("Categoria/Index"))
                 {
                     retorno = "Categorias";

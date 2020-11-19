@@ -65,7 +65,26 @@
 
 <h2>Movimento de Conta Corrente</h2>
 <hr class="hrLine" />
-
+<div class="btn-tools">
+    <div class="col-6">
+        
+    </div>
+    <div class="col-6" style="text-align:right">
+        <ul class="navbar-nav ml-auto">
+            <!--Menu alinhao a direita-->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lançamentos</a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="#">Antecipações a cliente</a>
+                    <a class="dropdown-item" href="#">Antecipações a fornecedor</a>
+                    <a class="dropdown-item" href="#">Contas simples</a>                    
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" asp-controller="Conta" asp-action="Logout">Sair</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
 
 <form asp-controller="ContaCorrenteMov" asp-action="Index">
     <div class="row">
@@ -91,21 +110,59 @@
             <button type="submit" class="btn btn-info btn_fc">Selecionar</button>
         </div>
     </div>
+
+    <div id="b_filter_ccm" style="display:none;width:100%;">
+        <div class="row">
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Operação</label>
+                    <select asp-items="@ViewBag.tipoOpercao" value="@TempData["tipoOperacao"]" id="tipoOperacao" name="tipoOperacao" class="form-control"></select>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="form-group">
+                    <label class="control-label">N&ordm; Operação</label>
+                    <input type="text" name="nOperacao" class="form-control" id="nOperacao" pattern="[0-9]+$" />
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Cliente/Fornecedor</label>
+                    <input type="text" id="pesquisaParticipante" class="form-control" placeholder="Iniciais do nome ou cnpj/cpf" onkeyup="consultaParticipanteCCM(this.id)" />
+                    <input type="hidden" name="participante_id" id="participante_id"  />
+                </div>
+            </div>
+        </div>
+    </div>    
 </form>
-
-<div class="saldo_inicial">
-    @{
-        if (Model.saldo_abertura + Model.saldo_movimentos < 0)
-        {
-            <span>Saldo Inicial: <span style="color:red">@((Model.saldo_abertura + Model.saldo_movimentos).ToString("N"))</span></span>
-        }
-        else
-        {
-            <span>Saldo Inicial: <span style="color:black">@((Model.saldo_abertura + Model.saldo_movimentos).ToString("N"))</span></span>
-        }
-    }
+<div class="row">
+    <div class="col-6" onclick="filter_ccm()" style="cursor:pointer;user-select:none;">
+        <div style="float:left;cursor:pointer;"><label id="icon_ccm" class="text-info" style="font-weight:bold;cursor:pointer;">+ Filtros</label></div>
+    </div>
+    <div class="col-6">
+        <div class="saldo_inicial">
+            @{
+                if (Model.filtro == "Sem filtros!")
+                {
+                    if (Model.saldo_abertura + Model.saldo_movimentos < 0)
+                    {
+                        <span>Saldo Inicial: <span style="color:red">@((Model.saldo_abertura + Model.saldo_movimentos).ToString("N"))</span></span>
+                    }
+                    else
+                    {
+                        <span>Saldo Inicial: <span style="color:black">@((Model.saldo_abertura + Model.saldo_movimentos).ToString("N"))</span></span>
+                    }
+                }
+            }
+        </div>
+    </div>
 </div>
-
+@{ 
+    if(Model.filtro == "Informações com filtros!")
+    {
+        <p><label class="text-danger">As informações listadas estão com filtros e não foram gerados o saldo dos movimentos!</label></p>
+    }
+}
 
 <div class="list-header">
     <div class="line-list titulo">
@@ -170,11 +227,36 @@
 
                             if (saldo_atual < 0)
                             {
-                                <div class="col-12 line_list_title_mobile"><strong>Saldo: </strong><span style="color:red;">@((saldo_anterior + item.valor).ToString("N2"))</span></div>
+                                <div class="col-12 line_list_title_mobile">
+                                    <strong>Saldo: </strong><span style="color:red;">
+                                    @{ 
+                                        if(Model.filtro == "Sem filtros!")
+                                        {
+                                            @((saldo_anterior + item.valor).ToString("N2"))             
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }                                    
+                                </div>
                             }
                             else
                             {
-                                <div class="col-12 line_list_title_mobile"><strong>Saldo: </strong><span style="color:black;">@((saldo_anterior + item.valor).ToString("N2"))</span></div>
+                                <div class="col-12 line_list_title_mobile">
+                                    <strong>Saldo: </strong><span style="color:black;">
+                                    @{ 
+                                        if(Model.filtro == "Sem filtros!")
+                                        {
+                                            @((saldo_anterior + item.valor).ToString("N2"))             
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    </span>             
+                                </div>
                             }
                         }
 
@@ -192,11 +274,33 @@
 
                             if (saldo_atual < 0)
                             {
-                                <div class="col-2 line_list_title_full" style="text-align:right;color:red;">@((saldo_anterior + item.valor).ToString("N2"))</div>
+                                <div class="col-2 line_list_title_full" style="text-align:right;color:red;">
+                                    @{ 
+                                        if(Model.filtro == "Sem filtros!")
+                                        {
+                                            @((saldo_anterior + item.valor).ToString("N2"))             
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }                                    
+                                </div>
                             }
                             else
                             {
-                                <div class="col-2 line_list_title_full" style="text-align:right;color:black;">@((saldo_anterior + item.valor).ToString("N2"))</div>
+                                <div class="col-2 line_list_title_full" style="text-align:right;color:black;">
+                                    @{ 
+                                        if(Model.filtro == "Sem filtros!")
+                                        {
+                                            @((saldo_anterior + item.valor).ToString("N2"))             
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }                                    
+                                </div>
                             }
                         }
                         @{

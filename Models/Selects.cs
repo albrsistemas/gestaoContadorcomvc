@@ -1066,6 +1066,38 @@ namespace gestaoContadorcomvc.Models
             return modFrete;
         }
 
+        public List<Selects> getTipoOperacaoCCM()
+        {
+            List<Selects> TipoOperacao = new List<Selects>();
+            TipoOperacao.Add(new Selects
+            {
+                value = "0",
+                text = "Todas"
+            });
+            TipoOperacao.Add(new Selects
+            {
+                value = "1",
+                text = "Compra"
+            });
+            TipoOperacao.Add(new Selects
+            {
+                value = "2",
+                text = "Venda"
+            });
+            TipoOperacao.Add(new Selects
+            {
+                value = "3",
+                text = "Prestação de Serviço"
+            });
+            TipoOperacao.Add(new Selects
+            {
+                value = "4",
+                text = "Serviço Tomado"
+            });            
+
+            return TipoOperacao;
+        }
+
 
     }
 }

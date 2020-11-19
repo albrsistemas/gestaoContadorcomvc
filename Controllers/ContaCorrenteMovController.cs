@@ -17,7 +17,7 @@ namespace gestaoContadorcomvc.Controllers
     public class ContaCorrenteMovController : Controller
     {
         [Autoriza(permissao = "CCMList")]
-        public ActionResult Index(DateTime dataInicio, DateTime dataFim, int contacorrente_id)
+        public ActionResult Index(DateTime dataInicio, DateTime dataFim, int contacorrente_id, int tipoOperacao, int nOperacao, int participante_id)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -30,11 +30,12 @@ namespace gestaoContadorcomvc.Controllers
 
             if(contacorrente_id > 0)
             {
-                vm_fc = fc.fluxoCaixa(user.usuario_id, user.usuario_conta_id, contacorrente_id, dataInicio, dataFim);
+                vm_fc = fc.fluxoCaixa(user.usuario_id, user.usuario_conta_id, contacorrente_id, dataInicio, dataFim,tipoOperacao,nOperacao,participante_id);
                 TempData["dataInicio"] = dataInicio.ToShortDateString();
                 TempData["dataFim"] = dataFim.ToShortDateString();
                 TempData["contacorrente_id"] = contacorrente_id;
                 ViewBag.ccorrente = select.getContasCorrenteConta_id(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == contacorrente_id.ToString() });
+                ViewBag.tipoOpercao = select.getTipoOperacaoCCM().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             }
             else
             {
@@ -44,6 +45,7 @@ namespace gestaoContadorcomvc.Controllers
                 TempData["dataInicio"] = today.AddDays(-30).ToShortDateString();
                 TempData["dataFim"] = today.ToShortDateString();
                 ViewBag.ccorrente = select.getContasCorrenteConta_id(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+                ViewBag.tipoOpercao = select.getTipoOperacaoCCM().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
             }            
             vm_fc.user = user;
 
@@ -54,7 +56,7 @@ namespace gestaoContadorcomvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(DateTime dataInicio, DateTime dataFim, int contacorrente_id, IFormCollection d)
+        public ActionResult Index(DateTime dataInicio, DateTime dataFim, int contacorrente_id, int tipoOperacao, int nOperacao, int participante_id, IFormCollection d)
         {
             try
             {
@@ -64,11 +66,12 @@ namespace gestaoContadorcomvc.Controllers
 
                 Vm_fluxo_caixa vm_fc = new Vm_fluxo_caixa();
                 Fluxo_caixa fc = new Fluxo_caixa();
-                vm_fc = fc.fluxoCaixa(user.usuario_id, user.usuario_conta_id, contacorrente_id, dataInicio, dataFim);
+                vm_fc = fc.fluxoCaixa(user.usuario_id, user.usuario_conta_id, contacorrente_id, dataInicio, dataFim, tipoOperacao, nOperacao, participante_id);
                 vm_fc.user = user;
 
                 Selects select = new Selects();
-                ViewBag.ccorrente = select.getContasCorrenteConta_id(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == contacorrente_id.ToString() });
+                ViewBag.ccorrente = select.getContasCorrenteConta_id(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == contacorrente_id.ToString() });                
+                ViewBag.tipoOpercao = select.getTipoOperacaoCCM().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
                 TempData["dataInicio"] = dataInicio.ToShortDateString();
                 TempData["dataFim"] = dataFim.ToShortDateString();
                 TempData["contacorrente_id"] = contacorrente_id;

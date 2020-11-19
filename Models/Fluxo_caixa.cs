@@ -39,7 +39,7 @@ namespace gestaoContadorcomvc.Models
         Log log = new Log();
 
         //Listar fluxo de caixa
-        public Vm_fluxo_caixa fluxoCaixa(int usuario_id, int conta_id, int contaCorrente, DateTime dataInicial, DateTime dataFinal)
+        public Vm_fluxo_caixa fluxoCaixa(int usuario_id, int conta_id, int contaCorrente, DateTime dataInicial, DateTime dataFinal, int tipoOperacao, int nOperacao, int participante_id)
         {
             Vm_fluxo_caixa vm_fc = new Vm_fluxo_caixa();
             List<Fluxo_caixa> fc = new List<Fluxo_caixa>();            
@@ -89,13 +89,50 @@ namespace gestaoContadorcomvc.Models
                 }
                 movimentos.Close();
 
+                string filter = "xccm.ccm_conta_id = @conta_id_3 and xccm.ccm_ccorrente_id = @contaCorrente_3 and xccm.ccm_data BETWEEN @dataInicial_3 AND @dataFinal";
+                if(tipoOperacao != 0)
+                {
+                    filter += " and op.op_tipo = @tipoOperacao";                    
+                }
+                if(participante_id != 0)
+                {
+                    filter += " and (xccm.ccm_contra_partida_tipo = 'Participante' and xccm.ccm_contra_partida_id = @participante_id)";                    
+                }
+                if(nOperacao != 0)
+                {
+                    filter += " and op.op_numero_ordem = @nOperacao";                    
+                }
+
+                string cmd = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, xccm.ccm_memorando as memorando, if(xccm.ccm_movimento = 'Recebimento', xccm.ccm_valor, -xccm.ccm_valor) as valor, xccm.ccm_op_id as op_id, op.op_tipo, op.op_numero_ordem, xccm.ccm_oppb_id as baixa_id, xccm.ccm_contra_partida_tipo as contra_partida_tipo, xccm.ccm_contra_partida_id from conta_corrente_mov as xccm LEFT join operacao as op on op.op_id = xccm.ccm_op_id WHERE " + filter + " ORDER by xccm.ccm_data ASC;";
                 //Fluxo de lançamentos do período
-                comando.CommandText = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, xccm.ccm_memorando as memorando, if(xccm.ccm_movimento = 'Recebimento', xccm.ccm_valor, -xccm.ccm_valor) as valor, xccm.ccm_op_id as op_id, xccm.ccm_oppb_id as baixa_id, xccm.ccm_contra_partida_tipo as contra_partida_tipo, xccm.ccm_contra_partida_id from conta_corrente_mov as xccm WHERE xccm.ccm_conta_id = @conta_id_3 and xccm.ccm_ccorrente_id = @contaCorrente_3 and xccm.ccm_data BETWEEN @dataInicial_3 AND @dataFinal ORDER by xccm.ccm_data ASC;";
+                //comando.CommandText = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, xccm.ccm_memorando as memorando, if(xccm.ccm_movimento = 'Recebimento', xccm.ccm_valor, -xccm.ccm_valor) as valor, xccm.ccm_op_id as op_id, xccm.ccm_oppb_id as baixa_id, xccm.ccm_contra_partida_tipo as contra_partida_tipo, xccm.ccm_contra_partida_id from conta_corrente_mov as xccm WHERE xccm.ccm_conta_id = @conta_id_3 and xccm.ccm_ccorrente_id = @contaCorrente_3 and xccm.ccm_data BETWEEN @dataInicial_3 AND @dataFinal ORDER by xccm.ccm_data ASC;";
+                comando.CommandText = cmd;
                 comando.Parameters.AddWithValue("@contaCorrente_3", contaCorrente);
                 comando.Parameters.AddWithValue("@conta_id_3", conta_id);
                 comando.Parameters.AddWithValue("@dataInicial_3", dataInicial);
                 comando.Parameters.AddWithValue("@dataFinal", dataFinal);
+                if (tipoOperacao != 0)
+                {                    
+                    comando.Parameters.AddWithValue("@tipoOperacao", tipoOperacao);
+                }
+                if (participante_id != 0)
+                {                 
+                    comando.Parameters.AddWithValue("@participante_id", participante_id);
+                }
+                if (nOperacao != 0)
+                {                    
+                    comando.Parameters.AddWithValue("@nOperacao", nOperacao);
+                }
                 comando.ExecuteNonQuery();
+
+                if(tipoOperacao > 0 || participante_id > 0 || nOperacao > 0)
+                {
+                    vm_fc.filtro = "Informações com filtros!";
+                }
+                else
+                {
+                    vm_fc.filtro = "Sem filtros!";
+                }
 
                 fluxo = comando.ExecuteReader();
                 if (fluxo.HasRows)
