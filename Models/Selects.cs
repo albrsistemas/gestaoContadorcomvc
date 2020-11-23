@@ -307,11 +307,11 @@ namespace gestaoContadorcomvc.Models
                         string tipo = leitor["categoria_tipo"].ToString();
                         if (tipo.Equals("Sintetica"))
                         {
-                            disabled = true;
+                            categoria.disabled = true;
                         }
                         else
                         {
-                            disabled = false;
+                            categoria.disabled = false;
                         }
 
                         categorias.Add(categoria);

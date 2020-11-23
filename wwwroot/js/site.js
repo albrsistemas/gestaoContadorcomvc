@@ -1490,8 +1490,12 @@ function totaisOperacao() {
     operacao.totais.op_item_vlr_ipi = document.getElementById('op_totais_ipi').value;
 }
 
-function gerarParcela() {
-    document.getElementById('parcelas').innerHTML = "";    
+function gerarParcela() {    
+    document.getElementById('parcelas').innerHTML = ""; //Limpar view
+    //Apagando parcelas existentes
+    for (let i = 0; i < operacao.parcelas.length; i++) {
+        operacao.parcelas.pop();
+    }    
     let formaPgto = document.getElementById('forma_pgto');
     let condicaoPgto = (document.getElementById('condicoes_pgto').value).split(',');
     let totalCompra = ((document.getElementById('op_totais_total_op').value).toString().replace('.', '').replace(',', '.')) * 1;
@@ -2079,6 +2083,17 @@ function gravarOperacao(contexto, tipo_operacao) {
         }
     }
 
+    if (tipo_operacao == 'Venda') {
+        operacao.operacao.op_comRetencoes = false;
+        operacao.operacao.op_comParticipante = true;
+        operacao.operacao.op_comTransportador = true;
+
+        if (contexto == 'Create') {
+            operacao.participante.existe = false;
+        }
+    }
+
+
 
 
     let validacao = [];
@@ -2086,7 +2101,7 @@ function gravarOperacao(contexto, tipo_operacao) {
     
 
     for (let i = 0; i < validacao.length; i++) {
-        validacao[i].pop();
+        validacao.pop();
     }
     document.getElementById('msg_valid').innerHTML = "";
 
@@ -2117,15 +2132,15 @@ function gravarOperacao(contexto, tipo_operacao) {
         //alert('Tudo ok. Para os próximos episódios teremos a persistência no banco de dados!');        
         
         $.ajax({
-            url: "/Compra/" + contexto,
+            url: "/" + tipo_operacao + "/" + contexto,
             data: { __RequestVerificationToken: gettoken(), op: operacao},
             type: 'POST',
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
                 document.getElementById('staticLabel').innerHTML = "";
-                document.getElementById('staticLabel').innerHTML = "Compra";
+                document.getElementById('staticLabel').innerHTML = tipo_operacao;
                 document.getElementById('conteudo').innerHTML = "";
-                document.getElementById('conteudo').innerHTML = "<p>Gravando compra, aguarde...</p>";
+                document.getElementById('conteudo').innerHTML = "<p>Gravando " + tipo_operacao.toLowerCase() + ", aguarde...</p>";
                 document.getElementById('rodape').innerHTML = "";                
                 $('#modal_mensagem').modal('show');
             },
@@ -2142,7 +2157,12 @@ function gravarOperacao(contexto, tipo_operacao) {
                     document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
                     document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON + "</p>";
                     document.getElementById('mensagem_retorno_rodape').innerHTML = "";
-                    document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/Compra/Index">Fechar</a>';
+                    if (tipo_operacao == 'Compra') {
+                        document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/Compra/Index">Fechar</a>';
+                    }
+                    if (tipo_operacao == 'Venda') {
+                        document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/Venda/Index">Fechar</a>';
+                    }                    
                     $('#modal_mensagem_retorno').modal('show');
 
                     return;
@@ -2259,7 +2279,7 @@ function gravarBaixa(contexto_requisicao, local, contaCorrete_id, dataInicio, da
     let erros = [];
     //Limpara a matrix validação;
     for (let i = 0; i < validacao.length; i++) {
-        validacao[i].pop();
+        validacao.pop();
     }
 
     //Popula matrix validação com o retorno da validação validaBaixa

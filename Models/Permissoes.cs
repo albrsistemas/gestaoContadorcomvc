@@ -80,7 +80,12 @@ namespace gestaoContadorcomvc.Models
         public bool baixaList { get; set; }
         public bool baixaCreate { get; set; }
         public bool baixaEdit { get; set; }
-        public bool baixaDelete { get; set; }
+        public bool baixaDelete { get; set; }        
+        //Venda 
+        public bool vendaList { get; set; }
+        public bool vendaCreate { get; set; }
+        public bool vendaEdit { get; set; }
+        public bool vendaDelete { get; set; }
 
 
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
