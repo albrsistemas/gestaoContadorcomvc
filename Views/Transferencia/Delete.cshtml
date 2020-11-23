@@ -1,0 +1,40 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_transferencia
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Transferência</h4>
+            </div>
+            <form asp-controller="Transferencia" asp-action="Delete">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p>Exclusão de transferência</p>
+                        </div>
+                    </div>
+                    <hr class="hrLine" />
+                    <div class="alert alert-danger" role="alert">
+                        <p>Confirma a exclusão da transferência no valor de @Model.valor.ToString("N") da data @Model.data.ToShortDateString()?</p>
+                    </div>
+                    <input type="hidden" value="@TempData["contacorrente_id"].ToString()" name="contacorrente_id" />
+                    <input type="hidden" value="@TempData["dataInicio"].ToString()" name="dataInicio" />
+                    <input type="hidden" value="@TempData["dataFim"].ToString()" name="dataFim" />
+                    <input type="hidden" asp-for="ccm_id" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-info">Gravar</button>
+                </div>
+
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    execDatapicker();
+</script>

@@ -86,6 +86,9 @@ namespace gestaoContadorcomvc.Models
         public bool vendaCreate { get; set; }
         public bool vendaEdit { get; set; }
         public bool vendaDelete { get; set; }
+        public bool CCMCreate { get; set; }
+        public bool CCMEdit { get; set; }
+        public bool CCMDelete { get; set; }
 
 
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      

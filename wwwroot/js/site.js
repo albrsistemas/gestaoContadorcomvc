@@ -1689,8 +1689,8 @@ function execDatapicker() {
     $(".datepicker").datepicker({
         buttonImageOnly: true,
         dateFormat: 'dd-mm-yyyy',
-        changeMonth: false,
-        changeYear: false,
+        changeMonth: true,
+        changeYear: true,
         dateFormat: 'dd/mm/yy',
         dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'],
         dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
@@ -2452,3 +2452,29 @@ function consultaParticipanteCCM(id) {
         }
     });
 }
+
+
+$(".createTransferencia").click(function () {    
+    var contacorrente_id = $(this).attr("data-contacorrente_id");
+    var dataInicio = $(this).attr("data-dataInicio");
+    var dataFim = $(this).attr("data-dataFim");    
+    var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
+    var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
+
+    $("#modal").load("/Transferencia/Create?contacorrente_id=" + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(".editTransferencia").click(function () {
+    var ccm_id = $(this).attr("data-ccm_id");
+    var contacorrente_id = $(this).attr("data-contacorrente_id");
+    var dataInicio = $(this).attr("data-dataInicio");
+    var dataFim = $(this).attr("data-dataFim");
+    var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
+    var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
+
+    $("#modal").load("/Transferencia/Edit?contacorrente_id=" + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim + "&ccm_id=" + ccm_id, function () {
+        $("#modal").modal('show');
+    })
+});

@@ -103,7 +103,7 @@ namespace gestaoContadorcomvc.Models
                     filter += " and op.op_numero_ordem = @nOperacao";                    
                 }
 
-                string cmd = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, xccm.ccm_memorando as memorando, if(xccm.ccm_movimento = 'Receb', xccm.ccm_valor, -xccm.ccm_valor) as valor, xccm.ccm_op_id as op_id, op.op_tipo, op.op_numero_ordem, xccm.ccm_oppb_id as baixa_id, xccm.ccm_contra_partida_tipo as contra_partida_tipo, xccm.ccm_contra_partida_id from conta_corrente_mov as xccm LEFT join operacao as op on op.op_id = xccm.ccm_op_id WHERE " + filter + " ORDER by xccm.ccm_data ASC;";
+                string cmd = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, xccm.ccm_memorando as memorando, if(xccm.ccm_movimento = 'E', xccm.ccm_valor, -xccm.ccm_valor) as valor, xccm.ccm_op_id as op_id, op.op_tipo, op.op_numero_ordem, xccm.ccm_oppb_id as baixa_id, xccm.ccm_contra_partida_tipo as contra_partida_tipo, xccm.ccm_contra_partida_id from conta_corrente_mov as xccm LEFT join operacao as op on op.op_id = xccm.ccm_op_id WHERE " + filter + " ORDER by xccm.ccm_data ASC;";
                 //Fluxo de lançamentos do período
                 //comando.CommandText = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, xccm.ccm_memorando as memorando, if(xccm.ccm_movimento = 'Recebimento', xccm.ccm_valor, -xccm.ccm_valor) as valor, xccm.ccm_op_id as op_id, xccm.ccm_oppb_id as baixa_id, xccm.ccm_contra_partida_tipo as contra_partida_tipo, xccm.ccm_contra_partida_id from conta_corrente_mov as xccm WHERE xccm.ccm_conta_id = @conta_id_3 and xccm.ccm_ccorrente_id = @contaCorrente_3 and xccm.ccm_data BETWEEN @dataInicial_3 AND @dataFinal ORDER by xccm.ccm_data ASC;";
                 comando.CommandText = cmd;
@@ -214,5 +214,233 @@ namespace gestaoContadorcomvc.Models
 
             return vm_fc;
         }
+
+        //Transferência entre contas correntes
+        public string transferencia(int usuario_id, int conta_id, DateTime data, Decimal valor, int ccorrente_de, int ccorrente_para, string memorando)
+        {
+            string retorno = "Transferência realizada com sucesso";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;            
+
+            try
+            {
+                comando.CommandText = "call pr_transferencia(@de, @para, @valor, @data, @memorando, @conta_id)";                
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@de", ccorrente_de);
+                comando.Parameters.AddWithValue("@para", ccorrente_para);
+                comando.Parameters.AddWithValue("@valor", valor);
+                comando.Parameters.AddWithValue("@data", data);
+                comando.Parameters.AddWithValue("@memorando", memorando);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Transferência no valor de " + valor.ToString("N") + " realizada com sucesso";
+                log.log("Fluxo_caixa", "Transferencia", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao efeturar a transferência. Tente novamente, se persistir, entre em contato com o suporte!";
+                string msg = e.Message.Substring(0, 300);
+                log.log("Fluxo_caixa", "Transferencia", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
+        //Busca dados transferência entre contas correntes
+        public Vm_transferencia buscaTransferencia(int usuario_id, int conta_id, int ccm_id)
+        {
+            Vm_transferencia transf = new Vm_transferencia();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT ccm.ccm_id, if(ccm.ccm_movimento = 'S', ccm.ccm_ccorrente_id, (SELECT conta_corrente_mov.ccm_ccorrente_id from conta_corrente_mov WHERE conta_corrente_mov.ccm_id = ccm.ccm_contra_partida_id)) as de, if(ccm.ccm_movimento = 'S', (SELECT conta_corrente_mov.ccm_ccorrente_id from conta_corrente_mov WHERE conta_corrente_mov.ccm_id = ccm.ccm_contra_partida_id) ,ccm.ccm_ccorrente_id) as para, ccm.ccm_data as data, ccm.ccm_valor as valor, ccm.ccm_memorando as memorando from conta_corrente_mov as ccm WHERE ccm.ccm_id = @ccm_id and ccm.ccm_conta_id = @conta_id;";
+                comando.Parameters.AddWithValue("@ccm_id", ccm_id);
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        if (DBNull.Value != leitor["ccm_id"])
+                        {
+                            transf.ccm_id = Convert.ToInt32(leitor["ccm_id"]);
+                        }
+                        else
+                        {
+                            transf.ccm_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["de"])
+                        {
+                            transf.ccorrente_de = Convert.ToInt32(leitor["de"]);
+                        }
+                        else
+                        {
+                            transf.ccorrente_de = 0;
+                        }
+
+                        if (DBNull.Value != leitor["para"])
+                        {
+                            transf.ccorrente_para = Convert.ToInt32(leitor["para"]);
+                        }
+                        else
+                        {
+                            transf.ccorrente_para = 0;
+                        }
+
+                        if (DBNull.Value != leitor["data"])
+                        {
+                            transf.data = Convert.ToDateTime(leitor["data"]);
+                        }
+                        else
+                        {
+                            transf.data = new DateTime();
+                        }
+
+                        if (DBNull.Value != leitor["valor"])
+                        {
+                            transf.valor = Convert.ToDecimal(leitor["valor"]);
+                        }
+                        else
+                        {
+                            transf.valor = 0;
+                        }
+
+                        transf.memorando = leitor["memorando"].ToString();
+
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {                
+                string msg = e.Message.Substring(0, 300);
+                log.log("Fluxo_caixa", "buscaTransferencia", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return transf;
+        }
+
+        //Alterar dados transferência entre contas correntes
+        public string alteraTransferencia(int usuario_id, int conta_id, int ccm_id, DateTime data, Decimal valor, int ccorrente_de, int ccorrente_para, string memorando)
+        {
+            string retorno = "Transferência alterada com sucesso";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "call pr_altera_transferencia(@ccm_id, @de, @para, @valor, @data, @memorando, @conta_id)";
+                comando.Parameters.AddWithValue("@ccm_id", ccm_id);
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@de", ccorrente_de);
+                comando.Parameters.AddWithValue("@para", ccorrente_para);
+                comando.Parameters.AddWithValue("@valor", valor);
+                comando.Parameters.AddWithValue("@data", data);
+                comando.Parameters.AddWithValue("@memorando", memorando);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Alteração da transferência no valor de " + valor.ToString("N") + "da data "+ data.ToShortDateString() + " realizada com sucesso";
+                log.log("Fluxo_caixa", "alteraTransferencia", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao alterar a transferência. Tente novamente, se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("Fluxo_caixa", "alteraTransferencia", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
+        //Excluir transferência entre contas correntes
+        public string excluirTransferencia(int usuario_id, int conta_id, int ccm_id)
+        {
+            string retorno = "Transferência excluida com sucesso";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "call pr_excluir_transferencia(@ccm_id, @conta_id)";
+                comando.Parameters.AddWithValue("@ccm_id", ccm_id);
+                comando.Parameters.AddWithValue("@conta_id", conta_id);                
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Exclusão da transferência ID " + ccm_id + " realizada com sucesso";
+                log.log("Fluxo_caixa", "excluirTransferencia", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao excluir a transferência. Tente novamente, se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("Fluxo_caixa", "excluirTransferencia", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
     }
 }

@@ -44,6 +44,7 @@ namespace gestaoContadorcomvc.Controllers
                 DateTime today = DateTime.Today;
                 TempData["dataInicio"] = today.AddDays(-30).ToShortDateString();
                 TempData["dataFim"] = today.ToShortDateString();
+                TempData["contacorrente_id"] = 0;
                 ViewBag.ccorrente = select.getContasCorrenteConta_id(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
                 ViewBag.tipoOpercao = select.getTipoOperacaoCCM().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
             }            
