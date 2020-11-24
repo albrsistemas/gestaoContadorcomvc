@@ -190,7 +190,7 @@
     <fieldset id="box_retencoes" style="display:none">
         <legend>Retenções tributárias</legend>
         <div class="row">
-            <div class="col-4">
+            <div class="col-12 col-md-4" style="display:none">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_inss" class="control-label">INSS</label>
                     <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
@@ -200,7 +200,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-12 col-md-4" style="display:none">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_issqn" class="control-label">ISSQN</label>
                     <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
@@ -210,7 +210,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-12 col-md-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_irrf" class="control-label">IRRF</label>
                     <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
@@ -222,25 +222,27 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-4">
+            <div class="col-6 col-md-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_pis" class="control-label">PIS</label>
-                    <input asp-for="retencoes.op_ret_pis" id="op_ret_pis" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
+                    <input asp-for="retencoes.op_ret_pis" id="op_ret_pis" class="form-control" readonly="readonly" />
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-6 col-md-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_cofins" class="control-label">COFINS</label>
-                    <input asp-for="retencoes.op_ret_cofins" id="op_ret_cofins" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
+                    <input asp-for="retencoes.op_ret_cofins" id="op_ret_cofins" class="form-control" readonly="readonly" />
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-6 col-md-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_csll" class="control-label">CSLL</label>
-                    <input asp-for="retencoes.op_ret_csll" id="op_ret_csll" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
+                    <input asp-for="retencoes.op_ret_csll" id="op_ret_csll" class="form-control" readonly="readonly" />
                 </div>
             </div>
         </div>
+        <p>As retenções de PIS, COFINS e CSLL devem ser informadas diretamente na parcela.</p>
+
     </fieldset>
     <fieldset>
         <legend>Detalhes</legend>
@@ -299,8 +301,6 @@
         <div class="row">
 
         </div>
-
-
         <div class="row">
             <div class="col-12" style=\"padding-right: 0px;\">
                 <div class="include_item_label" style="width: 11%">Dias</div>
@@ -308,7 +308,7 @@
                 <div class="include_item_label" style="width: 26%">Valor</div>
                 <div class="include_item_label" style="width: calc(40% - 95px)">Forma</div>
                 @*<div class="include_item_label" style="width: 15%">Obs.:</div>*@
-            </div>            
+            </div>
         </div>
         <div class="parcela" id="parcelas">
 
@@ -322,6 +322,11 @@
                 Incluir outra parcela
             </label>
         </div>
+        <div class="row">
+            <div class="col-12" id="alert_vlr_parcela">
+
+            </div>
+        </div>        
         <br />
     </fieldset>
     <fieldset>
@@ -733,52 +738,67 @@
                     <h5 class="modal-title" id="staticBackdropLabel">Retenções</h5>
                 </div>
                 <div class="modal-body">
-                    <fieldset id="box_retencoes">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Valor Bruto</label>
+                                <input id="op_parcela_valor_bruto" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Valor Líquido</label>
+                                <input id="op_parcela_valor" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
+                            </div>
+                        </div>
+                    </div>
+                    <fieldset>
                         <legend>Retenções tributárias</legend>
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-6 col-md-4" style="display:none">
                                 <div class="form-group">
-                                    <label asp-for="retencoes.op_ret_inss" class="control-label">INSS</label>
-                                    <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />                                    
+                                    <label class="control-label">INSS</label>
+                                    <input id="op_parcela_ret_inss" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />                                    
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-6 col-md-4" style="display:none">
                                 <div class="form-group">
-                                    <label asp-for="retencoes.op_ret_issqn" class="control-label">ISSQN</label>
-                                    <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />                                    
+                                    <label class="control-label">ISSQN</label>
+                                    <input id="op_parcela_ret_issqn" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />                                    
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-6 col-md-4">
                                 <div class="form-group">
-                                    <label asp-for="retencoes.op_ret_irrf" class="control-label">IRRF</label>
-                                    <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />                                    
+                                    <label class="control-label">IRRF</label>
+                                    <input  id="op_parcela_ret_irrf" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />                                    
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-6 col-md-4">
                                 <div class="form-group">
-                                    <label asp-for="retencoes.op_ret_pis" class="control-label">PIS</label>
-                                    <input asp-for="retencoes.op_ret_pis" id="op_ret_pis" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
+                                    <label class="control-label">PIS</label>
+                                    <input id="op_parcela_ret_pis" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-6 col-md-4">
                                 <div class="form-group">
-                                    <label asp-for="retencoes.op_ret_cofins" class="control-label">COFINS</label>
-                                    <input asp-for="retencoes.op_ret_cofins" id="op_ret_cofins" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
+                                    <label class="control-label">COFINS</label>
+                                    <input id="op_parcela_ret_cofins" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-6 col-md-4">
                                 <div class="form-group">
-                                    <label asp-for="retencoes.op_ret_csll" class="control-label">CSLL</label>
-                                    <input asp-for="retencoes.op_ret_csll" id="op_ret_csll" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
+                                    <label class="control-label">CSLL</label>
+                                    <input id="op_parcela_ret_csll" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
                                 </div>
                             </div>
                         </div>
                     </fieldset>
+                    <input type="hidden" id="controleEditParcela" />
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-info" onclick="dadorParticipante('edit', 0)">Gravar</button>
+                    <button type="button" class="btn btn-info" id="gravar_parcela" onclick="edit_parcela(this.id, 'gravar')">Gravar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
