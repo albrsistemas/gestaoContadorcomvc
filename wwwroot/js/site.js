@@ -2478,3 +2478,19 @@ $(".editTransferencia").click(function () {
         $("#modal").modal('show');
     })
 });
+
+function op_retencao(id, box_id) {
+    let cheque = document.getElementById(id);
+    if (cheque.checked == true) {
+        document.getElementById(box_id).style.display = 'block';
+        document.getElementById('op_ret_inss').focus();
+    } else {
+        document.getElementById(box_id).style.display = 'none';
+        document.getElementById('op_ret_inss').value = 0.00;
+        document.getElementById('op_ret_issqn').value = 0.00;
+        document.getElementById('op_ret_irrf').value = 0.00;
+        document.getElementById('op_ret_pis').value = 0.00;
+        document.getElementById('op_ret_cofins').value = 0.00;
+        document.getElementById('op_ret_csll').value = 0.00;
+    }
+}

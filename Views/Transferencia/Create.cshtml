@@ -42,7 +42,7 @@
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label asp-for="valor" class="control-label">Data</label>
+                                <label asp-for="valor" class="control-label">Valor</label>
                                 <input value="@Model.valor.ToString("N")" name="valor" id="valor" onchange="decimal(this.id, this.value, '6')" class="form-control" />
                                 <span asp-validation-for="valor" class="text-danger"></span>
                             </div>
