@@ -186,14 +186,14 @@
             <input type="checkbox" asp-for="operacao.op_comRetencoes" id="op_comRetencoes" class="custom-control-input" onchange="op_retencao(this.id,'box_retencoes')">
             <label class="custom-control-label" for="op_comRetencoes">Operação com retenções tributárias</label>
         </div>
-    </fieldset>        
+    </fieldset>
     <fieldset id="box_retencoes" style="display:none">
         <legend>Retenções tributárias</legend>
         <div class="row">
             <div class="col-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_inss" class="control-label">INSS</label>
-                    <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control" />
+                    <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
                     <div class="custom-control custom-switch">
                         <input type="checkbox" id="ret_inss_parcela" class="custom-control-input">
                         <label class="custom-control-label" for="ret_inss_parcela">Informar INSS na primeira parcela</label>
@@ -203,7 +203,7 @@
             <div class="col-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_issqn" class="control-label">ISSQN</label>
-                    <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control" />
+                    <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
                     <div class="custom-control custom-switch">
                         <input type="checkbox" id="ret_iss_parcela" class="custom-control-input">
                         <label class="custom-control-label" for="ret_iss_parcela">Informar ISSQN na primeira parcela</label>
@@ -213,7 +213,7 @@
             <div class="col-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_irrf" class="control-label">IRRF</label>
-                    <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control" />
+                    <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
                     <div class="custom-control custom-switch">
                         <input type="checkbox" id="ret_irrf_parcela" class="custom-control-input">
                         <label class="custom-control-label" for="ret_irrf_parcela">Informar IRRF na primeira parcela</label>
@@ -225,19 +225,19 @@
             <div class="col-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_pis" class="control-label">PIS</label>
-                    <input asp-for="retencoes.op_ret_pis" id="op_ret_pis" class="form-control" />                    
+                    <input asp-for="retencoes.op_ret_pis" id="op_ret_pis" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
                 </div>
             </div>
             <div class="col-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_cofins" class="control-label">COFINS</label>
-                    <input asp-for="retencoes.op_ret_cofins" id="op_ret_cofins" class="form-control" />                    
+                    <input asp-for="retencoes.op_ret_cofins" id="op_ret_cofins" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
                 </div>
             </div>
             <div class="col-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_csll" class="control-label">CSLL</label>
-                    <input asp-for="retencoes.op_ret_csll" id="op_ret_csll" class="form-control" />                    
+                    <input asp-for="retencoes.op_ret_csll" id="op_ret_csll" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
                 </div>
             </div>
         </div>
@@ -297,16 +297,18 @@
         </div>
         <br />
         <div class="row">
-            <div class="col-10" style=\"padding-right: 0px;\">
-                <div class="include_item_label" style="width: 10%">Dias</div>
-                <div class="include_item_label" style="width: 25%">Vencimento</div>
-                <div class="include_item_label" style="width: 25%">Valor</div>
-                <div class="include_item_label" style="width: 25%">Forma</div>
-                <div class="include_item_label" style="width: 15%">Obs.:</div>
-            </div>
-            <div class="col-2">
 
-            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-12" style=\"padding-right: 0px;\">
+                <div class="include_item_label" style="width: 11%">Dias</div>
+                <div class="include_item_label" style="width: 25%">Vencimento</div>
+                <div class="include_item_label" style="width: 26%">Valor</div>
+                <div class="include_item_label" style="width: calc(40% - 95px)">Forma</div>
+                @*<div class="include_item_label" style="width: 15%">Obs.:</div>*@
+            </div>            
         </div>
         <div class="parcela" id="parcelas">
 
@@ -723,6 +725,67 @@
         </div>
     </div>
 
+    <!--Dados do retenções-->
+    <div class="modal fade" id="modal_retencoes" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Retenções</h5>
+                </div>
+                <div class="modal-body">
+                    <fieldset id="box_retencoes">
+                        <legend>Retenções tributárias</legend>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="retencoes.op_ret_inss" class="control-label">INSS</label>
+                                    <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />                                    
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="retencoes.op_ret_issqn" class="control-label">ISSQN</label>
+                                    <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />                                    
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="retencoes.op_ret_irrf" class="control-label">IRRF</label>
+                                    <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="retencoes.op_ret_pis" class="control-label">PIS</label>
+                                    <input asp-for="retencoes.op_ret_pis" id="op_ret_pis" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="retencoes.op_ret_cofins" class="control-label">COFINS</label>
+                                    <input asp-for="retencoes.op_ret_cofins" id="op_ret_cofins" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="retencoes.op_ret_csll" class="control-label">CSLL</label>
+                                    <input asp-for="retencoes.op_ret_csll" id="op_ret_csll" class="form-control" onchange="imput_retencoes(this.id, this.value,'2')" />
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" onclick="dadorParticipante('edit', 0)">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <br />
 
     <button type="button" class="btn btn-info" id="sub" onclick="gravarOperacao('Create', 'Venda')">Gravar</button>
@@ -739,5 +802,8 @@
         <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>
     </div>
 </form>
+
+
+
 
 

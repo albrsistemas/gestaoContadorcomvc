@@ -1549,22 +1549,16 @@ function gerarParcela() {
 
             let parcela = "" +
                 "<div class=\"row\" id=\"parcela_" + numero_controle + "\">" +               
-                "<div class=\"col-10\" style=\"padding-right: 0px;\">" +
+                "<div class=\"col-12\" style=\"padding-right: 0px;\">" +
                 "<input id=\"diasParcela_" + numero_controle + "\" onchange=\"update_parcela(this.id, this.value)\" type =\"text\" class=\"include_item\" style=\"width: 10%;padding:0px;text-align:center\" value=\"" + Op_parcelas.op_parcela_dias + "\" />" +
                 "<input id=\"vencParcela_" + numero_controle + "\" onchange=\"update_parcela(this.id, this.value)\" type =\"text\" class=\"include_item datepicker\" style=\"width: 25%\" value=\"" + Op_parcelas.op_parcela_vencimento + "\" />" +
                 "<input id=\"vlrParcela_" + numero_controle + "\" onchange=\"update_parcela(this.id, this.value)\" type =\"text\" class=\"include_item\" style=\"width: 25%\" value=\"" + Op_parcelas.op_parcela_valor + "\" />" +
-                "<select id=\"fpParcela_" + numero_controle + "\" onchange=\"update_parcela(this.id, this.value)\" class=\"include_item\" style=\"width: 25%\">" + optionsTxt + "</select>" +
-                "<input id=\"obsParcela_" + numero_controle + "\" onchange=\"update_parcela(this.id, this.value)\" type =\"text\" class=\"include_item\" style=\"width: 15%\" />" +
-                "" + 
-                "</div>" +
-                "<div class=\"col-2\" style=\"text-align: right;padding-top: 6px;padding-left: 0px;\">" +
-                "<svg id=\"D" + numero_controle + "\" onclick=\"delete_parcela(this.id, 'confirmação')\" width =\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-trash\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
-                "<path d =\"M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z\" />" +
-                "<path fill - rule=\"evenodd\" d=\"M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z\" />" +
-                "</svg>" +
-                "</div>" +
+                "<select id=\"fpParcela_" + numero_controle + "\" onchange=\"update_parcela(this.id, this.value)\" class=\"include_item\" style=\"width: calc(40% - 95px)\">" + optionsTxt + "</select>" +                
+                "<div class=\"input-group-append\" style=\"float: left\"><button class=\"btn btn-outline-secondary\" type=\"button\" id=\"button-addon2\" data-toggle=\"modal\" data-target=\"#modal_retencoes\"><svg width =\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-clipboard-data\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path fill - rule=\"evenodd\" d=\"M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z\"/><path fill - rule=\"evenodd\" d=\"M9.5 1h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z\"/><path d =\"M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0V9z\"/></svg ></button ></div >" +
+                "<div class='input-group-append' style=\"float: left\" onclick=\"delete_parcela(this.id, 'confirmação')\" ><button class='btn btn-outline-secondary' type='button' id='button-addon2'><svg id=\"D" + numero_controle + "\" width =\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-trash\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\"><path d =\"M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z\" /><path fill - rule=\"evenodd\" d=\"M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z\" /></svg></button ></div> " +
+                "</div>" +                
                 "</div>";
-           
+
             $('#parcelas').append(parcela);
 
             execDatapicker();            
@@ -2084,7 +2078,7 @@ function gravarOperacao(contexto, tipo_operacao) {
     }
 
     if (tipo_operacao == 'Venda') {
-        operacao.operacao.op_comRetencoes = false;
+        //operacao.operacao.op_comRetencoes = false;
         operacao.operacao.op_comParticipante = true;
         operacao.operacao.op_comTransportador = true;
 
@@ -2479,18 +2473,37 @@ $(".editTransferencia").click(function () {
     })
 });
 
+function imput_retencoes(id, vlr, limit) {
+    //Autualiza view
+    decimal(id, vlr, limit);
+    //Atualiza objeto retenções
+    if (id == 'op_ret_inss') { operacao.retencoes.op_ret_inss = vlr; }
+    if (id == 'op_ret_issqn') { operacao.retencoes.op_ret_issqn = vlr; }
+    if (id == 'op_ret_irrf') { operacao.retencoes.op_ret_irrf = vlr; }
+    if (id == 'op_ret_pis') { operacao.retencoes.op_ret_pis = vlr; }
+    if (id == 'op_ret_cofins') { operacao.retencoes.op_ret_cofins = vlr; }
+    if (id == 'op_ret_csll') { operacao.retencoes.op_ret_csll = vlr; }    
+}
+
 function op_retencao(id, box_id) {
     let cheque = document.getElementById(id);
     if (cheque.checked == true) {
         document.getElementById(box_id).style.display = 'block';
         document.getElementById('op_ret_inss').focus();
+
+        //Operação
+        operacao.operacao.op_comRetencoes = true;
+
     } else {
         document.getElementById(box_id).style.display = 'none';
-        document.getElementById('op_ret_inss').value = 0.00;
-        document.getElementById('op_ret_issqn').value = 0.00;
-        document.getElementById('op_ret_irrf').value = 0.00;
-        document.getElementById('op_ret_pis').value = 0.00;
-        document.getElementById('op_ret_cofins').value = 0.00;
-        document.getElementById('op_ret_csll').value = 0.00;
+        imput_retencoes('op_ret_inss', '0,00', '2');
+        imput_retencoes('op_ret_issqn', '0,00', '2');
+        imput_retencoes('op_ret_irrf', '0,00', '2');
+        imput_retencoes('op_ret_pis', '0,00', '2');
+        imput_retencoes('op_ret_cofins', '0,00', '2');
+        imput_retencoes('op_ret_csll', '0,00', '2');        
+
+        //Operação
+        operacao.operacao.op_comRetencoes = false;
     }
 }
