@@ -24,6 +24,7 @@ namespace gestaoContadorcomvc.Models
         public bool op_comParticipante { get; set; }
         public bool op_comRetencoes { get; set; }
         public bool op_comTransportador { get; set; }
+        public int oop_comNF { get; set; }
         public bool possui_parcelas { get; set; }
 
         /*--------------------------*/

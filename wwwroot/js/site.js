@@ -112,13 +112,6 @@ function Page() {
         let d = new Date();
         document.getElementById('op_data').value = d.toLocaleDateString();
     }
-    //Carregar data nos input de id = op_previsao_entrega
-    if (document.getElementById('op_previsao_entrega')) {
-        let d = new Date();
-        document.getElementById('op_previsao_entrega').value = d.toLocaleDateString();
-    }
-
-
 }
 
 function carregarEdit(id) {   
@@ -2700,4 +2693,60 @@ function op_retencao(id, box_id) {
         imput_retencoes('op_ret_issqn', '0,00', '2');
         imput_retencoes('op_ret_irrf', '0,00', '2');                
     }
+}
+
+function operacao_nf(id) {
+    
+    if (id == 'r_sem_nf') {
+        document.getElementById('op_nf_chave').disabled = true;
+        document.getElementById('op_nf_data_emissao').disabled = true;
+        document.getElementById('op_nf_data_entrada_saida').disabled = true;
+        document.getElementById('op_nf_serie').disabled = true;
+        document.getElementById('op_nf_numero').disabled = true;
+        document.getElementById('op_nf_data_emissao').value = "";
+        document.getElementById('op_nf_data_entrada_saida').value = "";
+        document.getElementById('op_nf_serie').value = "";
+        document.getElementById('op_nf_numero').value = "";
+        document.getElementById('op_nf_chave').value = "";
+        document.getElementById('chave_acesso').innerHTML  = "";
+    }
+
+    if (id == 'r_nf_eletronica') {
+        document.getElementById('op_nf_chave').disabled = false;
+        document.getElementById('op_nf_data_emissao').disabled = false;
+        document.getElementById('op_nf_data_entrada_saida').disabled = false;
+        document.getElementById('op_nf_serie').disabled = true;
+        document.getElementById('op_nf_numero').disabled = true;        
+        document.getElementById('op_nf_data_entrada_saida').value = document.getElementById('op_data').value;
+        document.getElementById('op_nf_data_emissao').value = document.getElementById('op_data').value;
+    }
+
+    if (id == 'r_nf_manual') {
+        document.getElementById('op_nf_chave').disabled = true;
+        document.getElementById('op_nf_data_emissao').disabled = false;
+        document.getElementById('op_nf_data_entrada_saida').disabled = false;
+        document.getElementById('op_nf_serie').disabled = false;
+        document.getElementById('op_nf_numero').disabled = false;
+        document.getElementById('op_nf_data_entrada_saida').value = document.getElementById('op_data').value;
+        document.getElementById('op_nf_data_emissao').value = document.getElementById('op_data').value;
+        document.getElementById('op_nf_serie').value = "";
+        document.getElementById('op_nf_numero').value = "";
+        document.getElementById('op_nf_chave').value = "";
+        document.getElementById('chave_acesso').innerHTML = "";
+    }
+}
+
+function chave_acesso_nf_op(id, vlr) {    
+    if (vlr.length < 44) {
+        alert('Chave de acesso precisa ter 44 digitos');
+    }
+
+    if (vlr.length == 44) {
+        let serie = vlr.substr(22, 3);
+        let numero = vlr.substr(25, 9);
+
+        document.getElementById('op_nf_serie').value = serie * 1;
+        document.getElementById('op_nf_numero').value = numero * 1;
+    }
+    
 }
