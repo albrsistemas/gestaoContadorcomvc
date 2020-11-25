@@ -21,6 +21,9 @@ input[type=number] {
         -webkit-appearance: none;
         margin: 0;
     }
+.custom-switch label{
+    user-select: none;
+}
 
 .bread {
     width: 100%;

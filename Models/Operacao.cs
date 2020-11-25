@@ -154,15 +154,18 @@ namespace gestaoContadorcomvc.Models
                 comando.ExecuteNonQuery();
 
                 //retenções
-                comando.CommandText = "insert into op_retencoes (op_ret_pis, op_ret_cofins, op_ret_csll, op_ret_irrf, op_ret_inss, op_ret_issqn, op_ret_op_id) values (@op_ret_pis, @op_ret_cofins, @op_ret_csll, @op_ret_irrf, @op_ret_inss, @op_ret_issqn, @op_ret_op_id);";
-                comando.Parameters.AddWithValue("@op_ret_op_id", id);
-                comando.Parameters.AddWithValue("@op_ret_pis", op.retencoes.op_ret_pis);
-                comando.Parameters.AddWithValue("@op_ret_cofins", op.retencoes.op_ret_cofins);
-                comando.Parameters.AddWithValue("@op_ret_csll", op.retencoes.op_ret_csll);
-                comando.Parameters.AddWithValue("@op_ret_irrf", op.retencoes.op_ret_irrf);
-                comando.Parameters.AddWithValue("@op_ret_inss", op.retencoes.op_ret_inss);
-                comando.Parameters.AddWithValue("@op_ret_issqn", op.retencoes.op_ret_issqn);
-                comando.ExecuteNonQuery();
+                if (op.retencoes.op_ret_inss > 0 || op.retencoes.op_ret_issqn > 0 || op.retencoes.op_ret_irrf > 0 || op.retencoes.op_ret_pis > 0 || op.retencoes.op_ret_cofins > 0 || op.retencoes.op_ret_csll > 0)
+                {
+                    comando.CommandText = "insert into op_retencoes (op_ret_pis, op_ret_cofins, op_ret_csll, op_ret_irrf, op_ret_inss, op_ret_issqn, op_ret_op_id) values (@op_ret_pis, @op_ret_cofins, @op_ret_csll, @op_ret_irrf, @op_ret_inss, @op_ret_issqn, @op_ret_op_id);";
+                    comando.Parameters.AddWithValue("@op_ret_op_id", id);
+                    comando.Parameters.AddWithValue("@op_ret_pis", op.retencoes.op_ret_pis);
+                    comando.Parameters.AddWithValue("@op_ret_cofins", op.retencoes.op_ret_cofins);
+                    comando.Parameters.AddWithValue("@op_ret_csll", op.retencoes.op_ret_csll);
+                    comando.Parameters.AddWithValue("@op_ret_irrf", op.retencoes.op_ret_irrf);
+                    comando.Parameters.AddWithValue("@op_ret_inss", op.retencoes.op_ret_inss);
+                    comando.Parameters.AddWithValue("@op_ret_issqn", op.retencoes.op_ret_issqn);
+                    comando.ExecuteNonQuery();
+                }                
 
                 if(op.parcelas.Count > 0)
                 {
@@ -187,7 +190,7 @@ namespace gestaoContadorcomvc.Models
                         cmd.Transaction = Transacao;
 
 
-                        cmd.CommandText = "call pr_criaParcela (@op_parcela_dias, @op_parcela_vencimento, @op_parcela_fp_id, @op_parcela_op_id, @op_parcela_valor, @op_parcela_obs, @conta_id, @ccm_contra_partida_tipo, @ccm_contra_partida_id);";
+                        cmd.CommandText = "call pr_criaParcela (@op_parcela_dias, @op_parcela_vencimento, @op_parcela_fp_id, @op_parcela_op_id, @op_parcela_valor, @op_parcela_obs, @conta_id, @ccm_contra_partida_tipo, @ccm_contra_partida_id, @op_parcela_valor_bruto, @op_parcela_ret_inss, @op_parcela_ret_issqn, @op_parcela_ret_irrf, @op_parcela_ret_pis, @op_parcela_ret_cofins, @op_parcela_ret_csll);";
                         cmd.Parameters.AddWithValue("@conta_id", conta_id);
                         cmd.Parameters.AddWithValue("@op_parcela_dias", op.parcelas[i].op_parcela_dias);
                         cmd.Parameters.AddWithValue("@op_parcela_vencimento", op.parcelas[i].op_parcela_vencimento);
@@ -197,6 +200,13 @@ namespace gestaoContadorcomvc.Models
                         cmd.Parameters.AddWithValue("@op_parcela_obs", op.parcelas[i].op_parcela_obs);
                         cmd.Parameters.AddWithValue("@ccm_contra_partida_tipo", contra_partida_tipo);
                         cmd.Parameters.AddWithValue("@ccm_contra_partida_id", contra_partidade_id);
+                        cmd.Parameters.AddWithValue("@op_parcela_valor_bruto", op.parcelas[i].op_parcela_valor_bruto);
+                        cmd.Parameters.AddWithValue("@op_parcela_ret_inss", op.parcelas[i].op_parcela_ret_inss);
+                        cmd.Parameters.AddWithValue("@op_parcela_ret_issqn", op.parcelas[i].op_parcela_ret_issqn);
+                        cmd.Parameters.AddWithValue("@op_parcela_ret_irrf", op.parcelas[i].op_parcela_ret_irrf);
+                        cmd.Parameters.AddWithValue("@op_parcela_ret_pis", op.parcelas[i].op_parcela_ret_pis);
+                        cmd.Parameters.AddWithValue("@op_parcela_ret_cofins", op.parcelas[i].op_parcela_ret_cofins);
+                        cmd.Parameters.AddWithValue("@op_parcela_ret_csll", op.parcelas[i].op_parcela_ret_csll);
                         cmd.ExecuteNonQuery();
                     }
                 }

@@ -12,6 +12,7 @@ namespace gestaoContadorcomvc.Models
         public DateTime op_parcela_vencimento { get; set; }
         public int op_parcela_fp_id { get; set; }
         public int op_parcela_op_id { get; set; }
+        public Decimal op_parcela_valor_bruto { get; set; }
         public Decimal op_parcela_valor { get; set; }
         public Decimal op_parcela_saldo { get; set; }
         public string op_parcela_obs { get; set; }
