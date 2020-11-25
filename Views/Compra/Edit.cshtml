@@ -273,15 +273,12 @@
         </div>
         <br />
         <div class="row">
-            <div class="col-10" style=\"padding-right: 0px;\">
-                <div class="include_item_label" style="width: 10%">Dias</div>
+            <div class="col-12" style=\"padding-right: 0px;\">
+                <div class="include_item_label" style="width: 11%">Dias</div>
                 <div class="include_item_label" style="width: 25%">Vencimento</div>
-                <div class="include_item_label" style="width: 25%">Valor</div>
-                <div class="include_item_label" style="width: 25%">Forma</div>
-                <div class="include_item_label" style="width: 15%">Obs.:</div>
-            </div>
-            <div class="col-2">
-
+                <div class="include_item_label" style="width: 26%">Valor</div>
+                <div class="include_item_label" style="width: calc(40% - 95px)">Forma</div>
+                @*<div class="include_item_label" style="width: 15%">Obs.:</div>*@
             </div>
         </div>
         <div class="parcela" id="parcelas">
@@ -289,18 +286,13 @@
                 foreach (var p in Model.parcelas)
                 {
                     <div class="row" id="parcela_@p.op_parcela_id">
-                        <div class="col-10" style="padding-right: 0px;">
+                        <div class="col-12" style="padding-right: 0px;">
                             <input id="diasParcela_@p.op_parcela_id" onchange="update_parcela(this.id, this.value)" type="text" class="include_item" style="width: 10%;padding:0px;text-align:center" value="@p.op_parcela_dias" />
                             <input id="vencParcela_@p.op_parcela_id" onchange="update_parcela(this.id, this.value)" type="text" class="include_item datepicker" style="width: 25%" value="@p.op_parcela_vencimento.ToShortDateString()" />
                             <input id="vlrParcela_@p.op_parcela_id" onchange="update_parcela(this.id, this.value)" type="text" class="include_item" style="width: 25%" value="@p.op_parcela_valor.ToString("N")" />
-                            <select asp-items="@ViewBag.formaPgto" id="fpParcela_@p.op_parcela_id" onchange="update_parcela(this.id, this.value)" class="include_item" style="width: 25%"></select>
-                            <input id="obsParcela_@p.op_parcela_id" onchange="update_parcela(this.id, this.value)" type="text" class="include_item" style="width: 15%" />
-                        </div>
-                        <div class="col-2" style="text-align: right;padding-top: 6px;padding-left: 0px;">
-                            <svg id="@String.Concat("D",p.op_parcela_id)" onclick="delete_parcela(this.id, 'confirmação')" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer">
-                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                                <path fill - rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                            </svg>
+                            <select asp-items="@ViewBag.formaPgto" id="fpParcela_@p.op_parcela_id" onchange="update_parcela(this.id, this.value)" class="include_item" style="width: calc(40% - 95px)"></select>
+                            <div class="input-group-append" style="float: left" id="@String.Concat("E",p.op_parcela_id)" onclick="edit_parcela(this.id,'open')"><button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#modal_retencoes"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-clipboard-data" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill - rule="evenodd" d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" /><path fill - rule="evenodd" d="M9.5 1h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" /><path d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0V9z" /></svg></button></div>
+                            <div class='input-group-append' style="float: left" id="@String.Concat("D",p.op_parcela_id)" onclick="delete_parcela(this.id, 'confirmação')"><button class='btn btn-outline-secondary' type='button'><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="red" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" /><path fill - rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" /></svg></button></div>
                         </div>
                     </div>
                 }
@@ -314,6 +306,11 @@
                 </svg>
                 Incluir outra parcela
             </label>
+        </div>
+        <div class="row">
+            <div class="col-12" id="alert_vlr_parcela">
+
+            </div>
         </div>
         <br />
     </fieldset>
@@ -745,6 +742,37 @@
             </div>
         </div>
     </div>
+    <!--Dados do retenções-->
+    <div class="modal fade" id="modal_retencoes" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Retenções</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="control-label">Valor Bruto</label>
+                                <input id="op_parcela_valor_bruto" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
+                            </div>
+                        </div>
+                        @*<div class="col-6">
+                                <div class="form-group">
+                                    <label class="control-label">Valor Líquido</label>
+                                    <input id="op_parcela_valor" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
+                                </div>
+                            </div>*@
+                    </div>
+                    <input type="hidden" id="controleEditParcela" />
+                </div>
+                <div class="modal-footer">                    
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <br />
 

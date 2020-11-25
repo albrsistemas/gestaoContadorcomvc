@@ -40,6 +40,7 @@ var operacao = {
         op_ret_irrf: 0,
         op_ret_inss: 0,
         op_ret_issqn: 0,
+        existe: false,
     },
     totais: {
         op_totais_id: 0,
@@ -66,6 +67,7 @@ var operacao = {
         op_transportador_volume_qtd: 0,
         op_transportador_volume_peso_bruto: 0,
         op_transportador_participante_id: 0,
+        existe: false,
     },
 };
 
@@ -153,7 +155,14 @@ function carregarEdit(id) {
 
             for (let i = 0; i < operacao.parcelas.length; i++) {
                 operacao.parcelas[i].op_parcela_saldo = operacao.parcelas[i].op_parcela_saldo.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
-                operacao.parcelas[i].op_parcela_valor = operacao.parcelas[i].op_parcela_valor.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }); 
+                operacao.parcelas[i].op_parcela_valor = operacao.parcelas[i].op_parcela_valor.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+                operacao.parcelas[i].op_parcela_valor_bruto = operacao.parcelas[i].op_parcela_valor_bruto.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+                operacao.parcelas[i].op_parcela_ret_inss = operacao.parcelas[i].op_parcela_ret_inss.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+                operacao.parcelas[i].op_parcela_ret_issqn = operacao.parcelas[i].op_parcela_ret_issqn.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+                operacao.parcelas[i].op_parcela_ret_irrf = operacao.parcelas[i].op_parcela_ret_irrf.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+                operacao.parcelas[i].op_parcela_ret_pis = operacao.parcelas[i].op_parcela_ret_pis.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+                operacao.parcelas[i].op_parcela_ret_cofins = operacao.parcelas[i].op_parcela_ret_cofins.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+                operacao.parcelas[i].op_parcela_ret_csll = operacao.parcelas[i].op_parcela_ret_csll.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
                 operacao.parcelas[i].op_parcela_numero_controle = operacao.parcelas[i].op_parcela_id;
                 let data = operacao.parcelas[i].op_parcela_vencimento.substring(0, 10).split('-');                
                 operacao.parcelas[i].op_parcela_vencimento = data[2] + '/' + data[1] + '/' + data[0];
@@ -183,6 +192,15 @@ function carregarEdit(id) {
             //transportador
             operacao.transportador.op_transportador_volume_peso_bruto = operacao.transportador.op_transportador_volume_peso_bruto.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
             operacao.transportador.op_transportador_volume_qtd = operacao.transportador.op_transportador_volume_qtd.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+
+            //Verificando se existe retenções e exibir na tela de acordo com a informações
+            if (document.getElementById('op_comRetencoes')) {
+                if (operacao.operacao.op_comRetencoes) {
+                    document.getElementById('box_retencoes').style.display = 'block';
+                } else {
+                    document.getElementById('box_retencoes').style.display = 'none';
+                }
+            }
 
             //Reabilitando pós carregamento
             document.getElementsByTagName('svg').disabled = false;
@@ -2275,6 +2293,8 @@ function gravarOperacao(contexto, tipo_operacao) {
 
         if (contexto == 'Create') {
             operacao.participante.existe = false;
+            operacao.retencoes.existe = false;
+            operacao.transportador.existe = false;
         }
     }
 
@@ -2674,17 +2694,10 @@ function op_retencao(id, box_id) {
     if (cheque.checked == true) {
         document.getElementById(box_id).style.display = 'block';
         document.getElementById('op_ret_inss').focus();
-
-        //Operação
-        operacao.operacao.op_comRetencoes = true;
-
     } else {
         document.getElementById(box_id).style.display = 'none';
         imput_retencoes('op_ret_inss', '0,00', '2');
         imput_retencoes('op_ret_issqn', '0,00', '2');
         imput_retencoes('op_ret_irrf', '0,00', '2');                
-
-        //Operação
-        operacao.operacao.op_comRetencoes = false;
     }
 }

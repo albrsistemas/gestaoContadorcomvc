@@ -158,6 +158,23 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Conta Corrente Movimento";
                 }
+                //Venda
+                if (pagina.Contains("Venda/Index"))
+                {
+                    retorno = "Vendas";
+                }
+                if (pagina.Contains("Venda/Create"))
+                {
+                    retorno = "Incluir Venda";
+                }
+                if (pagina.Contains("Venda/Edit"))
+                {
+                    retorno = "Alterar Venda";
+                }
+                if (pagina.Contains("Venda/Details"))
+                {
+                    retorno = "Detelhes Venda";
+                }
 
             }
 

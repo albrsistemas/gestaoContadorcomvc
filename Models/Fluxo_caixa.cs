@@ -73,7 +73,7 @@ namespace gestaoContadorcomvc.Models
                 saldo.Close();
 
                 //Movimentos anteriores a data inicial
-                comando.CommandText = "SELECT COALESCE(sum(if(yccm.ccm_movimento = 'Recebimento', yccm.ccm_valor, -yccm.ccm_valor)),0.00) as movimentos from conta_corrente_mov as yccm WHERE yccm.ccm_conta_id = @conta_id_2 and yccm.ccm_ccorrente_id = @contaCorrente_2 and yccm.ccm_data < @dataInicial_2;";
+                comando.CommandText = "SELECT COALESCE(sum(if(yccm.ccm_movimento = 'E', yccm.ccm_valor, -yccm.ccm_valor)),0.00) as movimentos from conta_corrente_mov as yccm WHERE yccm.ccm_conta_id = @conta_id_2 and yccm.ccm_ccorrente_id = @contaCorrente_2 and yccm.ccm_data < @dataInicial_2;";
                 comando.Parameters.AddWithValue("@contaCorrente_2", contaCorrente);
                 comando.Parameters.AddWithValue("@conta_id_2", conta_id);
                 comando.Parameters.AddWithValue("@dataInicial_2", dataInicial);

@@ -190,27 +190,27 @@
     <fieldset id="box_retencoes" style="display:none">
         <legend>Retenções tributárias</legend>
         <div class="row">
-            <div class="col-12 col-md-4" style="display:none">
-                <div class="form-group">
-                    <label asp-for="retencoes.op_ret_inss" class="control-label">INSS</label>
-                    <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" id="ret_inss_parcela" class="custom-control-input">
-                        <label class="custom-control-label" for="ret_inss_parcela">Informar INSS na primeira parcela</label>
-                    </div>
+            @*<div class="col-12 col-md-4" style="display:none">
+            <div class="form-group">
+                <label asp-for="retencoes.op_ret_inss" class="control-label">INSS</label>
+                <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="ret_inss_parcela" class="custom-control-input">
+                    <label class="custom-control-label" for="ret_inss_parcela">Informar INSS na primeira parcela</label>
                 </div>
             </div>
-            <div class="col-12 col-md-4" style="display:none">
-                <div class="form-group">
-                    <label asp-for="retencoes.op_ret_issqn" class="control-label">ISSQN</label>
-                    <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control" onchange="decimal(this.id, this.value,'2', true)" />
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" id="ret_iss_parcela" class="custom-control-input">
-                        <label class="custom-control-label" for="ret_iss_parcela">Informar ISSQN na primeira parcela</label>
-                    </div>
+        </div>
+        <div class="col-12 col-md-4" style="display:none">
+            <div class="form-group">
+                <label asp-for="retencoes.op_ret_issqn" class="control-label">ISSQN</label>
+                <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control" onchange="decimal(this.id, this.value,'2', true)" />
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="ret_iss_parcela" class="custom-control-input">
+                    <label class="custom-control-label" for="ret_iss_parcela">Informar ISSQN na primeira parcela</label>
                 </div>
             </div>
-            <div class="col-12 col-md-4">
+        </div>*@
+            <div class="col-12 col-md-3">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_irrf" class="control-label">IRRF</label>
                     <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control" onchange="decimal(this.id, this.value,'2', true)" />
@@ -220,27 +220,25 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-6 col-md-4">
+            <div class="col-12 col-md-3">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_pis" class="control-label">PIS</label>
                     <input asp-for="retencoes.op_ret_pis" id="op_ret_pis" class="form-control" readonly="readonly" />
                 </div>
             </div>
-            <div class="col-6 col-md-4">
+            <div class="col-12 col-md-3">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_cofins" class="control-label">COFINS</label>
                     <input asp-for="retencoes.op_ret_cofins" id="op_ret_cofins" class="form-control" readonly="readonly" />
                 </div>
             </div>
-            <div class="col-6 col-md-4">
+            <div class="col-12 col-md-3">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_csll" class="control-label">CSLL</label>
                     <input asp-for="retencoes.op_ret_csll" id="op_ret_csll" class="form-control" readonly="readonly" />
                 </div>
             </div>
-        </div>
+        </div>       
         <p>As retenções de PIS, COFINS e CSLL devem ser informadas diretamente na parcela.</p>
 
     </fieldset>
@@ -744,14 +742,14 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="control-label">Valor Líquido</label>
-                                <input id="op_parcela_valor" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
+                                <input id="op_parcela_valor" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" readonly="readonly" />
                             </div>
                         </div>
                     </div>
                     <fieldset>
                         <legend>Retenções tributárias</legend>
                         <div class="row">
-                            <div class="col-6 col-md-4" style="display:none">
+                            @*<div class="col-6 col-md-4" style="display:none">
                                 <div class="form-group">
                                     <label class="control-label">INSS</label>
                                     <input id="op_parcela_ret_inss" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />                                    
@@ -762,28 +760,26 @@
                                     <label class="control-label">ISSQN</label>
                                     <input id="op_parcela_ret_issqn" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />                                    
                                 </div>
-                            </div>
-                            <div class="col-6 col-md-4">
+                            </div>*@
+                            <div class="col-12 col-md-3">
                                 <div class="form-group">
                                     <label class="control-label">IRRF</label>
                                     <input  id="op_parcela_ret_irrf" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />                                    
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 col-md-4">
+                             <div class="col-12 col-md-3">
                                 <div class="form-group">
                                     <label class="control-label">PIS</label>
                                     <input id="op_parcela_ret_pis" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
                                 </div>
                             </div>
-                            <div class="col-6 col-md-4">
+                            <div class="col-12 col-md-3">
                                 <div class="form-group">
                                     <label class="control-label">COFINS</label>
                                     <input id="op_parcela_ret_cofins" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
                                 </div>
                             </div>
-                            <div class="col-6 col-md-4">
+                            <div class="col-12 col-md-3">
                                 <div class="form-group">
                                     <label class="control-label">CSLL</label>
                                     <input id="op_parcela_ret_csll" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
@@ -805,7 +801,7 @@
     <br />
 
     <button type="button" class="btn btn-info" id="sub" onclick="gravarOperacao('Create', 'Venda')">Gravar</button>
-    <a class="btn btn-secondary" asp-controller="Compra" asp-action="Index">Cancelar</a>
+    <a class="btn btn-secondary" asp-controller="Venda" asp-action="Index">Cancelar</a>
 
     <div class="displey_validacao">
         <div class="row">

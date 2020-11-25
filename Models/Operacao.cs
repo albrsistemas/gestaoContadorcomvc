@@ -1049,6 +1049,63 @@ namespace gestaoContadorcomvc.Models
                         {
                             parcela.op_parcela_op_id = 0;
                         }
+                        //--
+                        if (DBNull.Value != leitor_3["op_parcela_valor_bruto"])
+                        {
+                            parcela.op_parcela_valor_bruto = Convert.ToDecimal(leitor_3["op_parcela_valor_bruto"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_valor_bruto = 0;
+                        }
+                        if (DBNull.Value != leitor_3["op_parcela_ret_inss"])
+                        {
+                            parcela.op_parcela_ret_inss = Convert.ToDecimal(leitor_3["op_parcela_ret_inss"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_ret_inss = 0;
+                        }
+                        if (DBNull.Value != leitor_3["op_parcela_ret_issqn"])
+                        {
+                            parcela.op_parcela_ret_issqn = Convert.ToDecimal(leitor_3["op_parcela_ret_issqn"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_ret_issqn = 0;
+                        }
+                        if (DBNull.Value != leitor_3["op_parcela_ret_irrf"])
+                        {
+                            parcela.op_parcela_ret_irrf = Convert.ToDecimal(leitor_3["op_parcela_ret_irrf"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_ret_irrf = 0;
+                        }
+                        if (DBNull.Value != leitor_3["op_parcela_ret_pis"])
+                        {
+                            parcela.op_parcela_ret_pis = Convert.ToDecimal(leitor_3["op_parcela_ret_pis"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_ret_pis = 0;
+                        }
+                        if (DBNull.Value != leitor_3["op_parcela_ret_cofins"])
+                        {
+                            parcela.op_parcela_ret_cofins = Convert.ToDecimal(leitor_3["op_parcela_ret_cofins"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_ret_cofins = 0;
+                        }
+                        if (DBNull.Value != leitor_3["op_parcela_ret_csll"])
+                        {
+                            parcela.op_parcela_ret_csll = Convert.ToDecimal(leitor_3["op_parcela_ret_csll"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_ret_csll = 0;
+                        }
 
                         parcela.op_parcela_obs = leitor_3["op_parcela_obs"].ToString();
                         parcela.controleEdit = "update";
@@ -1324,9 +1381,9 @@ namespace gestaoContadorcomvc.Models
                             MySqlCommand cmd = conn.CreateCommand();
                             cmd.Connection = conn;
                             cmd.Transaction = Transacao;
+                            
 
-
-                            cmd.CommandText = "call pr_criaParcela (@op_parcela_dias, @op_parcela_vencimento, @op_parcela_fp_id, @op_parcela_op_id, @op_parcela_valor, @op_parcela_obs, @conta_id, @ccm_contra_partida_tipo, @ccm_contra_partida_id);";
+                            cmd.CommandText = "call pr_criaParcela (@op_parcela_dias, @op_parcela_vencimento, @op_parcela_fp_id, @op_parcela_op_id, @op_parcela_valor, @op_parcela_obs, @conta_id, @ccm_contra_partida_tipo, @ccm_contra_partida_id, @op_parcela_valor_bruto, @op_parcela_ret_inss, @op_parcela_ret_issqn, @op_parcela_ret_irrf, @op_parcela_ret_pis, @op_parcela_ret_cofins, @op_parcela_ret_csll);";
                             cmd.Parameters.AddWithValue("@conta_id", conta_id);
                             cmd.Parameters.AddWithValue("@op_parcela_dias", op.parcelas[i].op_parcela_dias);
                             cmd.Parameters.AddWithValue("@op_parcela_vencimento", op.parcelas[i].op_parcela_vencimento);
@@ -1336,6 +1393,13 @@ namespace gestaoContadorcomvc.Models
                             cmd.Parameters.AddWithValue("@op_parcela_obs", op.parcelas[i].op_parcela_obs);
                             cmd.Parameters.AddWithValue("@ccm_contra_partida_tipo", contra_partida_tipo);
                             cmd.Parameters.AddWithValue("@ccm_contra_partida_id", contra_partidade_id);
+                            cmd.Parameters.AddWithValue("@op_parcela_valor_bruto", op.parcelas[i].op_parcela_valor_bruto);
+                            cmd.Parameters.AddWithValue("@op_parcela_ret_inss", op.parcelas[i].op_parcela_ret_inss);
+                            cmd.Parameters.AddWithValue("@op_parcela_ret_issqn", op.parcelas[i].op_parcela_ret_issqn);
+                            cmd.Parameters.AddWithValue("@op_parcela_ret_irrf", op.parcelas[i].op_parcela_ret_irrf);
+                            cmd.Parameters.AddWithValue("@op_parcela_ret_pis", op.parcelas[i].op_parcela_ret_pis);
+                            cmd.Parameters.AddWithValue("@op_parcela_ret_cofins", op.parcelas[i].op_parcela_ret_cofins);
+                            cmd.Parameters.AddWithValue("@op_parcela_ret_csll", op.parcelas[i].op_parcela_ret_csll);
                             cmd.ExecuteNonQuery();
                         }
                     }

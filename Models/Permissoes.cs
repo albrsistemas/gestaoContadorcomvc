@@ -455,6 +455,13 @@ namespace gestaoContadorcomvc.Models
                         permissao.baixaCreate = Convert.ToBoolean(leitor["baixaCreate"]);
                         permissao.baixaEdit = Convert.ToBoolean(leitor["baixaEdit"]);
                         permissao.baixaDelete = Convert.ToBoolean(leitor["baixaDelete"]);
+                        permissao.vendaList = Convert.ToBoolean(leitor["vendaList"]);
+                        permissao.vendaCreate = Convert.ToBoolean(leitor["vendaCreate"]);
+                        permissao.vendaEdit = Convert.ToBoolean(leitor["vendaEdit"]);
+                        permissao.vendaDelete = Convert.ToBoolean(leitor["vendaDelete"]);
+                        permissao.CCMCreate = Convert.ToBoolean(leitor["CCMCreate"]);
+                        permissao.CCMEdit = Convert.ToBoolean(leitor["CCMEdit"]);
+                        permissao.CCMDelete = Convert.ToBoolean(leitor["CCMDelete"]);
                     }
                 }
             }
