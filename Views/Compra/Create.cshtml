@@ -178,7 +178,7 @@
                     <input asp-for="totais.op_totais_total_op" id="op_totais_total_op" class="form-control" readonly="readonly" />
                 </div>
             </div>
-        </div>        
+        </div>
     </fieldset>
     <fieldset>
         <legend>Detalhes</legend>
@@ -235,15 +235,11 @@
         </div>
         <br />
         <div class="row">
-            <div class="col-10" style=\"padding-right: 0px;\">
-                <div class="include_item_label" style="width: 10%">Dias</div>
+            <div class="col-12" style=\"padding-right: 0px;\">
+                <div class="include_item_label" style="width: 11%">Dias</div>
                 <div class="include_item_label" style="width: 25%">Vencimento</div>
-                <div class="include_item_label" style="width: 25%">Valor</div>
-                <div class="include_item_label" style="width: 25%">Forma</div>
-                <div class="include_item_label" style="width: 15%">Obs.:</div>
-            </div>
-            <div class="col-2">
-
+                <div class="include_item_label" style="width: 26%">Valor</div>
+                <div class="include_item_label" style="width: calc(40% - 95px)">Forma</div>                
             </div>
         </div>
         <div class="parcela" id="parcelas">
@@ -257,6 +253,11 @@
                 </svg>
                 Incluir outra parcela
             </label>
+        </div>
+        <div class="row">
+            <div class="col-12" id="alert_vlr_parcela">
+
+            </div>
         </div>
         <br />
     </fieldset>
@@ -636,15 +637,11 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-10" style=\"padding-right: 0px;\">
-                            <div class="include_item_label" style="width: 10%">Dias</div>
+                        <div class="col-12" style=\"padding-right: 0px;\">
+                            <div class="include_item_label" style="width: 11%">Dias</div>
                             <div class="include_item_label" style="width: 25%">Vencimento</div>
-                            <div class="include_item_label" style="width: 25%">Valor</div>
-                            <div class="include_item_label" style="width: 25%">Forma</div>
-                            <div class="include_item_label" style="width: 15%">Obs.:</div>
-                        </div>
-                        <div class="col-2">
-
+                            <div class="include_item_label" style="width: 26%">Valor</div>
+                            <div class="include_item_label" style="width: calc(40% - 95px)">Forma</div>
                         </div>
                     </div>
                     <div id="novaParcela">
@@ -655,6 +652,38 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-info" onclick="novaParcela('gravar')">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Dados do retenções-->
+    <div class="modal fade" id="modal_retencoes" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Retenções</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Valor Bruto</label>
+                                <input id="op_parcela_valor_bruto" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Valor Líquido</label>
+                                <input id="op_parcela_valor" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
+                            </div>
+                        </div>
+                    </div>                    
+                    <input type="hidden" id="controleEditParcela" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" id="gravar_parcela" onclick="edit_parcela(this.id, 'gravar')">Gravar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>

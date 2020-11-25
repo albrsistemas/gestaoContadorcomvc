@@ -105,6 +105,18 @@ function Page() {
     if (document.getElementById('carregamentoCompra')) {
         carregarEdit(document.getElementById('carregamentoCompra').value);
     }
+    //Carregar data nos input de id = op_data
+    if (document.getElementById('op_data')) {
+        let d = new Date();
+        document.getElementById('op_data').value = d.toLocaleDateString();
+    }
+    //Carregar data nos input de id = op_previsao_entrega
+    if (document.getElementById('op_previsao_entrega')) {
+        let d = new Date();
+        document.getElementById('op_previsao_entrega').value = d.toLocaleDateString();
+    }
+
+
 }
 
 function carregarEdit(id) {   
@@ -811,8 +823,8 @@ function tamanhoDigitado(id, vlr, limit, msg) {
     }
 }
 
-function decimal(id, vlr, limit) {
-    let matriz = vlr.split(","); 
+function decimal(id, vlr, limit, alerta) {
+    let matriz = vlr.replace('.','').split(","); 
     //console.log(vlr);
     //console.log(matriz);
 
@@ -820,7 +832,9 @@ function decimal(id, vlr, limit) {
         let tamanho = matriz[1].length;
 
         if (tamanho > limit) {
-            alert('Permitido até ' + limit + ' dígitos nas casas decimais!');
+            if (alerta) {
+                alert('Permitido até ' + limit + ' dígitos nas casas decimais!');
+            }            
             let cd = matriz[1].substring(0, limit);
             let valor = matriz[0] + ',' + cd;
             document.getElementById(id).value = valor;
@@ -1221,18 +1235,18 @@ function consultaProdutos(id, contexto) {
             }            
             if (contexto == 'compra') {
                 if (document.getElementById('prod_valor')) {                    
-                    decimal('prod_valor', ui.item.valorCompra.toString().replace(".", ","), '6');
-                    decimal('prod_valorTotal', ui.item.valorCompra.toString().replace(".", ","), '6');                    
+                    decimal('prod_valor', ui.item.valorCompra.toString().replace(".", ","), '6',false);
+                    decimal('prod_valorTotal', ui.item.valorCompra.toString().replace(".", ","), '6', false);                    
                 }
             }
             if (contexto == 'venda') {
                 if (document.getElementById('prod_valor')) {
-                    decimal('prod_valor', ui.item.valorVenda.toString().replace(".", ","), '6');
-                    decimal('prod_valorTotal', ui.item.valorVenda.toString().replace(".", ","), '6');
+                    decimal('prod_valor', ui.item.valorVenda.toString().replace(".", ","), '6', false);
+                    decimal('prod_valorTotal', ui.item.valorVenda.toString().replace(".", ","), '6', false);
                 }
             }
             if (document.getElementById('prod_quantidade')) {
-                decimal('prod_quantidade', '1', '6');
+                decimal('prod_quantidade', '1', '6', false);
             }           
         }
     });
@@ -1332,8 +1346,8 @@ function ajusta_item(id, vlr) {
     let vlrProd = document.getElementById('prod_valor').value;
     let total = qtd.toString().replace(",", ".") * vlrProd.toString().replace(",", ".");
 
-    decimal('prod_valorTotal', total.toString().replace(".", ","), '6');
-    decimal(id, vlr, '6');    
+    decimal('prod_valorTotal', total.toString().replace(".", ","), '6', true);
+    decimal(id, vlr, '6', true);    
 }
 
 function changeItens(id, vlr, inputTotalizador) {
@@ -1346,8 +1360,8 @@ function changeItens(id, vlr, inputTotalizador) {
     
     let total = (preco * qtd);    
 
-    decimal(id, vlr.toString().replace('.', ','), '6');
-    decimal('item_valor_total', total.toString().replace('.',','),'6');
+    decimal(id, vlr.toString().replace('.', ','), '6',true);
+    decimal('item_valor_total', total.toString().replace('.',','),'6',true);
 }
 
 function edit_item(id) {
@@ -1359,15 +1373,15 @@ function edit_item(id) {
     document.getElementById('op_item_codigo').value = item.op_item_codigo;
     document.getElementById('op_item_cod_fornecedor').value = item.op_item_cod_fornecedor;
     document.getElementById('op_item_unidade').value = item.op_item_unidade;
-    decimal('op_item_preco', item.op_item_preco.toString().replace('.',''), '6');
-    decimal('op_item_qtd', item.op_item_qtd.toString().replace('.', ''), '6');
-    decimal('item_valor_total', item.op_item_valor_total.toString().replace('.', ''), '6');
-    decimal('op_item_frete', item.op_item_frete.toString().replace('.', ''), '6');
-    decimal('op_item_seguros', item.op_item_seguros.toString().replace('.', ''), '6');
-    decimal('op_item_desp_aces', item.op_item_desp_aces.toString().replace('.', ''), '6');
-    decimal('op_item_desconto', item.op_item_desconto.toString().replace('.', ''), '6');
-    decimal('op_item_vlr_ipi', item.op_item_vlr_ipi.toString().replace('.', ''), '6');
-    decimal('op_item_vlr_icms_st', item.op_item_vlr_icms_st.toString().replace('.', ''), '6');
+    decimal('op_item_preco', item.op_item_preco.toString().replace('.', ''), '6', true);
+    decimal('op_item_qtd', item.op_item_qtd.toString().replace('.', ''), '6', true);
+    decimal('item_valor_total', item.op_item_valor_total.toString().replace('.', ''), '6', true);
+    decimal('op_item_frete', item.op_item_frete.toString().replace('.', ''), '6', true);
+    decimal('op_item_seguros', item.op_item_seguros.toString().replace('.', ''), '6', true);
+    decimal('op_item_desp_aces', item.op_item_desp_aces.toString().replace('.', ''), '6', true);
+    decimal('op_item_desconto', item.op_item_desconto.toString().replace('.', ''), '6', true);
+    decimal('op_item_vlr_ipi', item.op_item_vlr_ipi.toString().replace('.', ''), '6', true);
+    decimal('op_item_vlr_icms_st', item.op_item_vlr_icms_st.toString().replace('.', ''), '6', true);
 
     $('#modal_item').modal('show');
 }
@@ -1471,14 +1485,14 @@ function totaisOperacao() {
 
     let op_totais_total_op = op_totais_preco_itens + op_totais_frete + op_totais_seguro + op_totais_desp_aces - op_totais_desconto + op_totais_icms_st + op_totais_ipi;
 
-    decimal('op_totais_frete', op_totais_frete.toString().replace('.',','), '6');
-    decimal('op_totais_seguro', op_totais_seguro.toString().replace('.',','), '6');
-    decimal('op_totais_desp_aces', op_totais_desp_aces.toString().replace('.',','), '6');
-    decimal('op_totais_desconto', op_totais_desconto.toString().replace('.',','), '6');
-    decimal('op_totais_preco_itens', op_totais_preco_itens.toString().replace('.',','), '6');
-    decimal('op_totais_total_op', op_totais_total_op.toString().replace('.', ','), '6');
-    decimal('op_totais_icms_st', op_totais_icms_st.toString().replace('.', ','), '6');
-    decimal('op_totais_ipi', op_totais_ipi.toString().replace('.', ','), '6');
+    decimal('op_totais_frete', op_totais_frete.toString().replace('.', ','), '6', false);
+    decimal('op_totais_seguro', op_totais_seguro.toString().replace('.', ','), '6', false);
+    decimal('op_totais_desp_aces', op_totais_desp_aces.toString().replace('.', ','), '6', false);
+    decimal('op_totais_desconto', op_totais_desconto.toString().replace('.', ','), '6', false);
+    decimal('op_totais_preco_itens', op_totais_preco_itens.toString().replace('.', ','), '6', false);
+    decimal('op_totais_total_op', op_totais_total_op.toString().replace('.', ','), '6', false);
+    decimal('op_totais_icms_st', op_totais_icms_st.toString().replace('.', ','), '6', false);
+    decimal('op_totais_ipi', op_totais_ipi.toString().replace('.', ','), '6', false);
 
     operacao.totais.op_totais_preco_itens = document.getElementById('op_totais_preco_itens').value;
     operacao.totais.op_totais_frete = document.getElementById('op_totais_frete').value;
@@ -1490,7 +1504,7 @@ function totaisOperacao() {
     operacao.totais.op_item_vlr_ipi = document.getElementById('op_totais_ipi').value;
 }
 
-function gerarParcela(comRetencao) {    
+function gerarParcela() {    
     document.getElementById('parcelas').innerHTML = ""; //Limpar view
     //Apagando parcelas existentes
     operacao.parcelas.splice(0, operacao.parcelas.length);
@@ -1528,38 +1542,40 @@ function gerarParcela(comRetencao) {
         for (let i = 0; i < condicaoPgto.length; i++) {
             //Apuração do valor da parcela em decorrência das Retenções
             valorParcela = (totalCompra / condicaoPgto.length);
-            if (document.getElementById('op_comRetencoes')) { //se switch 'Operação com retenções tributárias' existe
-                let inss = 0;
-                let issqn = 0;
-                let irrf = 0;
+            let inss = 0;
+            let issqn = 0;
+            let irrf = 0;
 
-                if (document.getElementById('ret_inss_parcela') == true && document.getElementById('ret_inss_parcela').checked == true) {
+            if (document.getElementById('op_comRetencoes') && document.getElementById('op_comRetencoes').checked == true) { //se switch 'Operação com retenções tributárias' existe
+
+                if (document.getElementById('ret_inss_parcela') && document.getElementById('ret_inss_parcela').checked == true) {
                     if (i == 0) {
                         valorParcela -= ((document.getElementById('op_ret_inss').value).toString().replace('.', '').replace(',', '.')) * 1;
                         inss = ((document.getElementById('op_ret_inss').value).toString().replace('.', '').replace(',', '.')) * 1;
                     }
                 }
-                if (document.getElementById('ret_inss_parcela') == true && document.getElementById('ret_inss_parcela').checked == false) {
+                if (document.getElementById('ret_inss_parcela') && document.getElementById('ret_inss_parcela').checked == false) {
                     valorParcela -= (((document.getElementById('op_ret_inss').value).toString().replace('.', '').replace(',', '.')) * 1) / condicaoPgto.length;
                     inss = (((document.getElementById('op_ret_inss').value).toString().replace('.', '').replace(',', '.')) * 1) / condicaoPgto.length;
-                }                
+                }               
 
-                if (document.getElementById('ret_iss_parcela').checked) {
+                if (document.getElementById('ret_iss_parcela') && document.getElementById('ret_iss_parcela').checked == true) {
                     if (i == 0) {
                         valorParcela -= ((document.getElementById('op_ret_issqn').value).toString().replace('.', '').replace(',', '.')) * 1;
                         issqn = ((document.getElementById('op_ret_issqn').value).toString().replace('.', '').replace(',', '.')) * 1;
                     }
-                } else {
+                }
+                if (document.getElementById('ret_iss_parcela') && document.getElementById('ret_iss_parcela').checked == false) {
                     valorParcela -= (((document.getElementById('op_ret_issqn').value).toString().replace('.', '').replace(',', '.')) * 1) / condicaoPgto.length;
                     issqn = (((document.getElementById('op_ret_issqn').value).toString().replace('.', '').replace(',', '.')) * 1) / condicaoPgto.length;
                 }
-
-                if (document.getElementById('ret_irrf_parcela').checked) {
+                if (document.getElementById('ret_irrf_parcela') && document.getElementById('ret_irrf_parcela').checked == true) {
                     if (i == 0) {
                         valorParcela -= ((document.getElementById('op_ret_irrf').value).toString().replace('.', '').replace(',', '.')) * 1;
                         irrf = ((document.getElementById('op_ret_irrf').value).toString().replace('.', '').replace(',', '.')) * 1;
                     }
-                } else {
+                }
+                if (document.getElementById('ret_irrf_parcela') && document.getElementById('ret_irrf_parcela').checked == false) {
                     valorParcela -= (((document.getElementById('op_ret_irrf').value).toString().replace('.', '').replace(',', '.')) * 1) / condicaoPgto.length;
                     irrf = (((document.getElementById('op_ret_irrf').value).toString().replace('.', '').replace(',', '.')) * 1) / condicaoPgto.length;
                 }
@@ -1617,30 +1633,48 @@ function edit_parcela(id, contexto) {
         let codigo = id.substring(1, 15);
         let item = operacao.parcelas.find(item => item.op_parcela_numero_controle == codigo);
 
-        decimal('op_parcela_ret_inss', item.op_parcela_ret_inss.replace('.', ''), '2');
-        decimal('op_parcela_ret_issqn', item.op_parcela_ret_issqn.replace('.', ''), '2');
-        decimal('op_parcela_ret_irrf', item.op_parcela_ret_irrf.replace('.', ''), '2');
-        decimal('op_parcela_ret_pis', item.op_parcela_ret_pis.replace('.', ''), '2');
-        decimal('op_parcela_ret_cofins', item.op_parcela_ret_cofins.replace('.', ''), '2');
-        decimal('op_parcela_ret_csll', item.op_parcela_ret_csll.replace('.',''), '2');
-        decimal('op_parcela_valor_bruto', item.op_parcela_valor_bruto.replace('.', ''), '2');
-        decimal('op_parcela_valor', item.op_parcela_valor.replace('.', ''), '2');
+        if (document.getElementById('op_parcela_ret_inss')) {
+            decimal('op_parcela_ret_inss', item.op_parcela_ret_inss.replace('.', ''), '2', false);
+        }
+        if (document.getElementById('op_parcela_ret_issqn')) {
+            decimal('op_parcela_ret_issqn', item.op_parcela_ret_issqn.replace('.', ''), '2', false);
+        }
+        if (document.getElementById('op_parcela_ret_irrf')) {
+            decimal('op_parcela_ret_irrf', item.op_parcela_ret_irrf.replace('.', ''), '2', false);
+        }
+        if (document.getElementById('op_parcela_ret_pis')) {
+            decimal('op_parcela_ret_pis', item.op_parcela_ret_pis.replace('.', ''), '2', false);
+        }
+        if (document.getElementById('op_parcela_ret_cofins')) {
+            decimal('op_parcela_ret_cofins', item.op_parcela_ret_cofins.replace('.', ''), '2', false);
+        }
+        if (document.getElementById('op_parcela_ret_csll')) {
+            decimal('op_parcela_ret_csll', item.op_parcela_ret_csll.replace('.', ''), '2', false);
+        }
 
-        document.getElementById('controleEditParcela').value = codigo;
+        if (document.getElementById('op_parcela_valor_bruto')) {
+            decimal('op_parcela_valor_bruto', item.op_parcela_valor_bruto.replace('.', ''), '2', false);
+        }
+        if (document.getElementById('op_parcela_valor')) {
+            decimal('op_parcela_valor', item.op_parcela_valor.replace('.', ''), '2', false);
+        }
+        if (document.getElementById('controleEditParcela')) {
+            document.getElementById('controleEditParcela').value = codigo;
+        }
     }
 
     if (contexto == 'gravar') {
         let controle = document.getElementById('controleEditParcela').value;
         for (let i = 0; i < operacao.parcelas.length; i++) {
             if (operacao.parcelas[i].op_parcela_numero_controle == controle) {
-                operacao.parcelas[i].op_parcela_ret_inss = document.getElementById('op_parcela_ret_inss').value;
-                operacao.parcelas[i].op_parcela_ret_issqn = document.getElementById('op_parcela_ret_issqn').value;
-                operacao.parcelas[i].op_parcela_ret_irrf = document.getElementById('op_parcela_ret_irrf').value;
-                operacao.parcelas[i].op_parcela_ret_pis = document.getElementById('op_parcela_ret_pis').value;
-                operacao.parcelas[i].op_parcela_ret_cofins = document.getElementById('op_parcela_ret_cofins').value;
-                operacao.parcelas[i].op_parcela_ret_csll = document.getElementById('op_parcela_ret_csll').value;
-                operacao.parcelas[i].op_parcela_valor = document.getElementById('op_parcela_valor').value;
-                operacao.parcelas[i].op_parcela_valor_bruto = document.getElementById('op_parcela_valor_bruto').value;
+                if (document.getElementById('op_parcela_ret_inss')) { operacao.parcelas[i].op_parcela_ret_inss = document.getElementById('op_parcela_ret_inss').value }
+                if (document.getElementById('op_parcela_ret_issqn')) {operacao.parcelas[i].op_parcela_ret_issqn = document.getElementById('op_parcela_ret_issqn').value}
+                if (document.getElementById('op_parcela_ret_irrf')) { operacao.parcelas[i].op_parcela_ret_irrf = document.getElementById('op_parcela_ret_irrf').value}
+                if (document.getElementById('op_parcela_ret_pis')) { operacao.parcelas[i].op_parcela_ret_pis = document.getElementById('op_parcela_ret_pis').value }
+                if (document.getElementById('op_parcela_ret_cofins')) { operacao.parcelas[i].op_parcela_ret_cofins = document.getElementById('op_parcela_ret_cofins').value }
+                if (document.getElementById('op_parcela_ret_csll')) { operacao.parcelas[i].op_parcela_ret_csll = document.getElementById('op_parcela_ret_csll').value }
+                if (document.getElementById('op_parcela_valor')) { operacao.parcelas[i].op_parcela_valor = document.getElementById('op_parcela_valor').value }
+                if (document.getElementById('op_parcela_valor_bruto')) { operacao.parcelas[i].op_parcela_valor_bruto = document.getElementById('op_parcela_valor_bruto').value }
                 document.getElementById('vlrParcela_' + operacao.parcelas[i].op_parcela_numero_controle).value = operacao.parcelas[i].op_parcela_valor;
                 break;
             }
@@ -1673,47 +1707,53 @@ function edit_parcela(id, contexto) {
     operacao.retencoes.op_ret_cofins = cofins.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
     operacao.retencoes.op_ret_csll = cs.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
     //Atualizando os campos da view com as retenções
-    decimal('op_ret_inss', operacao.retencoes.op_ret_inss,'2');
-    decimal('op_ret_issqn', operacao.retencoes.op_ret_issqn,'2');
-    decimal('op_ret_irrf', operacao.retencoes.op_ret_irrf,'2');
-    decimal('op_ret_pis', operacao.retencoes.op_ret_pis,'2');
-    decimal('op_ret_cofins', operacao.retencoes.op_ret_cofins,'2');
-    decimal('op_ret_csll', operacao.retencoes.op_ret_csll,'2');
+    if (document.getElementById('op_ret_inss')) { decimal('op_ret_inss', operacao.retencoes.op_ret_inss, '2', false) }
+    if (document.getElementById('op_ret_issqn')) { decimal('op_ret_issqn', operacao.retencoes.op_ret_issqn, '2', false) }
+    if (document.getElementById('op_ret_irrf')) { decimal('op_ret_irrf', operacao.retencoes.op_ret_irrf, '2', false) }
+    if (document.getElementById('op_ret_pis')) { decimal('op_ret_pis', operacao.retencoes.op_ret_pis, '2', false) }
+    if (document.getElementById('op_ret_cofins')) { decimal('op_ret_cofins', operacao.retencoes.op_ret_cofins, '2', false) }
+    if (document.getElementById('op_ret_csll')) { decimal('op_ret_csll', operacao.retencoes.op_ret_csll, '2', false) }    
 
     if (valorTotalParcelas > totalCompra) {
         document.getElementById('alert_vlr_parcela').innerHTML = '<p style="color:red">O valor total bruto das parcelas é maior que o total da compra. Isso impedirá a gravação da operação! Total bruto igual a <strong>' + valorTotalParcelas.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" }) + '</strong></p>';
     } else {
         document.getElementById('alert_vlr_parcela').innerHTML = "";
     }
-
-
-
-
 }
 
 function edit_vlr_parcela(id, vlr) {
-    let inss = ((document.getElementById('op_parcela_ret_inss').value).toString().replace('.', '').replace(',', '.')) * 1;
-    let iss = ((document.getElementById('op_parcela_ret_issqn').value).toString().replace('.', '').replace(',', '.')) * 1;
-    let ir = ((document.getElementById('op_parcela_ret_irrf').value).toString().replace('.', '').replace(',', '.')) * 1;
-    let pis = ((document.getElementById('op_parcela_ret_pis').value).toString().replace('.', '').replace(',', '.')) * 1;
-    let cofins = ((document.getElementById('op_parcela_ret_cofins').value).toString().replace('.', '').replace(',', '.')) * 1;
-    let cs = ((document.getElementById('op_parcela_ret_csll').value).toString().replace('.', '').replace(',', '.')) * 1;
+    vlr = vlr.replace('.', '').replace(',', '.') * 1;
+
+    let inss = 0;
+    let iss = 0;
+    let ir = 0;
+    let pis = 0;
+    let cofins = 0;
+    let cs = 0;
+    //atribui valores as variaveis se existir o input
+    if (document.getElementById('op_parcela_ret_inss')) { inss = ((document.getElementById('op_parcela_ret_inss').value).toString().replace('.', '').replace(',', '.')) * 1 }
+    if (document.getElementById('op_parcela_ret_issqn')) { iss = ((document.getElementById('op_parcela_ret_issqn').value).toString().replace('.', '').replace(',', '.')) * 1 }
+    if (document.getElementById('op_parcela_ret_irrf')) { ir = ((document.getElementById('op_parcela_ret_irrf').value).toString().replace('.', '').replace(',', '.')) * 1 }
+    if (document.getElementById('op_parcela_ret_pis')) { pis = ((document.getElementById('op_parcela_ret_pis').value).toString().replace('.', '').replace(',', '.')) * 1 }
+    if (document.getElementById('op_parcela_ret_cofins')) { cofins = ((document.getElementById('op_parcela_ret_cofins').value).toString().replace('.', '').replace(',', '.')) * 1 }
+    if (document.getElementById('op_parcela_ret_csll')) { cs = ((document.getElementById('op_parcela_ret_csll').value).toString().replace('.', '').replace(',', '.')) * 1 }
+
 
     if (id == 'op_parcela_valor_bruto') {
-        let liquido = ((document.getElementById('op_parcela_valor').value).toString().replace('.', '').replace(',', '.')) * 1;        
-        decimal('op_parcela_valor', (vlr - inss - iss - ir - pis - cofins - cs).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }).replace('.', ''), '2');
-        decimal(id, vlr.replace('.', ''), '2');
+        let liquido = ((document.getElementById('op_parcela_valor').value).toString().replace('.', '').replace(',', '.')) * 1;
+        decimal('op_parcela_valor', (vlr - inss - iss - ir - pis - cofins - cs).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }).replace('.', ''), '2', true);
+        decimal(id, vlr.toString(), '2', true);
     }
     if (id == 'op_parcela_valor') {
         let bruto = ((document.getElementById('op_parcela_valor_bruto').value).toString().replace('.', '').replace(',', '.')) * 1;        
-        decimal('op_parcela_valor_bruto', (vlr + inss + iss + ir + pis + cofins + cs).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }).replace('.', ''), '2');        
-        decimal(id, vlr.replace('.', ''), '2');
+        decimal('op_parcela_valor_bruto', (vlr + inss + iss + ir + pis + cofins + cs).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }), '2', true);        
+        decimal(id, vlr.toString(), '2', true);
     }
 
     if (id != 'op_parcela_valor' && id != 'op_parcela_valor_bruto') {
-        decimal(id, (vlr).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }).replace('.', ''), '2');
+        decimal(id, (vlr).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }).replace('.', ''), '2', true);
         let valorBruto = ((document.getElementById('op_parcela_valor_bruto').value).toString().replace('.', '').replace(',', '.')) * 1;
-        decimal('op_parcela_valor', (valorBruto - inss - iss - ir - pis - cofins - cs).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }).replace('.', ''), '2');
+        decimal('op_parcela_valor', (valorBruto - inss - iss - ir - pis - cofins - cs).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }).replace('.', ''), '2', true);
     }
 }
 
@@ -1748,15 +1788,11 @@ function novaParcela(contexto) {
         } else {
             let parcela = "" +
                 "<div class=\"row\" id=\"parcela_" + numero_controle + "\">" +
-                "<div class=\"col-10\" style=\"padding-right: 0px;\">" +
-                "<input id=\"diasParcela_" + numero_controle + "\" onchange=\"update_nova_parcela(this.id, this.value)\" type =\"text\" class=\"include_item\" style=\"width: 10%;padding:0px;text-align:center\" value=\"" + "" + "\" />" +
-                "<input id=\"vencParcela_" + numero_controle + "\" onchange=\"update_nova_parcela(this.id, this.value)\" type =\"text\" class=\"include_item datepicker\" style=\"width: 25%\" value=\"" + "" + "\" />" +
-                "<input id=\"vlrParcela_" + numero_controle + "\" onchange=\"update_nova_parcela(this.id, this.value)\" type =\"text\" class=\"include_item\" style=\"width: 25%\" value=\"" + "0,00" + "\" />" +
-                "<select id=\"fpParcela_" + numero_controle + "\" onchange=\"update_nova_parcela(this.id, this.value)\" class=\"include_item\" style=\"width: 25%\">" + optionsTxt + "</select>" +
-                "<input id=\"obsParcela_" + numero_controle + "\" onchange=\"update_nova_parcela(this.id, this.value)\" type =\"text\" class=\"include_item\" style=\"width: 15%\" />" +
-                "" +
-                "</div>" +
-                "<div class=\"col-2\" style=\"text-align: right;padding-top: 6px;padding-left: 0px;\">" +
+                "<div class=\"col-12\" style=\"padding-right: 0px;\">" +
+                "<input id=\"diasParcela_" + numero_controle + "\" onchange=\"update_nova_parcela(this.id, this.value)\" type =\"text\" class=\"include_item\" style=\"width: 10%;padding:0px;text-align:center\" value=\"" + '' + "\" />" +
+                "<input id=\"vencParcela_" + numero_controle + "\" onchange=\"update_nova_parcela(this.id, this.value)\" type =\"text\" class=\"include_item datepicker\" style=\"width: 25%\" value=\"" + '' + "\" />" +
+                "<input id=\"vlrParcela_" + numero_controle + "\" onchange=\"update_nova_parcela(this.id, this.value)\" type =\"text\" class=\"include_item\" style=\"width: 25%\" value=\"" + '' + "\" />" +
+                "<select id=\"fpParcela_" + numero_controle + "\" onchange=\"update_nova_parcela(this.id, this.value)\" class=\"include_item\" style=\"width: 38%\">" + optionsTxt + "</select>" +                
                 "</div>" +
                 "</div>";
 
@@ -1789,38 +1825,37 @@ function novaParcela(contexto) {
             optionsTxt_f += txt;
         }
 
-
-
         let Op_parcelas = {
             op_parcela_dias: document.getElementById('diasParcela_' + controle).value,
             op_parcela_vencimento: document.getElementById('vencParcela_' + controle).value,
             op_parcela_fp_id: document.getElementById('fpParcela_' + controle).value,
             op_parcela_valor: document.getElementById('vlrParcela_' + controle).value,
-            op_parcela_obs: document.getElementById('obsParcela_' + controle).value,
+            op_parcela_valor_bruto: document.getElementById('vlrParcela_' + controle).value,
+            op_parcela_obs: '',
             op_parcela_saldo: '',
             op_parcela_op_id: '',
             op_parcela_id: '',
             controleEdit: 'insert',
             op_parcela_numero_controle: numero_controle,
+            op_parcela_ret_inss: '0,00',
+            op_parcela_ret_issqn: '0,00',
+            op_parcela_ret_irrf: '0,00',
+            op_parcela_ret_pis: '0,00',
+            op_parcela_ret_cofins: '0,00',
+            op_parcela_ret_csll: '0,00',
         };
 
         operacao.parcelas.push(Op_parcelas);
 
         let parcela = "" +
             "<div class=\"row\" id=\"parcela_" + numero_controle + "\">" +
-            "<div class=\"col-10\" style=\"padding-right: 0px;\">" +
+            "<div class=\"col-12\" style=\"padding-right: 0px;\">" +
             "<input id=\"diasParcela_" + numero_controle + "\" onchange=\"update_parcela(this.id, this.value)\" type =\"text\" class=\"include_item\" style=\"width: 10%;padding:0px;text-align:center\" value=\"" + document.getElementById('diasParcela_' + controle).value + "\" />" +
             "<input id=\"vencParcela_" + numero_controle + "\" onchange=\"update_parcela(this.id, this.value)\" type =\"text\" class=\"include_item datepicker\" style=\"width: 25%\" value=\"" + document.getElementById('vencParcela_' + controle).value + "\" />" +
-            "<input id=\"vlrParcela_" + numero_controle + "\" onchange=\"update_parcela(this.id, this.value)\" type =\"text\" class=\"include_item\" style=\"width: 25%\" value=\"" + document.getElementById('vlrParcela_' + controle).value + "\" />" +
-            "<select id=\"fpParcela_" + numero_controle + "\" onchange=\"update_parcela(this.id, this.value)\" class=\"include_item\" style=\"width: 25%\">" + optionsTxt_f + "</select>" +
-            "<input id=\"obsParcela_" + numero_controle + "\" onchange=\"update_parcela(this.id, this.value)\" type =\"text\" class=\"include_item\" style=\"width: 15%\" value=\"" + document.getElementById('obsParcela_' + controle).value + "\" />" +
-            "" +
-            "</div>" +
-            "<div class=\"col-2\" style=\"text-align: right;padding-top: 6px;padding-left: 0px;\">" +
-            "<svg id=\"D" + numero_controle + "\" onclick=\"delete_parcela(this.id, 'confirmação')\" width =\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-trash\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\">" +
-            "<path d =\"M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z\" />" +
-            "<path fill - rule=\"evenodd\" d=\"M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z\" />" +
-            "</svg>" +
+            "<input readonly=\"readonly\" id=\"vlrParcela_" + numero_controle + "\" onchange=\"update_parcela(this.id, this.value)\" type =\"text\" class=\"include_item\" style=\"width: 25%\" value=\"" + document.getElementById('vlrParcela_' + controle).value + "\" />" +
+            "<select id=\"fpParcela_" + numero_controle + "\" onchange=\"update_parcela(this.id, this.value)\" class=\"include_item\" style=\"width: calc(40% - 95px)\">" + optionsTxt_f + "</select>" +
+            "<div class=\"input-group-append\" style=\"float: left\" id=\"E" + numero_controle + "\" onclick=\"edit_parcela(this.id,'open')\"><button class=\"btn btn-outline-secondary\" type=\"button\" data-toggle=\"modal\" data-target=\"#modal_retencoes\"><svg width =\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-clipboard-data\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path fill - rule=\"evenodd\" d=\"M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z\"/><path fill - rule=\"evenodd\" d=\"M9.5 1h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z\"/><path d =\"M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0V9z\"/></svg ></button ></div >" +
+            "<div class='input-group-append' style=\"float: left\" id=\"D" + numero_controle + "\" onclick=\"delete_parcela(this.id, 'confirmação')\" ><button class='btn btn-outline-secondary' type='button'><svg  width =\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-trash\" fill=\"red\" xmlns=\"http://www.w3.org/2000/svg\" style=\"cursor:pointer\"><path d =\"M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z\" /><path fill - rule=\"evenodd\" d=\"M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z\" /></svg></button ></div> " +
             "</div>" +
             "</div>";
 
@@ -1882,7 +1917,7 @@ function delete_parcela(id, confirma) {
 
 function update_parcela(id, vlr) {    
     let numero_controle = id.split('_');
-    let item = operacao.parcelas.find(item => item.op_parcela_numero_controle == numero_controle[1]);
+    let item = operacao.parcelas.find(item => item.op_parcela_numero_controle == numero_controle[1]);    
 
     for (let i = 0; i < operacao.parcelas.length; i++) {
         if (operacao.parcelas[i].op_parcela_numero_controle == numero_controle[1]) {
@@ -1910,7 +1945,7 @@ function update_parcela(id, vlr) {
                 operacao.parcelas[i].op_parcela_dias = dias.toString();
             }
             if (numero_controle[0] == 'vlrParcela') {
-                decimal(id, vlr, '6');
+                decimal(id, vlr, '6', true);
                 operacao.parcelas[i].op_parcela_valor = document.getElementById(id).value;
                 
             }            
@@ -1946,7 +1981,7 @@ function update_nova_parcela(id, vlr) {
         document.getElementById('diasParcela_' + numero_controle[1]).value = dias;        
     }
     if (numero_controle[0] == 'vlrParcela') {
-        decimal(id, vlr, '6');
+        decimal(id, vlr, '6', true);
     }        
 }
 
@@ -2622,7 +2657,7 @@ $(".editTransferencia").click(function () {
 
 function imput_retencoes(id, vlr, limit) {
     //Autualiza view
-    decimal(id, vlr, limit);
+    decimal(id, vlr, limit, true);
     //Atualiza objeto retenções
     if (id == 'op_ret_inss') { operacao.retencoes.op_ret_inss = vlr; }
     if (id == 'op_ret_issqn') { operacao.retencoes.op_ret_issqn = vlr; }
