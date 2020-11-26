@@ -277,20 +277,20 @@
     <fieldset>
         <legend>Detalhes</legend>
         <div class="row">
-            <div class="col-4 col-md-2">
+            <div class="col-12 col-md-2">
                 <div class="form-group">
                     <label asp-for="operacao.op_numero_ordem" class="control-label">Número Venda</label>
                     <input disabled="disabled" asp-for="operacao.op_numero_ordem" id="op_numero_ordem" class="form-control" readonly="readonly" />
                 </div>
             </div>
-            <div class="col-4 col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="operacao.op_data" class="control-label">Data da Venda</label>
                     <input disabled="disabled" type="text" name="operacao.op_data" value="@Model.operacao.op_data.ToShortDateString()" id="op_data" autocomplete="off" class="form-control datepicker" />
                     <span asp-validation-for="operacao.op_data" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-4 col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="operacao.op_previsao_entrega" class="control-label">Data Prevista Entrega</label>
                     <input disabled="disabled" type="text" name="operacao.op_previsao_entrega" value="@Model.operacao.op_previsao_entrega.ToShortDateString()" id="op_previsao_entrega" autocomplete="off" class="form-control datepicker" />
@@ -405,6 +405,59 @@
             </div>
         </div>
         <input type="hidden" asp-for="transportador.op_transportador_participante_id" id="op_transportador_participante_id" />
+    </fieldset>
+    <fieldset>
+        <legend>Nota Fiscal</legend>
+        <div class="row">
+            <div class="col-12">
+                <div class="radio-toolbar">
+                    <input type="radio" asp-for="operacao.op_comNF" id="r_sem_nf" value="0" checked onclick="operacao_nf(this.id)" disabled="disabled">
+                    <label for="r_sem_nf" id="label1">Sem Nota Fiscal</label>
+
+                    <input type="radio" asp-for="operacao.op_comNF" value="1" id="r_nf_eletronica" onclick="operacao_nf(this.id)" disabled="disabled">
+                    <label for="r_nf_eletronica" id="label3">Nota Fiscal Eletrônica</label>
+
+                    <input type="radio" asp-for="operacao.op_comNF" value="2" id="r_nf_manual" onclick="operacao_nf(this.id)" disabled="disabled">
+                    <label for="r_nf_manual" id="label2">Nota Fiscal Manual</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="nf.op_nf_chave" class="control-label">Chave de Acesso</label>
+                    <input asp-for="nf.op_nf_chave" id="op_nf_chave" class="form-control" disabled="disabled" />
+                    <span class="text-info" id="chave_acesso"></span>
+                    <span asp-validation-for="nf.op_nf_chave" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="nf.op_nf_data_emissao" class="control-label">Data de Emissão</label>
+                    <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control datepicker" disabled="disabled" />
+                    <span asp-validation-for="nf.op_nf_data_emissao" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="nf.op_nf_data_entrada_saida" class="control-label">Data de Entrada</label>
+                    <input type="text" asp-for="nf.op_nf_data_entrada_saida" id="op_nf_data_entrada_saida" autocomplete="off" class="form-control datepicker" disabled="disabled" />
+                    <span asp-validation-for="nf.op_nf_data_entrada_saida" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <label asp-for="nf.op_nf_serie" class="control-label">Série</label>
+                <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control" disabled="disabled" />
+                <span asp-validation-for="nf.op_nf_serie" class="text-danger"></span>
+            </div>
+            <div class="col-6 col-md-3">
+                <label asp-for="nf.op_nf_numero" class="control-label">Número</label>
+                <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control" disabled="disabled" />
+                <span asp-validation-for="nf.op_nf_numero" class="text-danger"></span>
+            </div>
+        </div>
     </fieldset>
     <fieldset>
         <legend>Observações</legend>
@@ -796,7 +849,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="control-label">Valor Bruto</label>
-                                <input id="op_parcela_valor_bruto" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" readonly="readonly"/>
+                                <input id="op_parcela_valor_bruto" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" readonly="readonly" />
                             </div>
                         </div>
                         <div class="col-6">
@@ -830,26 +883,26 @@
                             <div class="col-12 col-md-3">
                                 <div class="form-group">
                                     <label class="control-label">PIS</label>
-                                    <input id="op_parcela_ret_pis" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" readonly="readonly"/>
+                                    <input id="op_parcela_ret_pis" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" readonly="readonly" />
                                 </div>
                             </div>
                             <div class="col-12 col-md-3">
                                 <div class="form-group">
                                     <label class="control-label">COFINS</label>
-                                    <input id="op_parcela_ret_cofins" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" readonly="readonly"/>
+                                    <input id="op_parcela_ret_cofins" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" readonly="readonly" />
                                 </div>
                             </div>
                             <div class="col-12 col-md-3">
                                 <div class="form-group">
                                     <label class="control-label">CSLL</label>
-                                    <input id="op_parcela_ret_csll" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" readonly="readonly"/>
+                                    <input id="op_parcela_ret_csll" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" readonly="readonly" />
                                 </div>
                             </div>
                         </div>
                     </fieldset>
                     <input type="hidden" id="controleEditParcela" />
                 </div>
-                <div class="modal-footer">                    
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>

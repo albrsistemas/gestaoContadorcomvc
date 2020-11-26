@@ -214,20 +214,20 @@
     <fieldset>
         <legend>Detalhes</legend>
         <div class="row">
-            <div class="col-4 col-md-2">
+            <div class="col-12 col-md-2">
                 <div class="form-group">
                     <label asp-for="operacao.op_numero_ordem" class="control-label">Número Compra</label>
                     <input asp-for="operacao.op_numero_ordem" id="op_numero_ordem" class="form-control" readonly="readonly" />
                 </div>
             </div>
-            <div class="col-4 col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="operacao.op_data" class="control-label">Data da Compra</label>
                     <input type="text" name="operacao.op_data" id="op_data" autocomplete="off" class="form-control datepicker" />
                     <span asp-validation-for="operacao.op_data" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-4 col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="operacao.op_previsao_entrega" class="control-label">Data Prevista Entrega</label>
                     <input type="text" name="operacao.op_previsao_entrega" id="op_previsao_entrega" autocomplete="off" class="form-control datepicker" />
@@ -342,13 +342,13 @@
         <div class="row">
             <div class="col-12">
                 <div class="radio-toolbar">
-                    <input type="radio" asp-for="operacao.oop_comNF" id="r_sem_nf" value="0" checked onclick="operacao_nf(this.id)">
+                    <input type="radio" asp-for="operacao.op_comNF" id="r_sem_nf" value="0" checked onclick="operacao_nf(this.id)">
                     <label for="r_sem_nf" id="label1">Sem Nota Fiscal</label>
 
-                    <input type="radio" asp-for="operacao.oop_comNF" value="1" id="r_nf_eletronica" onclick="operacao_nf(this.id)">
+                    <input type="radio" asp-for="operacao.op_comNF" value="1" id="r_nf_eletronica" onclick="operacao_nf(this.id)">
                     <label for="r_nf_eletronica" id="label3">Nota Fiscal Eletrônica</label>
 
-                    <input type="radio" asp-for="operacao.oop_comNF" value="2" id="r_nf_manual" onclick="operacao_nf(this.id)">
+                    <input type="radio" asp-for="operacao.op_comNF" value="2" id="r_nf_manual" onclick="operacao_nf(this.id)">
                     <label for="r_nf_manual" id="label2">Nota Fiscal Manual</label>
                 </div>
             </div>
@@ -389,8 +389,7 @@
                 <span asp-validation-for="nf.op_nf_numero" class="text-danger"></span>
             </div>
         </div>
-
-</fieldset>
+    </fieldset>
     <fieldset>
         <legend>Observações</legend>
         <div class="row">

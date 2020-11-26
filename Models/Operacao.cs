@@ -24,7 +24,7 @@ namespace gestaoContadorcomvc.Models
         public bool op_comParticipante { get; set; }
         public bool op_comRetencoes { get; set; }
         public bool op_comTransportador { get; set; }
-        public int oop_comNF { get; set; }
+        public int op_comNF { get; set; }
         public bool possui_parcelas { get; set; }
 
         /*--------------------------*/
@@ -61,7 +61,7 @@ namespace gestaoContadorcomvc.Models
             try
             {
                 //Operação
-                comando.CommandText = "call pr_operacao(@op_tipo, @op_data, @op_conta_id, @op_obs, @op_previsao_entrega, @op_data_saida, @op_categoria_id, @op_comParticipante, @op_comRetencoes, @op_comTransportador);";                
+                comando.CommandText = "call pr_operacao(@op_tipo, @op_data, @op_conta_id, @op_obs, @op_previsao_entrega, @op_data_saida, @op_categoria_id, @op_comParticipante, @op_comRetencoes, @op_comTransportador, @op_comNF);";                
                 comando.Parameters.AddWithValue("@op_tipo", op.operacao.op_tipo);
                 comando.Parameters.AddWithValue("@op_data", op.operacao.op_data);
                 comando.Parameters.AddWithValue("@op_conta_id", conta_id);
@@ -72,6 +72,7 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@op_comParticipante", op.operacao.op_comParticipante);
                 comando.Parameters.AddWithValue("@op_comRetencoes", op.operacao.op_comRetencoes);
                 comando.Parameters.AddWithValue("@op_comTransportador", op.operacao.op_comTransportador);
+                comando.Parameters.AddWithValue("@op_comNF", op.operacao.op_comNF);
                 comando.ExecuteNonQuery();
 
 
@@ -212,17 +213,33 @@ namespace gestaoContadorcomvc.Models
                     }
                 }
 
-                //transportador
-                comando.CommandText = "INSERT into op_transportador (op_transportador_nome, op_transportador_cnpj_cpf, op_transportador_modalidade_frete, op_transportador_volume_qtd, op_transportador_volume_peso_bruto, op_transportador_op_id, op_transportador_participante_id) VALUES (@op_transportador_nome, @op_transportador_cnpj_cpf, @op_transportador_modalidade_frete, @op_transportador_volume_qtd, @op_transportador_volume_peso_bruto, @op_transportador_op_id, @op_transportador_participante_id);";
-                comando.Parameters.AddWithValue("@conta_id", conta_id);
-                comando.Parameters.AddWithValue("@op_transportador_nome", op.transportador.op_transportador_nome);
-                comando.Parameters.AddWithValue("@op_transportador_cnpj_cpf", op.transportador.op_transportador_cnpj_cpf);
-                comando.Parameters.AddWithValue("@op_transportador_modalidade_frete", op.transportador.op_transportador_modalidade_frete);
-                comando.Parameters.AddWithValue("@op_transportador_volume_qtd", op.transportador.op_transportador_volume_qtd);
-                comando.Parameters.AddWithValue("@op_transportador_volume_peso_bruto", op.transportador.op_transportador_volume_peso_bruto);
-                comando.Parameters.AddWithValue("@op_transportador_op_id", id);
-                comando.Parameters.AddWithValue("@op_transportador_participante_id", op.transportador.op_transportador_participante_id);
-                comando.ExecuteNonQuery();
+                if (op.operacao.op_comTransportador)
+                {
+                    //transportador
+                    comando.CommandText = "INSERT into op_transportador (op_transportador_nome, op_transportador_cnpj_cpf, op_transportador_modalidade_frete, op_transportador_volume_qtd, op_transportador_volume_peso_bruto, op_transportador_op_id, op_transportador_participante_id) VALUES (@op_transportador_nome, @op_transportador_cnpj_cpf, @op_transportador_modalidade_frete, @op_transportador_volume_qtd, @op_transportador_volume_peso_bruto, @op_transportador_op_id, @op_transportador_participante_id);";
+                    comando.Parameters.AddWithValue("@conta_id", conta_id);
+                    comando.Parameters.AddWithValue("@op_transportador_nome", op.transportador.op_transportador_nome);
+                    comando.Parameters.AddWithValue("@op_transportador_cnpj_cpf", op.transportador.op_transportador_cnpj_cpf);
+                    comando.Parameters.AddWithValue("@op_transportador_modalidade_frete", op.transportador.op_transportador_modalidade_frete);
+                    comando.Parameters.AddWithValue("@op_transportador_volume_qtd", op.transportador.op_transportador_volume_qtd);
+                    comando.Parameters.AddWithValue("@op_transportador_volume_peso_bruto", op.transportador.op_transportador_volume_peso_bruto);
+                    comando.Parameters.AddWithValue("@op_transportador_op_id", id);
+                    comando.Parameters.AddWithValue("@op_transportador_participante_id", op.transportador.op_transportador_participante_id);
+                    comando.ExecuteNonQuery();
+                }
+                
+                if(op.operacao.op_comNF != 0)
+                {
+                    //nota fiscal
+                    comando.CommandText = "insert into op_nf (op_nf_op_id, op_nf_chave, op_nf_data_emissao, op_nf_data_entrada_saida, op_nf_serie, op_nf_numero) values (@op_nf_op_id, @op_nf_chave, @op_nf_data_emissao, @op_nf_data_entrada_saida, @op_nf_serie, @op_nf_numero);";
+                    comando.Parameters.AddWithValue("@op_nf_op_id", op.operacao.op_id);
+                    comando.Parameters.AddWithValue("@op_nf_chave", op.nf.op_nf_chave);
+                    comando.Parameters.AddWithValue("@op_nf_data_emissao", op.nf.op_nf_data_emissao);
+                    comando.Parameters.AddWithValue("@op_nf_data_entrada_saida", op.nf.op_nf_data_entrada_saida);
+                    comando.Parameters.AddWithValue("@op_nf_serie", op.nf.op_nf_serie);
+                    comando.Parameters.AddWithValue("@op_nf_numero", op.nf.op_nf_numero);
+                    comando.ExecuteNonQuery();
+                }
 
                 Transacao.Commit();
 
@@ -391,7 +408,7 @@ namespace gestaoContadorcomvc.Models
 
                 buscaParcela.Close();
 
-                comando.CommandText = "SELECT op.*, p.*, t.*, tr.*, ret.* from operacao as op LEFT join op_participante as p on p.op_id = op.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = op.op_id LEFT join op_transportador as tr on tr.op_transportador_op_id = op.op_id LEFT join op_retencoes as ret on ret.op_ret_op_id = op.op_id WHERE op.op_conta_id = @conta_id and op.op_id = @op_id;";
+                comando.CommandText = "SELECT op.*, p.*, t.*, tr.*, ret.*, nf.* from operacao as op LEFT join op_participante as p on p.op_id = op.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = op.op_id LEFT join op_transportador as tr on tr.op_transportador_op_id = op.op_id LEFT join op_retencoes as ret on ret.op_ret_op_id = op.op_id left join op_nf as nf on nf.op_nf_op_id = op.op_id WHERE op.op_conta_id = @conta_id and op.op_id = @op_id;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@op_id", op_id);
                 comando.ExecuteNonQuery();                
@@ -796,6 +813,49 @@ namespace gestaoContadorcomvc.Models
                         op.transportador.op_transportador_nome = leitor["op_transportador_nome"].ToString();
                         op.transportador.op_transportador_modalidade_frete = leitor["op_transportador_modalidade_frete"].ToString();
                         op.transportador.op_transportador_cnpj_cpf = leitor["op_transportador_cnpj_cpf"].ToString();
+
+                        //Nota fiscal
+                        if (DBNull.Value != leitor["op_nf_id"])
+                        {
+                            op.nf.op_nf_id = Convert.ToInt32(leitor["op_nf_id"]);
+                        }
+                        else
+                        {
+                            op.nf.op_nf_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["op_nf_op_id"])
+                        {
+                            op.nf.op_nf_op_id = Convert.ToInt32(leitor["op_nf_op_id"]);
+                        }
+                        else
+                        {
+                            op.nf.op_nf_op_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["op_nf_data_emissao"])
+                        {
+                            op.nf.op_nf_data_emissao = Convert.ToDateTime(leitor["op_nf_data_emissao"]);
+                        }
+                        else
+                        {
+                            op.nf.op_nf_data_emissao = new DateTime();
+                        }
+
+                        if (DBNull.Value != leitor["op_nf_data_entrada_saida"])
+                        {
+                            op.nf.op_nf_data_entrada_saida = Convert.ToDateTime(leitor["op_nf_data_entrada_saida"]);
+                        }
+                        else
+                        {
+                            op.nf.op_nf_data_entrada_saida = new DateTime();
+                        }
+
+                        op.nf.op_nf_chave = leitor["op_nf_chave"].ToString();
+                        op.nf.op_nf_serie = leitor["op_nf_serie"].ToString();
+                        op.nf.op_nf_numero = leitor["op_nf_numero"].ToString();
+
+
                     }
 
                     //Inserção de atributos de controle
@@ -824,6 +884,15 @@ namespace gestaoContadorcomvc.Models
                     else
                     {
                         op.transportador.existe = true;
+                    }
+
+                    if (op.nf.op_nf_id == 0)
+                    {
+                        op.nf.existe = false;
+                    }
+                    else
+                    {
+                        op.nf.existe = true;
                     }
 
                     leitor.Close();
@@ -1178,7 +1247,7 @@ namespace gestaoContadorcomvc.Models
                     comando.Parameters.AddWithValue("@op_previsao_entrega", op.operacao.op_previsao_entrega);
                     comando.Parameters.AddWithValue("@op_data_saida", op.operacao.op_data_saida);
                     comando.Parameters.AddWithValue("@op_categoria_id", op.operacao.op_categoria_id);
-                    comando.ExecuteNonQuery();
+                    comando.ExecuteNonQuery();                    
 
                     //participante
                     if(op.operacao.op_comParticipante)
@@ -1442,7 +1511,43 @@ namespace gestaoContadorcomvc.Models
                             comando.Parameters.AddWithValue("@id_transportador", op.transportador.op_transportador_id);
                             comando.ExecuteNonQuery();
                         }
-                    }                   
+                    }
+
+                    //nota fiscal
+                    if (op.operacao.op_comNF > 0)
+                    {
+                        if (op.nf.existe)
+                        {
+                            comando.CommandText = "UPDATE op_nf set op_nf_chave = @op_nf_chave, op_nf_data_emissao = @op_nf_data_emissao, op_nf_data_entrada_saida = @op_nf_data_entrada_saida, op_nf_serie = @op_nf_serie, op_nf_numero = @op_nf_numero where op_nf.op_nf_id = @op_nf_id;";
+                            comando.Parameters.AddWithValue("@op_nf_id", op.nf.op_nf_id);
+                            comando.Parameters.AddWithValue("@op_nf_chave", op.nf.op_nf_chave);
+                            comando.Parameters.AddWithValue("@op_nf_data_emissao", op.nf.op_nf_data_emissao);
+                            comando.Parameters.AddWithValue("@op_nf_data_entrada_saida", op.nf.op_nf_data_entrada_saida);
+                            comando.Parameters.AddWithValue("@op_nf_serie", op.nf.op_nf_serie);
+                            comando.Parameters.AddWithValue("@op_nf_numero", op.nf.op_nf_numero);
+                            comando.ExecuteNonQuery();
+                        }
+                        else
+                        {
+                            comando.CommandText = "insert into op_nf (op_nf_op_id, op_nf_chave, op_nf_data_emissao, op_nf_data_entrada_saida, op_nf_serie, op_nf_numero) values (@op_nf_op_id, @op_nf_chave, @op_nf_data_emissao, @op_nf_data_entrada_saida, @op_nf_serie, @op_nf_numero);";
+                            comando.Parameters.AddWithValue("@op_nf_op_id", op.operacao.op_id);
+                            comando.Parameters.AddWithValue("@op_nf_chave", op.nf.op_nf_chave);
+                            comando.Parameters.AddWithValue("@op_nf_data_emissao", op.nf.op_nf_data_emissao);
+                            comando.Parameters.AddWithValue("@op_nf_data_entrada_saida", op.nf.op_nf_data_entrada_saida);
+                            comando.Parameters.AddWithValue("@op_nf_serie", op.nf.op_nf_serie);
+                            comando.Parameters.AddWithValue("@op_nf_numero", op.nf.op_nf_numero);
+                            comando.ExecuteNonQuery();
+                        }
+                    }
+                    else
+                    {
+                        if (op.nf.existe)
+                        {
+                            comando.CommandText = "DELETE from op_nf WHERE op_nf.op_nf_id = @op_nf_id;";
+                            comando.Parameters.AddWithValue("@op_nf_id", op.nf.op_nf_id);
+                            comando.ExecuteNonQuery();
+                        }
+                    }
 
                     string msg = "Alteração de operação ID: " + op.operacao.op_id + " Alterada com sucesso";
                     log.log("Operacao", "cadastraOperacao", "Sucesso", msg, conta_id, usuario_id);
