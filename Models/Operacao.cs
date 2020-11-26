@@ -232,7 +232,7 @@ namespace gestaoContadorcomvc.Models
                 {
                     //nota fiscal
                     comando.CommandText = "insert into op_nf (op_nf_op_id, op_nf_chave, op_nf_data_emissao, op_nf_data_entrada_saida, op_nf_serie, op_nf_numero) values (@op_nf_op_id, @op_nf_chave, @op_nf_data_emissao, @op_nf_data_entrada_saida, @op_nf_serie, @op_nf_numero);";
-                    comando.Parameters.AddWithValue("@op_nf_op_id", op.operacao.op_id);
+                    comando.Parameters.AddWithValue("@op_nf_op_id", id);
                     comando.Parameters.AddWithValue("@op_nf_chave", op.nf.op_nf_chave);
                     comando.Parameters.AddWithValue("@op_nf_data_emissao", op.nf.op_nf_data_emissao);
                     comando.Parameters.AddWithValue("@op_nf_data_entrada_saida", op.nf.op_nf_data_entrada_saida);
@@ -383,11 +383,13 @@ namespace gestaoContadorcomvc.Models
                 Op_participante participante = new Op_participante();
                 Op_transportador transportador = new Op_transportador();
                 Op_retencoes retencoes = new Op_retencoes();
+                Op_nf nf = new Op_nf();
                 op.operacao = operacao;
                 op.totais = totais;
                 op.participante = participante;
                 op.transportador = transportador;
                 op.retencoes = retencoes;
+                op.nf = nf;
 
 
                 MySqlDataReader buscaParcela;
@@ -499,6 +501,15 @@ namespace gestaoContadorcomvc.Models
                         else
                         {
                             op.operacao.op_categoria_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["op_comNF"])
+                        {
+                            op.operacao.op_comNF = Convert.ToInt32(leitor["op_comNF"]);
+                        }
+                        else
+                        {
+                            op.operacao.op_comNF = 0;
                         }
 
                         op.operacao.op_comParticipante = Convert.ToBoolean(leitor["op_comParticipante"]);
@@ -1239,7 +1250,7 @@ namespace gestaoContadorcomvc.Models
                 {
                     leitor.Close();
                     //Operação
-                    comando.CommandText = "UPDATE operacao set op_data = @op_data, op_obs = @op_obs, op_previsao_entrega = @op_previsao_entrega, op_data_saida = @op_data_saida, op_categoria_id = @op_categoria_id where operacao.op_conta_id = @conta_id and operacao.op_id = @op_id;";
+                    comando.CommandText = "UPDATE operacao set op_data = @op_data, op_obs = @op_obs, op_previsao_entrega = @op_previsao_entrega, op_data_saida = @op_data_saida, op_categoria_id = @op_categoria_id, op_comNF = @op_comNF where operacao.op_conta_id = @conta_id and operacao.op_id = @op_id;";
                     comando.Parameters.AddWithValue("@op_id", op.operacao.op_id);
                     comando.Parameters.AddWithValue("@op_data", op.operacao.op_data);
                     comando.Parameters.AddWithValue("@conta_id", conta_id);
@@ -1247,6 +1258,7 @@ namespace gestaoContadorcomvc.Models
                     comando.Parameters.AddWithValue("@op_previsao_entrega", op.operacao.op_previsao_entrega);
                     comando.Parameters.AddWithValue("@op_data_saida", op.operacao.op_data_saida);
                     comando.Parameters.AddWithValue("@op_categoria_id", op.operacao.op_categoria_id);
+                    comando.Parameters.AddWithValue("@op_comNF", op.operacao.op_comNF);
                     comando.ExecuteNonQuery();                    
 
                     //participante

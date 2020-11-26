@@ -52,38 +52,7 @@
         background: #eee;
         pointer-events: none;
         touch-action: none;
-    }
-    /*radios da area nota fiscal*/
-    .radio-toolbar input[type="radio"] {
-        display: none;
-    }
-
-    .radio-toolbar label {
-        float: left;
-        background-color: #4b4c4c;
-        color: white;
-        width: 33.33%;
-        height: 38px;
-        line-height: 38px;
-        font-family: sans-serif;
-        cursor: pointer;
-        user-select: none;
-        text-align: center;
-    }
-
-    .radio-toolbar input[type="radio"]:checked + label {
-        background-color: #138496;
-    }
-
-    #label1 {
-        border-bottom-left-radius: 5px;
-        border-top-left-radius: 5px;
-    }
-
-    #label2 {
-        border-bottom-right-radius: 5px;
-        border-top-right-radius: 5px;
-    }
+    }    
 </style>
 
 @{
@@ -358,8 +327,7 @@
                 <div class="form-group">
                     <label asp-for="nf.op_nf_chave" class="control-label">Chave de Acesso</label>
                     <input asp-for="nf.op_nf_chave" id="op_nf_chave" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '44','chave_acesso')" onblur="chave_acesso_nf_op(this.id, this.value)" disabled="disabled" />
-                    <span class="text-info" id="chave_acesso"></span>
-                    <span asp-validation-for="nf.op_nf_chave" class="text-danger"></span>
+                    <span class="text-info" id="chave_acesso"></span>                    
                 </div>
             </div>
         </div>
@@ -367,26 +335,22 @@
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="nf.op_nf_data_emissao" class="control-label">Data de Emissão</label>
-                    <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control datepicker" disabled="disabled" />
-                    <span asp-validation-for="nf.op_nf_data_emissao" class="text-danger"></span>
+                    <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control datepicker" disabled="disabled" />                    
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="nf.op_nf_data_entrada_saida" class="control-label">Data de Entrada</label>
-                    <input type="text" asp-for="nf.op_nf_data_entrada_saida" id="op_nf_data_entrada_saida" autocomplete="off" class="form-control datepicker" disabled="disabled"/>
-                    <span asp-validation-for="nf.op_nf_data_entrada_saida" class="text-danger"></span>
+                    <input type="text" asp-for="nf.op_nf_data_entrada_saida" id="op_nf_data_entrada_saida" autocomplete="off" class="form-control datepicker" disabled="disabled"/>                    
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <label asp-for="nf.op_nf_serie" class="control-label">Série</label>
-                <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control" disabled="disabled" />
-                <span asp-validation-for="nf.op_nf_serie" class="text-danger"></span>
+                <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control" disabled="disabled" />                
             </div>
             <div class="col-6 col-md-3">
                 <label asp-for="nf.op_nf_numero" class="control-label">Número</label>
-                <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control" disabled="disabled" />
-                <span asp-validation-for="nf.op_nf_numero" class="text-danger"></span>
+                <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control" disabled="disabled" />                
             </div>
         </div>
     </fieldset>
@@ -396,8 +360,7 @@
             <div class="col-12">
                 <div class="form-group">
                     <textarea asp-for="operacao.op_obs" id="op_obs" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_obs')"></textarea>
-                    <span class="text-info" id="msg_obs"></span>
-                    <span asp-validation-for="operacao.op_obs" class="text-danger"></span>
+                    <span class="text-info" id="msg_obs"></span>                    
                 </div>
             </div>
         </div>
@@ -786,8 +749,7 @@
 
                 </div>
             </div>
-        </div>
-        <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>
+        </div>        
     </div>
 </form>
 

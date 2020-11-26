@@ -13,6 +13,7 @@ var operacao = {
         op_comRetencoes: false,
         op_comTransportador: false,
         possui_parcelas: false,
+        op_comNF: 0,
     },
     participante: {
         op_part_id: 0,
@@ -33,13 +34,13 @@ var operacao = {
     },
     itens: [],
     retencoes: {
-        op_ret_id: 0,
-        op_ret_pis: 0,
-        op_ret_cofins: 0,
-        op_ret_csll: 0,
-        op_ret_irrf: 0,
-        op_ret_inss: 0,
-        op_ret_issqn: 0,
+        op_ret_id: '',
+        op_ret_pis: '',
+        op_ret_cofins: '',
+        op_ret_csll: '',
+        op_ret_irrf: '',
+        op_ret_inss: '',
+        op_ret_issqn: '',
         existe: false,
     },
     totais: {
@@ -67,6 +68,16 @@ var operacao = {
         op_transportador_volume_qtd: 0,
         op_transportador_volume_peso_bruto: 0,
         op_transportador_participante_id: 0,
+        existe: false,
+    },
+    nf: {
+        op_nf_id: 0,
+        op_nf_op_id: 0,
+        op_nf_chave: '',
+        op_nf_data_emissao: '',
+        op_nf_data_entrada_saida: '',
+        op_nf_serie: '',
+        op_nf_numero: '',
         existe: false,
     },
 };
@@ -194,6 +205,29 @@ function carregarEdit(id) {
                     document.getElementById('box_retencoes').style.display = 'none';
                 }
             }
+
+            //verificando se há nota e liberar disabled dos campos
+            if (operacao.operacao.op_comNF != 0) {
+                let x = document.URL;
+                if (!x.includes('Details')) {
+                    if (operacao.operacao.op_comNF == 1) {
+                        document.getElementById('op_nf_chave').disabled = false;
+                        document.getElementById('op_nf_data_emissao').disabled = false;
+                        document.getElementById('op_nf_data_entrada_saida').disabled = false;
+                        document.getElementById('op_nf_serie').disabled = true;
+                        document.getElementById('op_nf_numero').disabled = true;
+                    }
+                    if (operacao.operacao.op_comNF == 2) {
+                        document.getElementById('op_nf_chave').disabled = true;
+                        document.getElementById('op_nf_data_emissao').disabled = false;
+                        document.getElementById('op_nf_data_entrada_saida').disabled = false;
+                        document.getElementById('op_nf_serie').disabled = false;
+                        document.getElementById('op_nf_numero').disabled = false;
+                    }                    
+                }
+            }
+
+
 
             //Reabilitando pós carregamento
             document.getElementsByTagName('svg').disabled = false;
@@ -2246,7 +2280,7 @@ function validaParcelas() {
 
                 let data = (operacao.parcelas[i].op_parcela_vencimento).split('/');
                 let d = new Date(data[2], data[1], data[0]);
-                if (d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1) {
+                if (data.length < 3 || d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1) {
                     retorno = 'Parcela número ' + contador + ': Data inválida.;';
                 }
 
@@ -2262,6 +2296,86 @@ function validaParcelas() {
     }
 }
 
+function dadosNF() {
+
+    let retorno = '';
+
+    chave = document.getElementById('op_nf_chave').value;
+    dt_emissao = document.getElementById('op_nf_data_emissao').value;
+    dt_e_s = document.getElementById('op_nf_data_entrada_saida').value;
+    serie = document.getElementById('op_nf_serie').value;
+    numero = document.getElementById('op_nf_numero').value;
+
+    if (document.getElementById('r_sem_nf').checked) {
+        operacao.operacao.op_comNF = 0;
+        operacao.nf.op_nf_chave = '';
+        operacao.nf.op_nf_data_emissao = '';
+        operacao.nf.op_nf_data_entrada_saida = '';
+        operacao.nf.op_nf_serie = '';
+        operacao.nf.op_nf_numero = '';
+    }
+    if (document.getElementById('r_nf_eletronica').checked) {
+        operacao.operacao.op_comNF = 1;
+        operacao.nf.op_nf_chave = document.getElementById('op_nf_chave').value;
+        operacao.nf.op_nf_data_emissao = document.getElementById('op_nf_data_emissao').value;
+        operacao.nf.op_nf_data_entrada_saida = document.getElementById('op_nf_data_entrada_saida').value;
+        operacao.nf.op_nf_serie = document.getElementById('op_nf_serie').value;
+        operacao.nf.op_nf_numero = document.getElementById('op_nf_numero').value;
+
+        if (chave.length != 44) {
+            retorno += 'Chave de acesso da nota fiscal inválida.;';
+        }
+        if (chave.length == 0) {
+            retorno += 'Chave de acesso da nota fiscal é obrigatória.;';
+        }
+        if (numero.length == 0) {
+            retorno += 'Número da nota fiscal é obrigatório.;';
+        }
+        if (serie.length == 0) {
+            retorno += 'Série da nota fiscal é obrigatório.;';
+        }
+        if (dt_emissao.length == 0) {
+            retorno += 'Série da nota fiscal é obrigatório.;';
+        }
+        let data = dt_emissao.split('/');
+        let d = new Date(data[2], data[1], data[0]);
+        if (data.length < 3 || d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1) {
+            retorno += 'Data de emissão da nota fiscal é inválida;';
+        }
+
+    }
+    if (document.getElementById('r_nf_manual').checked) {
+        operacao.operacao.op_comNF = 2;
+        operacao.nf.op_nf_chave = '';
+        operacao.nf.op_nf_data_emissao = document.getElementById('op_nf_data_emissao').value;
+        operacao.nf.op_nf_data_entrada_saida = document.getElementById('op_nf_data_entrada_saida').value;
+        operacao.nf.op_nf_serie = document.getElementById('op_nf_serie').value;
+        operacao.nf.op_nf_numero = document.getElementById('op_nf_numero').value;
+
+        if (numero.length == 0) {
+            retorno += 'Número da nota fiscal é obrigatório.;';
+        }
+        if (serie.length == 0) {
+            retorno += 'Série da nota fiscal é obrigatório.;';
+        }
+        if (dt_emissao.length == 0) {
+            retorno += 'Série da nota fiscal é obrigatório.;';
+        }
+        let data = dt_emissao.split('/');
+        let d = new Date(data[2], data[1], data[0]);
+        if (data.length < 3 || d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1) {
+            retorno += 'Data de emissão da nota fiscal é inválida;';
+        }
+    }
+
+    if (retorno == '') {
+        return true;
+    } else {
+        return retorno;
+    }
+}
+
+
 
 function gravarOperacao(contexto, tipo_operacao) {
     //Inserção de atributos de controle
@@ -2272,6 +2386,8 @@ function gravarOperacao(contexto, tipo_operacao) {
 
         if (contexto == 'Create') {
             operacao.participante.existe = false;            
+            operacao.retencoes.existe = false;
+            operacao.transportador.existe = false;
         }
     }
 
@@ -2309,6 +2425,10 @@ function gravarOperacao(contexto, tipo_operacao) {
         let parcelas = validaParcelas().split(';');
         validacao = validacao.concat(parcelas);
     }
+    if (dadosNF() != true) {
+        let validNF = dadosNF().split(';');
+        validacao = validacao.concat(validNF);
+    }
 
     for (let i = 0; i < validacao.length; i++) {
         if (validacao[i] != true) {
@@ -2319,6 +2439,7 @@ function gravarOperacao(contexto, tipo_operacao) {
 
     if (erros.length > 0) {
         alert('Há informações incorretas nos dados preenchidos. Verifique a lista erros no final da página!');
+        console.log(erros);
     } else {
         //Postar o formulário de compra
 

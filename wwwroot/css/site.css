@@ -348,6 +348,40 @@ input[type=number] {
 }
 /*Fim*/
 /*Fim estilo LineList*/
+
+/*radios da area nota fiscal*/
+.radio-toolbar input[type="radio"] {
+    display: none;
+}
+
+.radio-toolbar label {
+    float: left;
+    background-color: #4b4c4c;
+    color: white;
+    width: 33.33%;
+    height: 38px;
+    line-height: 38px;
+    font-family: sans-serif;
+    cursor: pointer;
+    user-select: none;
+    text-align: center;
+}
+
+.radio-toolbar input[type="radio"]:checked + label {
+    background-color: #138496;
+}
+
+#label1 {
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+#label2 {
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+
 /*Botão da tela index do controle contra corrente Fluxo de Caixa*/
 .btn_fc {
     margin-bottom: 10px;
