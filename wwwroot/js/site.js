@@ -57,7 +57,8 @@ var operacao = {
         op_totais_total_op: 0,
         op_totais_ipi: 0,
         op_totais_icms_st: 0,
-        op_totais_saldoLiquidacao: 0
+        op_totais_saldoLiquidacao: 0,
+        op_totais_preco_servicos: 0,
     },
     parcelas: [],
     transportador: {
@@ -80,6 +81,7 @@ var operacao = {
         op_nf_numero: '',
         existe: false,
     },
+    servico
 };
 
 //Onload página layout
@@ -1514,7 +1516,12 @@ function totaisOperacao() {
     let op_totais_desconto = 0;
     let op_totais_preco_itens = 0;    
     let op_totais_icms_st = 0;    
-    let op_totais_ipi = 0;    
+    let op_totais_ipi = 0;  
+    let op_totais_preco_servicos = 0;
+
+    if (operacao.operacao.op_tipo == 'ServicoPrestado' || operacao.operacao.op_tipo == 'ServicoTomado') {
+        op_totais_preco_servicos = document.getElementById('op_servico_valor').value.replace('.', '').replace(',', '.') * 1;
+    }
 
     for (let i = 0; i < operacao.itens.length; i++) {
         if (operacao.itens[i].controleEdit == 'update' || operacao.itens[i].controleEdit == 'insert') {
@@ -1528,7 +1535,7 @@ function totaisOperacao() {
         }
     }
 
-    let op_totais_total_op = op_totais_preco_itens + op_totais_frete + op_totais_seguro + op_totais_desp_aces - op_totais_desconto + op_totais_icms_st + op_totais_ipi;
+    let op_totais_total_op = op_totais_preco_itens + op_totais_frete + op_totais_seguro + op_totais_desp_aces - op_totais_desconto + op_totais_icms_st + op_totais_ipi + op_totais_preco_servicos;
 
     decimal('op_totais_frete', op_totais_frete.toString().replace('.', ','), '6', false);
     decimal('op_totais_seguro', op_totais_seguro.toString().replace('.', ','), '6', false);
@@ -1547,6 +1554,7 @@ function totaisOperacao() {
     operacao.totais.op_totais_total_op = document.getElementById('op_totais_total_op').value;
     operacao.totais.op_totais_icms_st = document.getElementById('op_totais_icms_st').value;
     operacao.totais.op_item_vlr_ipi = document.getElementById('op_totais_ipi').value;
+    operacao.totais.op_totais_preco_servicos = document.getElementById('op_servico_valor').value;
 }
 
 function gerarParcela() {    
@@ -2231,7 +2239,8 @@ function validaParticipante() {
 
 function validaItens() {
     let retorno = '';
-    if (operacao.itens.length == 0) {
+
+    if (operacao.itens.length == 0 && (operacao.operacao.op_tipo != 'ServicoPrestado' && operacao.operacao.op_tipo != 'ServicoTomado')) {
         return 'Obrigatório informar pelo menos um item na compra';
     }
 
@@ -2269,7 +2278,7 @@ function validaParcelas() {
     let contador = 1;
 
     if (operacao.parcelas.length == 0) {
-        retorno = 'Ínforme ao menos numa parcela!;';
+        retorno = 'Ínforme ao menos uma parcela!;';
     } else{
         for (let i = 0; i < operacao.parcelas.length; i++) {
             if (operacao.parcelas[i].controleEdit == 'insert' || operacao.parcelas[i].controleEdit == 'update') {
@@ -2322,9 +2331,11 @@ function dadosNF() {
         operacao.nf.op_nf_serie = document.getElementById('op_nf_serie').value;
         operacao.nf.op_nf_numero = document.getElementById('op_nf_numero').value;
 
-        if (chave.length != 44) {
-            retorno += 'Chave de acesso da nota fiscal inválida.;';
-        }
+        if (operacao.operacao.op_tipo != 'ServicoPrestado' && operacao.operacao.op_tipo != 'ServicoTomado') {
+            if (chave.length != 44) {
+                retorno += 'Chave de acesso da nota fiscal inválida.;';
+            }
+        }        
         if (chave.length == 0) {
             retorno += 'Chave de acesso da nota fiscal é obrigatória.;';
         }
@@ -2375,6 +2386,32 @@ function dadosNF() {
     }
 }
 
+function dadosServico() {
+    let retorno = '';
+    let servico = document.getElementById('op_servico_servico_executado').value;
+    let vlr_serv = document.getElementById('op_servico_valor').value.toString().replace('.', '').replace(',','.') * 1;
+
+    if (servico.length < 5) {
+        retorno = 'A descrição do serviços é obrigatória e deve ter no mínimo 5 caracteres.;';
+    }
+    if (vlr_servico == 0) {
+        retorno = 'Valor do serviço é obrigatório';
+    }
+
+    //gerando dados do serviço para o objeto
+    operacao.servico
+    
+
+
+
+
+    if (retorno == '') {
+        return true;
+    } else {
+        return retorno;
+    }
+}
+
 
 
 function gravarOperacao(contexto, tipo_operacao) {
@@ -2414,12 +2451,18 @@ function gravarOperacao(contexto, tipo_operacao) {
     validacao.splice(0, validacao.length); //removendo itens da validação
     document.getElementById('msg_valid').innerHTML = "";
 
-    validacao.push(dadosTransportador());
+    if (operacao.operacao.op_tipo != "ServicoPrestado" && operacao.operacao.op_tipo != "ServicoTomado") {
+        validacao.push(dadosTransportador());
+    } 
+    if (operacao.operacao.op_tipo == "ServicoPrestado" || operacao.operacao.op_tipo == "ServicoTomado") {
+        operacao.operacao.op_comTransportador = false; //Se operação for de serviço prestado ou tomado operação é sem transportador
+    }    
+    
     validacao.push(dadosOperacao());
     validacao.push(validaParticipante());
     if (validaItens() != true) {
         let itens = validaItens().split(';');
-        validacao = validacao.concat(itens);
+        validacao = validacao.concat(itens);    
     }    
     if (validaParcelas() != true) {        
         let parcelas = validaParcelas().split(';');
@@ -2428,6 +2471,10 @@ function gravarOperacao(contexto, tipo_operacao) {
     if (dadosNF() != true) {
         let validNF = dadosNF().split(';');
         validacao = validacao.concat(validNF);
+    }    
+    if (dadosServico() != true) {
+        let validaServico = dadosServico().split(';');
+        validacao = validacao.concat(validaServico);
     }
 
     for (let i = 0; i < validacao.length; i++) {
@@ -2858,9 +2905,11 @@ function operacao_nf(id) {
     }
 }
 
-function chave_acesso_nf_op(id, vlr) {    
-    if (vlr.length < 44) {
-        alert('Chave de acesso precisa ter 44 digitos');
+function chave_acesso_nf_op(id, vlr) {
+    if (operacao.operacao.op_tipo != 'ServicoPrestado' && operacao.operacao.op_tipo != 'ServicoTomado') {
+        if (vlr.length < 44) {
+            alert('Chave de acesso precisa ter 44 digitos');
+        }
     }
 
     if (vlr.length == 44) {
@@ -2869,6 +2918,11 @@ function chave_acesso_nf_op(id, vlr) {
 
         document.getElementById('op_nf_serie').value = serie * 1;
         document.getElementById('op_nf_numero').value = numero * 1;
-    }
-    
+    }    
+}
+
+function vlr_servico(id, vlr) {    
+    decimal(id, vlr, '2', true);    
+    decimal('op_totais_preco_servicos', vlr, '2', true);
+    totaisOperacao();
 }

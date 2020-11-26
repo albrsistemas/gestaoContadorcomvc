@@ -139,7 +139,7 @@ namespace gestaoContadorcomvc.Models
                 }
 
                 //totais
-                comando.CommandText = "insert into op_totais (op_totais_preco_itens, op_totais_frete, op_totais_seguro, op_totais_desp_aces, op_totais_desconto, op_totais_itens, op_totais_qtd_itens, op_totais_op_id, op_totais_retencoes, op_totais_total_op, op_totais_ipi, op_totais_icms_st, op_totais_saldoLiquidacao) values (@op_totais_preco_itens, @op_totais_frete, @op_totais_seguro, @op_totais_desp_aces, @op_totais_desconto, @op_totais_itens, @op_totais_qtd_itens, @op_totais_op_id, @op_totais_retencoes, @op_totais_total_op, @op_totais_ipi, @op_totais_icms_st, @op_totais_saldoLiquidacao);";
+                comando.CommandText = "insert into op_totais (op_totais_preco_itens, op_totais_frete, op_totais_seguro, op_totais_desp_aces, op_totais_desconto, op_totais_itens, op_totais_qtd_itens, op_totais_op_id, op_totais_retencoes, op_totais_total_op, op_totais_ipi, op_totais_icms_st, op_totais_saldoLiquidacao, op_totais_preco_servicos) values (@op_totais_preco_itens, @op_totais_frete, @op_totais_seguro, @op_totais_desp_aces, @op_totais_desconto, @op_totais_itens, @op_totais_qtd_itens, @op_totais_op_id, @op_totais_retencoes, @op_totais_total_op, @op_totais_ipi, @op_totais_icms_st, @op_totais_saldoLiquidacao, @op_totais_preco_servicos);";
                 comando.Parameters.AddWithValue("@op_totais_op_id", id);
                 comando.Parameters.AddWithValue("@op_totais_preco_itens", op.totais.op_totais_preco_itens);
                 comando.Parameters.AddWithValue("@op_totais_frete", op.totais.op_totais_frete);
@@ -153,6 +153,7 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@op_totais_ipi", op.totais.op_totais_ipi);
                 comando.Parameters.AddWithValue("@op_totais_icms_st", op.totais.op_totais_icms_st);
                 comando.Parameters.AddWithValue("@op_totais_saldoLiquidacao", op.totais.op_totais_saldoLiquidacao);
+                comando.Parameters.AddWithValue("@op_totais_preco_servicos", op.totais.op_totais_preco_servicos);
                 comando.ExecuteNonQuery();
 
                 //retenções
@@ -673,6 +674,15 @@ namespace gestaoContadorcomvc.Models
                         else
                         {
                             op.totais.op_totais_total_op = 0;
+                        }
+
+                        if (DBNull.Value != leitor["op_totais_preco_servicos"])
+                        {
+                            op.totais.op_totais_preco_servicos = Convert.ToDecimal(leitor["op_totais_preco_servicos"]);
+                        }
+                        else
+                        {
+                            op.totais.op_totais_preco_servicos = 0;
                         }
 
                         if (DBNull.Value != leitor["op_totais_ipi"])
@@ -1380,7 +1390,7 @@ namespace gestaoContadorcomvc.Models
                     }
 
                     //totais
-                    comando.CommandText = "UPDATE op_totais set op_totais_preco_itens = @op_totais_preco_itens, op_totais_frete = @op_totais_frete, op_totais_seguro = @op_totais_seguro, op_totais_desp_aces = @op_totais_desp_aces, op_totais_desconto = @op_totais_desconto, op_totais_qtd_itens = @op_totais_qtd_itens, op_totais_retencoes = @op_totais_retencoes, op_totais_total_op = @op_totais_total_op, op_totais_ipi = @op_totais_ipi, op_totais_icms_st = @op_totais_icms_st, op_totais_saldoLiquidacao = @op_totais_saldoLiquidacao, op_totais_itens = @op_totais_itens where op_totais.op_totais_id = @op_totais_id;";
+                    comando.CommandText = "UPDATE op_totais set op_totais_preco_itens = @op_totais_preco_itens, op_totais_frete = @op_totais_frete, op_totais_seguro = @op_totais_seguro, op_totais_desp_aces = @op_totais_desp_aces, op_totais_desconto = @op_totais_desconto, op_totais_qtd_itens = @op_totais_qtd_itens, op_totais_retencoes = @op_totais_retencoes, op_totais_total_op = @op_totais_total_op, op_totais_ipi = @op_totais_ipi, op_totais_icms_st = @op_totais_icms_st, op_totais_saldoLiquidacao = @op_totais_saldoLiquidacao, op_totais_itens = @op_totais_itens, op_totais_preco_servicos = @op_totais_preco_servicos where op_totais.op_totais_id = @op_totais_id;";
                     comando.Parameters.AddWithValue("@op_totais_id", op.totais.op_totais_id);
                     comando.Parameters.AddWithValue("@op_totais_preco_itens", op.totais.op_totais_preco_itens);
                     comando.Parameters.AddWithValue("@op_totais_frete", op.totais.op_totais_frete);
@@ -1394,6 +1404,7 @@ namespace gestaoContadorcomvc.Models
                     comando.Parameters.AddWithValue("@op_totais_ipi", op.totais.op_totais_ipi);
                     comando.Parameters.AddWithValue("@op_totais_icms_st", op.totais.op_totais_icms_st);
                     comando.Parameters.AddWithValue("@op_totais_saldoLiquidacao", op.totais.op_totais_saldoLiquidacao);
+                    comando.Parameters.AddWithValue("@op_totais_preco_servicos", op.totais.op_totais_preco_servicos);
                     comando.ExecuteNonQuery();
 
                     //retenções

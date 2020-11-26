@@ -15,6 +15,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public List<Op_parcelas> parcelas { get; set; }
         public Op_transportador transportador { get; set; }
         public Op_nf nf { get; set; }
+        public Op_servico servico { get; set; }
         public IEnumerable<Vm_compra> compras { get; set; }
         public IEnumerable<Vm_operacao> operacoes { get; set; }
         public Vm_usuario user { get; set; }

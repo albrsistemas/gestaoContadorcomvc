@@ -45,8 +45,9 @@
                         @if (usuario.Role == "adm" || usuario._permissoes.compraList)
                         {<a class="dropdown-item" asp-controller='Compra' asp-action='Index'>Compra</a>}
                         @if (usuario.Role == "adm" || usuario._permissoes.vendaList)
-                        {<a class="dropdown-item" asp-controller='Venda' asp-action='Index'>Venda</a>}                        
-                        <a class="dropdown-item" href="#">Prestação de Serviço</a>
+                        {<a class="dropdown-item" asp-controller='Venda' asp-action='Index'>Venda</a>}
+                        @if (usuario.Role == "adm" || usuario._permissoes.vendaList)
+                        {<a class="dropdown-item" asp-controller='ServicoPrestado' asp-action='Create'>Prestação de Serviço</a>}                        
                         <a class="dropdown-item" href="#">Serviço Tomados</a>
                         @*<a class="dropdown-item" href="#">Empréstimos/Financiamentos</a>*@
                     </div>

@@ -1,22 +1,25 @@
 ﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_operacao
 
 @{
-    ViewData["Title"] = "Nova Venda";
+    ViewData["Title"] = "Serviço Prestado";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <style>
-    legend{
+    legend {
         font-size: 15px;
         font-weight: bold;
     }
-    .displey_validacao{
+
+    .displey_validacao {
         width: 100%;
         padding: 30px;
         height: auto;
     }
-    .col{
+
+    .col {
         padding: 0px 5px;
     }
+
     .include_item {
         float: left;
         height: 38px;
@@ -27,6 +30,7 @@
         background-color: #fff;
         color: #495057;
     }
+
         .include_item:focus {
             color: #495057;
             background-color: #fff;
@@ -34,21 +38,25 @@
             outline: 0;
             box-shadow: 0 0 0 0.1rem rgba(0,123,255,.25);
         }
+
     .include_item_label {
         float: left;
         font-weight: bold;
         font-size: 12px;
     }
-    label{
+
+    label {
         font-size: 13px;
     }
+
     .incluirParcela {
         width: 100%;
         height: auto;
         padding-top: 5px;
         text-align: right;
     }
-    select[readonly]{
+
+    select[readonly] {
         background: #eee;
         pointer-events: none;
         touch-action: none;
@@ -56,30 +64,30 @@
 </style>
 
 @{
-    if (TempData["msgVenda"] != null && TempData["msgVenda"].ToString().Contains("sucesso"))
+    if (TempData["msgSP"] != null && TempData["msgSP"].ToString().Contains("sucesso"))
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
-            <strong>Sucesso!</strong> @TempData["msgVenda"].ToString()
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+        <strong>Sucesso!</strong> @TempData["msgSP"].ToString()
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     }
 
-    if (TempData["msgVenda"] != null && TempData["msgVenda"].ToString().Contains("Erro"))
+    if (TempData["msgSP"] != null && TempData["msgSP"].ToString().Contains("Erro"))
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
-            <strong>Erro!</strong> @TempData["msgVenda"].ToString()
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+        <strong>Erro!</strong> @TempData["msgSP"].ToString()
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     }
 }
 
-<h2>Nova Venda</h2>
+<h2>Prestação de Serviço</h2>
 <hr class="hrLine" />
-<form asp-controller="Venda" asp-action="Create" id="form_compra">
+<form asp-controller="ServicoPrestado" asp-action="Create">
     <fieldset>
         <legend>Cliente</legend>
         <div class="row">
@@ -99,7 +107,40 @@
         <input type="hidden" asp-for="participante.op_part_id" class="form-control" /> <!--ID do participante-->
     </fieldset>
     <fieldset>
-        <legend>Itens da venda</legend>
+        <legend>Dados Gerais</legend>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="servico.op_servico_equipamento" class="control-label">Descrição do equipamento</label>
+                    <textarea asp-for="servico.op_servico_equipamento" id="op_servico_equipamento" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_op_servico_equipamento')"></textarea>
+                    <span class="text-info" id="msg_op_servico_equipamento"></span>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="servico.op_servico_nSerie" class="control-label">Número de série do equipamento</label>
+                    <input asp-for="servico.op_servico_nSerie" id="op_servico_nSerie" class="form-control" />
+                    <span asp-validation-for="servico.op_servico_nSerie" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="servico.op_servico_problema" class="control-label">Descrição do problema</label>
+                    <textarea asp-for="servico.op_servico_problema" id="op_servico_problema" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_op_servico_problema')"></textarea>
+                    <span class="text-info" id="msg_op_servico_problema"></span>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="servico.op_servico_obsReceb" class="control-label">Observações do recebimento</label>
+                    <textarea asp-for="servico.op_servico_obsReceb" id="op_servico_obsReceb" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','op_servico_obsReceb')"></textarea>
+                    <span class="text-info" id="op_servico_obsReceb"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Peças</legend>
         <div class="row">
             <div class="col-10" style="padding-right: 0px;">
                 <div class="include_item_label" style="width: 40%">Descrição</div>
@@ -125,56 +166,81 @@
         <br />
     </fieldset>
     <fieldset>
-        <legend>Totais da venda</legend>
+        <legend>Serviços executados</legend>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="servico.op_servico_servico_executado" class="control-label">Descrição do serviço executado</label>
+                    <textarea asp-for="servico.op_servico_servico_executado" id="op_servico_servico_executado" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_op_servico_servico_executado')"></textarea>
+                    <span class="text-info" id="msg_op_servico_servico_executado"></span>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="servico.op_servico_valor" class="control-label">Valor do Serviço</label>
+                    <input asp-for="servico.op_servico_valor" id="op_servico_valor" class="form-control" onchange="vlr_servico(this.id, this.value)" />
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Totais</legend>
         <div class="row">
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="totais.op_totais_frete" class="control-label"></label>
-                    <input asp-for="totais.op_totais_frete" id="op_totais_frete" class="form-control" />
+                    <input asp-for="totais.op_totais_frete" id="op_totais_frete" class="form-control" readonly="readonly" />
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="totais.op_totais_seguro" class="control-label"></label>
-                    <input asp-for="totais.op_totais_seguro" id="op_totais_seguro" class="form-control" />
+                    <input asp-for="totais.op_totais_seguro" id="op_totais_seguro" class="form-control" readonly="readonly" />
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="totais.op_totais_desp_aces" class="control-label"></label>
-                    <input asp-for="totais.op_totais_desp_aces" id="op_totais_desp_aces" class="form-control" />
+                    <input asp-for="totais.op_totais_desp_aces" id="op_totais_desp_aces" class="form-control" readonly="readonly" />
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="totais.op_totais_desconto" class="control-label"></label>
-                    <input asp-for="totais.op_totais_desconto" id="op_totais_desconto" class="form-control" />
+                    <input asp-for="totais.op_totais_desconto" id="op_totais_desconto" class="form-control" readonly="readonly" />
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-6 col-md-3">
+            <div class="col-6 col-md-6">
                 <div class="form-group">
-                    <label asp-for="totais.op_totais_icms_st" class="control-label">ICMS-ST</label>
+                    <label asp-for="totais.op_totais_icms_st" class="control-label">ICMS-ST das peças</label>
                     <input asp-for="totais.op_totais_icms_st" id="op_totais_icms_st" class="form-control" readonly="readonly" />
                 </div>
             </div>
-            <div class="col-6 col-md-3">
+            <div class="col-6 col-md-6">
                 <div class="form-group">
-                    <label asp-for="totais.op_totais_ipi" class="control-label">IPI</label>
+                    <label asp-for="totais.op_totais_ipi" class="control-label">IPI das peças</label>
                     <input asp-for="totais.op_totais_ipi" id="op_totais_ipi" class="form-control" readonly="readonly" />
                 </div>
             </div>
-            <div class="col-6 col-md-3">
+        </div>
+        <div class="row">
+            <div class="col-6 col-md-4">
                 <div class="form-group">
-                    <label asp-for="totais.op_totais_preco_itens" class="control-label">Total dos Itens</label>
+                    <label asp-for="totais.op_totais_preco_servicos" class="control-label" style="font-weight:bold;font-size:16px;">Valor do Serviço</label>
+                    <input asp-for="totais.op_totais_preco_servicos" id="op_totais_preco_servicos" class="form-control" readonly="readonly" /> <!--Colocar este campo nos totais-->
+                </div>
+            </div>
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label asp-for="totais.op_totais_preco_itens" class="control-label" style="font-weight:bold;font-size:16px;">Total das Peças</label>
                     <input asp-for="totais.op_totais_preco_itens" id="op_totais_preco_itens" class="form-control" readonly="readonly" />
                 </div>
             </div>
-            <div class="col-6 col-md-3">
+            <div class="col-12 col-md-4">
                 <div class="form-group">
-                    <label asp-for="totais.op_totais_total_op" class="control-label" style="font-weight:bold">Total da Compra</label>
+                    <label asp-for="totais.op_totais_total_op" class="control-label" style="font-weight:bold;font-size:16px;">Total do Serviço Prestado</label>
                     <input asp-for="totais.op_totais_total_op" id="op_totais_total_op" class="form-control" readonly="readonly" />
                 </div>
             </div>
@@ -190,27 +256,27 @@
     <fieldset id="box_retencoes" style="display:none">
         <legend>Retenções tributárias</legend>
         <div class="row">
-            @*<div class="col-12 col-md-4" style="display:none">
-                    <div class="form-group">
-                        <label asp-for="retencoes.op_ret_inss" class="control-label">INSS</label>
-                        <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" id="ret_inss_parcela" class="custom-control-input">
-                            <label class="custom-control-label" for="ret_inss_parcela">Informar INSS na primeira parcela</label>
-                        </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="retencoes.op_ret_inss" class="control-label">INSS</label>
+                    <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" id="ret_inss_parcela" class="custom-control-input">
+                        <label class="custom-control-label" for="ret_inss_parcela">Informar INSS na primeira parcela</label>
                     </div>
                 </div>
-                <div class="col-12 col-md-4" style="display:none">
-                    <div class="form-group">
-                        <label asp-for="retencoes.op_ret_issqn" class="control-label">ISSQN</label>
-                        <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control" onchange="decimal(this.id, this.value,'2', true)" />
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" id="ret_iss_parcela" class="custom-control-input">
-                            <label class="custom-control-label" for="ret_iss_parcela">Informar ISSQN na primeira parcela</label>
-                        </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="retencoes.op_ret_issqn" class="control-label">ISSQN</label>
+                    <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control" onchange="decimal(this.id, this.value,'2', true)" />
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" id="ret_iss_parcela" class="custom-control-input">
+                        <label class="custom-control-label" for="ret_iss_parcela">Informar ISSQN na primeira parcela</label>
                     </div>
-                </div>*@
-            <div class="col-12 col-md-3">
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_irrf" class="control-label">IRRF</label>
                     <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control" onchange="decimal(this.id, this.value,'2', true)" />
@@ -220,19 +286,21 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-3">
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_pis" class="control-label">PIS</label>
                     <input asp-for="retencoes.op_ret_pis" id="op_ret_pis" class="form-control" readonly="readonly" />
                 </div>
             </div>
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_cofins" class="control-label">COFINS</label>
                     <input asp-for="retencoes.op_ret_cofins" id="op_ret_cofins" class="form-control" readonly="readonly" />
                 </div>
             </div>
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_csll" class="control-label">CSLL</label>
                     <input asp-for="retencoes.op_ret_csll" id="op_ret_csll" class="form-control" readonly="readonly" />
@@ -240,20 +308,19 @@
             </div>
         </div>
         <p>As retenções de PIS, COFINS e CSLL devem ser informadas diretamente na parcela.</p>
-
     </fieldset>
     <fieldset>
         <legend>Detalhes</legend>
         <div class="row">
             <div class="col-12 col-md-2">
                 <div class="form-group">
-                    <label asp-for="operacao.op_numero_ordem" class="control-label">Número Venda</label>
+                    <label asp-for="operacao.op_numero_ordem" class="control-label">Número Ordem de Serviço</label>
                     <input asp-for="operacao.op_numero_ordem" id="op_numero_ordem" class="form-control" readonly="readonly" />
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="form-group">
-                    <label asp-for="operacao.op_data" class="control-label">Data da Venda</label>
+                    <label asp-for="operacao.op_data" class="control-label">Data do Serviço</label>
                     <input type="text" name="operacao.op_data" id="op_data" autocomplete="off" class="form-control datepicker" />
                     <span asp-validation-for="operacao.op_data" class="text-danger"></span>
                 </div>
@@ -328,51 +395,6 @@
         <br />
     </fieldset>
     <fieldset>
-        <legend>Transportador</legend>
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="control-label">Frete por conta</label>
-                    <select asp-items="@ViewBag.modFrete" value="@TempData["op_transportador_modalidade_frete"]" id="op_transportador_modalidade_frete" name="op_transportador_modalidade_frete" class="form-control" onchange="modFrete(this.value)"></select>
-                    <span asp-validation-for="transportador.op_transportador_modalidade_frete" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-8">
-                <div class="form-group">
-                    <label asp-for="transportador.op_transportador_nome" class="control-label"></label>
-                    <input asp-for="transportador.op_transportador_nome" id="op_transportador_nome" class="form-control" onkeyup="getTransportador(this.id)" placeholder="Digite as iniciais do nome ou cnpj/cpf" />
-                    <span asp-validation-for="transportador.op_transportador_nome" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="form-group">
-                    <label asp-for="transportador.op_transportador_cnpj_cpf" class="control-label">CNPJ/CPF</label>
-                    <input asp-for="transportador.op_transportador_cnpj_cpf" id="op_transportador_cnpj_cpf" class="form-control" />
-                    <span asp-validation-for="transportador.op_transportador_cnpj_cpf" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group">
-                    <label asp-for="transportador.op_transportador_volume_qtd" class="control-label"></label>
-                    <input asp-for="transportador.op_transportador_volume_qtd" id="op_transportador_volume_qtd" class="form-control" />
-                    <span asp-validation-for="transportador.op_transportador_volume_qtd" id="op_transportador_volume_qtd" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <label asp-for="transportador.op_transportador_volume_peso_bruto" class="control-label"></label>
-                    <input asp-for="transportador.op_transportador_volume_peso_bruto" id="op_transportador_volume_peso_bruto" class="form-control" />
-                    <span asp-validation-for="transportador.op_transportador_volume_peso_bruto" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-        <input type="hidden" asp-for="transportador.op_transportador_participante_id" id="op_transportador_participante_id" />
-    </fieldset>
-    <fieldset>
         <legend>Nota Fiscal</legend>
         <div class="row">
             <div class="col-12">
@@ -393,7 +415,7 @@
                 <div class="form-group">
                     <label asp-for="nf.op_nf_chave" class="control-label">Chave de Acesso</label>
                     <input asp-for="nf.op_nf_chave" id="op_nf_chave" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '44','chave_acesso')" onblur="chave_acesso_nf_op(this.id, this.value)" disabled="disabled" />
-                    <span class="text-info" id="chave_acesso"></span>                    
+                    <span class="text-info" id="chave_acesso"></span>
                 </div>
             </div>
         </div>
@@ -401,22 +423,22 @@
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="nf.op_nf_data_emissao" class="control-label">Data de Emissão</label>
-                    <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control datepicker" disabled="disabled" />                    
+                    <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control datepicker" disabled="disabled" />
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="nf.op_nf_data_entrada_saida" class="control-label">Data de Entrada</label>
-                    <input type="text" asp-for="nf.op_nf_data_entrada_saida" id="op_nf_data_entrada_saida" autocomplete="off" class="form-control datepicker" disabled="disabled" />                    
+                    <input type="text" asp-for="nf.op_nf_data_entrada_saida" id="op_nf_data_entrada_saida" autocomplete="off" class="form-control datepicker" disabled="disabled" />
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <label asp-for="nf.op_nf_serie" class="control-label">Série</label>
-                <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control" disabled="disabled" />                
+                <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control" disabled="disabled" />
             </div>
             <div class="col-6 col-md-3">
                 <label asp-for="nf.op_nf_numero" class="control-label">Número</label>
-                <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control" disabled="disabled" />                
+                <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control" disabled="disabled" />
             </div>
         </div>
     </fieldset>
@@ -426,14 +448,11 @@
             <div class="col-12">
                 <div class="form-group">
                     <textarea asp-for="operacao.op_obs" id="op_obs" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_obs')"></textarea>
-                    <span class="text-info" id="msg_obs"></span>                    
+                    <span class="text-info" id="msg_obs"></span>
                 </div>
             </div>
         </div>
     </fieldset>
-
-
-
     <!--Modais-->
     <!--Dados do fornecedor-->
     <div class="modal fade" id="modal_fornecedor" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -794,37 +813,37 @@
                     <fieldset>
                         <legend>Retenções tributárias</legend>
                         <div class="row">
-                            @*<div class="col-6 col-md-4" style="display:none">
-                                    <div class="form-group">
-                                        <label class="control-label">INSS</label>
-                                        <input id="op_parcela_ret_inss" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
-                                    </div>
+                            <div class="col-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">INSS</label>
+                                    <input id="op_parcela_ret_inss" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
                                 </div>
-                                <div class="col-6 col-md-4" style="display:none">
-                                    <div class="form-group">
-                                        <label class="control-label">ISSQN</label>
-                                        <input id="op_parcela_ret_issqn" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
-                                    </div>
-                                </div>*@
-                            <div class="col-12 col-md-3">
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">ISSQN</label>
+                                    <input id="op_parcela_ret_issqn" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">IRRF</label>
                                     <input id="op_parcela_ret_irrf" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
                                 </div>
                             </div>
-                            <div class="col-12 col-md-3">
+                            <div class="col-12 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">PIS</label>
                                     <input id="op_parcela_ret_pis" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
                                 </div>
                             </div>
-                            <div class="col-12 col-md-3">
+                            <div class="col-12 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">COFINS</label>
                                     <input id="op_parcela_ret_cofins" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
                                 </div>
                             </div>
-                            <div class="col-12 col-md-3">
+                            <div class="col-12 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">CSLL</label>
                                     <input id="op_parcela_ret_csll" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
@@ -845,7 +864,7 @@
 
     <br />
 
-    <button type="button" class="btn btn-info" id="sub" onclick="gravarOperacao('Create', 'Venda')">Gravar</button>
+    <button type="button" class="btn btn-info" id="sub" onclick="gravarOperacao('Create', 'ServicoPrestado')">Gravar</button>
     <a class="btn btn-secondary" asp-controller="Venda" asp-action="Index">Cancelar</a>
 
     <div class="displey_validacao">
@@ -859,8 +878,6 @@
         <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>
     </div>
 </form>
-
-
-
-
-
+@section Scripts {
+        @{await Html.RenderPartialAsync("_ScriptPartial_ServicoPrestado");}
+    }
