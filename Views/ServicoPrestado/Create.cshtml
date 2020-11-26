@@ -139,8 +139,8 @@
             <div class="col-12">
                 <div class="form-group">
                     <label asp-for="servico.op_servico_obsReceb" class="control-label">Observações do recebimento</label>
-                    <textarea asp-for="servico.op_servico_obsReceb" id="op_servico_obsReceb" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','op_servico_obsReceb')"></textarea>
-                    <span class="text-info" id="op_servico_obsReceb"></span>
+                    <textarea asp-for="servico.op_servico_obsReceb" id="op_servico_obsReceb" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_op_servico_obsReceb')"></textarea>
+                    <span class="text-info" id="msg_op_servico_obsReceb"></span>
                 </div>
             </div>
         </div>
@@ -748,17 +748,17 @@
 
     <!--Gravação com sucesso-->
     <div class="modal fade" id="modal_mensagem_sucesso" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Venda</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">Serviço Prestado</h5>
                 </div>
                 <div class="modal-body">
-                    <p>Venda cadastrada com sucesso!</p>
+                    <p>Serviço Prestado cadastrado com sucesso!</p>
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-info" asp-controller="Venda" asp-action="Create">Nova Venda</a>
-                    <a class="btn btn-secondary" asp-controller="Venda" asp-action="Index">Fechar</a>
+                    <a class="btn btn-info" asp-controller="ServicoPrestado" asp-action="Create">Novo Serviço Prestado</a>
+                    <a class="btn btn-secondary" asp-controller="ServicoPrestado" asp-action="Index">Fechar</a>
                 </div>
             </div>
         </div>

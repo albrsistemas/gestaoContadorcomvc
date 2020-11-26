@@ -91,6 +91,11 @@ namespace gestaoContadorcomvc.Models
         public bool CCMDelete { get; set; }
         //Contas a Receber
         public bool ContasRList { get; set; }
+        //Venda
+        public bool servicoPList { get; set; }
+        public bool servicoPCreate { get; set; }
+        public bool servicoPEdit { get; set; }
+        public bool servicoPDelete { get; set; }
 
 
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      

@@ -2455,6 +2455,21 @@ function gravarOperacao(contexto, tipo_operacao) {
         }
     }
 
+    if (tipo_operacao == 'ServicoPrestado') {
+        if (operacao.retencoes.op_ret_inss.replace('.', '').replace(',', '.') * 1 > 0 || operacao.retencoes.op_ret_issqn.replace('.', '').replace(',', '.') * 1 > 0 || operacao.retencoes.op_ret_irrf.replace('.', '').replace(',', '.') * 1 > 0 || operacao.retencoes.op_ret_pis.replace('.', '').replace(',', '.') * 1 > 0 || operacao.retencoes.op_ret_cofins.replace('.', '').replace(',', '.') * 1 > 0 || operacao.retencoes.op_ret_csll.replace('.', '').replace(',', '.') * 1 > 0) {
+            operacao.operacao.op_comRetencoes = true;
+        } else {
+            operacao.operacao.op_comRetencoes = false;
+        }
+        operacao.operacao.op_comParticipante = true;
+        operacao.operacao.op_comTransportador = false;
+
+        if (contexto == 'Create') {
+            operacao.participante.existe = false;
+            operacao.retencoes.existe = false;
+            operacao.transportador.existe = false;
+        }
+    }   
 
     let validacao = [];
     let erros = [];
@@ -2534,6 +2549,9 @@ function gravarOperacao(contexto, tipo_operacao) {
                     }
                     if (tipo_operacao == 'Venda') {
                         document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/Venda/Index">Fechar</a>';
+                    }
+                    if (tipo_operacao == 'ServicoPrestado') {
+                        document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/ServicoPresta/Index">Fechar</a>';
                     }                    
                     $('#modal_mensagem_retorno').modal('show');
 
