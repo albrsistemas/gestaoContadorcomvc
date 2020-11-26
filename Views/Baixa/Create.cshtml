@@ -122,8 +122,17 @@
             <div class="modal-body">
                 <p>Baixa cadastrada com sucesso!</p>
             </div>
-            <div class="modal-footer">                
-                <a class="btn btn-info" asp-controller="ContasPagar" asp-action="Index">OK</a>
+            <div class="modal-footer">
+                @{
+                    if (Model.contexto == "receber")
+                    {
+                        <a class="btn btn-info" asp-controller="ContasReceber" asp-action="Index">OK</a>
+                    }
+                    if (Model.contexto == "pagar")
+                    {
+                        <a class="btn btn-info" asp-controller="ContasPagar" asp-action="Index">OK</a>
+                    }
+                }
             </div>
         </div>
     </div>

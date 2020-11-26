@@ -22,5 +22,6 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public int contaCorrente { get; set; }
         public IEnumerable<Vm_op_parcelas_baixa> baixas { get; set; }
         public Vm_usuario user { get; set; }
+        public string contexto { get; set; } //Atributo de controle de redirecionamento
     }
 }

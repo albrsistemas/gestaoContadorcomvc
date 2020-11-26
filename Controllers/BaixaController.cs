@@ -28,7 +28,7 @@ namespace gestaoContadorcomvc.Controllers
         //}
 
         [Autoriza(permissao = "baixaCreate")]
-        public ActionResult Create(int parcela_id)
+        public ActionResult Create(int parcela_id, string contexto)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -42,6 +42,7 @@ namespace gestaoContadorcomvc.Controllers
             ViewBag.ccorrente = select.getContasCorrenteConta_id(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             DateTime today = DateTime.Today;
             vm_baixa.data = today;
+            vm_baixa.contexto = contexto;
 
             return View(vm_baixa);
         }

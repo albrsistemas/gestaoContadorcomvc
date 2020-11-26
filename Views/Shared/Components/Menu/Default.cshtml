@@ -65,7 +65,10 @@
                         {
                             <a class="dropdown-item" asp-controller="ContasPagar" asp-action="Index">Contas a Pagar</a>
                         }
-                        <a class="dropdown-item" href="#">Contas a Receber</a>
+                        @if (usuario.Role == "adm" || usuario._permissoes.ContasRList)
+                        {
+                            <a class="dropdown-item" asp-controller="ContasReceber" asp-action="Index">Contas a Receber</a>
+                        }                        
                         @if (usuario.Role == "adm" || usuario._permissoes.CCMList)
                         {
                             <a class="dropdown-item" asp-controller="ContaCorrenteMov" asp-action="Index">Conta Corrente Movimento</a>

@@ -2512,7 +2512,8 @@ function gravarOperacao(contexto, tipo_operacao) {
 //Baixa contas a pgar
 $(".createBaixa").click(function () {
     var parcela_id = $(this).attr("data-parcela_id");        
-    $("#modal").load("/Baixa/Create?parcela_id=" + parcela_id, function () {
+    var contexto = $(this).attr("data-contexto");        
+    $("#modal").load("/Baixa/Create?parcela_id=" + parcela_id + "&contexto=" + contexto, function () {
         $("#modal").modal('show');
     })
 });

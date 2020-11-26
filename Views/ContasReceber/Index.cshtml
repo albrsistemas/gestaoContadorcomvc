@@ -1,7 +1,7 @@
-﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_contas_pagar
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_contas_receber
 
 @{
-    ViewData["Title"] = "Contas a Pagar";
+    ViewData["Title"] = "Contas a Receber";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -58,7 +58,7 @@
     }
 }
 
-<h2>Contas a Pagar</h2>
+<h2>Contas a Receber</h2>
 <hr class="hrLine" />
 
 <div class="list-header">
@@ -82,7 +82,7 @@
     </div>
 </div>
 @{
-    foreach (var item in Model.contasPagar)
+    foreach (var item in Model.contasReceber)
     {
         <div class="line-list">
             <div class="col-list-left">
@@ -130,7 +130,7 @@
                             </svg>
                         </span>
                     }
-                    
+
                     if (Model.user.Role == "adm" || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete)
                     {
                         <a class="createBaixa" data-parcela_id="@item.parcela_id" data-contexto="receber">
