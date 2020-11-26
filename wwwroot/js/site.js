@@ -81,7 +81,17 @@ var operacao = {
         op_nf_numero: '',
         existe: false,
     },
-    servico
+    servico: {
+        op_servico_id: 0,
+        op_servico_op_id: 0,
+        op_servico_equipamento: '',
+        op_servico_nSerie: '',
+        op_servico_problema: '',
+        op_servico_obsReceb: '',
+        op_servico_servico_executado: '',
+        op_servico_valor: 0,
+        op_servico_status: '',
+    },
 };
 
 //Onload página layout
@@ -2399,11 +2409,12 @@ function dadosServico() {
     }
 
     //gerando dados do serviço para o objeto
-    operacao.servico
-    
-
-
-
+    operacao.servico.op_servico_equipamento = document.getElementById('op_servico_equipamento').value;
+    operacao.servico.op_servico_nSerie = document.getElementById('op_servico_nSerie').value;
+    operacao.servico.op_servico_problema = document.getElementById('op_servico_problema').value;
+    operacao.servico.op_servico_obsReceb = document.getElementById('op_servico_obsReceb').value;
+    operacao.servico.op_servico_servico_executado = document.getElementById('op_servico_servico_executado').value;
+    operacao.servico.op_servico_valor = document.getElementById('op_servico_valor').value;
 
     if (retorno == '') {
         return true;

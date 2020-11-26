@@ -242,6 +242,20 @@ namespace gestaoContadorcomvc.Models
                     comando.ExecuteNonQuery();
                 }
 
+                if(op.operacao.op_tipo == "ServicoPrestado" || op.operacao.op_tipo == "ServicoTomado")
+                {
+                    comando.CommandText = "INSERT into op_servico (op_servico_op_id, op_servico_equipamento, op_servico_nSerie, op_servico_problema, op_servico_obsReceb, op_servico_servico_executado, op_servico_valor, op_servico_status) values (@op_servico_op_id, @op_servico_equipamento, @op_servico_nSerie, @op_servico_problema, @op_servico_obsReceb, @op_servico_servico_executado, @op_servico_valor, @op_servico_status);";
+                    comando.Parameters.AddWithValue("@op_servico_op_id", id);
+                    comando.Parameters.AddWithValue("@op_servico_equipamento", op.servico.op_servico_equipamento);
+                    comando.Parameters.AddWithValue("@op_servico_nSerie", op.servico.op_servico_nSerie);
+                    comando.Parameters.AddWithValue("@op_servico_problema", op.servico.op_servico_problema);
+                    comando.Parameters.AddWithValue("@op_servico_obsReceb", op.servico.op_servico_obsReceb);
+                    comando.Parameters.AddWithValue("@op_servico_servico_executado", op.servico.op_servico_servico_executado);
+                    comando.Parameters.AddWithValue("@op_servico_valor", op.servico.op_servico_valor);
+                    comando.Parameters.AddWithValue("@op_servico_status", op.servico.op_servico_status);
+                    comando.ExecuteNonQuery();
+                }
+
                 Transacao.Commit();
 
                 string msg = "Cadastro de operação ID: " + id + " Cadastrado com sucesso";
@@ -411,7 +425,7 @@ namespace gestaoContadorcomvc.Models
 
                 buscaParcela.Close();
 
-                comando.CommandText = "SELECT op.*, p.*, t.*, tr.*, ret.*, nf.* from operacao as op LEFT join op_participante as p on p.op_id = op.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = op.op_id LEFT join op_transportador as tr on tr.op_transportador_op_id = op.op_id LEFT join op_retencoes as ret on ret.op_ret_op_id = op.op_id left join op_nf as nf on nf.op_nf_op_id = op.op_id WHERE op.op_conta_id = @conta_id and op.op_id = @op_id;";
+                comando.CommandText = "SELECT op.*, p.*, t.*, tr.*, ret.*, nf.*, s.* from operacao as op LEFT join op_participante as p on p.op_id = op.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = op.op_id LEFT join op_transportador as tr on tr.op_transportador_op_id = op.op_id LEFT join op_retencoes as ret on ret.op_ret_op_id = op.op_id left join op_nf as nf on nf.op_nf_op_id = op.op_id left join op_servico as s on s.op_servico_op_id = operacao.op_id WHERE op.op_conta_id = @conta_id and op.op_id = @op_id;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@op_id", op_id);
                 comando.ExecuteNonQuery();                
@@ -875,6 +889,46 @@ namespace gestaoContadorcomvc.Models
                         op.nf.op_nf_chave = leitor["op_nf_chave"].ToString();
                         op.nf.op_nf_serie = leitor["op_nf_serie"].ToString();
                         op.nf.op_nf_numero = leitor["op_nf_numero"].ToString();
+
+                        //Serviço
+                        if(op.operacao.op_tipo == "ServicoPrestado" || op.operacao.op_tipo == "ServicoTomado")
+                        {
+                            if (DBNull.Value != leitor["op_servico_id"])
+                            {
+                                op.servico.op_servico_id = Convert.ToInt32(leitor["op_servico_id"]);
+                            }
+                            else
+                            {
+                                op.servico.op_servico_id = 0;
+                            }
+
+                            if (DBNull.Value != leitor["op_servico_op_id"])
+                            {
+                                op.servico.op_servico_op_id = Convert.ToInt32(leitor["op_servico_op_id"]);
+                            }
+                            else
+                            {
+                                op.servico.op_servico_op_id = 0;
+                            }
+
+                            if (DBNull.Value != leitor["op_servico_valor"])
+                            {
+                                op.servico.op_servico_valor = Convert.ToDecimal(leitor["op_servico_valor"]);
+                            }
+                            else
+                            {
+                                op.servico.op_servico_valor = 0;
+                            }
+
+                            op.servico.op_servico_equipamento = leitor["op_servico_equipamento"].ToString();
+                            op.servico.op_servico_problema = leitor["op_servico_problema"].ToString();
+                            op.servico.op_servico_obsReceb = leitor["op_servico_obsReceb"].ToString();
+                            op.servico.op_servico_nSerie = leitor["op_servico_nSerie"].ToString();
+                            op.servico.op_servico_servico_executado = leitor["op_servico_servico_executado"].ToString();
+                            op.servico.op_servico_status = leitor["op_servico_status"].ToString();
+                        }
+
+
 
 
                     }
@@ -1571,6 +1625,21 @@ namespace gestaoContadorcomvc.Models
                             comando.ExecuteNonQuery();
                         }
                     }
+
+                    if (op.operacao.op_tipo == "ServicoPrestado" || op.operacao.op_tipo == "ServicoTomado")
+                    {
+                        comando.CommandText = "UPDATE op_servico set p_servico_equipamento = @p_servico_equipamento, op_servico_nSerie = @op_servico_nSerie, op_servico_problema = @op_servico_problema, op_servico_obsReceb = @op_servico_obsReceb, op_servico_servico_executado = @op_servico_servico_executado, op_servico_valor = @op_servico_valor, op_servico_status = @op_servico_status WHERE op_servico.op_servico_id = @op_servico_id;";
+                        comando.Parameters.AddWithValue("@op_servico_id", op.servico.op_servico_id);
+                        comando.Parameters.AddWithValue("@op_servico_equipamento", op.servico.op_servico_equipamento);
+                        comando.Parameters.AddWithValue("@op_servico_nSerie", op.servico.op_servico_nSerie);
+                        comando.Parameters.AddWithValue("@op_servico_problema", op.servico.op_servico_problema);
+                        comando.Parameters.AddWithValue("@op_servico_obsReceb", op.servico.op_servico_obsReceb);
+                        comando.Parameters.AddWithValue("@op_servico_servico_executado", op.servico.op_servico_servico_executado);
+                        comando.Parameters.AddWithValue("@op_servico_valor", op.servico.op_servico_valor);
+                        comando.Parameters.AddWithValue("@op_servico_status", op.servico.op_servico_status);
+                        comando.ExecuteNonQuery();
+                    }
+
 
                     string msg = "Alteração de operação ID: " + op.operacao.op_id + " Alterada com sucesso";
                     log.log("Operacao", "cadastraOperacao", "Sucesso", msg, conta_id, usuario_id);

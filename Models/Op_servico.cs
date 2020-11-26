@@ -18,5 +18,6 @@ namespace gestaoContadorcomvc.Models
         public string op_servico_obsReceb { get; set; }
         public string op_servico_servico_executado { get; set; }
         public Decimal op_servico_valor { get; set; }
+        public string op_servico_status { get; set; }
     }
 }

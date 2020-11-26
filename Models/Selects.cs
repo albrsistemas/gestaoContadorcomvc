@@ -1098,6 +1098,38 @@ namespace gestaoContadorcomvc.Models
             return TipoOperacao;
         }
 
+        public List<Selects> getStatusServico()
+        {
+            List<Selects> TipoOperacao = new List<Selects>();
+            TipoOperacao.Add(new Selects
+            {
+                value = "Orçamento",
+                text = "Orçamento"
+            });
+            TipoOperacao.Add(new Selects
+            {
+                value = "Aprovado e em execução",
+                text = "Aprovado e em execução"
+            });            
+            TipoOperacao.Add(new Selects
+            {
+                value = "Aprovado e concluído",
+                text = "Aprovado e concluído"
+            });
+            TipoOperacao.Add(new Selects
+            {
+                value = "Não aprovado a devolver",
+                text = "Não aprovado a devolver"
+            });
+            TipoOperacao.Add(new Selects
+            {
+                value = "Não aprovado devolvido sem conclusão",
+                text = "Não aprovado devolvido sem conclusão"
+            });
+
+            return TipoOperacao;
+        }
+
 
     }
 }
