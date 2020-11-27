@@ -239,7 +239,7 @@
                 <div class="include_item_label" style="width: 11%">Dias</div>
                 <div class="include_item_label" style="width: 25%">Vencimento</div>
                 <div class="include_item_label" style="width: 26%">Valor</div>
-                <div class="include_item_label" style="width: calc(40% - 95px)">Forma</div>                
+                <div class="include_item_label" style="width: calc(40% - 95px)">Forma</div>
             </div>
         </div>
         <div class="parcela" id="parcelas">
@@ -327,7 +327,7 @@
                 <div class="form-group">
                     <label asp-for="nf.op_nf_chave" class="control-label">Chave de Acesso</label>
                     <input asp-for="nf.op_nf_chave" id="op_nf_chave" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '44','chave_acesso')" onblur="chave_acesso_nf_op(this.id, this.value)" disabled="disabled" />
-                    <span class="text-info" id="chave_acesso"></span>                    
+                    <span class="text-info" id="chave_acesso"></span>
                 </div>
             </div>
         </div>
@@ -335,22 +335,22 @@
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="nf.op_nf_data_emissao" class="control-label">Data de Emissão</label>
-                    <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control datepicker" disabled="disabled" />                    
+                    <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control datepicker" disabled="disabled" />
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="nf.op_nf_data_entrada_saida" class="control-label">Data de Entrada</label>
-                    <input type="text" asp-for="nf.op_nf_data_entrada_saida" id="op_nf_data_entrada_saida" autocomplete="off" class="form-control datepicker" disabled="disabled"/>                    
+                    <input type="text" asp-for="nf.op_nf_data_entrada_saida" id="op_nf_data_entrada_saida" autocomplete="off" class="form-control datepicker" disabled="disabled" />
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <label asp-for="nf.op_nf_serie" class="control-label">Série</label>
-                <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control" disabled="disabled" />                
+                <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control" disabled="disabled" />
             </div>
             <div class="col-6 col-md-3">
                 <label asp-for="nf.op_nf_numero" class="control-label">Número</label>
-                <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control" disabled="disabled" />                
+                <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control" disabled="disabled" />
             </div>
         </div>
     </fieldset>
@@ -360,7 +360,7 @@
             <div class="col-12">
                 <div class="form-group">
                     <textarea asp-for="operacao.op_obs" id="op_obs" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_obs')"></textarea>
-                    <span class="text-info" id="msg_obs"></span>                    
+                    <span class="text-info" id="msg_obs"></span>
                 </div>
             </div>
         </div>
@@ -721,17 +721,34 @@
                             </div>
                         </div>
                         @*<div class="col-6">
-                            <div class="form-group">
-                                <label class="control-label">Valor Líquido</label>
-                                <input id="op_parcela_valor" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
-                            </div>
-                        </div>*@
-                    </div>                    
+                                <div class="form-group">
+                                    <label class="control-label">Valor Líquido</label>
+                                    <input id="op_parcela_valor" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
+                                </div>
+                            </div>*@
+                    </div>
                     <input type="hidden" id="controleEditParcela" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-info" id="gravar_parcela" onclick="edit_parcela(this.id, 'gravar')">Gravar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--mensagem retorno-->
+    <div class="modal fade" id="modal_mensagem_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mensagem_retorno_label"></h5>
+                </div>
+                <div class="modal-body" id="mensagem_retorno_conteudo">
+
+                </div>
+                <div class="modal-footer" id="mensagem_retorno_rodape">
+
                 </div>
             </div>
         </div>
@@ -749,7 +766,7 @@
 
                 </div>
             </div>
-        </div>        
+        </div>
     </div>
 </form>
 

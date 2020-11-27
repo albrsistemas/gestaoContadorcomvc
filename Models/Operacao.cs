@@ -60,6 +60,12 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
+                bool retencoes = false;
+                if(op.retencoes.op_ret_inss > 0 || op.retencoes.op_ret_issqn > 0 || op.retencoes.op_ret_irrf > 0 || op.retencoes.op_ret_pis > 0 || op.retencoes.op_ret_cofins > 0 || op.retencoes.op_ret_csll > 0)
+                {
+                    retencoes = true;
+                }
+
                 //Operação
                 comando.CommandText = "call pr_operacao(@op_tipo, @op_data, @op_conta_id, @op_obs, @op_previsao_entrega, @op_data_saida, @op_categoria_id, @op_comParticipante, @op_comRetencoes, @op_comTransportador, @op_comNF);";                
                 comando.Parameters.AddWithValue("@op_tipo", op.operacao.op_tipo);
@@ -70,7 +76,7 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@op_data_saida", op.operacao.op_data_saida);
                 comando.Parameters.AddWithValue("@op_categoria_id", op.operacao.op_categoria_id);
                 comando.Parameters.AddWithValue("@op_comParticipante", op.operacao.op_comParticipante);
-                comando.Parameters.AddWithValue("@op_comRetencoes", op.operacao.op_comRetencoes);
+                comando.Parameters.AddWithValue("@op_comRetencoes", retencoes);
                 comando.Parameters.AddWithValue("@op_comTransportador", op.operacao.op_comTransportador);
                 comando.Parameters.AddWithValue("@op_comNF", op.operacao.op_comNF);
                 comando.ExecuteNonQuery();
@@ -949,7 +955,7 @@ namespace gestaoContadorcomvc.Models
                     }
                     else
                     {
-                        op.participante.existe = true;
+                        op.participante.existe = true;                        
                     }                   
 
                     if (op.retencoes.op_ret_id == 0)
@@ -1320,8 +1326,15 @@ namespace gestaoContadorcomvc.Models
                 else
                 {
                     leitor.Close();
+                    //Verificações quanto a operação com participante, transportador, retenções e nota fiscal
+                    bool retencoes = false;
+                    if (op.retencoes.op_ret_inss > 0 || op.retencoes.op_ret_issqn > 0 || op.retencoes.op_ret_irrf > 0 || op.retencoes.op_ret_pis > 0 || op.retencoes.op_ret_cofins > 0 || op.retencoes.op_ret_csll > 0)
+                    {
+                        retencoes = true;
+                    }                    
+
                     //Operação
-                    comando.CommandText = "UPDATE operacao set op_data = @op_data, op_obs = @op_obs, op_previsao_entrega = @op_previsao_entrega, op_data_saida = @op_data_saida, op_categoria_id = @op_categoria_id, op_comNF = @op_comNF where operacao.op_conta_id = @conta_id and operacao.op_id = @op_id;";
+                    comando.CommandText = "UPDATE operacao set op_data = @op_data, op_obs = @op_obs, op_previsao_entrega = @op_previsao_entrega, op_data_saida = @op_data_saida, op_categoria_id = @op_categoria_id, op_comNF = @op_comNF, op_comParticipante = @op_comParticipante, op_comTransportador = @op_comTransportador, op_comRetencoes = @op_comRetencoes where operacao.op_conta_id = @conta_id and operacao.op_id = @op_id;";
                     comando.Parameters.AddWithValue("@op_id", op.operacao.op_id);
                     comando.Parameters.AddWithValue("@op_data", op.operacao.op_data);
                     comando.Parameters.AddWithValue("@conta_id", conta_id);
@@ -1330,6 +1343,9 @@ namespace gestaoContadorcomvc.Models
                     comando.Parameters.AddWithValue("@op_data_saida", op.operacao.op_data_saida);
                     comando.Parameters.AddWithValue("@op_categoria_id", op.operacao.op_categoria_id);
                     comando.Parameters.AddWithValue("@op_comNF", op.operacao.op_comNF);
+                    comando.Parameters.AddWithValue("@op_comParticipante", op.operacao.op_comParticipante);
+                    comando.Parameters.AddWithValue("@op_comRetencoes", retencoes);
+                    comando.Parameters.AddWithValue("@op_comTransportador", op.operacao.op_comTransportador);
                     comando.ExecuteNonQuery();                    
 
                     //participante

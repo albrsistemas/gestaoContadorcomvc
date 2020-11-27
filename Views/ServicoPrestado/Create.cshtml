@@ -112,7 +112,7 @@
             <div class="col-12">
                 <div class="form-group">
                     <label asp-for="servico.op_servico_status" class="control-label">Categoria</label>
-                    <select asp-items="@ViewBag.statusServico" value="@TempData["op_servico_status"]" id="op_servico_status" class="form-control"></select>  
+                    <select asp-items="@ViewBag.statusServico" value="@TempData["op_servico_status"]" id="op_servico_status" class="form-control"></select>
                 </div>
             </div>
             <div class="col-12">
@@ -740,6 +740,23 @@
 
                 </div>
                 <div class="modal-footer" id="rodape">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--mensagem retorno-->
+    <div class="modal fade" id="modal_mensagem_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mensagem_retorno_label"></h5>
+                </div>
+                <div class="modal-body" id="mensagem_retorno_conteudo">
+
+                </div>
+                <div class="modal-footer" id="mensagem_retorno_rodape">
 
                 </div>
             </div>

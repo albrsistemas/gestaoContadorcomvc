@@ -1609,7 +1609,7 @@ function gerarParcela() {
             let issqn = 0;
             let irrf = 0;
 
-            if (document.getElementById('op_comRetencoes') && document.getElementById('op_comRetencoes').checked == true) { //se switch 'Operação com retenções tributárias' existe
+            if (document.getElementById('op_comRetencoes') && document.getElementById('op_comRetencoes').checked == true) { //se switch 'Operação com retenções tributárias' existe e está checado
 
                 if (document.getElementById('ret_inss_parcela') && document.getElementById('ret_inss_parcela').checked == true) {
                     if (i == 0) {
@@ -2955,4 +2955,91 @@ function vlr_servico(id, vlr) {
     decimal(id, vlr, '2', true);    
     decimal('op_totais_preco_servicos', vlr, '2', true);
     totaisOperacao();
+}
+
+function updateRetençõesTotais(id, vlr, contexto) {
+    console.log(vlr);
+    console.log(vlr.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" }));    
+    $('#modal_mensagem_retorno').modal('hide'); //Fechar modal se estiver aberto
+   
+    if (operacao.parcelas.length > 0) {   
+        if (contexto == 'confirmar') {   
+            document.getElementById('mensagem_retorno_label').innerHTML = "";
+            document.getElementById('mensagem_retorno_label').innerHTML = "Alteração de Retenção";
+            document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
+            document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + 'A operação possui parcelas informadas. Como deseja proceder com o valor informado?' + "</p>";
+            document.getElementById('mensagem_retorno_rodape').innerHTML = "";
+            document.getElementById('mensagem_retorno_rodape').innerHTML = '<button type="button" class="btn btn-info" onclick="updateRetençõesTotais(\'' + id + '\',\'' + vlr + '\',\'confirmadoDiluir\')">Distribuir o valor em todas as parcelas</button>';
+            document.getElementById('mensagem_retorno_rodape').innerHTML += '<button type="button" class="btn btn-info" onclick="updateRetençõesTotais(\'' + id + '\',\'' + vlr + '\',\'confirmadoPrimeira\')">Descontar na primeira parcela</button>';
+            $('#modal_mensagem_retorno').modal('show');
+        }               
+               
+        if (contexto == 'confirmadoDiluir') {           
+
+            for (let i = 0; i < operacao.parcelas.length; i++) {               
+
+                if (id == 'op_ret_inss') {
+                    operacao.parcelas[i].op_parcela_ret_inss = (vlr / operacao.parcelas.length).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });                    
+                }
+                if (id == 'op_ret_issqn') {
+                    operacao.parcelas[i].op_ret_issqn = (vlr / operacao.parcelas.length).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+                }
+                if (id == 'op_ret_irrf') {
+                    operacao.parcelas[i].op_ret_irrf = (vlr / operacao.parcelas.length).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+                }
+                operacao.parcelas[i].op_parcela_valor = ((((operacao.parcelas[i].op_parcela_valor_bruto).toString().replace('.', '').replace(',', '.')) * 1) - ((((operacao.parcelas[i].op_parcela_ret_inss).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[i].op_parcela_ret_issqn).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[i].op_parcela_ret_irrf).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[i].op_parcela_ret_pis).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[i].op_parcela_ret_cofins).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[i].op_parcela_ret_csll).toString().replace('.', '').replace(',', '.')) * 1))).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+                
+                let id_par = 'vlrParcela_' + operacao.parcelas[i].op_parcela_numero_controle;
+                decimal(id_par, (operacao.parcelas[i].op_parcela_valor), '2', false);
+            }
+            totalRetencoes();
+                        
+        }
+        if (contexto == 'confirmadoPrimeira') {
+            if (id == 'op_ret_inss') {
+                operacao.parcelas[0].op_parcela_ret_inss = (vlr).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+                totalRetencoes();
+            }
+            if (id == 'op_ret_issqn') {
+                operacao.parcelas[0].op_ret_issqn = (vlr).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+                totalRetencoes();
+            }
+            if (id == 'op_ret_irrf') {
+                operacao.parcelas[0].op_ret_irrf = (vlr).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+                totalRetencoes();
+            }
+
+            operacao.parcelas[0].op_parcela_valor = ((((operacao.parcelas[0].op_parcela_valor_bruto).toString().replace('.', '').replace(',', '.')) * 1) - ((((operacao.parcelas[0].op_parcela_ret_inss).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[0].op_parcela_ret_issqn).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[0].op_parcela_ret_irrf).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[0].op_parcela_ret_pis).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[0].op_parcela_ret_cofins).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[0].op_parcela_ret_csll).toString().replace('.', '').replace(',', '.')) * 1))).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+            let id_par = 'vlrParcela_' + operacao.parcelas[0].op_parcela_numero_controle;
+            decimal(id_par, (operacao.parcelas[0].op_parcela_valor), '2', false);
+        }
+
+        decimal(id, (vlr.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" })), '2', true);
+
+    }
+}
+
+function totalRetencoes() {
+    let inss = 0;
+    let iss = 0;
+    let ir = 0;
+    let pis = 0;
+    let cofins = 0;
+    let cs = 0;
+
+    for (let i = 0; i < operacao.parcelas.length; i++) {
+        inss += ((operacao.parcelas[0].op_parcela_ret_inss).toString().replace('.', '').replace(',', '.')) * 1;
+        iss += ((operacao.parcelas[0].op_parcela_ret_issqn).toString().replace('.', '').replace(',', '.')) * 1;
+        ir += ((operacao.parcelas[0].op_parcela_ret_irrf).toString().replace('.', '').replace(',', '.')) * 1;
+        pis += ((operacao.parcelas[0].op_parcela_ret_pis).toString().replace('.', '').replace(',', '.')) * 1;
+        cofins += ((operacao.parcelas[0].op_parcela_ret_cofins).toString().replace('.', '').replace(',', '.')) * 1;
+        cs += ((operacao.parcelas[0].op_parcela_ret_csll).toString().replace('.', '').replace(',', '.')) * 1;
+    }
+
+    operacao.retencoes.op_ret_inss = (inss).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+    operacao.retencoes.op_ret_issqn = (iss).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+    operacao.retencoes.op_ret_irrf = (ir).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+    operacao.retencoes.op_ret_pis = (pis).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+    operacao.retencoes.op_ret_cofins = (cofins).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+    operacao.retencoes.op_ret_csll = (cs).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
 }
