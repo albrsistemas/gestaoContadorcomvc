@@ -57,7 +57,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
             {
                 DateTime today = DateTime.Today;
 
-                comando.CommandText = "SELECT cp.*, case WHEN vencimento<@hoje THEN '2' WHEN vencimento = @hoje THEN '1' ELSE '3' END as prazo from view_contaspagar as cp WHERE conta_id = @conta_id and tipo = 'Venda' and(fp_meio_pgto_nfe in (05, 15)) and saldo > 0 ORDER by prazo, vencimento ASC;";
+                comando.CommandText = "SELECT cp.*, case WHEN vencimento<@hoje THEN '2' WHEN vencimento = @hoje THEN '1' ELSE '3' END as prazo from view_contaspagar as cp WHERE conta_id = @conta_id and tipo IN ('Venda', 'ServicoPrestado') and(fp_meio_pgto_nfe in (05, 15)) and saldo > 0 ORDER by prazo, vencimento ASC;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@hoje", today);
                 Transacao.Commit();

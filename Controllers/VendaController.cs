@@ -16,6 +16,7 @@ namespace gestaoContadorcomvc.Controllers
 {
     public class VendaController : Controller
     {
+        [Autoriza(permissao = "vendaList")]
         public ActionResult Index()
         {
             Usuario usuario = new Usuario();

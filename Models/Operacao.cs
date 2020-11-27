@@ -406,12 +406,14 @@ namespace gestaoContadorcomvc.Models
                 Op_transportador transportador = new Op_transportador();
                 Op_retencoes retencoes = new Op_retencoes();
                 Op_nf nf = new Op_nf();
+                Op_servico servico = new Op_servico();
                 op.operacao = operacao;
                 op.totais = totais;
                 op.participante = participante;
                 op.transportador = transportador;
                 op.retencoes = retencoes;
                 op.nf = nf;
+                op.servico = servico;
 
 
                 MySqlDataReader buscaParcela;

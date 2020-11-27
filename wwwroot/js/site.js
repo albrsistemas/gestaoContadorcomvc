@@ -2415,6 +2415,7 @@ function dadosServico() {
     operacao.servico.op_servico_obsReceb = document.getElementById('op_servico_obsReceb').value;
     operacao.servico.op_servico_servico_executado = document.getElementById('op_servico_servico_executado').value;
     operacao.servico.op_servico_valor = document.getElementById('op_servico_valor').value;
+    operacao.servico.op_servico_status = document.getElementById('op_servico_status').value;
 
     if (retorno == '') {
         return true;

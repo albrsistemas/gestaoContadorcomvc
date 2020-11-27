@@ -15,9 +15,19 @@ namespace gestaoContadorcomvc.Controllers
 {
     public class ServicoPrestadoController : Controller
     {
-        public IActionResult Index()
+        [Autoriza(permissao = "servicoPList")]
+        public ActionResult Index()
         {
-            return View();
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Operacao operacao = new Operacao();
+            Vm_operacao op = new Vm_operacao();
+            op.operacoes = operacao.listaOperacao(user.usuario_id, user.usuario_conta_id, "ServicoPrestado");
+            op.user = user;
+
+            return View(op);
         }
 
         [Autoriza(permissao = "servicoPCreate")]
