@@ -178,9 +178,9 @@ namespace gestaoContadorcomvc.Models
                     comando.Parameters.AddWithValue("@op_ret_inss", op.retencoes.op_ret_inss);
                     comando.Parameters.AddWithValue("@op_ret_issqn", op.retencoes.op_ret_issqn);
                     comando.ExecuteNonQuery();
-                }                
-
-                if(op.parcelas != null)
+                }
+                
+                if (op.parcelas != null)
                 {
                     if (op.parcelas.Count > 0)
                     {
@@ -221,7 +221,7 @@ namespace gestaoContadorcomvc.Models
                             cmd.Parameters.AddWithValue("@op_parcela_ret_irrf", op.parcelas[i].op_parcela_ret_irrf);
                             cmd.Parameters.AddWithValue("@op_parcela_ret_pis", op.parcelas[i].op_parcela_ret_pis);
                             cmd.Parameters.AddWithValue("@op_parcela_ret_cofins", op.parcelas[i].op_parcela_ret_cofins);
-                            cmd.Parameters.AddWithValue("@op_parcela_ret_csll", op.parcelas[i].op_parcela_ret_csll);
+                            cmd.Parameters.AddWithValue("@op_parcela_ret_csll", op.parcelas[i].op_parcela_ret_csll);                            
                             cmd.ExecuteNonQuery();
                         }
                     }
@@ -1400,71 +1400,74 @@ namespace gestaoContadorcomvc.Models
                     
 
                     //Itens
-                    if (op.itens.Count > 0)
+                    if(op.itens != null)
                     {
-                        for (int i = 0; i < op.itens.Count; i++)
+                        if (op.itens.Count > 0)
                         {
-                            MySqlCommand cmd = conn.CreateCommand();
-                            cmd.Connection = conn;
-                            cmd.Transaction = Transacao;
-
-                            if (op.itens[i].controleEdit == "insert")
+                            for (int i = 0; i < op.itens.Count; i++)
                             {
-                                cmd.CommandText = "insert into op_itens (op_item_codigo, op_item_nome, op_item_unidade, op_item_preco, op_item_gtin_ean, op_item_gtin_ean_trib, op_item_obs, op_item_qtd, op_item_frete, op_item_seguros, op_item_desp_aces, op_item_desconto, op_item_op_id, op_item_vlr_ipi, op_item_vlr_icms_st, op_item_cod_fornecedor, op_item_produto_id, op_item_valor_total) values (@op_item_codigo, @op_item_nome, @op_item_unidade, @op_item_preco, @op_item_gtin_ean, @op_item_gtin_ean_trib, @op_item_obs, @op_item_qtd, @op_item_frete, @op_item_seguros, @op_item_desp_aces, @op_item_desconto, @op_item_op_id, @op_item_vlr_ipi, @op_item_vlr_icms_st, @op_item_cod_fornecedor, @op_item_produto_id, @op_item_valor_total);";
-                                cmd.Parameters.AddWithValue("@op_item_op_id", op.operacao.op_id);
-                                cmd.Parameters.AddWithValue("@op_item_codigo", op.itens[i].op_item_codigo);
-                                cmd.Parameters.AddWithValue("@op_item_nome", op.itens[i].op_item_nome);
-                                cmd.Parameters.AddWithValue("@op_item_unidade", op.itens[i].op_item_unidade);
-                                cmd.Parameters.AddWithValue("@op_item_preco", op.itens[i].op_item_preco);
-                                cmd.Parameters.AddWithValue("@op_item_gtin_ean", op.itens[i].op_item_gtin_ean);
-                                cmd.Parameters.AddWithValue("@op_item_gtin_ean_trib", op.itens[i].op_item_gtin_ean_trib);
-                                cmd.Parameters.AddWithValue("@op_item_obs", op.itens[i].op_item_obs);
-                                cmd.Parameters.AddWithValue("@op_item_qtd", op.itens[i].op_item_qtd);
-                                cmd.Parameters.AddWithValue("@op_item_frete", op.itens[i].op_item_frete);
-                                cmd.Parameters.AddWithValue("@op_item_seguros", op.itens[i].op_item_seguros);
-                                cmd.Parameters.AddWithValue("@op_item_desp_aces", op.itens[i].op_item_desp_aces);
-                                cmd.Parameters.AddWithValue("@op_item_desconto", op.itens[i].op_item_desconto);
-                                cmd.Parameters.AddWithValue("@op_item_vlr_ipi", op.itens[i].op_item_vlr_ipi);
-                                cmd.Parameters.AddWithValue("@op_item_vlr_icms_st", op.itens[i].op_item_vlr_icms_st);
-                                cmd.Parameters.AddWithValue("@op_item_cod_fornecedor", op.itens[i].op_item_cod_fornecedor);
-                                cmd.Parameters.AddWithValue("@op_item_produto_id", op.itens[i].op_item_produto_id);
-                                cmd.Parameters.AddWithValue("@op_item_valor_total", op.itens[i].op_item_valor_total);
-                                cmd.ExecuteNonQuery();
+                                MySqlCommand cmd = conn.CreateCommand();
+                                cmd.Connection = conn;
+                                cmd.Transaction = Transacao;
 
-                            }
+                                if (op.itens[i].controleEdit == "insert")
+                                {
+                                    cmd.CommandText = "insert into op_itens (op_item_codigo, op_item_nome, op_item_unidade, op_item_preco, op_item_gtin_ean, op_item_gtin_ean_trib, op_item_obs, op_item_qtd, op_item_frete, op_item_seguros, op_item_desp_aces, op_item_desconto, op_item_op_id, op_item_vlr_ipi, op_item_vlr_icms_st, op_item_cod_fornecedor, op_item_produto_id, op_item_valor_total) values (@op_item_codigo, @op_item_nome, @op_item_unidade, @op_item_preco, @op_item_gtin_ean, @op_item_gtin_ean_trib, @op_item_obs, @op_item_qtd, @op_item_frete, @op_item_seguros, @op_item_desp_aces, @op_item_desconto, @op_item_op_id, @op_item_vlr_ipi, @op_item_vlr_icms_st, @op_item_cod_fornecedor, @op_item_produto_id, @op_item_valor_total);";
+                                    cmd.Parameters.AddWithValue("@op_item_op_id", op.operacao.op_id);
+                                    cmd.Parameters.AddWithValue("@op_item_codigo", op.itens[i].op_item_codigo);
+                                    cmd.Parameters.AddWithValue("@op_item_nome", op.itens[i].op_item_nome);
+                                    cmd.Parameters.AddWithValue("@op_item_unidade", op.itens[i].op_item_unidade);
+                                    cmd.Parameters.AddWithValue("@op_item_preco", op.itens[i].op_item_preco);
+                                    cmd.Parameters.AddWithValue("@op_item_gtin_ean", op.itens[i].op_item_gtin_ean);
+                                    cmd.Parameters.AddWithValue("@op_item_gtin_ean_trib", op.itens[i].op_item_gtin_ean_trib);
+                                    cmd.Parameters.AddWithValue("@op_item_obs", op.itens[i].op_item_obs);
+                                    cmd.Parameters.AddWithValue("@op_item_qtd", op.itens[i].op_item_qtd);
+                                    cmd.Parameters.AddWithValue("@op_item_frete", op.itens[i].op_item_frete);
+                                    cmd.Parameters.AddWithValue("@op_item_seguros", op.itens[i].op_item_seguros);
+                                    cmd.Parameters.AddWithValue("@op_item_desp_aces", op.itens[i].op_item_desp_aces);
+                                    cmd.Parameters.AddWithValue("@op_item_desconto", op.itens[i].op_item_desconto);
+                                    cmd.Parameters.AddWithValue("@op_item_vlr_ipi", op.itens[i].op_item_vlr_ipi);
+                                    cmd.Parameters.AddWithValue("@op_item_vlr_icms_st", op.itens[i].op_item_vlr_icms_st);
+                                    cmd.Parameters.AddWithValue("@op_item_cod_fornecedor", op.itens[i].op_item_cod_fornecedor);
+                                    cmd.Parameters.AddWithValue("@op_item_produto_id", op.itens[i].op_item_produto_id);
+                                    cmd.Parameters.AddWithValue("@op_item_valor_total", op.itens[i].op_item_valor_total);
+                                    cmd.ExecuteNonQuery();
 
-                            if (op.itens[i].controleEdit == "update")
-                            {
-                                cmd.CommandText = "UPDATE op_itens set op_item_preco = @op_item_preco, op_item_qtd = @op_item_qtd, op_item_frete = @op_item_frete, op_item_seguros = @op_item_seguros, op_item_desp_aces = @op_item_desp_aces, op_item_desconto = @op_item_desconto, op_item_vlr_ipi = @op_item_vlr_ipi, op_item_vlr_icms_st = @op_item_vlr_icms_st, op_item_valor_total = @op_item_valor_total, op_item_produto_id = @op_item_produto_id, op_item_unidade = @op_item_unidade, op_item_nome = @op_item_nome, op_item_obs = @op_item_obs, op_item_codigo = @op_item_codigo, op_item_gtin_ean = @op_item_gtin_ean, op_item_gtin_ean_trib = @op_item_gtin_ean_trib, op_item_cod_fornecedor = @op_item_cod_fornecedor where op_itens.op_item_id = @op_item_id;";
-                                cmd.Parameters.AddWithValue("@op_item_codigo", op.itens[i].op_item_codigo);
-                                cmd.Parameters.AddWithValue("@op_item_nome", op.itens[i].op_item_nome);
-                                cmd.Parameters.AddWithValue("@op_item_unidade", op.itens[i].op_item_unidade);
-                                cmd.Parameters.AddWithValue("@op_item_preco", op.itens[i].op_item_preco);
-                                cmd.Parameters.AddWithValue("@op_item_gtin_ean", op.itens[i].op_item_gtin_ean);
-                                cmd.Parameters.AddWithValue("@op_item_gtin_ean_trib", op.itens[i].op_item_gtin_ean_trib);
-                                cmd.Parameters.AddWithValue("@op_item_obs", op.itens[i].op_item_obs);
-                                cmd.Parameters.AddWithValue("@op_item_qtd", op.itens[i].op_item_qtd);
-                                cmd.Parameters.AddWithValue("@op_item_frete", op.itens[i].op_item_frete);
-                                cmd.Parameters.AddWithValue("@op_item_seguros", op.itens[i].op_item_seguros);
-                                cmd.Parameters.AddWithValue("@op_item_desp_aces", op.itens[i].op_item_desp_aces);
-                                cmd.Parameters.AddWithValue("@op_item_desconto", op.itens[i].op_item_desconto);
-                                cmd.Parameters.AddWithValue("@op_item_vlr_ipi", op.itens[i].op_item_vlr_ipi);
-                                cmd.Parameters.AddWithValue("@op_item_vlr_icms_st", op.itens[i].op_item_vlr_icms_st);
-                                cmd.Parameters.AddWithValue("@op_item_cod_fornecedor", op.itens[i].op_item_cod_fornecedor);
-                                cmd.Parameters.AddWithValue("@op_item_produto_id", op.itens[i].op_item_produto_id);
-                                cmd.Parameters.AddWithValue("@op_item_valor_total", op.itens[i].op_item_valor_total);
-                                cmd.Parameters.AddWithValue("@op_item_id", op.itens[i].op_item_id);
-                                cmd.ExecuteNonQuery();
-                            }
+                                }
 
-                            if (op.itens[i].controleEdit == "delete")
-                            {
-                                cmd.CommandText = "DELETE from op_itens where op_itens.op_item_id = @op_item_id;";
-                                cmd.Parameters.AddWithValue("@op_item_id", op.itens[i].op_item_id);
-                                cmd.ExecuteNonQuery();
+                                if (op.itens[i].controleEdit == "update")
+                                {
+                                    cmd.CommandText = "UPDATE op_itens set op_item_preco = @op_item_preco, op_item_qtd = @op_item_qtd, op_item_frete = @op_item_frete, op_item_seguros = @op_item_seguros, op_item_desp_aces = @op_item_desp_aces, op_item_desconto = @op_item_desconto, op_item_vlr_ipi = @op_item_vlr_ipi, op_item_vlr_icms_st = @op_item_vlr_icms_st, op_item_valor_total = @op_item_valor_total, op_item_produto_id = @op_item_produto_id, op_item_unidade = @op_item_unidade, op_item_nome = @op_item_nome, op_item_obs = @op_item_obs, op_item_codigo = @op_item_codigo, op_item_gtin_ean = @op_item_gtin_ean, op_item_gtin_ean_trib = @op_item_gtin_ean_trib, op_item_cod_fornecedor = @op_item_cod_fornecedor where op_itens.op_item_id = @op_item_id;";
+                                    cmd.Parameters.AddWithValue("@op_item_codigo", op.itens[i].op_item_codigo);
+                                    cmd.Parameters.AddWithValue("@op_item_nome", op.itens[i].op_item_nome);
+                                    cmd.Parameters.AddWithValue("@op_item_unidade", op.itens[i].op_item_unidade);
+                                    cmd.Parameters.AddWithValue("@op_item_preco", op.itens[i].op_item_preco);
+                                    cmd.Parameters.AddWithValue("@op_item_gtin_ean", op.itens[i].op_item_gtin_ean);
+                                    cmd.Parameters.AddWithValue("@op_item_gtin_ean_trib", op.itens[i].op_item_gtin_ean_trib);
+                                    cmd.Parameters.AddWithValue("@op_item_obs", op.itens[i].op_item_obs);
+                                    cmd.Parameters.AddWithValue("@op_item_qtd", op.itens[i].op_item_qtd);
+                                    cmd.Parameters.AddWithValue("@op_item_frete", op.itens[i].op_item_frete);
+                                    cmd.Parameters.AddWithValue("@op_item_seguros", op.itens[i].op_item_seguros);
+                                    cmd.Parameters.AddWithValue("@op_item_desp_aces", op.itens[i].op_item_desp_aces);
+                                    cmd.Parameters.AddWithValue("@op_item_desconto", op.itens[i].op_item_desconto);
+                                    cmd.Parameters.AddWithValue("@op_item_vlr_ipi", op.itens[i].op_item_vlr_ipi);
+                                    cmd.Parameters.AddWithValue("@op_item_vlr_icms_st", op.itens[i].op_item_vlr_icms_st);
+                                    cmd.Parameters.AddWithValue("@op_item_cod_fornecedor", op.itens[i].op_item_cod_fornecedor);
+                                    cmd.Parameters.AddWithValue("@op_item_produto_id", op.itens[i].op_item_produto_id);
+                                    cmd.Parameters.AddWithValue("@op_item_valor_total", op.itens[i].op_item_valor_total);
+                                    cmd.Parameters.AddWithValue("@op_item_id", op.itens[i].op_item_id);
+                                    cmd.ExecuteNonQuery();
+                                }
+
+                                if (op.itens[i].controleEdit == "delete")
+                                {
+                                    cmd.CommandText = "DELETE from op_itens where op_itens.op_item_id = @op_item_id;";
+                                    cmd.Parameters.AddWithValue("@op_item_id", op.itens[i].op_item_id);
+                                    cmd.ExecuteNonQuery();
+                                }
                             }
                         }
-                    }
+                    }                    
 
                     //totais
                     comando.CommandText = "UPDATE op_totais set op_totais_preco_itens = @op_totais_preco_itens, op_totais_frete = @op_totais_frete, op_totais_seguro = @op_totais_seguro, op_totais_desp_aces = @op_totais_desp_aces, op_totais_desconto = @op_totais_desconto, op_totais_qtd_itens = @op_totais_qtd_itens, op_totais_retencoes = @op_totais_retencoes, op_totais_total_op = @op_totais_total_op, op_totais_ipi = @op_totais_ipi, op_totais_icms_st = @op_totais_icms_st, op_totais_saldoLiquidacao = @op_totais_saldoLiquidacao, op_totais_itens = @op_totais_itens, op_totais_preco_servicos = @op_totais_preco_servicos where op_totais.op_totais_id = @op_totais_id;";
@@ -1522,55 +1525,57 @@ namespace gestaoContadorcomvc.Models
                         }
                     }
                     
-
-                    if (op.parcelas.Count > 0)
+                    if (op.parcelas != null)
                     {
-                        //Deletenado todas as parcelas da operação gravadas no banco
-
-                        comando.CommandText = "DELETE from op_parcelas WHERE op_parcelas.op_parcela_op_id = @operacao_id;";
-                        comando.Parameters.AddWithValue("@operacao_id", op.operacao.op_id);
-                        comando.ExecuteNonQuery();
-
-                        //Inserindo todas as novas parcelas no banco de dados
-                        for (int i = 0; i < op.parcelas.Count; i++)
+                        if (op.parcelas.Count > 0)
                         {
-                            string contra_partida_tipo = "";
-                            int contra_partidade_id = 0;
+                            //Deletenado todas as parcelas da operação gravadas no banco
 
-                            if (op.participante.op_part_participante_id != 0) //se operação possui um participante
+                            comando.CommandText = "DELETE from op_parcelas WHERE op_parcelas.op_parcela_op_id = @operacao_id;";
+                            comando.Parameters.AddWithValue("@operacao_id", op.operacao.op_id);
+                            comando.ExecuteNonQuery();
+
+                            //Inserindo todas as novas parcelas no banco de dados
+                            for (int i = 0; i < op.parcelas.Count; i++)
                             {
-                                contra_partida_tipo = "Participante";
-                                contra_partidade_id = op.participante.op_part_participante_id;
-                            }
-                            else
-                            {
-                                contra_partida_tipo = "Categoria";
-                                contra_partidade_id = op.operacao.op_categoria_id;
-                            }
+                                string contra_partida_tipo = "";
+                                int contra_partidade_id = 0;
 
-                            MySqlCommand cmd = conn.CreateCommand();
-                            cmd.Connection = conn;
-                            cmd.Transaction = Transacao;
-                            
+                                if (op.participante.op_part_participante_id != 0) //se operação possui um participante
+                                {
+                                    contra_partida_tipo = "Participante";
+                                    contra_partidade_id = op.participante.op_part_participante_id;
+                                }
+                                else
+                                {
+                                    contra_partida_tipo = "Categoria";
+                                    contra_partidade_id = op.operacao.op_categoria_id;
+                                }
 
-                            cmd.CommandText = "call pr_criaParcela (@op_parcela_dias, @op_parcela_vencimento, @op_parcela_fp_id, @op_parcela_op_id, @op_parcela_valor, @op_parcela_obs, @conta_id, @ccm_contra_partida_tipo, @ccm_contra_partida_id, @op_parcela_valor_bruto, @op_parcela_ret_inss, @op_parcela_ret_issqn, @op_parcela_ret_irrf, @op_parcela_ret_pis, @op_parcela_ret_cofins, @op_parcela_ret_csll);";
-                            cmd.Parameters.AddWithValue("@conta_id", conta_id);
-                            cmd.Parameters.AddWithValue("@op_parcela_dias", op.parcelas[i].op_parcela_dias);
-                            cmd.Parameters.AddWithValue("@op_parcela_vencimento", op.parcelas[i].op_parcela_vencimento);
-                            cmd.Parameters.AddWithValue("@op_parcela_fp_id", op.parcelas[i].op_parcela_fp_id);
-                            cmd.Parameters.AddWithValue("@op_parcela_op_id", op.operacao.op_id);
-                            cmd.Parameters.AddWithValue("@op_parcela_valor", op.parcelas[i].op_parcela_valor);
-                            cmd.Parameters.AddWithValue("@op_parcela_obs", op.parcelas[i].op_parcela_obs);
-                            cmd.Parameters.AddWithValue("@ccm_contra_partida_tipo", contra_partida_tipo);
-                            cmd.Parameters.AddWithValue("@ccm_contra_partida_id", contra_partidade_id);
-                            cmd.Parameters.AddWithValue("@op_parcela_valor_bruto", op.parcelas[i].op_parcela_valor_bruto);
-                            cmd.Parameters.AddWithValue("@op_parcela_ret_inss", op.parcelas[i].op_parcela_ret_inss);
-                            cmd.Parameters.AddWithValue("@op_parcela_ret_issqn", op.parcelas[i].op_parcela_ret_issqn);
-                            cmd.Parameters.AddWithValue("@op_parcela_ret_irrf", op.parcelas[i].op_parcela_ret_irrf);
-                            cmd.Parameters.AddWithValue("@op_parcela_ret_pis", op.parcelas[i].op_parcela_ret_pis);
-                            cmd.Parameters.AddWithValue("@op_parcela_ret_cofins", op.parcelas[i].op_parcela_ret_cofins);
-                            cmd.Parameters.AddWithValue("@op_parcela_ret_csll", op.parcelas[i].op_parcela_ret_csll);
-                            cmd.ExecuteNonQuery();
+                                MySqlCommand cmd = conn.CreateCommand();
+                                cmd.Connection = conn;
+                                cmd.Transaction = Transacao;
+
+
+                                cmd.CommandText = "call pr_criaParcela (@op_parcela_dias, @op_parcela_vencimento, @op_parcela_fp_id, @op_parcela_op_id, @op_parcela_valor, @op_parcela_obs, @conta_id, @ccm_contra_partida_tipo, @ccm_contra_partida_id, @op_parcela_valor_bruto, @op_parcela_ret_inss, @op_parcela_ret_issqn, @op_parcela_ret_irrf, @op_parcela_ret_pis, @op_parcela_ret_cofins, @op_parcela_ret_csll);";
+                                cmd.Parameters.AddWithValue("@conta_id", conta_id);
+                                cmd.Parameters.AddWithValue("@op_parcela_dias", op.parcelas[i].op_parcela_dias);
+                                cmd.Parameters.AddWithValue("@op_parcela_vencimento", op.parcelas[i].op_parcela_vencimento);
+                                cmd.Parameters.AddWithValue("@op_parcela_fp_id", op.parcelas[i].op_parcela_fp_id);
+                                cmd.Parameters.AddWithValue("@op_parcela_op_id", op.operacao.op_id);
+                                cmd.Parameters.AddWithValue("@op_parcela_valor", op.parcelas[i].op_parcela_valor);
+                                cmd.Parameters.AddWithValue("@op_parcela_obs", op.parcelas[i].op_parcela_obs);
+                                cmd.Parameters.AddWithValue("@ccm_contra_partida_tipo", contra_partida_tipo);
+                                cmd.Parameters.AddWithValue("@ccm_contra_partida_id", contra_partidade_id);
+                                cmd.Parameters.AddWithValue("@op_parcela_valor_bruto", op.parcelas[i].op_parcela_valor_bruto);
+                                cmd.Parameters.AddWithValue("@op_parcela_ret_inss", op.parcelas[i].op_parcela_ret_inss);
+                                cmd.Parameters.AddWithValue("@op_parcela_ret_issqn", op.parcelas[i].op_parcela_ret_issqn);
+                                cmd.Parameters.AddWithValue("@op_parcela_ret_irrf", op.parcelas[i].op_parcela_ret_irrf);
+                                cmd.Parameters.AddWithValue("@op_parcela_ret_pis", op.parcelas[i].op_parcela_ret_pis);
+                                cmd.Parameters.AddWithValue("@op_parcela_ret_cofins", op.parcelas[i].op_parcela_ret_cofins);
+                                cmd.Parameters.AddWithValue("@op_parcela_ret_csll", op.parcelas[i].op_parcela_ret_csll);                                
+                                cmd.ExecuteNonQuery();
+                            }
                         }
                     }
 
@@ -1651,7 +1656,7 @@ namespace gestaoContadorcomvc.Models
 
                     if (op.operacao.op_tipo == "ServicoPrestado" || op.operacao.op_tipo == "ServicoTomado")
                     {
-                        comando.CommandText = "UPDATE op_servico set p_servico_equipamento = @p_servico_equipamento, op_servico_nSerie = @op_servico_nSerie, op_servico_problema = @op_servico_problema, op_servico_obsReceb = @op_servico_obsReceb, op_servico_servico_executado = @op_servico_servico_executado, op_servico_valor = @op_servico_valor, op_servico_status = @op_servico_status WHERE op_servico.op_servico_id = @op_servico_id;";
+                        comando.CommandText = "UPDATE op_servico set op_servico_equipamento = @op_servico_equipamento, op_servico_nSerie = @op_servico_nSerie, op_servico_problema = @op_servico_problema, op_servico_obsReceb = @op_servico_obsReceb, op_servico_servico_executado = @op_servico_servico_executado, op_servico_valor = @op_servico_valor, op_servico_status = @op_servico_status WHERE op_servico.op_servico_id = @op_servico_id;";
                         comando.Parameters.AddWithValue("@op_servico_id", op.servico.op_servico_id);
                         comando.Parameters.AddWithValue("@op_servico_equipamento", op.servico.op_servico_equipamento);
                         comando.Parameters.AddWithValue("@op_servico_nSerie", op.servico.op_servico_nSerie);

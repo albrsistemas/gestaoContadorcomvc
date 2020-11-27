@@ -111,7 +111,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
-                    <label asp-for="servico.op_servico_status" class="control-label">Categoria</label>
+                    <label asp-for="servico.op_servico_status" class="control-label">Status</label>
                     <select asp-items="@ViewBag.statusServico" value="@TempData["op_servico_status"]" id="op_servico_status" class="form-control"></select>
                 </div>
             </div>
@@ -265,7 +265,7 @@
             <div class="col-12 col-md-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_inss" class="control-label">INSS</label>
-                    <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
+                    <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control" onchange="updateRetençõesTotais(this.id, this.value,'confirmar')" />
                     <div class="custom-control custom-switch">
                         <input type="checkbox" id="ret_inss_parcela" class="custom-control-input">
                         <label class="custom-control-label" for="ret_inss_parcela">Informar INSS na primeira parcela</label>
@@ -275,7 +275,7 @@
             <div class="col-12 col-md-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_issqn" class="control-label">ISSQN</label>
-                    <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control" onchange="decimal(this.id, this.value,'2', true)" />
+                    <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control" onchange="updateRetençõesTotais(this.id, this.value,'confirmar')" />
                     <div class="custom-control custom-switch">
                         <input type="checkbox" id="ret_iss_parcela" class="custom-control-input">
                         <label class="custom-control-label" for="ret_iss_parcela">Informar ISSQN na primeira parcela</label>
@@ -285,7 +285,7 @@
             <div class="col-12 col-md-4">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_irrf" class="control-label">IRRF</label>
-                    <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control" onchange="decimal(this.id, this.value,'2', true)" />
+                    <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control" onchange="updateRetençõesTotais(this.id, this.value,'confirmar')" />
                     <div class="custom-control custom-switch">
                         <input type="checkbox" id="ret_irrf_parcela" class="custom-control-input">
                         <label class="custom-control-label" for="ret_irrf_parcela">Informar IRRF na primeira parcela</label>

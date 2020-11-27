@@ -2472,6 +2472,8 @@ function gravarOperacao(contexto, tipo_operacao) {
         }
     }   
 
+    totalRetencoes(); //Verificando as retenções
+
     let validacao = [];
     let erros = [];
     
@@ -2552,7 +2554,7 @@ function gravarOperacao(contexto, tipo_operacao) {
                         document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/Venda/Index">Fechar</a>';
                     }
                     if (tipo_operacao == 'ServicoPrestado') {
-                        document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/ServicoPresta/Index">Fechar</a>';
+                        document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/ServicoPrestado/Index">Fechar</a>';
                     }                    
                     $('#modal_mensagem_retorno').modal('show');
 
@@ -2968,9 +2970,8 @@ function updateRetençõesTotais(id, vlr, contexto) {
             document.getElementById('mensagem_retorno_label').innerHTML = "Alteração de Retenção";
             document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
             document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + 'A operação possui parcelas informadas. Como deseja proceder com o valor informado?' + "</p>";
-            document.getElementById('mensagem_retorno_rodape').innerHTML = "";
-            document.getElementById('mensagem_retorno_rodape').innerHTML = '<button type="button" class="btn btn-info" onclick="updateRetençõesTotais(\'' + id + '\',\'' + vlr + '\',\'confirmadoDiluir\')">Distribuir o valor em todas as parcelas</button>';
-            document.getElementById('mensagem_retorno_rodape').innerHTML += '<button type="button" class="btn btn-info" onclick="updateRetençõesTotais(\'' + id + '\',\'' + vlr + '\',\'confirmadoPrimeira\')">Descontar na primeira parcela</button>';
+            document.getElementById('mensagem_retorno_conteudo').innerHTML += '<div class="row"><div class="col-12"><button type="button" class="btn btn-info" style="width: 100%;margin-bottom: 10px;" onclick="updateRetençõesTotais(\'' + id + '\',\'' + vlr + '\',\'confirmadoDiluir\')">Distribuir o valor em todas as parcelas</button></div><div class="col-12"><button type="button" class="btn btn-info" style="width: 100%;margin-bottom: 10px;" onclick="updateRetençõesTotais(\'' + id + '\',\'' + vlr + '\',\'confirmadoPrimeira\')">Descontar na primeira parcela</button></div></div>';
+            document.getElementById('mensagem_retorno_rodape').innerHTML = "";          
             $('#modal_mensagem_retorno').modal('show');
         }               
                

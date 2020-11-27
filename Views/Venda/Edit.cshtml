@@ -251,7 +251,7 @@
             <div class="col-12 col-md-3">
                 <div class="form-group">
                     <label asp-for="retencoes.op_ret_irrf" class="control-label">IRRF</label>
-                    <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control" onchange="decimal(this.id, this.value,'2', true)" />
+                    <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control" onchange="updateRetençõesTotais(this.id, this.value,'confirmar')" />
                     <div class="custom-control custom-switch">
                         <input type="checkbox" id="ret_irrf_parcela" class="custom-control-input">
                         <label class="custom-control-label" for="ret_irrf_parcela">Informar IRRF na primeira parcela</label>
