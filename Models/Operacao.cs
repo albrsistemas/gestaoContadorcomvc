@@ -1118,10 +1118,9 @@ namespace gestaoContadorcomvc.Models
                         item.controleEdit = "update";
 
                         itens.Add(item);
-                    }
-
-                    op.itens = itens;                   
+                    }                                      
                 }
+                op.itens = itens;
                 leitor_2.Close();
 
                 //Parcelas
@@ -1265,10 +1264,9 @@ namespace gestaoContadorcomvc.Models
                         parcela.controleEdit = "update";
 
                         parcelas.Add(parcela);
-                    }
-
-                    op.parcelas = parcelas;                   
+                    }                                       
                 }
+                op.parcelas = parcelas;
                 leitor_3.Close();
 
                 Transacao.Commit();
