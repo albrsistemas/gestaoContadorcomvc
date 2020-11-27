@@ -153,6 +153,11 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Contas a Pagar";
                 }
+                //Contas a receber
+                if (pagina.Contains("ContasReceber/Index"))
+                {
+                    retorno = "Contas a Receber";
+                }
                 //Conta Corrente
                 if (pagina.Contains("ContaCorrenteMov/Index"))
                 {
@@ -174,6 +179,23 @@ namespace gestaoContadorcomvc.Components
                 if (pagina.Contains("Venda/Details"))
                 {
                     retorno = "Detelhes Venda";
+                }
+                //Serviço Prestado
+                if (pagina.Contains("ServicoPrestado/Index"))
+                {
+                    retorno = "Prestação de Serviços";
+                }
+                if (pagina.Contains("ServicoPrestado/Create"))
+                {
+                    retorno = "Incluir Serviço Prestado";
+                }
+                if (pagina.Contains("ServicoPrestado/Edit"))
+                {
+                    retorno = "Alterar Serviço Prestado";
+                }
+                if (pagina.Contains("ServicoPrestado/Details"))
+                {
+                    retorno = "Detelhes Serviço Prestado";
                 }
 
             }
