@@ -434,7 +434,7 @@ namespace gestaoContadorcomvc.Models
 
                 buscaParcela.Close();
 
-                comando.CommandText = "SELECT op.*, p.*, t.*, tr.*, ret.*, nf.*, s.* from operacao as op LEFT join op_participante as p on p.op_id = op.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = op.op_id LEFT join op_transportador as tr on tr.op_transportador_op_id = op.op_id LEFT join op_retencoes as ret on ret.op_ret_op_id = op.op_id left join op_nf as nf on nf.op_nf_op_id = op.op_id left join op_servico as s on s.op_servico_op_id = operacao.op_id WHERE op.op_conta_id = @conta_id and op.op_id = @op_id;";
+                comando.CommandText = "SELECT op.*, p.*, t.*, tr.*, ret.*, nf.*, s.* from operacao as op LEFT join op_participante as p on p.op_id = op.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = op.op_id LEFT join op_transportador as tr on tr.op_transportador_op_id = op.op_id LEFT join op_retencoes as ret on ret.op_ret_op_id = op.op_id left join op_nf as nf on nf.op_nf_op_id = op.op_id left join op_servico as s on s.op_servico_op_id = op.op_id WHERE op.op_conta_id = @conta_id and op.op_id = @op_id;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@op_id", op_id);
                 comando.ExecuteNonQuery();                
@@ -1120,9 +1120,9 @@ namespace gestaoContadorcomvc.Models
                         itens.Add(item);
                     }
 
-                    op.itens = itens;
-                    leitor_2.Close();
+                    op.itens = itens;                   
                 }
+                leitor_2.Close();
 
                 //Parcelas
                 MySqlCommand cmdp = conn.CreateCommand();
@@ -1267,10 +1267,10 @@ namespace gestaoContadorcomvc.Models
                         parcelas.Add(parcela);
                     }
 
-                    op.parcelas = parcelas;
-                    leitor_3.Close();
+                    op.parcelas = parcelas;                   
                 }
-                
+                leitor_3.Close();
+
                 Transacao.Commit();
             }
             catch (Exception e)
