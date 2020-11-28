@@ -1556,15 +1556,33 @@ function totaisOperacao() {
     decimal('op_totais_icms_st', op_totais_icms_st.toString().replace('.', ','), '6', false);
     decimal('op_totais_ipi', op_totais_ipi.toString().replace('.', ','), '6', false);
 
-    operacao.totais.op_totais_preco_itens = document.getElementById('op_totais_preco_itens').value;
-    operacao.totais.op_totais_frete = document.getElementById('op_totais_frete').value;
-    operacao.totais.op_totais_seguro = document.getElementById('op_totais_seguro').value;
-    operacao.totais.op_totais_desp_aces = document.getElementById('op_totais_desp_aces').value;
-    operacao.totais.op_totais_desconto = document.getElementById('op_totais_desconto').value;
-    operacao.totais.op_totais_total_op = document.getElementById('op_totais_total_op').value;
-    operacao.totais.op_totais_icms_st = document.getElementById('op_totais_icms_st').value;
-    operacao.totais.op_item_vlr_ipi = document.getElementById('op_totais_ipi').value;
-    operacao.totais.op_totais_preco_servicos = document.getElementById('op_servico_valor').value;
+    if (document.getElementById('op_totais_preco_itens')) {
+        operacao.totais.op_totais_preco_itens = document.getElementById('op_totais_preco_itens').value;
+    }
+    if (document.getElementById('op_totais_frete')) {
+        operacao.totais.op_totais_frete = document.getElementById('op_totais_frete').value;
+    }
+    if (document.getElementById('op_totais_seguro')) {
+        operacao.totais.op_totais_seguro = document.getElementById('op_totais_seguro').value;
+    }
+    if (document.getElementById('op_totais_desp_aces')) {
+        operacao.totais.op_totais_desp_aces = document.getElementById('op_totais_desp_aces').value;
+    }
+    if (document.getElementById('op_totais_desconto')) {
+        operacao.totais.op_totais_desconto = document.getElementById('op_totais_desconto').value;
+    }
+    if (document.getElementById('op_totais_total_op')) {
+        operacao.totais.op_totais_total_op = document.getElementById('op_totais_total_op').value;
+    }
+    if (document.getElementById('op_totais_icms_st')) {
+        operacao.totais.op_totais_icms_st = document.getElementById('op_totais_icms_st').value;
+    }
+    if (document.getElementById('op_totais_ipi')) {
+        operacao.totais.op_item_vlr_ipi = document.getElementById('op_totais_ipi').value;
+    }
+    if (document.getElementById('op_servico_valor')) {
+        operacao.totais.op_totais_preco_servicos = document.getElementById('op_servico_valor').value;
+    }    
 }
 
 function gerarParcela() {    
@@ -2396,26 +2414,43 @@ function dadosNF() {
     }
 }
 
-function dadosServico() {
+function dadosServico() {    
     let retorno = '';
-    let servico = document.getElementById('op_servico_servico_executado').value;
-    let vlr_serv = document.getElementById('op_servico_valor').value.toString().replace('.', '').replace(',','.') * 1;
 
-    if (servico.length < 5) {
-        retorno = 'A descrição do serviços é obrigatória e deve ter no mínimo 5 caracteres.;';
+    if (document.getElementById('op_servico_servico_executado')) {
+        let servico = document.getElementById('op_servico_servico_executado').value;
+        if (servico.length < 5) {
+            retorno = 'A descrição do serviços é obrigatória e deve ter no mínimo 5 caracteres.;';
+        }
     }
-    if (vlr_servico == 0) {
-        retorno = 'Valor do serviço é obrigatório';
-    }
-
+    if (document.getElementById('op_servico_valor')) {
+        let vlr_serv = document.getElementById('op_servico_valor').value.toString().replace('.', '').replace(',', '.') * 1;
+        if (vlr_servico == 0) {
+            retorno = 'Valor do serviço é obrigatório';
+        }
+    }    
     //gerando dados do serviço para o objeto
-    operacao.servico.op_servico_equipamento = document.getElementById('op_servico_equipamento').value;
-    operacao.servico.op_servico_nSerie = document.getElementById('op_servico_nSerie').value;
-    operacao.servico.op_servico_problema = document.getElementById('op_servico_problema').value;
-    operacao.servico.op_servico_obsReceb = document.getElementById('op_servico_obsReceb').value;
-    operacao.servico.op_servico_servico_executado = document.getElementById('op_servico_servico_executado').value;
-    operacao.servico.op_servico_valor = document.getElementById('op_servico_valor').value;
-    operacao.servico.op_servico_status = document.getElementById('op_servico_status').value;
+    if (document.getElementById('op_servico_equipamento')) {
+        operacao.servico.op_servico_equipamento = document.getElementById('op_servico_equipamento').value;
+    }
+    if (document.getElementById('op_servico_nSerie')) {
+        operacao.servico.op_servico_nSerie = document.getElementById('op_servico_nSerie').value;
+    }
+    if (document.getElementById('op_servico_problema')) {
+        operacao.servico.op_servico_problema = document.getElementById('op_servico_problema').value;
+    }
+    if (document.getElementById('op_servico_obsReceb')) {
+        operacao.servico.op_servico_obsReceb = document.getElementById('op_servico_obsReceb').value;
+    }
+    if (document.getElementById('op_servico_servico_executado')) {
+        operacao.servico.op_servico_servico_executado = document.getElementById('op_servico_servico_executado').value;
+    }
+    if (document.getElementById('op_servico_valor')) {
+        operacao.servico.op_servico_valor = document.getElementById('op_servico_valor').value;
+    }
+    if (document.getElementById('op_servico_status')) {
+        operacao.servico.op_servico_status = document.getElementById('op_servico_status').value;
+    }    
 
     if (retorno == '') {
         return true;
@@ -2887,12 +2922,20 @@ function op_retencao(id, box_id) {
     let cheque = document.getElementById(id);
     if (cheque.checked == true) {
         document.getElementById(box_id).style.display = 'block';
-        document.getElementById('op_ret_inss').focus();
+        if (document.getElementById('op_ret_inss')) {
+            document.getElementById('op_ret_inss').focus();
+        }        
     } else {
         document.getElementById(box_id).style.display = 'none';
-        imput_retencoes('op_ret_inss', '0,00', '2');
-        imput_retencoes('op_ret_issqn', '0,00', '2');
-        imput_retencoes('op_ret_irrf', '0,00', '2');                
+        if (document.getElementById('op_ret_inss')) {
+            imput_retencoes('op_ret_inss', '0,00', '2');
+        }
+        if (document.getElementById('op_ret_issqn')) {
+            imput_retencoes('op_ret_issqn', '0,00', '2');
+        }
+        if (document.getElementById('op_ret_irrf')) {
+            imput_retencoes('op_ret_irrf', '0,00', '2');     
+        }
     }
 }
 
@@ -2959,9 +3002,7 @@ function vlr_servico(id, vlr) {
     totaisOperacao();
 }
 
-function updateRetençõesTotais(id, vlr, contexto) {
-    console.log(vlr);
-    console.log(vlr.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" }));    
+function updateRetençõesTotais(id, vlr, contexto) {    
     $('#modal_mensagem_retorno').modal('hide'); //Fechar modal se estiver aberto
    
     if (operacao.parcelas.length > 0) {   
@@ -3002,6 +3043,7 @@ function updateRetençõesTotais(id, vlr, contexto) {
                 totalRetencoes();
             }
             if (id == 'op_ret_issqn') {
+                peracao.totais.op_totais_preco_servicos = document.getElementById('op_servico_valor').value;
                 operacao.parcelas[0].op_ret_issqn = (vlr).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
                 totalRetencoes();
             }
