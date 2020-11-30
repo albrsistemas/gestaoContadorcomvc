@@ -282,10 +282,10 @@ function openNav(escopo) {
 
         if (estado != "250px") {
             document.getElementById("mySidenav").style.width = "250px";
-            document.getElementById("corpo").style.marginLeft = "250px";
+            //document.getElementById("corpo").style.marginLeft = "250px";
         } else {
             document.getElementById("mySidenav").style.width = "0";
-            document.getElementById("corpo").style.marginLeft = "0";
+            //document.getElementById("corpo").style.marginLeft = "0";
         }
     }   
 }

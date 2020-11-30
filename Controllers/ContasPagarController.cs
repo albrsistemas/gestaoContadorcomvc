@@ -8,6 +8,7 @@ using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace gestaoContadorcomvc.Controllers
 {
@@ -26,6 +27,11 @@ namespace gestaoContadorcomvc.Controllers
 
             vm_cp = cp.listaContasPagar(user.usuario_id, user.usuario_conta_id);
             vm_cp.user = user;
+
+            Selects select = new Selects();
+            ViewBag.categoria = select.getCategoriasCliente(user.usuario_conta_id, true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.tipoOpercao = select.getTipoOperacaoCCM().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
 
             return View(vm_cp);
         }
