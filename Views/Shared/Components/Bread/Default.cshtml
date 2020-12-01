@@ -27,7 +27,7 @@
                         }
                     }
 
-                    if (ViewData["bread"].ToString().Equals("Contas a Pagar"))
+                    @*if (ViewData["bread"].ToString().Equals("Contas a Pagar") || ViewData["bread"].ToString().Equals("Contas a Receber"))
                     {
                         if (user.Role == "adm" || user._permissoes.ContasPList)
                         {
@@ -53,7 +53,22 @@
                                     </div>
                                     <div class="col-12">
                                         <div class="form-group">
-                                            <label class="control-label">Cliente/Fornecedor</label>
+                                            <label class="control-label">Vencimento</label>
+                                            <select asp-items="@ViewBag.vencimento" value="@TempData["vencimento"]" id="vencimento" name="vencimento" class="form-control"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            @{
+                                                if (ViewData["bread"].ToString().Equals("Contas a Pagar"))
+                                                {
+                                                    <label class="control-label">Fornecedor</label>
+                                                }
+                                                if (ViewData["bread"].ToString().Equals("Contas a Receber"))
+                                                {
+                                                    <label class="control-label">Cliente</label>
+                                                }
+                                            }
                                             <input type="text" id="pesquisaParticipante" class="form-control" placeholder="Iniciais do nome ou cnpj/cpf" onkeyup="consultaParticipanteCCM(this.id)" />
                                             <input type="hidden" name="participante_id" id="participante_id" />
                                         </div>
@@ -61,9 +76,7 @@
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label class="control-label">Forma de Pagamento</label>
-                                            <select asp-items="@ViewBag.formaPgto" value="@TempData["formaPgto"]" id="formaPgto" name="formaPgto" class="form-control">
-                                                <option value="0" selected>Todas</option>
-                                            </select>
+                                            <select asp-items="@ViewBag.formaPgto" value="@TempData["formaPgto"]" id="formaPgto" name="formaPgto" class="form-control"></select>
                                         </div>
                                     </div>
                                     <div class="col-12">
@@ -75,7 +88,7 @@
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label class="control-label">Situação</label>
-                                            <select asp-items="@ViewBag.tipoOpercao" value="@TempData["tipoOperacao"]" id="tipoOperacao" name="tipoOperacao" class="form-control"></select>
+                                            <select asp-items="@ViewBag.situacao" value="@TempData["situacao"]" id="situacao" name="situacao" class="form-control"></select>
                                         </div>
                                     </div>
 
@@ -83,11 +96,11 @@
                                         <div class="form-group">
                                             <button type="submit" class="btn btn-info" style="width:100%">Filtrar</button>
                                         </div>
-                                    </div>                                   
+                                    </div>
                                 </div>
                             </form>
                         }
-                    }
+                    }*@
                 }
             </div>
 

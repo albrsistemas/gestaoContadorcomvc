@@ -1130,6 +1130,149 @@ namespace gestaoContadorcomvc.Models
             return TipoOperacao;
         }
 
+        public List<Selects> getSituacaoContas()
+        {
+            List<Selects> TipoOperacao = new List<Selects>();
+            TipoOperacao.Add(new Selects
+            {
+                value = "0",
+                text = "Todas"
+            });
+            TipoOperacao.Add(new Selects
+            {
+                value = "1",
+                text = "Em aberto"
+            });
+            TipoOperacao.Add(new Selects
+            {
+                value = "2",
+                text = "Pagas"
+            });            
+
+            return TipoOperacao;
+        }
+
+        public List<Selects> getTipoOperacao(string contexto)
+        {
+            List<Selects> TipoOperacao = new List<Selects>();
+            TipoOperacao.Add(new Selects
+            {
+                value = "0",
+                text = "Todas"
+            });
+
+            if(contexto == "Pagamento")
+            {
+                TipoOperacao.Add(new Selects
+                {
+                    value = "1",
+                    text = "Compra"
+                });
+                TipoOperacao.Add(new Selects
+                {
+                    value = "4",
+                    text = "Serviço Tomado"
+                });
+            }
+            if (contexto == "Rcebimento")
+            {
+                TipoOperacao.Add(new Selects
+                {
+                    value = "2",
+                    text = "Venda"
+                });
+                TipoOperacao.Add(new Selects
+                {
+                    value = "3",
+                    text = "Prestação de Serviço"
+                });
+            }
+
+            return TipoOperacao;
+        }
+
+        public List<Selects> getFormaPgtoContas(int conta_id, string identificacao)
+        {
+            List<Selects> selects = new List<Selects>();
+            //Select padrão
+            selects.Add(new Selects
+            {
+                value = "0",
+                text = "Todas"
+            });
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT f.fp_id, f.fp_nome from forma_pagamento as f WHERE f.fp_conta_id = @conta_id and f.fp_status = 'Ativo' and f.fp_identificacao = @identificacao;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@identificacao", identificacao);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects select = new Selects();
+
+                        select.value = leitor["fp_id"].ToString();
+                        select.text = leitor["fp_nome"].ToString();
+                        select.disabled = false;
+
+                        selects.Add(select);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return selects;
+        }
+
+        public List<Selects> getVencimentoContas()
+        {
+            List<Selects> TipoOperacao = new List<Selects>();
+            TipoOperacao.Add(new Selects
+            {
+                value = "0",
+                text = "Todas"
+            });
+            TipoOperacao.Add(new Selects
+            {
+                value = "1",
+                text = "Hoje"
+            });
+            TipoOperacao.Add(new Selects
+            {
+                value = "2",
+                text = "Atrasadas"
+            });
+            TipoOperacao.Add(new Selects
+            {
+                value = "3",
+                text = "A Vencer"
+            });
+
+            return TipoOperacao;
+        }
+
 
     }
 }

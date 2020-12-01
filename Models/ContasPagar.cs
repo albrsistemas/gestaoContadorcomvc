@@ -20,7 +20,7 @@ namespace gestaoContadorcomvc.Models
         public Decimal baixas { get; set; }
         public Decimal saldo { get; set; }
         public int prazo { get; set; }
-        public int parcela_id { get; set; }
+        public int parcela_id { get; set; }        
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -42,7 +42,7 @@ namespace gestaoContadorcomvc.Models
         Log log = new Log();
 
         //lista contas a pagar para index
-        public Vm_contas_pagar listaContasPagar(int usuario_id, int conta_id)
+        public Vm_contas_pagar listaContasPagar(int usuario_id, int conta_id, int participante, int formaPgto, int vencimento, int situacao, int tipo, string dataInicial, string dataFinal)
         {   
             List<ContasPagar> cps = new List<ContasPagar>();
             Vm_contas_pagar cp = new Vm_contas_pagar();
@@ -58,9 +58,16 @@ namespace gestaoContadorcomvc.Models
             {
                 DateTime today = DateTime.Today;
 
-                comando.CommandText = "SELECT cp.*, case WHEN vencimento<@hoje THEN '2' WHEN vencimento = @hoje THEN '1' ELSE '3' END as prazo from view_contaspagar as cp WHERE conta_id = @conta_id and tipo = 'Compra' and(fp_meio_pgto_nfe != '02' and fp_meio_pgto_nfe != '03') and saldo > 0 ORDER by prazo, vencimento ASC;";
+                comando.CommandText = "call pr_contasPagar(@conta_id,@hoje,@participante,@formaPgto,@vencimento,@situacao,@tipo,@dataInicial,@dataFinal);";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@hoje", today);
+                comando.Parameters.AddWithValue("@participante", participante);
+                comando.Parameters.AddWithValue("@formaPgto", formaPgto);
+                comando.Parameters.AddWithValue("@vencimento", vencimento);
+                comando.Parameters.AddWithValue("@situacao", situacao);
+                comando.Parameters.AddWithValue("@tipo", tipo);
+                comando.Parameters.AddWithValue("@dataInicial", dataInicial);
+                comando.Parameters.AddWithValue("@dataFinal", dataFinal);
                 Transacao.Commit();
 
                 var leitor = comando.ExecuteReader();
@@ -98,17 +105,8 @@ namespace gestaoContadorcomvc.Models
                             conta.vencimento = new DateTime();
                         }
 
-                        conta.fornecedor = leitor["fornecedor"].ToString();
-                        conta.referencia = leitor["referencia"].ToString();
-
-                        if (DBNull.Value != leitor["valorOriginal"])
-                        {
-                            conta.valorOriginal = Convert.ToDecimal(leitor["valorOriginal"]);
-                        }
-                        else
-                        {
-                            conta.valorOriginal = 0;
-                        }
+                        conta.fornecedor = leitor["participante"].ToString();
+                        conta.referencia = leitor["referencia"].ToString();                       
 
                         if (DBNull.Value != leitor["valorOriginal"])
                         {
@@ -168,5 +166,17 @@ namespace gestaoContadorcomvc.Models
             return cp;
         }
 
+    }
+
+    public class cp_filter
+    {
+        public string dataInicial { get; set; }
+        public string dataFinal { get; set; }
+        public int vencimento { get; set; }
+        public string fornecedor_nome { get; set; }
+        public int fornecedor_id { get; set; }
+        public int formaPgto { get; set; }
+        public int operacao { get; set; }
+        public int situacao { get; set; }
     }
 }
