@@ -17,108 +17,23 @@
             <div class="bread_page" id="bread_page" style="width:100%;">
                 <p onclick="openNav('fechado')">@ViewData["bread"].ToString()</p>
             </div>
-            <div id="mySidenav" class="sidenav">
-                @{
-                    if (ViewData["bread"].ToString().Contains("Configurações"))
+
+            if (ViewData["bread"].ToString().Contains("Configurações"))
                     {
                         if (user.Role == "adm" || user._permissoes.configContabilidade)
                         {
-                            <a asp-controller="Configuracoes" asp-action="Contabilidade">Contabildiade</a>
+                            <div id="mySidenav" class="sidenav">
+                                <a asp-controller="Configuracoes" asp-action="Contabilidade">Contabildiade</a>
+                            </div>
+                            
                         }
                     }
-
-                    @*if (ViewData["bread"].ToString().Equals("Contas a Pagar") || ViewData["bread"].ToString().Equals("Contas a Receber"))
-                    {
-                        if (user.Role == "adm" || user._permissoes.ContasPList)
-                        {
-                            <h3>
-                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-funnel" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z" />
-                                </svg>
-                                Filtros
-                            </h3>
-                            <form asp-controller="ContasPagar" asp-action="Index">
-                                <div class="row" style="padding:5px;">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="control-label">Data Inicial</label>
-                                            <input type="text" name="dataInicial" id="dataInicial" autocomplete="off" class="form-control datepicker" style="font-size:15px;" />
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="control-label">Data Final</label>
-                                            <input type="text" name="dataFinal" id="dataFinal" autocomplete="off" class="form-control datepicker" style="font-size:15px;" />
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="control-label">Vencimento</label>
-                                            <select asp-items="@ViewBag.vencimento" value="@TempData["vencimento"]" id="vencimento" name="vencimento" class="form-control"></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            @{
-                                                if (ViewData["bread"].ToString().Equals("Contas a Pagar"))
-                                                {
-                                                    <label class="control-label">Fornecedor</label>
-                                                }
-                                                if (ViewData["bread"].ToString().Equals("Contas a Receber"))
-                                                {
-                                                    <label class="control-label">Cliente</label>
-                                                }
-                                            }
-                                            <input type="text" id="pesquisaParticipante" class="form-control" placeholder="Iniciais do nome ou cnpj/cpf" onkeyup="consultaParticipanteCCM(this.id)" />
-                                            <input type="hidden" name="participante_id" id="participante_id" />
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="control-label">Forma de Pagamento</label>
-                                            <select asp-items="@ViewBag.formaPgto" value="@TempData["formaPgto"]" id="formaPgto" name="formaPgto" class="form-control"></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="control-label">Operação</label>
-                                            <select asp-items="@ViewBag.tipoOpercao" value="@TempData["tipoOperacao"]" id="tipoOperacao" name="tipoOperacao" class="form-control"></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="control-label">Situação</label>
-                                            <select asp-items="@ViewBag.situacao" value="@TempData["situacao"]" id="situacao" name="situacao" class="form-control"></select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-info" style="width:100%">Filtrar</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        }
-                    }*@
-                }
-            </div>
-
-
-
             <script>
                 document.getElementById("bread_page").style.cursor = "pointer";
                 document.getElementById("bread_page").addEventListener('click', function () {
                     openNav('aberto');
                 });
-            </script>
-            if (ViewData["bread"].ToString().Equals("Contas a Pagar"))
-            {
-                <script>
-                    document.getElementById("mySidenav").style.transition = "0.0s";
-                    document.getElementById("mySidenav").style.borderTop = "2px solid #ff4400";
-                </script>
-            }
+            </script>            
         }
         else
         {

@@ -152,7 +152,7 @@ namespace gestaoContadorcomvc.Components
                 if (pagina.Contains("ContasPagar/Index"))
                 {
                     retorno = "Contas a Pagar";
-                    //openNav = "aberto";
+                    openNav = "aberto";
                 }
                 //Contas a receber
                 if (pagina.Contains("ContasReceber/Index"))
