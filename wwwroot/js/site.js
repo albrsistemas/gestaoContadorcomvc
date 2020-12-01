@@ -1,4 +1,9 @@
 ﻿//Variaveis globais
+let fechamentoCartao = {
+    totalFatura: 0,
+    meioPgto: 03,
+    parcelas_agrupar: [],
+};
 var operacao = {
     operacao: {
         op_id: 0,
@@ -3085,4 +3090,45 @@ function totalRetencoes() {
     operacao.retencoes.op_ret_pis = (pis).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
     operacao.retencoes.op_ret_cofins = (cofins).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
     operacao.retencoes.op_ret_csll = (cs).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+}
+
+function agrupamentoParcelas(id, vlr) {
+    let parcela_id = id.substr(3, id.length);
+    let meio_Pgto_parcela = document.getElementById('meioPgto_' + parcela_id).value.replace('.', '').replace(',', '.') * 1;
+
+    if (meio_Pgto_parcela != 3) {
+        alert('Selecione apenas parcelas de cartão de crédito');
+        document.getElementById(id).checked = false;
+        return;
+    }
+    
+    let vlrOriginal = document.getElementById('vlr_' + parcela_id).value.replace('.', '').replace(',', '.') * 1;
+    let vlrSoma = document.getElementById('somaParcela').innerHTML.replace('.', '').replace(',', '.') * 1;
+
+    if (document.getElementById(id) && document.getElementById(id).checked) {
+        document.getElementById('somaParcela').innerHTML = (vlrSoma + vlrOriginal).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+        fechamentoCartao.parcelas_agrupar.push(parcela_id * 1);
+    } else {
+        document.getElementById('somaParcela').innerHTML = (vlrSoma - vlrOriginal).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+
+        for (let i = 0; i < fechamentoCartao.parcelas_agrupar.length; i++) {
+            if (fechamentoCartao.parcelas_agrupar[i] == parcela_id) {
+                fechamentoCartao.parcelas_agrupar.splice(i, 1);
+            }
+        }
+    }
+    console.log(fechamentoCartao.parcelas_agrupar);
+
+    let soma_final = document.getElementById('somaParcela').innerHTML.replace('.', '').replace(',', '.') * 1;
+
+    if (soma_final > 0) {
+        document.getElementById('agrupaParc').disabled = true;
+    } else {
+        document.getElementById('agrupaParc').disabled = false;
+    }    
+}
+
+function agrupaParcela() {
+    let vlrSoma = document.getElementById('somaParcela').innerHTML.replace('.', '').replace(',', '.') * 1;
+    console.log(vlrSoma);
 }
