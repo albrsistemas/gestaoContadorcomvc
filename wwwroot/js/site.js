@@ -1,8 +1,24 @@
 ﻿//Variaveis globais
 let fechamentoCartao = {
+    
     totalFatura: 0,
     meioPgto: 03,
     parcelas_agrupar: [],
+};
+let fechamento_cartao = {
+    fc_forma_pagamento: 0,
+    fc_meio_pagamento: 0,
+    fc_qtd_parcelas: 0,
+    fc_valor_total: 0,
+    fc_tarifas_bancarias: 0,
+    fc_seguro_cartao: 0,
+    fc_estornos: 0,
+    fc_abatimentos_cartao: 0,
+    fc_acrescimos_cartao: 0,
+    fc_referencia: '',
+    fc_vencimento: '',
+    fc_nome_cartão: '',
+    fc_matriz_parcelas: []
 };
 var operacao = {
     operacao: {
@@ -619,8 +635,7 @@ $(".DetailsCCOPlano").click(function () {
 
 $(function () {
     $(".datepicker").datepicker({
-        buttonImageOnly: true,
-        dateFormat: 'dd-mm-yyyy',
+        buttonImageOnly: true,        
         changeMonth: false,
         changeYear: false,
         dateFormat: 'dd/mm/yy',
@@ -3092,43 +3107,182 @@ function totalRetencoes() {
     operacao.retencoes.op_ret_csll = (cs).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
 }
 
-function agrupamentoParcelas(id, vlr) {
-    let parcela_id = id.substr(3, id.length);
-    let meio_Pgto_parcela = document.getElementById('meioPgto_' + parcela_id).value.replace('.', '').replace(',', '.') * 1;
-
-    if (meio_Pgto_parcela != 3) {
-        alert('Selecione apenas parcelas de cartão de crédito');
-        document.getElementById(id).checked = false;
-        return;
-    }
-    
-    let vlrOriginal = document.getElementById('vlr_' + parcela_id).value.replace('.', '').replace(',', '.') * 1;
-    let vlrSoma = document.getElementById('somaParcela').innerHTML.replace('.', '').replace(',', '.') * 1;
-
-    if (document.getElementById(id) && document.getElementById(id).checked) {
-        document.getElementById('somaParcela').innerHTML = (vlrSoma + vlrOriginal).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
-        fechamentoCartao.parcelas_agrupar.push(parcela_id * 1);
-    } else {
-        document.getElementById('somaParcela').innerHTML = (vlrSoma - vlrOriginal).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
-
-        for (let i = 0; i < fechamentoCartao.parcelas_agrupar.length; i++) {
-            if (fechamentoCartao.parcelas_agrupar[i] == parcela_id) {
-                fechamentoCartao.parcelas_agrupar.splice(i, 1);
-            }
-        }
-    }
-    console.log(fechamentoCartao.parcelas_agrupar);
-
-    let soma_final = document.getElementById('somaParcela').innerHTML.replace('.', '').replace(',', '.') * 1;
-
-    if (soma_final > 0) {
-        document.getElementById('agrupaParc').disabled = true;
-    } else {
-        document.getElementById('agrupaParc').disabled = false;
-    }    
-}
 
 function agrupaParcela() {
     let vlrSoma = document.getElementById('somaParcela').innerHTML.replace('.', '').replace(',', '.') * 1;
-    console.log(vlrSoma);
+    fechamentoCartao.totalFatura = vlrSoma.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+    console.log(fechamentoCartao);
+}
+
+function fechamento_de_cartao(id) {
+    let parcela_id = id.substr(3, id.length);
+    let meio_Pgto_parcela = document.getElementById('meioPgto_' + parcela_id).value.replace('.', '').replace(',', '.') * 1;
+    let forma_Pgto_parcela = document.getElementById('formaPgto_' + parcela_id).value.replace('.', '').replace(',', '.') * 1;
+    let vlrOriginal = document.getElementById('vlr_' + parcela_id).value.replace('.', '').replace(',', '.') * 1;
+    let nomeCartao = document.getElementById('nomeCartao_' + parcela_id).value;
+
+    if (meio_Pgto_parcela != 3) {
+        alert('Apenas selecione parcelas cuja forma de pagamento é do tipo Cartão de Crédito!');
+        document.getElementById(id).checked = false;
+        return;
+    }
+
+    if (document.getElementById(id) && document.getElementById(id).checked) {
+        if (fechamento_cartao.fc_qtd_parcelas == 0) {
+            fechamento_cartao.fc_forma_pagamento = forma_Pgto_parcela;
+            fechamento_cartao.fc_meio_pagamento = meio_Pgto_parcela;
+            fechamento_cartao.fc_matriz_parcelas.push(parcela_id * 1);
+            fechamento_cartao.fc_valor_total = vlrOriginal;
+            fechamento_cartao.fc_nome_cartão = nomeCartao;
+            fechamento_cartao.fc_qtd_parcelas = 1;            
+        } else {
+            if (forma_Pgto_parcela != fechamento_cartao.fc_forma_pagamento) {
+                alert('Parcela com forma de pagamento diferente da selecionada anteriormente. Não permitido!');
+                document.getElementById(id).checked = false;
+                return;
+            } else {
+                fechamento_cartao.fc_matriz_parcelas.push(parcela_id * 1);
+                fechamento_cartao.fc_valor_total += vlrOriginal;
+                fechamento_cartao.fc_qtd_parcelas += 1;
+            }
+        }
+    } else {
+        //remove a parcela_id da matriz
+        for (let i = 0; i < fechamento_cartao.fc_matriz_parcelas.length; i++) {
+            if (fechamento_cartao.fc_matriz_parcelas[i] == parcela_id) {
+                fechamento_cartao.fc_matriz_parcelas.splice(i, 1);
+            }
+        }
+        fechamento_cartao.fc_valor_total -= vlrOriginal;
+        fechamento_cartao.fc_qtd_parcelas -= 1;
+
+        if (fechamento_cartao.fc_valor_total == 0) {
+            fechamento_cartao.fc_forma_pagamento = 0;
+            fechamento_cartao.fc_meio_pagamento = 0;
+        }
+    }
+
+    document.getElementById('somaParcela').innerHTML = (fechamento_cartao.fc_valor_total).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+    console.log(fechamento_cartao);
+}
+
+function gravar_fatura_cartao(contexto) {
+    if (fechamento_cartao.fc_qtd_parcelas > 0) {
+        if (contexto == 'confirmar') {
+            document.getElementById('modal_quantidade_parcelas').innerHTML = fechamento_cartao.fc_qtd_parcelas;
+            document.getElementById('modal_vlr_total').innerHTML = fechamento_cartao.fc_valor_total.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+            document.getElementById('modal_fc_tarifas_bancarias').value = fechamento_cartao.fc_tarifas_bancarias.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+            document.getElementById('modal_fc_seguro_cartao').value = fechamento_cartao.fc_seguro_cartao.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+            document.getElementById('modal_fc_acrescimos_cartao').value = fechamento_cartao.fc_acrescimos_cartao.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+            document.getElementById('modal_fc_abatimentos_cartao').value = fechamento_cartao.fc_abatimentos_cartao.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+            $("#modal_fechamento_cartao").modal('show');
+        }
+
+        if (contexto == 'enviar') {
+            fechamento_cartao.fc_tarifas_bancarias = document.getElementById('modal_fc_tarifas_bancarias').value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+            fechamento_cartao.fc_seguro_cartao = document.getElementById('modal_fc_seguro_cartao').value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+            fechamento_cartao.fc_acrescimos_cartao = document.getElementById('modal_fc_acrescimos_cartao').value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+            fechamento_cartao.fc_abatimentos_cartao = document.getElementById('modal_fc_abatimentos_cartao').value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+            fechamento_cartao.fc_referencia = document.getElementById('modal_fc_referencia').value;
+            fechamento_cartao.fc_vencimento = document.getElementById('modal_fc_vencimento').value;
+
+            console.log(fechamento_cartao);
+
+            let valida = true;
+
+            if (fechamento_cartao.fc_referencia.length < 7 || fechamento_cartao.fc_referencia == "" || fechamento_cartao.fc_referencia == null) {
+                valida = false;
+                alert('Referência inválida');
+                return; 
+            }
+
+            if (fechamento_cartao.fc_vencimento.length < 10 || fechamento_cartao.fc_vencimento == "" || fechamento_cartao.fc_vencimento == null) {
+                valida = false;
+                alert('Data de vencimento inválida');
+                return;
+            }
+
+            if (valida) {
+                $.ajax({
+                    url: "/FechamentoCartao/Create",
+                    data: { __RequestVerificationToken: gettoken(), fc: fechamento_cartao },
+                    type: 'POST',
+                    dataType: 'json',
+                    beforeSend: function (XMLHttpRequest) {
+
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("erro");
+                    },
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                            document.getElementById('mensagem_retorno_label').innerHTML = "";
+                            document.getElementById('mensagem_retorno_label').innerHTML = "ERRO";
+                            document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
+                            document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON + "</p>";
+                            document.getElementById('mensagem_retorno_rodape').innerHTML = "";
+                            document.getElementById('mensagem_retorno_rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
+                            $('#modal_mensagem_retorno').modal('show');
+                            return;
+                        }
+                        if (XMLHttpRequest.responseJSON.includes('Fatura cartão cadastrada com sucesso!')) {                           
+
+                            if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+                                window.location.href = "https://localhost:44339/ContasPagar/Index";
+                            } else {
+                                window.location.href = "https://contadorcomvc.com.br/ContasPagar/Index";
+                            }
+                        }
+
+                    }
+                });
+            }
+        }
+    } else {
+        alert("Nenhuma parcela selecionada!!");
+    }    
+}
+
+function monthPicker(id, contexto, vlr) {   
+    if (contexto == 'open') {
+        let d = new Date();
+        let m = d.getMonth() + 1;
+        let y = d.getFullYear()
+
+        //Primeiro remove o selected padrão
+        $("#box_monthPicker_mes").each(function () {
+            $(this).removeAttr('selected');
+        });
+        //Adiciona o selectd na cst da regra
+        $('#box_monthPicker_mes option').each(function () {
+            if (this.text == m) {
+                this.setAttribute("selected", "selected");
+                return false;
+            }
+        });
+
+        //Primeiro remove o selected padrão
+        $("#box_monthPicker_ano").each(function () {
+            $(this).removeAttr('selected');
+        });
+        //Adiciona o selectd na cst da regra
+        $('#box_monthPicker_ano option').each(function () {
+            if (this.text == y) {
+                this.setAttribute("selected", "selected");
+                return false;
+            }
+        });
+
+        document.getElementById('box_monthPicker').style.display = 'block';
+        document.getElementById('id_cliente').value = id;
+    }
+    if (contexto == 'close') {
+        let id_cliente = document.getElementById('id_cliente').value;
+        let mes = document.getElementById('box_monthPicker_mes').value;
+        let ano = document.getElementById('box_monthPicker_ano').value;
+
+        document.getElementById(id_cliente).value = mes + "/" + ano;
+
+        document.getElementById('box_monthPicker').style.display = 'none';
+    }
 }

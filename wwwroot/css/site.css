@@ -5,6 +5,16 @@
 .ui-autocomplete {
     z-index: 9999 !important;
 }
+.box_monthPicker {
+    background-color: #ffe699;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 2px;
+    width: 230px;
+    position: fixed;
+    z-index: 2;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}
 html,
 body {
     margin: 0px;

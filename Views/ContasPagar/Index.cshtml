@@ -34,18 +34,20 @@
     legend {
         margin-top: 15px;
     }
+
     .sidenav a {
         padding: 0px 0px 0px 0px;
         text-decoration: none;
         color: darkblue;
         font-size: 12px;
-
     }
+
         .sidenav a:hover {
             color: darkblue;
             background-color: #ffe699;
         }
-    .container{
+
+    .container {
         min-width: 100%;
     }
 </style>
@@ -53,22 +55,22 @@
 @{
     if (TempData["msgCP"] != null && TempData["msgCP"].ToString().Contains("sucesso"))
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
-            <strong>Sucesso!</strong> @TempData["msgCP"].ToString()
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+        <strong>Sucesso!</strong> @TempData["msgCP"].ToString()
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     }
 
     if (TempData["msgCP"] != null && TempData["msgCP"].ToString().Contains("Erro"))
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
-            <strong>Erro!</strong> @TempData["msgCP"].ToString()
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+        <strong>Erro!</strong> @TempData["msgCP"].ToString()
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     }
 }
 
@@ -79,7 +81,7 @@
             <p id="somaParcela" style="font-weight:bold;padding-left: 20px;"></p>
         </div>
         <div class="coluna_1" style="text-align:right;width: 75px;user-select:none;">
-            <svg id="agrupaParc" onclick="agrupaParcela()" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-collection" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <svg id="icone_fechamento_cartao" onclick="gravar_fatura_cartao('confirmar')" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-collection" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" d="M14.5 13.5h-13A.5.5 0 0 1 1 13V6a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5zm-13 1A1.5 1.5 0 0 1 0 13V6a1.5 1.5 0 0 1 1.5-1.5h13A1.5 1.5 0 0 1 16 6v7a1.5 1.5 0 0 1-1.5 1.5h-13zM2 3a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 0-1h-11A.5.5 0 0 0 2 3zm2-2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7A.5.5 0 0 0 4 1z" />
             </svg>
             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-funnel" fill="currentColor" xmlns="http://www.w3.org/2000/svg" onclick="openNav('aberto')" style="cursor:pointer" id="filter">
@@ -96,10 +98,10 @@
     </div>
 </div>
 <hr class="hrLine" />
-@{ 
+@{
     if (Model.filter.contexto)
     {
-        <p><span style="color:red;font-weight:bold;">As informações estão filtradas. Clique para limpar o filtro</span> <span><a asp-controller="ContasPagar" asp-action="Index">Limpar Filtros</a></span></p>
+    <p><span style="color:red;font-weight:bold;">As informações estão filtradas. Clique para limpar o filtro</span> <span><a asp-controller="ContasPagar" asp-action="Index">Limpar Filtros</a></span></p>
     }
 }
 
@@ -107,7 +109,7 @@
     <div class="line-list titulo">
         <div class="col-list-left">
             @*<input class="check-list-input" type="checkbox" id="cp_todas">
-            <label class="check-list-label" for="cp_todas"></label>*@
+                <label class="check-list-label" for="cp_todas"></label>*@
         </div>
         <div class="col-list-body">
             <div class="row">
@@ -127,133 +129,138 @@
 @{
     foreach (var item in Model.contasPagar)
     {
-        <div class="line-list">
-            <div class="col-list-left">                
-                @{
-                    if (item.meio_pgto == 03){
-                    <input class="check-list-input" type="checkbox" id="cp_@item.parcela_id" onchange="agrupamentoParcelas(this.id, this.value)">
-                    <label class="check-list-label" for="cp_@item.parcela_id"></label>
+    <div class="line-list">
+        <div class="col-list-left">
+            @{
+                    if (item.meio_pgto == 03)
+                    {
+                @*<input class="check-list-input" type="checkbox" id="cp_@item.parcela_id" onchange="agrupamentoParcelas(this.id, this.value)">
+                    <label class="check-list-label" for="cp_@item.parcela_id"></label>*@
                     }
-                }
-            </div>
-            <div class="col-list-body">
-                <div class="row">
-                    <div class="col-12 line_list_title_mobile"><strong>Vencimento: </strong>@item.vencimento.ToShortDateString()</div>
-                    <div class="col-12 line_list_title_mobile"><strong>Fornecedor: </strong>@item.fornecedor</div>
-                    <div class="col-12 line_list_title_mobile"><strong>Referência: </strong>@item.referencia</div>
-                    <div class="col-12 line_list_title_mobile"><strong>Forma Pagamento: </strong>@item.formaPgto</div>
-                    <div class="col-12 line_list_title_mobile"><strong>Valor Original: </strong>@item.valorOriginal.ToString("N2")</div>
-                    <div class="col-12 line_list_title_mobile"><strong>Saldo: </strong>@item.saldo.ToString("N2")</div>
+            }
+        </div>
+        <div class="col-list-body">
+            <div class="row">
+                <div class="col-12 line_list_title_mobile"><strong>Vencimento: </strong>@item.vencimento.ToShortDateString()</div>
+                <div class="col-12 line_list_title_mobile"><strong>Fornecedor: </strong>@item.fornecedor</div>
+                <div class="col-12 line_list_title_mobile"><strong>Referência: </strong>@item.referencia</div>
+                <div class="col-12 line_list_title_mobile"><strong>Forma Pagamento: </strong>@item.formaPgto</div>
+                <div class="col-12 line_list_title_mobile"><strong>Valor Original: </strong>@item.valorOriginal.ToString("N2")</div>
+                <div class="col-12 line_list_title_mobile"><strong>Saldo: </strong>@item.saldo.ToString("N2")</div>
 
-                    <div class="col-1 line_list_title_full">@item.vencimento.ToShortDateString()</div>
-                    <div class="col-3 line_list_title_full">@item.fornecedor</div>
-                    <div class="col-3 line_list_title_full">@item.referencia</div>
-                    <div class="col-3 line_list_title_full">@item.formaPgto</div>
-                    <div class="col-1 line_list_title_full" style="text-align:right;">@item.valorOriginal.ToString("N2")</div>
-                    <div class="col-1 line_list_title_full" style="text-align:right;">@item.saldo.ToString("N2")</div>
-                </div>
-                <input type="hidden" id="vlr_@item.parcela_id" value="@item.valorOriginal" />
-                <input type="hidden" id="meioPgto_@item.parcela_id" value="@item.meio_pgto" />
+                <div class="col-1 line_list_title_full">@item.vencimento.ToShortDateString()</div>
+                <div class="col-3 line_list_title_full">@item.fornecedor</div>
+                <div class="col-3 line_list_title_full">@item.referencia</div>
+                <div class="col-3 line_list_title_full">@item.formaPgto</div>
+                <div class="col-1 line_list_title_full" style="text-align:right;">@item.valorOriginal.ToString("N2")</div>
+                <div class="col-1 line_list_title_full" style="text-align:right;">@item.saldo.ToString("N2")</div>
             </div>
-            <div class="col-list-rigth" style="padding-right: 10px;">
-                @{
+            <input type="hidden" id="vlr_@item.parcela_id" value="@item.valorOriginal" />
+            <input type="hidden" id="meioPgto_@item.parcela_id" value="@item.meio_pgto" />
+            <input type="hidden" id="formaPgto_@item.parcela_id" value="@item.fp_id" />
+            <input type="hidden" id="nomeCartao_@item.parcela_id" value="@item.formaPgto" />
+        </div>
+        <div class="col-list-rigth" style="padding-right: 10px;">
+            @{
                     if (item.saldo > 0)
                     {
                         if (item.prazo == 1)
                         {
-                            <span data-toggle="tooltip" data-placement="top" title="vence hoje">
-                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="#fcd303" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="8" cy="8" r="8" />
-                                </svg>
-                            </span>
+                <span data-toggle="tooltip" data-placement="top" title="vence hoje">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="#fcd303" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="8" cy="8" r="8" />
+                    </svg>
+                </span>
                         }
                         if (item.prazo == 2)
                         {
-                            <span data-toggle="tooltip" data-placement="top" title="atrasada">
-                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="8" cy="8" r="8" />
-                                </svg>
-                            </span>
+                <span data-toggle="tooltip" data-placement="top" title="atrasada">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="8" cy="8" r="8" />
+                    </svg>
+                </span>
                         }
                         if (item.prazo == 3)
                         {
-                            <span data-toggle="tooltip" data-placement="top" title="à vencer">
-                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="blue" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="8" cy="8" r="8" />
-                                </svg>
-                            </span>
+                <span data-toggle="tooltip" data-placement="top" title="à vencer">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="blue" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="8" cy="8" r="8" />
+                    </svg>
+                </span>
                         }
 
                         if (item.meio_pgto != 03) //Se meio de pagamento for diferente de cartão de crédito pode dar dar baixa. Se for igual não pode dar baixa.
                         {
                             if (Model.user.Role == "adm" || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete)
                             {
-                                <a class="createBaixa" data-parcela_id="@item.parcela_id" data-contexto="pagar">
-                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
-                                        <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
-                                    </svg>
-                                </a>
+                <a class="createBaixa" data-parcela_id="@item.parcela_id" data-contexto="pagar">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
+                        <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
+                    </svg>
+                </a>
                             }
 
                             if (Model.user.Role == "adm" || (Model.user._permissoes.baixaList || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete))
                             {
-                                <a class="listBaixa" data-parcela_id="@item.parcela_id" data-contexto="pagar">
-                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M15 4H1v8h14V4zM1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1z" />
-                                        <path d="M13 4a2 2 0 0 0 2 2V4h-2zM3 4a2 2 0 0 1-2 2V4h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 12a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
-                                    </svg>
-                                </a>
+                <a class="listBaixa" data-parcela_id="@item.parcela_id" data-contexto="pagar">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M15 4H1v8h14V4zM1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1z" />
+                        <path d="M13 4a2 2 0 0 0 2 2V4h-2zM3 4a2 2 0 0 1-2 2V4h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 12a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
+                    </svg>
+                </a>
                             }
                         }
                         else
                         {
                             if (Model.user.Role == "adm" || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete)
                             {
-                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
-                                    <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
-                                </svg>
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
+                    <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
+                </svg>
                             }
 
                             if (Model.user.Role == "adm" || (Model.user._permissoes.baixaList || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete))
                             {
-                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cash" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M15 4H1v8h14V4zM1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1z" />
-                                    <path d="M13 4a2 2 0 0 0 2 2V4h-2zM3 4a2 2 0 0 1-2 2V4h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 12a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
-                                </svg>
+ <!--Exibe combo para selecionar parcela-->
+                <input type="checkbox" id="cp_@item.parcela_id" onchange="fechamento_de_cartao(this.id)">
+                @*<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cash" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M15 4H1v8h14V4zM1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1z" />
+                        <path d="M13 4a2 2 0 0 0 2 2V4h-2zM3 4a2 2 0 0 1-2 2V4h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 12a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
+                    </svg>*@
                             }
                         }
 
                     }
                     else
                     {
-                        <span data-toggle="tooltip" data-placement="top" title="quitada">
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="#22a83a" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="8" cy="8" r="8" />
-                            </svg>
-                        </span>
+                <span data-toggle="tooltip" data-placement="top" title="quitada">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="#22a83a" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="8" cy="8" r="8" />
+                    </svg>
+                </span>
 
                         if (Model.user.Role == "adm" || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete)
                         {
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
-                                <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
-                            </svg>
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
+                    <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
+                </svg>
                         }
 
                         if (Model.user.Role == "adm" || (Model.user._permissoes.baixaList || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete))
                         {
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cash" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M15 4H1v8h14V4zM1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1z" />
-                                <path d="M13 4a2 2 0 0 0 2 2V4h-2zM3 4a2 2 0 0 1-2 2V4h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 12a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
-                            </svg>
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cash" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M15 4H1v8h14V4zM1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1z" />
+                    <path d="M13 4a2 2 0 0 0 2 2V4h-2zM3 4a2 2 0 0 1-2 2V4h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 12a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
+                </svg>
                         }
                     }
 
-                }
-            </div>
+            }
         </div>
+    </div>
     }
 }
 <div id="mySidenav" class="sidenav" style="transition: 0.0s;border-top:2px solid #ff4400">
@@ -318,7 +325,145 @@
                 <div class="form-group">
                     <a asp-controller="ContasPagar" asp-action="Index">Limpar Filtros</a>
                 </div>
-            </div>           
+            </div>
         </div>
     </form>
+</div>
+<!--Dados do retenções-->
+<div class="modal fade" id="modal_fechamento_cartao" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Fechamento Cartão de Crédito</h5>
+            </div>
+            <div class="modal-body">
+                <p>Quantidade de parcelas selecionadas: <strong id="modal_quantidade_parcelas"></strong></p>
+                <p>Valor total das parcelas selecionadas: <strong id="modal_vlr_total"></strong></p>
+                <hr class="hrLine" />
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Referência</label>
+                            <input type="text" id="modal_fc_referencia" onclick="monthPicker(this.id, 'open', this.value)" autocomplete="off" class="form-control" style="font-size:15px;" />
+                            <div class="box_monthPicker" id="box_monthPicker" style="display:none">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Mês</label>
+                                            <select class="form-control" id="box_monthPicker_mes">
+                                                <option>01</option>
+                                                <option>02</option>
+                                                <option>03</option>
+                                                <option>04</option>
+                                                <option>05</option>
+                                                <option>06</option>
+                                                <option>07</option>
+                                                <option>08</option>
+                                                <option>09</option>
+                                                <option>10</option>
+                                                <option>11</option>
+                                                <option>12</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Ano</label>
+                                            <select class="form-control" id="box_monthPicker_ano">
+                                                <option>2017</option>
+                                                <option>2018</option>
+                                                <option>2019</option>
+                                                <option>2020</option>
+                                                <option>2021</option>
+                                                <option>2022</option>
+                                                <option>2023</option>
+                                                <option>2024</option>
+                                                <option>2025</option>
+                                                <option>2026</option>
+                                                <option>2027</option>
+                                                <option>2028</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="id_cliente" />
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button type="button" class="btn btn-info" onclick="monthPicker(this.id, 'close', '')" style="width: 100%;">Selecionar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Vencimento</label>
+                            <input type="text" id="modal_fc_vencimento" autocomplete="off" class="form-control datepicker" style="font-size:15px;" />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Tarifa Bancarária</label>
+                            <input id="modal_fc_tarifas_bancarias" class="form-control" onchange="decimal(this.id, this.value)" />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Suguro Cartão</label>
+                            <input id="modal_fc_seguro_cartao" class="form-control" onchange="decimal(this.id, this.value)" />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Abatimentos</label>
+                            <input id="modal_fc_abatimentos_cartao" class="form-control" onchange="decimal(this.id, this.value)" />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Acréscimos</label>
+                            <input id="modal_fc_acrescimos_cartao" class="form-control" onchange="decimal(this.id, this.value)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" id="gravar_fatura" onclick="gravar_fatura_cartao('enviar')">Gravar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Gravação com sucesso-->
+<div class="modal fade" id="modal_mensagem_sucesso" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Fechamento Cartão de Crédito</h5>
+            </div>
+            <div class="modal-body">
+                <p>Fatura cartão de crédito gravada com sucesso!</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-info" asp-controller="ContasPagar" asp-action="Index">OK</a>                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal erro-->
+<div class="modal fade" id="modal_mensagem_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mensagem_retorno_label"></h5>
+            </div>
+            <div class="modal-body" id="mensagem_retorno_conteudo">
+
+            </div>
+            <div class="modal-footer" id="mensagem_retorno_rodape">
+
+            </div>
+        </div>
+    </div>
 </div>

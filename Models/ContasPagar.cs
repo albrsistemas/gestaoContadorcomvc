@@ -23,6 +23,7 @@ namespace gestaoContadorcomvc.Models
         public int prazo { get; set; }
         public int parcela_id { get; set; }
         public int meio_pgto { get; set; }
+        public int fp_id { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -96,6 +97,15 @@ namespace gestaoContadorcomvc.Models
                         else
                         {
                             conta.meio_pgto = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fp_id"])
+                        {
+                            conta.fp_id = Convert.ToInt32(leitor["fp_id"]);
+                        }
+                        else
+                        {
+                            conta.fp_id = 0;
                         }
 
                         if (DBNull.Value != leitor["operacao_"])
