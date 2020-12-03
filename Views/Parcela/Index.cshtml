@@ -3,7 +3,7 @@
     Layout = null;
 }
 <div class="container">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Detalhamento de Parcela</h4>
@@ -12,6 +12,7 @@
                 <div class="modal-body">
                     <fieldset>
                         <legend>Dados da Parcela</legend>
+                        <p><strong>Fornecedor: </strong>@Model.parcela.fornecedor</p>
                         <div class="list-header">
                             <div class="line-list titulo">
                                 <div class="col-list-left">
@@ -19,11 +20,10 @@
                                 </div>
                                 <div class="col-list-body">
                                     <div class="row">
-                                        <div class="col-12 col-md-1"><strong>Vencimento</strong></div>
-                                        <div class="col-12 col-md-3"><strong>Fornecedor</strong></div>
+                                        <div class="col-12 col-md-2"><strong>Vencimento</strong></div>                                        
                                         <div class="col-12 col-md-3"><strong>Referência</strong></div>
-                                        <div class="col-12 col-md-3"><strong>Forma Pagamento</strong></div>
-                                        <div class="col-12 col-md-1" style="text-align:right;"><strong>Vlr Original</strong></div>
+                                        <div class="col-12 col-md-4"><strong>Forma Pagamento</strong></div>
+                                        <div class="col-12 col-md-2" style="text-align:right;"><strong>Valor</strong></div>
                                         <div class="col-12 col-md-1" style="text-align:right;"><strong>Saldo</strong></div>
                                     </div>
                                 </div>
@@ -34,7 +34,7 @@
                         </div>
                         <div class="line-list">
                             <div class="col-list-left">
-                                
+
                             </div>
                             <div class="col-list-body">
                                 <div class="row">
@@ -45,11 +45,10 @@
                                     <div class="col-12 line_list_title_mobile"><strong>Valor Original: </strong>@Model.parcela.valorOriginal.ToString("N2")</div>
                                     <div class="col-12 line_list_title_mobile"><strong>Saldo: </strong>@Model.parcela.saldo.ToString("N2")</div>
 
-                                    <div class="col-1 line_list_title_full">@Model.parcela.vencimento.ToShortDateString()</div>
-                                    <div class="col-3 line_list_title_full">@Model.parcela.fornecedor</div>
+                                    <div class="col-2 line_list_title_full">@Model.parcela.vencimento.ToShortDateString()</div>                                    
                                     <div class="col-3 line_list_title_full">@Model.parcela.referencia</div>
-                                    <div class="col-3 line_list_title_full">@Model.parcela.formaPgto</div>
-                                    <div class="col-1 line_list_title_full" style="text-align:right;">@Model.parcela.valorOriginal.ToString("N2")</div>
+                                    <div class="col-4 line_list_title_full">@Model.parcela.formaPgto</div>
+                                    <div class="col-2 line_list_title_full" style="text-align:right;">@Model.parcela.valorOriginal.ToString("N2")</div>
                                     <div class="col-1 line_list_title_full" style="text-align:right;">@Model.parcela.saldo.ToString("N2")</div>
                                 </div>
                                 <input type="hidden" id="vlr_@Model.parcela.parcela_id" value="@Model.parcela.valorOriginal" />
@@ -121,7 +120,7 @@
                                             if (Model.user.Role == "adm" || (Model.user._permissoes.baixaList || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete))
                                             {
                                                 <!--Exibe combo para selecionar parcela-->
-                                                <input type="checkbox" id="cp_@Model.parcela.parcela_id" onchange="fechamento_de_cartao(this.id)">                                               
+                                                <input type="checkbox" id="cp_@Model.parcela.parcela_id" onchange="fechamento_de_cartao(this.id)">
                                             }
                                         }
 
@@ -191,7 +190,7 @@
 
                                                 <div class="col-3 line_list_title_full">@item.vencimento.ToShortDateString()</div>
                                                 <div class="col-6 line_list_title_full">@item.referencia</div>                                                
-                                                <div class="col-3 line_list_title_full" style="text-align:right;">@item.valorOriginal.ToString("N2")</div>
+                                                <div class="col-3 line_list_title_full" style="text-align:right;">@item.valor.ToString("N2")</div>
                                                 
                                             </div>                                            
                                         </div>
@@ -204,7 +203,7 @@
                             }
                             else
                             {
-                                <p>Parcela não possui parcelas agrupadas</p>
+                                <p>Não há parcelas agrupadas</p>
                             }
                         }
                     </fieldset>
@@ -220,7 +219,7 @@
                                         </div>
                                         <div class="col-list-body">
                                             <div class="row">
-                                                <div class="col-12 col-md-2"><strong>Data</strong></div>
+                                                <div class="col-12 col-md-2" style="text-align:center;"><strong>Data</strong></div>
                                                 <div class="col-12 col-md-2" style="text-align:right;"><strong>Valor</strong></div>
                                                 <div class="col-12 col-md-2" style="text-align:right;"><strong>Acréscimos</strong></div>
                                                 <div class="col-12 col-md-2" style="text-align:right;"><strong>Descontos</strong></div>
@@ -246,11 +245,11 @@
                                                 <div class="col-12 line_list_title_mobile"><strong>Descontos: </strong>@b.descontos.ToString("N2")</div>
                                                 <div class="col-12 line_list_title_mobile"><strong>Conta Corrente: </strong>@b.conta_corrente</div>
 
-                                                <div class="col-2 line_list_title_full">@b.data.ToShortDateString()</div>
-                                                <div class="col-2 line_list_title_full">@b.valor.ToString("N2")</div>
-                                                <div class="col-2 line_list_title_full">@b.acrescimos.ToString("N2")</div>
-                                                <div class="col-2 line_list_title_full">@b.descontos.ToString("N2")</div>
-                                                <div class="col-2 line_list_title_full">@b.conta_corrente</div>
+                                                <div class="col-2 line_list_title_full" style="text-align:center;">@b.data.ToShortDateString()</div>
+                                                <div class="col-2 line_list_title_full" style="text-align:right;">@b.valor.ToString("N2")</div>
+                                                <div class="col-2 line_list_title_full" style="text-align:right;">@b.acrescimos.ToString("N2")</div>
+                                                <div class="col-2 line_list_title_full" style="text-align:right;">@b.descontos.ToString("N2")</div>
+                                                <div class="col-4 line_list_title_full">@b.conta_corrente</div>
 
                                             </div>
                                         </div>
@@ -270,14 +269,14 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-info" onclick="gravarBaixa('Create')">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>                    
                 </div>
 
             </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
+
 
 
 <!--Gravação com sucesso-->

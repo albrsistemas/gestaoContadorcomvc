@@ -3355,8 +3355,8 @@ function excluirFaturaCartao(parcela_id) {
 
 $(".detalhesParcela").click(function () {
     var parcela_id = $(this).attr("data-parcela_id");    
-    $("#modal").load("/Parcela/Index?parcela_id=" + parcela_id, function () {
-        $("#modal").modal('show');
+    $("#modal_parcela").load("/Parcela/Index?parcela_id=" + parcela_id, function () {
+        $("#modal_parcela").modal('show');
     })
 });
 

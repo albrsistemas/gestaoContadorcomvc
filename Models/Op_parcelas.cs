@@ -156,14 +156,14 @@ namespace gestaoContadorcomvc.Models
                             conta.saldo = 0;
                         }
 
-                        if (DBNull.Value != parc["prazo"])
-                        {
-                            conta.prazo = Convert.ToInt32(parc["prazo"]);
-                        }
-                        else
-                        {
-                            conta.prazo = 0;
-                        }
+                        //if (DBNull.Value != parc["prazo"])
+                        //{
+                        //    conta.prazo = Convert.ToInt32(parc["prazo"]);
+                        //}
+                        //else
+                        //{
+                        //    conta.prazo = 0;
+                        //}
                     }
                 }
                 parc.Close();
