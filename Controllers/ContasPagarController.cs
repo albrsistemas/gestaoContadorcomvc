@@ -33,6 +33,7 @@ namespace gestaoContadorcomvc.Controllers
 
             Selects select = new Selects();            
             ViewBag.formaPgto = select.getFormaPgtoContas(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
+            ViewBag.formaPgto_cartao = select.getFormaPgto_boletoBancario(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             ViewBag.tipoOpercao = select.getTipoOperacao("Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
             ViewBag.situacao = select.getSituacaoContas().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1" });
             ViewBag.vencimento = select.getVencimentoContas().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
@@ -72,11 +73,16 @@ namespace gestaoContadorcomvc.Controllers
 
             Selects select = new Selects();
             ViewBag.formaPgto = select.getFormaPgtoContas(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == filter.formaPgto.ToString() });
+            ViewBag.formaPgto_cartao = select.getFormaPgto_boletoBancario(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             ViewBag.tipoOpercao = select.getTipoOperacao("Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == filter.operacao.ToString() });
             ViewBag.situacao = select.getSituacaoContas().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == filter.situacao.ToString() });
             ViewBag.vencimento = select.getVencimentoContas().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == filter.vencimento.ToString() });
 
             return View(vm_cp);
         }
+
+        
+
+
     }
 }

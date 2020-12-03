@@ -117,9 +117,9 @@ namespace gestaoContadorcomvc.Models
                             conta.operacao = 0;
                         }
 
-                        if (DBNull.Value != leitor["vencimento"])
+                        if (DBNull.Value != leitor["venc"])
                         {
-                            conta.vencimento = Convert.ToDateTime(leitor["vencimento"]);
+                            conta.vencimento = Convert.ToDateTime(leitor["venc"]);
                         }
                         else
                         {
@@ -187,6 +187,9 @@ namespace gestaoContadorcomvc.Models
 
             return cp;
         }
+        
+
+
 
     }
 

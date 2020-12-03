@@ -24,7 +24,8 @@ namespace gestaoContadorcomvc.Models
         public DateTime fc_vencimento { get; set; }
         public string fc_referencia { get; set; }
         public string fc_nome_cartao { get; set; }
-        public string fc_matriz_parcelas { get; set; }
+        public string fc_matriz_parcelas_text { get; set; }
+        public int fc_forma_pgto_boleto_fatura { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -61,22 +62,7 @@ namespace gestaoContadorcomvc.Models
             {
                 DateTime today = DateTime.Today;
 
-                string matriz = "";
-
-                for (int x = 0; x < fc.fc_matriz_parcelas.Length; x++)
-                {
-                    if (x + 1 == fc.fc_matriz_parcelas.Length)
-                    {
-                        matriz += fc.fc_matriz_parcelas[x];
-                    }
-                    else
-                    {
-                        matriz += fc.fc_matriz_parcelas[x] + ", ";
-                    }
-
-                }
-
-                comando.CommandText = "call pr_fechamentoCartao (@conta_id, @hoje, @fc_forma_pagamento, @fc_qtd_parcelas, @fc_valor_total, @fc_tarifas_bancarias, @fc_seguro_cartao, @fc_abatimentos_cartao, @fc_acrescimos_cartao, @fc_referencia, @fc_vencimento, @fc_nome_cartao, @fc_matriz_parcelas);";
+                comando.CommandText = "call pr_fechamentoCartao (@conta_id, @hoje, @fc_forma_pagamento, @fc_qtd_parcelas, @fc_valor_total, @fc_tarifas_bancarias, @fc_seguro_cartao, @fc_abatimentos_cartao, @fc_acrescimos_cartao, @fc_referencia, @fc_vencimento, @fc_nome_cartao, @fc_matriz_parcelas, @fc_forma_pgto_boleto_fatura);";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@hoje", today);
                 comando.Parameters.AddWithValue("@fc_forma_pagamento", fc.fc_forma_pagamento);
@@ -89,7 +75,8 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@fc_referencia", fc.fc_referencia);
                 comando.Parameters.AddWithValue("@fc_vencimento", fc.fc_vencimento);
                 comando.Parameters.AddWithValue("@fc_nome_cartao", fc.fc_nome_cartao);
-                comando.Parameters.AddWithValue("@fc_matriz_parcelas", matriz);                
+                comando.Parameters.AddWithValue("@fc_matriz_parcelas", fc.fc_matriz_parcelas_text);                
+                comando.Parameters.AddWithValue("@fc_forma_pgto_boleto_fatura", fc.fc_forma_pgto_boleto_fatura);                
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 

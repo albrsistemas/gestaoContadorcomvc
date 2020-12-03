@@ -1,7 +1,11 @@
-﻿using System;
+﻿using gestaoContadorcomvc.Models.SoftwareHouse;
+using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Asn1.Crmf;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace gestaoContadorcomvc.Models
 {
@@ -23,5 +27,243 @@ namespace gestaoContadorcomvc.Models
         public Decimal op_parcela_ret_pis { get; set; }
         public Decimal op_parcela_ret_cofins { get; set; }
         public Decimal op_parcela_ret_csll { get; set; }
+
+        /*--------------------------*/
+        //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
+        public IConfigurationRoot GetConfiguration()
+        {
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            return builder.Build();
+        }
+        //Método para gerar a conexão
+        MySqlConnection conn;
+        public Op_parcelas()
+        {
+            var configuration = GetConfiguration();
+            conn = new MySqlConnection(configuration.GetSection("ConnectionStrings").GetSection("conexaocvc").Value);
+        }
+
+        //MÉTODOS
+        //objeto de log para uso nos métodos
+        Log log = new Log();
+
+        //detalhamento de parcdelas
+        public Vm_detalhamento_parcela detalhamentoParcelas(int usuario_id, int conta_id, int parcela_id)
+        {
+            Vm_detalhamento_parcela vm_dp = new Vm_detalhamento_parcela();
+            ContasPagar parcela = new ContasPagar();
+            List<parcelas_relacionadas> parcelas_relacionadas = new List<parcelas_relacionadas>();
+            List<baixas> baixas = new List<baixas>();            
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+            MySqlDataReader parc;
+            MySqlDataReader relacionadas;
+            MySqlDataReader b;
+
+            try
+            {
+                //Parcela
+                comando.CommandText = "call pr_detalhamentoParcelasCP(@agrupamento,@conta,@parcela);";
+                comando.Parameters.AddWithValue("@agrupamento", "0");
+                comando.Parameters.AddWithValue("@conta", conta_id);
+                comando.Parameters.AddWithValue("@parcela", parcela_id);
+
+                parc = comando.ExecuteReader();
+                if (parc.HasRows)
+                {
+                    while (parc.Read())
+                    {
+                        ContasPagar conta = new ContasPagar();
+
+                        if (DBNull.Value != parc["parcela_id"])
+                        {
+                            conta.parcela_id = Convert.ToInt32(parc["parcela_id"]);
+                        }
+                        else
+                        {
+                            conta.parcela_id = 0;
+                        }
+
+                        if (DBNull.Value != parc["fp_meio_pgto_nfe"])
+                        {
+                            conta.meio_pgto = Convert.ToInt32(parc["fp_meio_pgto_nfe"]);
+                        }
+                        else
+                        {
+                            conta.meio_pgto = 0;
+                        }
+
+                        if (DBNull.Value != parc["fp_id"])
+                        {
+                            conta.fp_id = Convert.ToInt32(parc["fp_id"]);
+                        }
+                        else
+                        {
+                            conta.fp_id = 0;
+                        }
+
+                        if (DBNull.Value != parc["operacao_"])
+                        {
+                            conta.operacao = Convert.ToInt32(parc["operacao_"]);
+                        }
+                        else
+                        {
+                            conta.operacao = 0;
+                        }
+
+                        if (DBNull.Value != parc["venc"])
+                        {
+                            conta.vencimento = Convert.ToDateTime(parc["venc"]);
+                        }
+                        else
+                        {
+                            conta.vencimento = new DateTime();
+                        }
+
+                        conta.fornecedor = parc["participante"].ToString();
+                        conta.referencia = parc["referencia"].ToString();
+                        conta.formaPgto = parc["formaPgto"].ToString();
+
+                        if (DBNull.Value != parc["valorOriginal"])
+                        {
+                            conta.valorOriginal = Convert.ToDecimal(parc["valorOriginal"]);
+                        }
+                        else
+                        {
+                            conta.valorOriginal = 0;
+                        }
+
+                        if (DBNull.Value != parc["baixas"])
+                        {
+                            conta.baixas = Convert.ToDecimal(parc["baixas"]);
+                        }
+                        else
+                        {
+                            conta.baixas = 0;
+                        }
+
+                        if (DBNull.Value != parc["saldo"])
+                        {
+                            conta.saldo = Convert.ToDecimal(parc["saldo"]);
+                        }
+                        else
+                        {
+                            conta.saldo = 0;
+                        }
+
+                        if (DBNull.Value != parc["prazo"])
+                        {
+                            conta.prazo = Convert.ToInt32(parc["prazo"]);
+                        }
+                        else
+                        {
+                            conta.prazo = 0;
+                        }
+                    }
+                }
+                parc.Close();
+
+                //Parcelas relaconadas
+                comando.CommandText = "call pr_parcelas_referenciadas(@conta_id,@parcela_id);";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@parcela_id", parcela_id);
+
+                relacionadas = comando.ExecuteReader();
+                if (relacionadas.HasRows)
+                {
+                    while (relacionadas.Read())
+                    {
+                        parcelas_relacionadas pr = new parcelas_relacionadas();
+
+
+                        if (DBNull.Value != relacionadas["op_parcela_vencimento"])
+                        {
+                            pr.vencimento = Convert.ToDateTime(relacionadas["op_parcela_vencimento"]);
+                        }
+                        else
+                        {
+                            pr.vencimento = new DateTime();
+                        }
+
+                        if (DBNull.Value != relacionadas["op_parcela_valor"])
+                        {
+                            pr.valor = Convert.ToDecimal(relacionadas["op_parcela_valor"]);
+                        }
+                        else
+                        {
+                            pr.valor = 0;
+                        }
+
+                        pr.referencia = relacionadas["referencia"].ToString();
+
+                        parcelas_relacionadas.Add(pr);
+                    }
+                }
+                relacionadas.Close();
+
+                //Baixas
+                comando.CommandText = "SELECT conta_corrente.ccorrente_nome, op_parcelas_baixa.* from op_parcelas_baixa LEFT join conta_corrente on conta_corrente.ccorrente_id = op_parcelas_baixa.oppb_conta_corrente WHERE op_parcelas_baixa.oppb_op_parcela_id = @p_id;";
+                comando.Parameters.AddWithValue("@p_id", parcela_id);
+
+                b = comando.ExecuteReader();
+                if (b.HasRows)
+                {
+                    while (b.Read())
+                    {
+                        baixas ba = new baixas();
+
+                        if (DBNull.Value != b["oppb_data"])
+                        {
+                            ba.data = Convert.ToDateTime(b["oppb_data"]);
+                        }
+                        else
+                        {
+                            ba.data = new DateTime();
+                        }
+
+                        if (DBNull.Value != b["oppb_valor"])
+                        {
+                            ba.valor = Convert.ToDecimal(b["oppb_valor"]);
+                        }
+                        else
+                        {
+                            ba.valor = 0;
+                        }
+
+                        ba.acrescimos = Convert.ToDecimal(b["oppb_juros"]) + Convert.ToDecimal(b["oppb_multa"]);
+                        ba.descontos = Convert.ToDecimal(b["oppb_desconto"]);
+                        ba.conta_corrente = b["oppb_desconto"].ToString();
+
+                        baixas.Add(ba);
+                    }
+                }
+
+                vm_dp.parcela = parcela;
+                vm_dp.parcelas_referenciadas = parcelas_relacionadas;
+                vm_dp.baixas = baixas;
+
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message.Substring(0, 300);
+                log.log("Op_parcelas", "detalhamentoParcelas", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return vm_dp;
+        }
+
+
     }
 }

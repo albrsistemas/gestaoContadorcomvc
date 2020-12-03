@@ -307,7 +307,7 @@
                     @{
                         if (Model.user.Role == "adm" || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete)
                         {
-                            if (item.contra_partida_tipo == "Participante" || item.contra_partida_tipo == "Fatura Cartão") //Neste caso o movimento é uma baixa de operação
+                            if (item.contra_partida_tipo == "Participante" || item.contra_partida_tipo == "Cartão Crédito") //Neste caso o movimento é uma baixa de operação
                             {
                                 <a class="editBaixa" data-baixa_id="@item.baixa_id" data-local="ContaCorrente" data-contacorrente_id="@TempData["contacorrente_id"].ToString()" data-dataInicio="@TempData["dataInicio"].ToString()" data-dataFim="@TempData["dataFim"].ToString()">
                                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eyeglasses" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

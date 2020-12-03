@@ -18,7 +18,9 @@ let fechamento_cartao = {
     fc_referencia: '',
     fc_vencimento: '',
     fc_nome_cartão: '',
-    fc_matriz_parcelas: []
+    fc_matriz_parcelas: [],
+    fc_matriz_parcelas_text: '',
+    fc_forma_pgto_boleto_fatura: 0,
 };
 var operacao = {
     operacao: {
@@ -2770,10 +2772,12 @@ function gravarBaixa(contexto_requisicao, local, contaCorrete_id, dataInicio, da
             success: function (data, textStatus, XMLHttpRequest) {                
                 var results = JSON.parse(data);
                 if (XMLHttpRequest.responseJSON.includes('Baixa realizada com sucesso!')) {                                        
+                    $('#modal').modal('hide');
                     $('#modal_mensagem_sucesso').modal('show');
                     return;
                 }
                 if (XMLHttpRequest.responseJSON.includes('Erro')) {                    
+                    $('#modal').modal('hide');
                     document.getElementById('mensagem_retorno_label').innerHTML = "";
                     document.getElementById('mensagem_retorno_label').innerHTML = "ERRO";
                     document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
@@ -2822,6 +2826,7 @@ function deleteBaixa(contexto, local, contaCorrete_id, dataInicio, dataFim) {
             },
             success: function (data, textStatus, XMLHttpRequest) {
                 if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                    $('#modal').modal('show');
                     document.getElementById('mensagem_retorno_label').innerHTML = "";
                     document.getElementById('mensagem_retorno_label').innerHTML = "ERRO";
                     document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
@@ -3185,6 +3190,23 @@ function gravar_fatura_cartao(contexto) {
             fechamento_cartao.fc_abatimentos_cartao = document.getElementById('modal_fc_abatimentos_cartao').value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
             fechamento_cartao.fc_referencia = document.getElementById('modal_fc_referencia').value;
             fechamento_cartao.fc_vencimento = document.getElementById('modal_fc_vencimento').value;
+            fechamento_cartao.fc_forma_pgto_boleto_fatura = document.getElementById('modal_fc_forma_pgto_boleto_fatura').value;
+            fechamento_cartao.fc_valor_total = fechamento_cartao.fc_valor_total.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });            
+
+            let matriz = "";
+
+            for (let x = 0; x < fechamento_cartao.fc_matriz_parcelas.length; x++)
+            {
+                if (x + 1 == fechamento_cartao.fc_matriz_parcelas.length) {
+                    matriz += fechamento_cartao.fc_matriz_parcelas[x];
+                }
+                else {
+                    matriz += fechamento_cartao.fc_matriz_parcelas[x] + ", ";
+                }
+            }
+
+            fechamento_cartao.fc_matriz_parcelas_text = matriz;
+
 
             console.log(fechamento_cartao);
 
@@ -3202,6 +3224,12 @@ function gravar_fatura_cartao(contexto) {
                 return;
             }
 
+            if (fechamento_cartao.fc_forma_pgto_boleto_fatura.length = 0 || fechamento_cartao.fc_forma_pgto_boleto_fatura == "" || fechamento_cartao.fc_forma_pgto_boleto_fatura == null) {
+                valida = false;
+                alert('Forma de pagamento inválida. Necessário informar uma forma de pagamento do tipo boleto bancário!');
+                return;
+            }
+
             if (valida) {
                 $.ajax({
                     url: "/FechamentoCartao/Create",
@@ -3216,6 +3244,7 @@ function gravar_fatura_cartao(contexto) {
                     },
                     success: function (data, textStatus, XMLHttpRequest) {
                         if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                            $("#modal_fechamento_cartao").modal('hide');
                             document.getElementById('mensagem_retorno_label').innerHTML = "";
                             document.getElementById('mensagem_retorno_label').innerHTML = "ERRO";
                             document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
@@ -3226,12 +3255,15 @@ function gravar_fatura_cartao(contexto) {
                             return;
                         }
                         if (XMLHttpRequest.responseJSON.includes('Fatura cartão cadastrada com sucesso!')) {                           
-
+                            $("#modal_fechamento_cartao").modal('hide');
+                            $('#modal_mensagem_sucesso').modal('show');
+                            /*
                             if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
                                 window.location.href = "https://localhost:44339/ContasPagar/Index";
                             } else {
                                 window.location.href = "https://contadorcomvc.com.br/ContasPagar/Index";
                             }
+                            */
                         }
 
                     }
@@ -3286,3 +3318,45 @@ function monthPicker(id, contexto, vlr) {
         document.getElementById('box_monthPicker').style.display = 'none';
     }
 }
+
+$(".bolinhas").mousedown(function (ev) {
+    if (ev.which == 3) {
+        alert("Right mouse button clicked on element with id myId");
+    }
+});
+
+
+
+//Rotina para clicar com botão direito da tela.
+/*
+oncontextmenu = "cliqueRigth(event,@item.parcela_id, '@item.referencia', '@item.saldo.ToString("N2")', '@item.valorOriginal.ToString("N2")')"
+function cliqueRigth(e, parcela_id, referencia, saldo, valorOriginal) {
+    console.log(saldo);
+    console.log(valorOriginal);    
+    if (referencia.includes('Fechamento Cartão Crédito')) {
+        e.preventDefault();
+        if (typeof e === 'object') {
+            if (saldo == valorOriginal) {
+                document.getElementById('confirmeDeleteCartao').innerHTML = 'Confirma a exclusão da ' + referencia;
+                document.getElementById('footerCartao').innerHTML = '<a class="btn btn-danger"  id="btn_excluir_cartao" onclick="excluirFaturaCartao(' + parcela_id + ')"> Excluir</a><button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>';
+            } else {
+                document.getElementById('confirmeDeleteCartao').innerHTML = 'A fatura do cartão possui baixa e não pode ser excluída. Primeiramente exclua as baixas!';
+                document.getElementById('footerCartao').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>';                
+            }
+            $('#modal_opcoes_rigth').modal('show');
+        }
+    }
+}
+
+function excluirFaturaCartao(parcela_id) {
+    console.log(parcela_id);
+}
+*/
+
+$(".detalhesParcela").click(function () {
+    var parcela_id = $(this).attr("data-parcela_id");    
+    $("#modal").load("/Parcela/Index?parcela_id=" + parcela_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
