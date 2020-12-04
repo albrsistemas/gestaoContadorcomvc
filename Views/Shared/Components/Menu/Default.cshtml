@@ -73,15 +73,15 @@
                         @if (usuario.Role == "adm" || usuario._permissoes.CCMList)
                         {
                             <a class="dropdown-item" asp-controller="ContaCorrenteMov" asp-action="Index">Conta Corrente Movimento</a>
-                        }
-                        <a class="dropdown-item" href="#">Cartão de Crédito</a>
-                        <a class="dropdown-item" href="#">Cheque</a>
+                        }                        
                     </div>
                 </li>
             }
         }
 
-        <li class="nav-item dropdown">
+        <!--Removido o relatório do menu até que estejam prontos no desenvolvimento-->
+
+        @*<li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Relatório
             </a>
@@ -89,7 +89,7 @@
                 <a class="dropdown-item" href="#">Fluxo de Caixa Anual</a>
                 <a class="dropdown-item" href="#">Ficha Financeira</a>
             </div>
-        </li>
+        </li>*@
     </ul>
             <div class="dropdown-divider"></div>
             <ul class="navbar-nav ml-auto">

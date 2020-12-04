@@ -2771,8 +2771,8 @@ function gravarBaixa(contexto_requisicao, local, contaCorrete_id, dataInicio, da
             },
             success: function (data, textStatus, XMLHttpRequest) {                
                 var results = JSON.parse(data);
-                if (XMLHttpRequest.responseJSON.includes('Baixa realizada com sucesso!')) {                                        
-                    $('#modal').modal('hide');
+                console.log(XMLHttpRequest.responseJSON);
+                if (XMLHttpRequest.responseJSON.includes('Baixa realizada com sucesso!')) {     
                     $('#modal_mensagem_sucesso').modal('show');
                     return;
                 }
@@ -3245,18 +3245,18 @@ function gravar_fatura_cartao(contexto) {
                     success: function (data, textStatus, XMLHttpRequest) {
                         if (XMLHttpRequest.responseJSON.includes('Erro')) {
                             $("#modal_fechamento_cartao").modal('hide');
-                            document.getElementById('mensagem_retorno_label').innerHTML = "";
-                            document.getElementById('mensagem_retorno_label').innerHTML = "ERRO";
-                            document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
-                            document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON + "</p>";
-                            document.getElementById('mensagem_retorno_rodape').innerHTML = "";
-                            document.getElementById('mensagem_retorno_rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
-                            $('#modal_mensagem_retorno').modal('show');
+                            document.getElementById('mensagem_retorno_labelF').innerHTML = "";
+                            document.getElementById('mensagem_retorno_labelF').innerHTML = "ERRO";
+                            document.getElementById('mensagem_retorno_conteudoF').innerHTML = "";
+                            document.getElementById('mensagem_retorno_conteudoF').innerHTML = "<p>" + XMLHttpRequest.responseJSON + "</p>";
+                            document.getElementById('mensagem_retorno_rodapeF').innerHTML = "";
+                            document.getElementById('mensagem_retorno_rodapeF').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
+                            $('#modal_mensagem_retornoF').modal('show');
                             return;
                         }
                         if (XMLHttpRequest.responseJSON.includes('Fatura cartão cadastrada com sucesso!')) {                           
                             $("#modal_fechamento_cartao").modal('hide');
-                            $('#modal_mensagem_sucesso_faturaCartao').modal('show');
+                            $('#modal_sucesso_faturaCartao').modal('show');
                             /*
                             if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
                                 window.location.href = "https://localhost:44339/ContasPagar/Index";
