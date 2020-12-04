@@ -24,6 +24,7 @@ namespace gestaoContadorcomvc.Models
         public int parcela_id { get; set; }
         public int meio_pgto { get; set; }
         public int fp_id { get; set; }
+        public string tipo { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      

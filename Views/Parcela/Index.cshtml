@@ -12,7 +12,7 @@
                 <div class="modal-body">
                     <fieldset>
                         <legend>Dados da Parcela</legend>
-                        <p><strong>Fornecedor: </strong>@Model.parcela.fornecedor</p>
+                        <p class="detalhamento_parc_forn"><strong>Fornecedor: </strong>@Model.parcela.fornecedor</p>
                         <div class="list-header">
                             <div class="line-list titulo">
                                 <div class="col-list-left">
@@ -20,7 +20,7 @@
                                 </div>
                                 <div class="col-list-body">
                                     <div class="row">
-                                        <div class="col-12 col-md-2"><strong>Vencimento</strong></div>                                        
+                                        <div class="col-12 col-md-2"><strong>Vencimento</strong></div>
                                         <div class="col-12 col-md-3"><strong>Referência</strong></div>
                                         <div class="col-12 col-md-4"><strong>Forma Pagamento</strong></div>
                                         <div class="col-12 col-md-2" style="text-align:right;"><strong>Valor</strong></div>
@@ -45,7 +45,7 @@
                                     <div class="col-12 line_list_title_mobile"><strong>Valor Original: </strong>@Model.parcela.valorOriginal.ToString("N2")</div>
                                     <div class="col-12 line_list_title_mobile"><strong>Saldo: </strong>@Model.parcela.saldo.ToString("N2")</div>
 
-                                    <div class="col-2 line_list_title_full">@Model.parcela.vencimento.ToShortDateString()</div>                                    
+                                    <div class="col-2 line_list_title_full">@Model.parcela.vencimento.ToShortDateString()</div>
                                     <div class="col-3 line_list_title_full">@Model.parcela.referencia</div>
                                     <div class="col-4 line_list_title_full">@Model.parcela.formaPgto</div>
                                     <div class="col-2 line_list_title_full" style="text-align:right;">@Model.parcela.valorOriginal.ToString("N2")</div>
@@ -84,46 +84,6 @@
                                                 </svg>
                                             </span>
                                         }
-
-                                        if (Model.parcela.meio_pgto != 03) //Se meio de pagamento for diferente de cartão de crédito pode dar dar baixa. Se for igual não pode dar baixa.
-                                        {
-                                            if (Model.user.Role == "adm" || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete)
-                                            {
-                                                <a class="createBaixa" data-parcela_id="@Model.parcela.parcela_id" data-contexto="pagar">
-                                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
-                                                        <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
-                                                    </svg>
-                                                </a>
-                                            }
-
-                                            if (Model.user.Role == "adm" || (Model.user._permissoes.baixaList || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete))
-                                            {
-                                                <a class="listBaixa" data-parcela_id="@Model.parcela.parcela_id" data-contexto="pagar">
-                                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" d="M15 4H1v8h14V4zM1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1z" />
-                                                        <path d="M13 4a2 2 0 0 0 2 2V4h-2zM3 4a2 2 0 0 1-2 2V4h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 12a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
-                                                    </svg>
-                                                </a>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (Model.user.Role == "adm" || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete)
-                                            {
-                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
-                                                    <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
-                                                </svg>
-                                            }
-
-                                            if (Model.user.Role == "adm" || (Model.user._permissoes.baixaList || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete))
-                                            {
-                                                <!--Exibe combo para selecionar parcela-->
-                                                <input type="checkbox" id="cp_@Model.parcela.parcela_id" onchange="fechamento_de_cartao(this.id)">
-                                            }
-                                        }
-
                                     }
                                     else
                                     {
@@ -132,22 +92,6 @@
                                                 <circle cx="8" cy="8" r="8" />
                                             </svg>
                                         </span>
-
-                                        if (Model.user.Role == "adm" || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete)
-                                        {
-                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
-                                                <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
-                                            </svg>
-                                        }
-
-                                        if (Model.user.Role == "adm" || (Model.user._permissoes.baixaList || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete))
-                                        {
-                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cash" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" d="M15 4H1v8h14V4zM1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1z" />
-                                                <path d="M13 4a2 2 0 0 0 2 2V4h-2zM3 4a2 2 0 0 1-2 2V4h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 12a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
-                                            </svg>
-                                        }
                                     }
 
                                 }
@@ -184,18 +128,18 @@
                                         </div>
                                         <div class="col-list-body">
                                             <div class="row">
-                                                <div class="col-12 line_list_title_mobile"><strong>Vencimento: </strong>@item.vencimento.ToShortDateString()</div>                                                
-                                                <div class="col-12 line_list_title_mobile"><strong>Referência: </strong>@item.referencia</div>                                                
-                                                <div class="col-12 line_list_title_mobile"><strong>Valor Original: </strong>@item.valor.ToString("N2")</div>                                                
+                                                <div class="col-12 line_list_title_mobile"><strong>Vencimento: </strong>@item.vencimento.ToShortDateString()</div>
+                                                <div class="col-12 line_list_title_mobile"><strong>Referência: </strong>@item.referencia</div>
+                                                <div class="col-12 line_list_title_mobile"><strong>Valor Original: </strong>@item.valor.ToString("N2")</div>
 
                                                 <div class="col-3 line_list_title_full">@item.vencimento.ToShortDateString()</div>
-                                                <div class="col-6 line_list_title_full">@item.referencia</div>                                                
+                                                <div class="col-6 line_list_title_full">@item.referencia</div>
                                                 <div class="col-3 line_list_title_full" style="text-align:right;">@item.valor.ToString("N2")</div>
-                                                
-                                            </div>                                            
+
+                                            </div>
                                         </div>
                                         <div class="col-list-rigth" style="padding-right: 10px;">
-                                          
+
                                         </div>
                                     </div>
 
@@ -261,66 +205,37 @@
                             }
                             else
                             {
-                                <p>Parcela não possui baixas</p>
+                                <p>Não possui baixas</p>
                             }
 
                         }
                     </fieldset>
+                    @{
+                        if (Model.parcela.tipo == "Fechamento Cartão" && Model.baixas.Count == 0)
+                        {
+                            <p class="text-danger">Esta parcela refere-se a uma fatura de cartão de crédito e não possui baixas. Ao clicar em excluir será removido a fatura do cartão. As parcelas relacionadas voltarão para o contas a pagar!</p>
+                        }
+                        if (Model.parcela.tipo == "Fechamento Cartão" && Model.baixas.Count > 0)
+                        {
+                            <p class="text-danger">Esta parcela refere-se a uma fatura de cartão de crédito, porém possui baixas. Para exluir a fatura primeiro deve-se excluir as baixas no movimento de conta corrente!</p>
+                        }
+                    }
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>                    
+                    @{
+                        if (Model.parcela.tipo == "Fechamento Cartão" && Model.baixas.Count == 0)
+                        {
+                            <a class="btn btn-danger" asp-controller="Parcela" asp-action="Delete" asp-route-parcela_id="@Model.parcela.parcela_id">Excluir</a>
+                        }                        
+                    }
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
 
             </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
-
-
-
-<!--Gravação com sucesso-->
-@*<div class="modal fade" id="modal_mensagem_sucesso" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Baixa</h5>
-            </div>
-            <div class="modal-body">
-                <p>Baixa cadastrada com sucesso!</p>
-            </div>
-            <div class="modal-footer">
-                @{
-                    if (Model.contexto == "receber")
-                    {
-                        <a class="btn btn-info" asp-controller="ContasReceber" asp-action="Index">OK</a>
-                    }
-                    if (Model.contexto == "pagar")
-                    {
-                        <a class="btn btn-info" asp-controller="ContasPagar" asp-action="Index">OK</a>
-                    }
-                }
-            </div>
-        </div>
-    </div>
-</div>*@
-
-<!--Modal erro-->
-@*<div class="modal fade" id="modal_mensagem_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="mensagem_retorno_label"></h5>
-            </div>
-            <div class="modal-body" id="mensagem_retorno_conteudo">
-
-            </div>
-            <div class="modal-footer" id="mensagem_retorno_rodape">
-
-            </div>
-        </div>
-    </div>
-</div>*@
 
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

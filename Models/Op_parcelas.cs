@@ -51,7 +51,7 @@ namespace gestaoContadorcomvc.Models
         public Vm_detalhamento_parcela detalhamentoParcelas(int usuario_id, int conta_id, int parcela_id)
         {
             Vm_detalhamento_parcela vm_dp = new Vm_detalhamento_parcela();
-            ContasPagar parcela = new ContasPagar();
+            ContasPagar conta = new ContasPagar();
             List<parcelas_relacionadas> parcelas_relacionadas = new List<parcelas_relacionadas>();
             List<baixas> baixas = new List<baixas>();            
 
@@ -67,18 +67,20 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
+                DateTime today = DateTime.Today;
+
                 //Parcela
-                comando.CommandText = "call pr_detalhamentoParcelasCP(@agrupamento,@conta,@parcela);";
-                comando.Parameters.AddWithValue("@agrupamento", "0");
+                comando.CommandText = "call pr_detalhamentoParcelasCP(@conta,@parcela,@hoje);";                
                 comando.Parameters.AddWithValue("@conta", conta_id);
                 comando.Parameters.AddWithValue("@parcela", parcela_id);
+                comando.Parameters.AddWithValue("@hoje", today);
 
                 parc = comando.ExecuteReader();
                 if (parc.HasRows)
                 {
                     while (parc.Read())
                     {
-                        ContasPagar conta = new ContasPagar();
+                        
 
                         if (DBNull.Value != parc["parcela_id"])
                         {
@@ -128,6 +130,7 @@ namespace gestaoContadorcomvc.Models
                         conta.fornecedor = parc["participante"].ToString();
                         conta.referencia = parc["referencia"].ToString();
                         conta.formaPgto = parc["formaPgto"].ToString();
+                        conta.tipo = parc["tipo"].ToString();
 
                         if (DBNull.Value != parc["valorOriginal"])
                         {
@@ -156,14 +159,14 @@ namespace gestaoContadorcomvc.Models
                             conta.saldo = 0;
                         }
 
-                        //if (DBNull.Value != parc["prazo"])
-                        //{
-                        //    conta.prazo = Convert.ToInt32(parc["prazo"]);
-                        //}
-                        //else
-                        //{
-                        //    conta.prazo = 0;
-                        //}
+                        if (DBNull.Value != parc["prazo"])
+                        {
+                            conta.prazo = Convert.ToInt32(parc["prazo"]);
+                        }
+                        else
+                        {
+                            conta.prazo = 0;
+                        }
                     }
                 }
                 parc.Close();
@@ -237,13 +240,13 @@ namespace gestaoContadorcomvc.Models
 
                         ba.acrescimos = Convert.ToDecimal(b["oppb_juros"]) + Convert.ToDecimal(b["oppb_multa"]);
                         ba.descontos = Convert.ToDecimal(b["oppb_desconto"]);
-                        ba.conta_corrente = b["oppb_desconto"].ToString();
+                        ba.conta_corrente = b["ccorrente_nome"].ToString();
 
                         baixas.Add(ba);
                     }
                 }
 
-                vm_dp.parcela = parcela;
+                vm_dp.parcela = conta;
                 vm_dp.parcelas_referenciadas = parcelas_relacionadas;
                 vm_dp.baixas = baixas;
 
@@ -262,6 +265,49 @@ namespace gestaoContadorcomvc.Models
             }
 
             return vm_dp;
+        }
+
+        public string deleteParcelaCartaoCredito(int usuario_id, int conta_id, int parcela_id)
+        {
+            string retorno = "Fatura cartao de crédito excluída com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+            
+            try
+            {
+                //Parcela
+                comando.CommandText = "call pr_excluirFaturaCartao(@nConta_id,@nParcela_id);";
+                comando.Parameters.AddWithValue("@nConta_id", conta_id);
+                comando.Parameters.AddWithValue("@nParcela_id", parcela_id);
+                comando.ExecuteNonQuery();
+
+                Transacao.Commit();
+
+                string msg = "Exclusão da fatura de cartão de crédito de parcela_id: " + parcela_id + " excluída com sucesso";
+                log.log("Op_parcelas", "deleteParcelaCartaoCredito", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao excluir a fatura do cartão de crédito. Tente novamente. Se persistir entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("Op_parcelas", "deleteParcelaCartaoCredito", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
         }
 
 

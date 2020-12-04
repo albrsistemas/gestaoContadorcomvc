@@ -79,9 +79,34 @@ namespace gestaoContadorcomvc.Controllers
         }
 
         // GET: ParcelaController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int parcela_id)
         {
-            return View();
+            string retorno = "";
+            try
+            {
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+                Op_parcelas p = new Op_parcelas();
+
+                retorno = p.deleteParcelaCartaoCredito(user.usuario_id, user.usuario_conta_id, parcela_id);
+
+                TempData["msgCP"] = retorno;
+
+                return RedirectToAction("Index", "ContasPagar");
+            }
+            catch
+            {
+                if(retorno == "")
+                {
+                    retorno = "Erro ao excluir a fatura do cartão. Tente novamente. Se persistir entre em contato com o suporte!";
+                }
+
+                TempData["msgCP"] = retorno;
+
+                return RedirectToAction("Index", "ContasPagar");
+            }
         }
 
         // POST: ParcelaController/Delete/5

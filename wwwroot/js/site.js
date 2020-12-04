@@ -3256,7 +3256,7 @@ function gravar_fatura_cartao(contexto) {
                         }
                         if (XMLHttpRequest.responseJSON.includes('Fatura cartão cadastrada com sucesso!')) {                           
                             $("#modal_fechamento_cartao").modal('hide');
-                            $('#modal_mensagem_sucesso').modal('show');
+                            $('#modal_mensagem_sucesso_faturaCartao').modal('show');
                             /*
                             if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
                                 window.location.href = "https://localhost:44339/ContasPagar/Index";
@@ -3359,4 +3359,3 @@ $(".detalhesParcela").click(function () {
         $("#modal_parcela").modal('show');
     })
 });
-

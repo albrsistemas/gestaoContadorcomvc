@@ -15,6 +15,9 @@
     z-index: 2;
     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
+.detalhamento_parc_forn {
+    display: block;
+}
 html,
 body {
     margin: 0px;
@@ -409,6 +412,9 @@ input[type=number] {
 }
 
 @media (min-width: 768px) {
+    .detalhamento_parc_forn {
+        display: none;
+    }
     /*Botão da tela index do controle contra corrente Fluxo de Caixa*/
     .btn_fc {
         margin-top: 32px;
