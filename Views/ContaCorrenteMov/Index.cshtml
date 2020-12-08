@@ -95,10 +95,16 @@
                     Lançamentos
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
-                    @if (Model.user.Role == "adm" || Model.user._permissoes.CCMCreate)
-                        {<a class="dropdown-item createTransferencia" data-contacorrente_id="@TempData["contacorrente_id"].ToString()" data-dataInicio="@TempData["dataInicio"].ToString()" data-dataFim="@TempData["dataFim"].ToString()">Transferência</a>}
-                    <a class="dropdown-item" href="#">Antecipação a cliente</a>
-                    <a class="dropdown-item" href="#">Antecipação a fornecedor</a>
+                    @{
+                        if (Model.user.Role == "adm" || Model.user._permissoes.CCMCreate)
+                        {
+                            <a class="dropdown-item createTransferencia" data-contacorrente_id="@TempData["contacorrente_id"].ToString()" data-dataInicio="@TempData["dataInicio"].ToString()" data-dataFim="@TempData["dataFim"].ToString()">Transferência</a>
+                            <a class="dropdown-item createCCM" data-contacorrente_id="@TempData["contacorrente_id"].ToString()" data-dataInicio="@TempData["dataInicio"].ToString()" data-dataFim="@TempData["dataFim"].ToString()">Novo Lançamento</a>
+                        }
+                    }
+
+                    @*<a class="dropdown-item" href="#">Antecipação a cliente</a>
+        <a class="dropdown-item" href="#">Antecipação a fornecedor</a>*@
                 </div>
             </div>
         </div>
@@ -333,5 +339,3 @@
         }
     }
 }
-
-

@@ -20,6 +20,11 @@ namespace gestaoContadorcomvc.Models
         public DateTime ccm_data { get; set; }
         public DateTime ccm_dataCriacao { get; set; }
         public Decimal ccm_valor { get; set; }
+        public int ccm_op_id { get; set; }
+        public int ccm_oppb_id { get; set; }
+        public string ccm_memorando { get; set; }
+        public string ccm_origem { get; set; }
+        public int ccm_participante_id { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -128,6 +133,54 @@ namespace gestaoContadorcomvc.Models
 
             return ccms;
         }
+
+        //Criar lançamento caixa
+        public string cadastrarCCM(int usuario_id, int conta_id, DateTime data, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id)
+        {
+            string retorno = "Lançamento cadastrado com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "call pr_cadastrarCCM(@ccm_conta_id, @ccm_ccorrente_id, @ccm_data, @ccm_valor, @ccm_memorando, @ccm_participante_id, @categoria_id)";
+                comando.Parameters.AddWithValue("@ccm_conta_id", conta_id);
+                comando.Parameters.AddWithValue("@ccm_ccorrente_id", ccorrente_id);
+                comando.Parameters.AddWithValue("@ccm_data", data);
+                comando.Parameters.AddWithValue("@ccm_valor", valor);
+                comando.Parameters.AddWithValue("@ccm_memorando", memorando);
+                comando.Parameters.AddWithValue("@ccm_participante_id", participante_id);
+                comando.Parameters.AddWithValue("@categoria_id", categoria_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Lançamento conta corrente movimento cadastrado com sucesso";
+                log.log("Conta_corrente_mov", "cadastrarCCM", "Sucesso", msg, conta_id, usuario_id);
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao cadastrar o participante. Tente novamente. Se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("Conta_corrente_mov", "cadastrarCCM", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
+
 
 
     }

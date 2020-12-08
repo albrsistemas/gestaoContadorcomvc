@@ -2864,56 +2864,29 @@ function filter_ccm() {
     }
 }
 
-function consultaParticipanteCCM(id) {
-    let id_campo = "#" + id;
-    $(id_campo).autocomplete({
-        source: function (request, response) {
-            $.ajax({
-                url: "/Participante/consultaParticipante",
-                data: { __RequestVerificationToken: gettoken(), termo: request.term },
-                type: 'POST',
-                dataType: 'json',
-                beforeSend: function (XMLHttpRequest) {
-
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    alert("erro");
-                },
-                success: function (data, textStatus, XMLHttpRequest) {
-                    var results = JSON.parse(data);
-                    var autocompleteObjects = [];
-                    for (var i = 0; i < results.length; i++) {
-                        var object = {
-                            value: results[i].participante_nome,
-                            label: results[i].participante_nome + " - " + results[i].participante_cnpj_cpf,
-                            id: results[i].participante_id,                            
-                        };
-                        autocompleteObjects.push(object);
-                    }
-
-                    // Invoke the response callback.
-                    response(autocompleteObjects);
-                }
-            });
-        },
-        minLength: 3,
-        select: function (event, ui) {
-            if (document.getElementById('participante_id')) {
-                document.getElementById('participante_id').value = ui.item.id;
-            }            
-        }
-    });
-}
-
-
 $(".createTransferencia").click(function () {    
-    var contacorrente_id = $(this).attr("data-contacorrente_id");
+    var contacorrente_id = $(this).attr("data-contacorrente_id");    
     var dataInicio = $(this).attr("data-dataInicio");
     var dataFim = $(this).attr("data-dataFim");    
     var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
     var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
 
     $("#modal").load("/Transferencia/Create?contacorrente_id=" + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim, function () {
+        $("#modal").modal('show');
+    })
+});
+
+$(".createCCM").click(function () {
+    var contacorrente_id = $(this).attr("data-contacorrente_id");
+    if (contacorrente_id == 0) {
+        contacorrente_id = document.getElementById('contacorrente_id').value;
+    }
+    var dataInicio = $(this).attr("data-dataInicio");
+    var dataFim = $(this).attr("data-dataFim");
+    var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
+    var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
+
+    $("#modal").load("/ContaCorrenteMov/Create?contacorrente_id=" + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim, function () {
         $("#modal").modal('show');
     })
 });
@@ -3359,3 +3332,126 @@ $(".detalhesParcela").click(function () {
         $("#modal_parcela").modal('show');
     })
 });
+
+function gravarLancamentoCCM() {
+    document.getElementById('validaForm').innerHTML = '';
+    retorno = '';
+    validacao = true;
+
+    if (document.getElementById('ccm_data')) {
+        let data = (document.getElementById('ccm_data').value).split('/');
+        let d = new Date(data[2], data[1], data[0]);
+        if (data.length < 3 || d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1 || data == '' || data == null) {
+            retorno += 'Data inválida.;';
+            validacao = false;
+        }
+    }
+
+    if (document.getElementById('ccm_valor')) {
+        let vlr = document.getElementById('ccm_valor').value;
+        if (vlr == '' || vlr == null || vlr <= 0) {
+            retorno += "Valor inválido.;";
+            validacao = false;
+        }
+    }
+
+    if (document.getElementById('ccm_memorando') && document.getElementById('ccm_memorando').value.length < 3) {
+        retorno += 'Obrigatório memorando com no mínimo três caracteres.';
+        validacao = false;
+    }
+
+    if (validacao == false) {
+        let erros = retorno.split(';');
+        document.getElementById('validaForm').style.display = 'block';
+        for (let i = 0; i < erros.length; i++) {
+            document.getElementById('validaForm').innerHTML += '<p class="text-danger">' + erros[i] +'</p>'; 
+        }
+        return;
+    }
+
+    if (validacao) {
+        let date = document.getElementById('ccm_data').value;
+        let valor = document.getElementById('ccm_valor').value;
+        let memorando = document.getElementById('ccm_memorando').value;
+        let categoria_id = document.getElementById('categoria_id').value;
+        let ccm_participante_id = document.getElementById('ccm_participante_id').value;
+        let ccorrente_id = document.getElementById('ccorrente_id').value;
+
+        $.ajax({
+            url: "/ContaCorrenteMov/Create",
+            data: { __RequestVerificationToken: gettoken(), data: date, valor: valor, memorando: memorando, categoria_id: categoria_id, participante_id: ccm_participante_id, ccorrente_id: ccorrente_id },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("erro");
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                var results = JSON.parse(data);
+                console.log(results);
+
+                if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                    document.getElementById('msg_retorno').innerHTML = XMLHttpRequest.responseJSON;
+                    $("#Esconder").fadeTo(4000, 500).slideUp(500, function () {
+                        $("#Esconder").slideUp(500);
+                    });                    
+                    return;
+                }                
+                if (XMLHttpRequest.responseJSON.includes('sucesso!')) {
+                    document.getElementById('msg_retorno_success').innerHTML = XMLHttpRequest.responseJSON;
+                    $("#Esconder_success").fadeTo(4000, 500).slideUp(500, function () {
+                        $("#Esconder_success").slideUp(500);
+                    });
+                    document.getElementById('ccm_valor').value = "";
+                    document.getElementById('ccm_memorando').value = "";
+                    return;
+                }
+            }
+        });
+
+
+    }
+}
+
+function consultaParticipanteCCM(id) {
+    let id_campo = "#" + id;
+    $(id_campo).autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Participante/consultaParticipante",
+                data: { __RequestVerificationToken: gettoken(), termo: request.term },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("erro");
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    var results = JSON.parse(data);
+                    var autocompleteObjects = [];
+                    for (var i = 0; i < results.length; i++) {
+                        var object = {
+                            value: results[i].participante_nome,
+                            label: results[i].participante_nome + " - " + results[i].participante_cnpj_cpf,
+                            id: results[i].participante_id,
+                        };
+                        autocompleteObjects.push(object);
+                    }
+
+                    // Invoke the response callback.
+                    response(autocompleteObjects);
+                }
+            });
+        },
+        minLength: 3,
+        select: function (event, ui) {
+            if (document.getElementById('ccm_participante_id')) {
+                document.getElementById('ccm_participante_id').value = ui.item.id;
+            }
+        }
+    });
+}

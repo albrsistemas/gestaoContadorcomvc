@@ -1,0 +1,93 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_ccm
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Lançamento</h4>
+            </div>
+            <form asp-controller="ContaCorrenteMov" asp-action="Create">
+                <div class="modal-body" id="modal_c">
+                    <div class="row">
+                        <div class="col-12">
+                            <p>Nova lançamento</p>
+                        </div>
+                    </div>
+                    <hr class="hrLine" />
+                    <!--Alert retorno ajax-->
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder" style="display:none;">
+                        <p id="msg_retorno"></p>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder_success" style="display:none;">
+                        <p id="msg_retorno_success"></p>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="ccm_data" class="control-label">Data</label>
+                                @{
+                                    DateTime today = DateTime.Today;
+                                    <input type="text" name="ccm_data" id="ccm_data" autocomplete="off" class="form-control datepicker" value="@today.ToShortDateString()" />
+                                }
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="ccm_valor" class="control-label">Valor</label>
+                                <input type="text" asp-for="ccm_valor" id="ccm_valor" class="form-control" onchange="decimal(this.id, this.value, '2')" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="ccm_memorando" class="control-label">Memorando</label>
+                                <textarea asp-for="ccm_memorando" id="ccm_memorando" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '150','memorando')"></textarea>
+                                <span class="text-info" id="memorando"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="categoria_id" class="control-label">Categoria</label>
+                                <select asp-items="@ViewBag.categoria" value="@TempData["categoria_id"]" id="categoria_id" name="categoria_id" class="form-control"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="control-label">Participante</label>
+                                <input type="text" id="participante" class="form-control" autocomplete="off" onkeyup="consultaParticipanteCCM(this.id)" />
+                                <input type="hidden" asp-for="ccm_participante_id" /> <!--ID do participante-->
+                            </div>
+                        </div>
+                    </div>    
+                    <input type="hidden" name="ccorrente_id" id="ccorrente_id" value="@Model.filtro.contacorrente_id" />
+                </div>
+                <div id="validaForm" style="display:none;margin-left: 15px;margin-right: 15px;">
+
+                </div>                
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" asp-controller="ContaCorrenteMov" asp-action="Index" asp-route-contacorrente_id="@Model.filtro.contacorrente_id" asp-route-dataInicio="@Model.filtro.dataInicio.ToString("yyyy-M-d")" asp-route-dataFim="@Model.filtro.dataFim.ToString("yyyy-M-d")">Fechar</a>                    
+                    <button type="button" onclick="gravarLancamentoCCM()" class="btn btn-info">Gravar</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    execDatapicker();
+</script>
