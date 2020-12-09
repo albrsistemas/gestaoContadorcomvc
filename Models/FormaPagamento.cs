@@ -207,7 +207,25 @@ namespace gestaoContadorcomvc.Models
                         fp.fp_bandeira_cartao = leitor["fp_bandeira_cartao"].ToString();
                         fp.fp_cnpj_credenciadora_cartao = leitor["fp_cnpj_credenciadora_cartao"].ToString();
                         fp.fp_status = leitor["fp_status"].ToString();                        
-                        fp.ccorrente_tipo = leitor["ccorrente_tipo"].ToString();                        
+                        fp.ccorrente_tipo = leitor["ccorrente_tipo"].ToString();
+
+                        if (DBNull.Value != leitor["fp_dia_fechamento_cartao"])
+                        {
+                            fp.fp_dia_fechamento_cartao = Convert.ToInt32(leitor["fp_dia_fechamento_cartao"]);
+                        }
+                        else
+                        {
+                            fp.fp_dia_fechamento_cartao = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fp_dia_vencimento_cartao"])
+                        {
+                            fp.fp_dia_vencimento_cartao = Convert.ToInt32(leitor["fp_dia_vencimento_cartao"]);
+                        }
+                        else
+                        {
+                            fp.fp_dia_vencimento_cartao = 0;
+                        }
                     }
                 }
             }

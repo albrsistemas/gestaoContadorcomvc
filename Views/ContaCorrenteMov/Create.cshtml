@@ -51,7 +51,7 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label asp-for="ccm_valor" class="control-label">Valor</label>
-                                <input type="text" asp-for="ccm_valor" id="ccm_valor" class="form-control" onchange="decimal(this.id, this.value, '2')" />
+                                <input type="text" autofocus asp-for="ccm_valor" id="ccm_valor" class="form-control" onchange="decimal(this.id, this.value, '2')" />
                             </div>
                         </div>
                     </div>
@@ -200,9 +200,11 @@
         document.getElementById('ccm_nf_numero').value = "";
         document.getElementById('ccm_nf_chave').value = "";
         document.getElementById('nf_ccm').checked = false;
-        document.getElementById('box_nf').style.display = 'none';
-        document.getElementById('ccm_valor').focus();
+        document.getElementById('box_nf').style.display = 'none';        
         $('#ccm_gravado_sucesso').modal('hide');
+        $('#modal').on('shown.bs.modal', function () {
+            $('#ccm_valor').focus();
+        });
     }
     function close_ccm_gravado_erro() {
         $('#ccm_gravado_erro').modal('hide');
