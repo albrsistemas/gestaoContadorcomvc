@@ -18,6 +18,7 @@ namespace gestaoContadorcomvc.Models
         public int op_id { get; set; }
         public int baixa_id { get; set; }
         public string contra_partida_tipo { get; set; }
+        public string ccm_origem { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -103,7 +104,7 @@ namespace gestaoContadorcomvc.Models
                     filter += " and op.op_numero_ordem = @nOperacao";                    
                 }
 
-                string cmd = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, xccm.ccm_memorando as memorando, if(xccm.ccm_movimento = 'E', xccm.ccm_valor, -xccm.ccm_valor) as valor, xccm.ccm_op_id as op_id, op.op_tipo, op.op_numero_ordem, xccm.ccm_oppb_id as baixa_id, xccm.ccm_contra_partida_tipo as contra_partida_tipo, xccm.ccm_contra_partida_id from conta_corrente_mov as xccm LEFT join operacao as op on op.op_id = xccm.ccm_op_id WHERE " + filter + " ORDER by xccm.ccm_data ASC;";
+                string cmd = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, xccm.ccm_memorando as memorando, if(xccm.ccm_movimento = 'E', xccm.ccm_valor, -xccm.ccm_valor) as valor, xccm.ccm_op_id as op_id, op.op_tipo, op.op_numero_ordem, xccm.ccm_oppb_id as baixa_id, xccm.ccm_contra_partida_tipo as contra_partida_tipo, xccm.ccm_contra_partida_id, xccm.ccm_origem from conta_corrente_mov as xccm LEFT join operacao as op on op.op_id = xccm.ccm_op_id WHERE " + filter + " ORDER by xccm.ccm_data ASC;";
                 //Fluxo de lançamentos do período
                 //comando.CommandText = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, xccm.ccm_memorando as memorando, if(xccm.ccm_movimento = 'Recebimento', xccm.ccm_valor, -xccm.ccm_valor) as valor, xccm.ccm_op_id as op_id, xccm.ccm_oppb_id as baixa_id, xccm.ccm_contra_partida_tipo as contra_partida_tipo, xccm.ccm_contra_partida_id from conta_corrente_mov as xccm WHERE xccm.ccm_conta_id = @conta_id_3 and xccm.ccm_ccorrente_id = @contaCorrente_3 and xccm.ccm_data BETWEEN @dataInicial_3 AND @dataFinal ORDER by xccm.ccm_data ASC;";
                 comando.CommandText = cmd;
@@ -189,6 +190,7 @@ namespace gestaoContadorcomvc.Models
                         }
 
                         fluxo_cx.contra_partida_tipo = fluxo["contra_partida_tipo"].ToString();
+                        fluxo_cx.ccm_origem = fluxo["ccm_origem"].ToString();
 
                         fc.Add(fluxo_cx);
                     }

@@ -111,7 +111,7 @@ namespace gestaoContadorcomvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(string dataInicio, string dataFim, int contacorrente_id, DateTime data, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id, bool ccm_nf, DateTime ccm_nf_data_emissao, Decimal ccm_nf_valor, string ccm_nf_serie, string ccm_nf_numero, string ccm_nf_chave)
+        public IActionResult Create(string dataInicio, string dataFim, int contacorrente_id, DateTime data, DateTime ccm_data_competencia, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id, bool ccm_nf, DateTime ccm_nf_data_emissao, Decimal ccm_nf_valor, string ccm_nf_serie, string ccm_nf_numero, string ccm_nf_chave)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -129,7 +129,7 @@ namespace gestaoContadorcomvc.Controllers
                 f.dataFim = Convert.ToDateTime(dataFim);
                 vm_ccm.filtro = f;
 
-                retorno = ccm.cadastrarCCM(user.usuario_id, user.usuario_conta_id, data, valor, memorando, categoria_id, participante_id, ccorrente_id, ccm_nf, ccm_nf_data_emissao, ccm_nf_valor, ccm_nf_serie, ccm_nf_numero, ccm_nf_chave);
+                retorno = ccm.cadastrarCCM(user.usuario_id, user.usuario_conta_id, data, ccm_data_competencia, valor, memorando, categoria_id, participante_id, ccorrente_id, ccm_nf, ccm_nf_data_emissao, ccm_nf_valor, ccm_nf_serie, ccm_nf_numero, ccm_nf_chave);
 
                 return Json(JsonConvert.SerializeObject(retorno));
             }
@@ -143,6 +143,64 @@ namespace gestaoContadorcomvc.Controllers
                 return Json(JsonConvert.SerializeObject(retorno));
             }
         }
+
+        public IActionResult Edit(string dataInicio, string dataFim, int contacorrente_id, int ccm_id)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Conta_corrente_mov conta_mov = new Conta_corrente_mov();
+            Vm_ccm ccm = new Vm_ccm();
+            ccm = conta_mov.buscaCCM(user.usuario_id, user.usuario_conta_id, ccm_id);
+            filtro f = new filtro();
+            f.contacorrente_id = contacorrente_id;
+            f.dataInicio = Convert.ToDateTime(dataInicio);
+            f.dataFim = Convert.ToDateTime(dataFim);
+            ccm.filtro = f;            
+
+            Selects select = new Selects();
+            ViewBag.categoria = select.getCategoriasCliente(user.usuario_conta_id, true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == ccm.ccm_contra_partida_id.ToString() });
+
+            return View(ccm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(string dataInicio, string dataFim, int contacorrente_id, DateTime data, DateTime ccm_data_competencia, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id, bool ccm_nf, DateTime ccm_nf_data_emissao, Decimal ccm_nf_valor, string ccm_nf_serie, string ccm_nf_numero, string ccm_nf_chave, int ccm_id)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            string retorno = "";
+
+            try
+            {
+                Conta_corrente_mov ccm = new Conta_corrente_mov();
+                Vm_ccm vm_ccm = new Vm_ccm();
+                filtro f = new filtro();
+                f.contacorrente_id = contacorrente_id;
+                f.dataInicio = Convert.ToDateTime(dataInicio);
+                f.dataFim = Convert.ToDateTime(dataFim);
+                vm_ccm.filtro = f;
+
+                retorno = ccm.alterarCCM(user.usuario_id, user.usuario_conta_id, data, ccm_data_competencia, valor, memorando, categoria_id, participante_id, ccorrente_id, ccm_nf, ccm_nf_data_emissao, ccm_nf_valor, ccm_nf_serie, ccm_nf_numero, ccm_nf_chave, ccm_id);
+
+                return Json(JsonConvert.SerializeObject(retorno));
+            }
+            catch
+            {
+                if (retorno == "")
+                {
+                    retorno = "Erro ao alterar o lançamento. Tente novamente. Se persistir, entre em contato com o suporte!";
+                }
+
+                return Json(JsonConvert.SerializeObject(retorno));
+            }
+        }
+
+
 
 
 

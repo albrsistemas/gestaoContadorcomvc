@@ -2891,6 +2891,22 @@ $(".createCCM").click(function () {
     })
 });
 
+$(".editCCM").click(function () {
+    var ccm_id = $(this).attr("data-ccm_id");
+    var contacorrente_id = $(this).attr("data-contacorrente_id");
+    if (contacorrente_id == 0) {
+        contacorrente_id = document.getElementById('contacorrente_id').value;
+    }
+    var dataInicio = $(this).attr("data-dataInicio");
+    var dataFim = $(this).attr("data-dataFim");
+    var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
+    var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
+
+    $("#modal").load("/ContaCorrenteMov/Edit?contacorrente_id=" + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim + "&ccm_id=" + ccm_id, function () {
+        $("#modal").modal('show');
+    })
+});
+
 $(".editTransferencia").click(function () {
     var ccm_id = $(this).attr("data-ccm_id");
     var contacorrente_id = $(this).attr("data-contacorrente_id");
@@ -3333,7 +3349,7 @@ $(".detalhesParcela").click(function () {
     })
 });
 
-function gravarLancamentoCCM() {
+function gravarLancamentoCCM(contexto) {
     document.getElementById('validaForm').innerHTML = '';
     retorno = '';
     validacao = true;
@@ -3391,6 +3407,7 @@ function gravarLancamentoCCM() {
 
     if (validacao) {
         let date = document.getElementById('ccm_data').value;
+        let ccm_data_competencia = document.getElementById('ccm_data_competencia').value;
         let valor = document.getElementById('ccm_valor').value;
         let memorando = document.getElementById('ccm_memorando').value;
         let categoria_id = document.getElementById('categoria_id').value;
@@ -3405,10 +3422,11 @@ function gravarLancamentoCCM() {
 
 
         $.ajax({
-            url: "/ContaCorrenteMov/Create",
+            url: "/ContaCorrenteMov/" + contexto,
             data: {
                 __RequestVerificationToken: gettoken(),
                 data: date,
+                ccm_data_competencia: ccm_data_competencia,
                 valor: valor,
                 memorando: memorando,
                 categoria_id: categoria_id,
@@ -3440,7 +3458,7 @@ function gravarLancamentoCCM() {
                     });                    
                     return;
                 }                
-                if (XMLHttpRequest.responseJSON.includes('sucesso!')) {
+                if (XMLHttpRequest.responseJSON.includes('cadastrado com sucesso!')) {
                     document.getElementById('msg_retorno_success').innerHTML = XMLHttpRequest.responseJSON;
                     $("#Esconder_success").fadeTo(4000, 500).slideUp(500, function () {
                         $("#Esconder_success").slideUp(500);
@@ -3457,10 +3475,13 @@ function gravarLancamentoCCM() {
                     document.getElementById('box_nf').style.display = 'none';
                     return;
                 }
+
+                if (XMLHttpRequest.responseJSON.includes('alterado com sucesso!')) {
+                    $("#ccm_alterado_sucesso").modal('show');
+                    return;
+                }
             }
         });
-
-
     }
 }
 

@@ -12,18 +12,18 @@
                 <div class="modal-body" id="modal_c">
                     <div class="row">
                         <div class="col-12">
-                            <p>Nova lançamento</p>
+                            <p>Novo lançamento</p>
                         </div>
                     </div>
                     <hr class="hrLine" />
                     <!--Alert retorno ajax-->
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder" style="display:none;">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder" style="display:none;z-index: 2000;">
                         <p id="msg_retorno"></p>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder_success" style="display:none;">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder_success" style="display:none;z-index: 2000;">
                         <p id="msg_retorno_success"></p>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -144,7 +144,7 @@
                 </div>                
                 <div class="modal-footer">
                     <a class="btn btn-secondary" asp-controller="ContaCorrenteMov" asp-action="Index" asp-route-contacorrente_id="@Model.filtro.contacorrente_id" asp-route-dataInicio="@Model.filtro.dataInicio.ToString("yyyy-M-d")" asp-route-dataFim="@Model.filtro.dataFim.ToString("yyyy-M-d")">Fechar</a>                    
-                    <button type="button" onclick="gravarLancamentoCCM()" class="btn btn-info">Gravar</button>
+                    <button type="button" onclick="gravarLancamentoCCM('Create')" class="btn btn-info">Gravar</button>
                 </div>
             </form>
         </div><!-- /.modal-content -->

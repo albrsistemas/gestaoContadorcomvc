@@ -25,6 +25,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string ccm_origem { get; set; }
         public int ccm_participante_id { get; set; }
         public int categoria_id { get; set; }
+        public string participante_nome { get; set; }
         public Ccm_nf nf { get; set; }
         public filtro filtro { get; set; }
 
