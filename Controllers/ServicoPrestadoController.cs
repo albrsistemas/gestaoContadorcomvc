@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 namespace gestaoContadorcomvc.Controllers
 {
+    [Authorize]
     public class ServicoPrestadoController : Controller
     {
         [Autoriza(permissao = "servicoPList")]

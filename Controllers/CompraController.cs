@@ -17,7 +17,7 @@ namespace gestaoContadorcomvc.Controllers
     [Authorize]
     public class CompraController : Controller
     {
-        // GET: CompraController
+        [Autoriza(permissao = "compraList")]
         public ActionResult Index()
         {
             Usuario usuario = new Usuario();
@@ -31,8 +31,7 @@ namespace gestaoContadorcomvc.Controllers
 
             return View(op);
         }
-
-        // GET: CompraController/Create
+                
         [Autoriza(permissao = "compraCreate")]
         public ActionResult Create()
         {

@@ -15,17 +15,6 @@ namespace gestaoContadorcomvc.Controllers
     [Authorize]
     public class BaixaController : Controller
     {
-        // GET: BaixaController
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
-
-        //// GET: BaixaController/Details/5
-        //public ActionResult Details(int id)
-        //{
-        //    return View();
-        //}
 
         [Autoriza(permissao = "baixaCreate")]
         public ActionResult Create(int parcela_id, string contexto)

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace gestaoContadorcomvc.Controllers
 {
+    [Authorize]
     public class ContasReceberController : Controller
     {
         [Autoriza(permissao = "ContasRList")]

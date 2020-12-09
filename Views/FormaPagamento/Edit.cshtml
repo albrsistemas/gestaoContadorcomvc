@@ -130,3 +130,48 @@
     <a class="btn btn-secondary" asp-controller="FormaPagamento" asp-action="Index">Cancelar</a>
 
 </form>
+@{
+    if (@Model.fp_identificacao == "Pagamento")
+    {
+        if (@Model.fp_meio_pgto_nfe == "03")
+        {
+            <script>
+                document.getElementById('legenda_cartoes').style.display = 'block';
+                document.getElementById('grupo_cartoes_pagamento').style.display = 'block';
+                document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+                document.getElementById('fp_dia_fechamento_cartao').removeAttribute("disabled");
+                document.getElementById('fp_dia_vencimento_cartao').removeAttribute("disabled");
+            </script>
+        }
+        else
+        {
+            <script>
+                document.getElementById('legenda_cartoes').style.display = 'none';
+                document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+                document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+                document.getElementById('fp_dia_fechamento_cartao').setAttribute("disabled", "disabled");
+                document.getElementById('fp_dia_vencimento_cartao').setAttribute("disabled", "disabled");
+            </script>
+        }
+    }
+
+    if (@Model.fp_identificacao == "Recebimento")
+    {
+        if(@Model.fp_meio_pgto_nfe == "03" || @Model.fp_meio_pgto_nfe == "04")
+        {
+            <script>
+                document.getElementById('legenda_cartoes').style.display = 'block';
+                document.getElementById('grupo_cartoes_recebimento').style.display = 'block';
+                document.getElementById('grupo_cartoes_pagamento').style.display = 'none';                
+            </script>
+        }
+        else
+        {
+            <script>
+                document.getElementById('legenda_cartoes').style.display = 'none';
+                document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+                document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+            </script>
+        }
+    }
+}

@@ -5,18 +5,15 @@ using System.Threading.Tasks;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
 {
+    [Authorize]
     public class FechamentoCartaoController : Controller
-    {
-        public IActionResult Index()
-        {
-            return View();
-        }
-
+    {   
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Fechamento_cartao fc)

@@ -87,6 +87,7 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
+        [Autoriza(permissao = "CCMCreate")]
         public IActionResult Create(string dataInicio, string dataFim, int contacorrente_id)
         {
             Usuario usuario = new Usuario();
@@ -144,6 +145,7 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
+        [Autoriza(permissao = "CCMEdit")]
         public IActionResult Edit(string dataInicio, string dataFim, int contacorrente_id, int ccm_id)
         {
             Usuario usuario = new Usuario();
@@ -200,9 +202,43 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
+        [Autoriza(permissao = "CCMDelete")]
+        public ActionResult Delete(int ccm_id, string dataInicio, string dataFim, int contacorrente_id)
+        {
+            string retorno = "";
 
+            TempData["dataInicio"] = Convert.ToDateTime(dataInicio);
+            TempData["dataFim"] = Convert.ToDateTime(dataFim);
+            TempData["contacorrente_id"] = contacorrente_id;
 
+            try
+            {
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
+                Fluxo_caixa fc = new Fluxo_caixa();
+                Conta_corrente_mov ccm = new Conta_corrente_mov();
 
+                retorno =  ccm.excluirCCM(user.usuario_id, user.usuario_conta_id, ccm_id);
+
+                TempData["msgCCM"] = retorno;
+
+                return RedirectToAction("Index", "ContaCorrenteMov", new { dataInicio = Convert.ToDateTime(dataInicio), dataFim = Convert.ToDateTime(dataFim), contacorrente_id = contacorrente_id });
+            }
+            catch
+            {
+                if(retorno == "")
+                {
+                    TempData["msgCCM"] = "Erro ao excluir . Tente novamente, se persistir, entre em contato com o suporte!";
+                }
+                else
+                {
+                    TempData["msgCCM"] = retorno;
+                }
+
+                return RedirectToAction("Index", "ContaCorrenteMov", new { dataInicio = Convert.ToDateTime(dataInicio), dataFim = Convert.ToDateTime(dataFim), contacorrente_id = contacorrente_id });
+            }
+        }
     }
 }

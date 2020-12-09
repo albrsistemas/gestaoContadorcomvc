@@ -2,30 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace gestaoContadorcomvc.Controllers
 {
+    [Authorize]
     public class TransferenciaController : Controller
     {
-        //// GET: TransferenciaController
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
-
-        //// GET: TransferenciaController/Details/5
-        //public ActionResult Details(int id)
-        //{
-        //    return View();
-        //}
-
-        // GET: TransferenciaController/Create
+        [Autoriza(permissao = "CCMCreate")]
         public ActionResult Create(string dataInicio, string dataFim, int contacorrente_id)
         {
             Usuario usuario = new Usuario();
@@ -71,7 +62,7 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
-        // GET: TransferenciaController/Edit/5
+        [Autoriza(permissao = "CCMEdit")]
         public ActionResult Edit(int ccm_id, string dataInicio, string dataFim, int contacorrente_id)
         {
             Usuario usuario = new Usuario();
@@ -121,6 +112,7 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
+        [Autoriza(permissao = "CCMDelete")]
         public ActionResult Delete(int ccm_id, string dataInicio, string dataFim, int contacorrente_id)
         {   
             TempData["dataInicio"] = Convert.ToDateTime(dataInicio);

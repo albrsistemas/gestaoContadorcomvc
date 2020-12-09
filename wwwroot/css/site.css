@@ -312,6 +312,12 @@ input[type=number] {
     position: fixed;
     top: 100px;
 }
+.box_modal {
+    position: relative;
+    top: 0px;
+    z-index: 2000;
+    width: 100%;
+}
 
 .btn-tools {
     width: 100%;
@@ -320,7 +326,7 @@ input[type=number] {
     border-radius: 5px;
     background-color: #cfd0d1;
     padding-left: 10px;
-    padding-right: 10px;    
+    padding-right: 10px;
 }
 .btn-tools span{
     font-family: sans-serif;

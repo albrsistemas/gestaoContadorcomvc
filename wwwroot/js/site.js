@@ -3376,7 +3376,7 @@ function gravarLancamentoCCM(contexto) {
         validacao = false;    
     }
 
-    let nota = document.getElementById('nf_ccm').value;
+    let nota = document.getElementById('nf_ccm').checked;
     if (nota) {
         if (document.getElementById('ccm_nf_data_emissao') && (document.getElementById('ccm_nf_data_emissao').value == 0 || document.getElementById('ccm_nf_data_emissao').value == '' || document.getElementById('ccm_nf_data_emissao').value == null)) {
             retorno += "Data de emissão da nota fiscal é inválida.;";
@@ -3419,6 +3419,10 @@ function gravarLancamentoCCM(contexto) {
         let ccm_nf_serie = document.getElementById('ccm_nf_serie').value;
         let ccm_nf_numero = document.getElementById('ccm_nf_numero').value;
         let ccm_nf_chave = document.getElementById('ccm_nf_chave').value;
+        let ccm_id = 0;
+        if (document.getElementById('ccm_id')) {
+            ccm_id = document.getElementById('ccm_id').value;
+        }
 
 
         $.ajax({
@@ -3437,7 +3441,8 @@ function gravarLancamentoCCM(contexto) {
                 ccm_nf_valor: ccm_nf_valor,
                 ccm_nf_serie: ccm_nf_serie,
                 ccm_nf_numero: ccm_nf_numero,
-                ccm_nf_chave: ccm_nf_chave
+                ccm_nf_chave: ccm_nf_chave,
+                ccm_id: ccm_id
             },
             type: 'POST',
             dataType: 'json',
@@ -3458,25 +3463,12 @@ function gravarLancamentoCCM(contexto) {
                     });                    
                     return;
                 }                
-                if (XMLHttpRequest.responseJSON.includes('cadastrado com sucesso!')) {
-                    document.getElementById('msg_retorno_success').innerHTML = XMLHttpRequest.responseJSON;
-                    $("#Esconder_success").fadeTo(4000, 500).slideUp(500, function () {
-                        $("#Esconder_success").slideUp(500);
-                    });
-                    document.getElementById('ccm_valor').value = "";
-                    document.getElementById('ccm_memorando').value = "";
-
-                    document.getElementById('ccm_nf_data_emissao').value = "";
-                    document.getElementById('ccm_nf_valor').value = "";
-                    document.getElementById('ccm_nf_serie').value = "";
-                    document.getElementById('ccm_nf_numero').value = "";
-                    document.getElementById('ccm_nf_chave').value = "";
-                    document.getElementById('nf_ccm').checked = false;
-                    document.getElementById('box_nf').style.display = 'none';
+                if (XMLHttpRequest.responseJSON.includes('cadastrado com sucesso!')) {                    
+                    $("#ccm_gravado_sucesso").modal('show');
                     return;
                 }
 
-                if (XMLHttpRequest.responseJSON.includes('alterado com sucesso!')) {
+                if (XMLHttpRequest.responseJSON.includes('alterado com sucesso!')) {                    
                     $("#ccm_alterado_sucesso").modal('show');
                     return;
                 }
@@ -3532,5 +3524,32 @@ function ccm_nf(id, box) {
         document.getElementById(box).style.display = 'block';
     } else {
         document.getElementById(box).style.display = 'none';
+        document.getElementById('ccm_nf_data_emissao').value = "";
+        document.getElementById('ccm_nf_valor').value = "";
+        document.getElementById('ccm_nf_serie').value = "";
+        document.getElementById('ccm_nf_numero').value = "";
+        document.getElementById('ccm_nf_chave').value = "";
     }
+}
+
+function modal_modal() {
+    //Instrução para correções na abertura de modal sobre modal
+    $(document).on('show.bs.modal', '.modal', function () {
+        var zIndex = 1040 + (10 * $('.modal:visible').length);
+        $(this).css('z-index', zIndex);
+        setTimeout(function () {
+            $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+        }, 0);
+    });
+    //Instrução para correção da barra de rolagem no fechamento de modal sobre modal
+    $(document).on('hidden.bs.modal', '.modal', function () {
+        $('.modal:visible').length && $(document.body).addClass('modal-open');
+    });
+}
+
+function ajustaEditFormaPgto() {
+    let c = document.getElementById('fp_vinc_conta_corrente').value;
+    let m = document.getElementById('fp_meio_pgto_nfe').value;
+    meioPgto(m);
+    document.getElementById('fp_vinc_conta_corrente').value = c;
 }

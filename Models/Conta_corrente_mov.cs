@@ -447,6 +447,47 @@ namespace gestaoContadorcomvc.Models
             return retorno;
         }
 
+        //Excluir transferência entre contas correntes
+        public string excluirCCM(int usuario_id, int conta_id, int ccm_id)
+        {
+            string retorno = "Lançamento excluido com sucesso";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "call pr_excluirCCM(@ccm_conta_id, @ccm_id)";
+                comando.Parameters.AddWithValue("@ccm_id", ccm_id);
+                comando.Parameters.AddWithValue("@ccm_conta_id", conta_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Exclusão do lançamento CCM ID " + ccm_id + " realizado com sucesso";
+                log.log("Conta_corrente_mov", "excluirCCM", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao excluir o lançamento. Tente novamente, se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("Conta_corrente_mov", "excluirCCM", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+            return retorno;
+        }
+
 
 
 

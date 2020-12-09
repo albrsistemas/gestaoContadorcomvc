@@ -13,6 +13,7 @@ namespace gestaoContadorcomvc.Controllers.GE
     [Authorize]
     public class ConfiguracoesController : Controller
     {
+        [Autoriza(permissao = "config")]
         public IActionResult Index()
         {
             ViewData["bread"] = "Configurações";

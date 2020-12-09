@@ -207,7 +207,7 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
-        // GET: Categoria_v2Controller/Delete/5
+        [Autoriza(permissao = "categoriaDelete")]
         public ActionResult Delete(int id)
         {
             Usuario usuario = new Usuario();

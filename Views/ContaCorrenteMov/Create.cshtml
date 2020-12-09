@@ -5,6 +5,19 @@
 <div class="container">
     <div class="modal-dialog">
         <div class="modal-content">
+            <!--Alert retorno ajax-->
+            @*<div class="alert alert-danger alert-dismissible fade show box_modal" role="alert" id="Esconder" style="display:none;z-index: 2000;">
+                    <p id="msg_retorno"></p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="alert alert-success alert-dismissible fade show box_modal" role="alert" id="Esconder_success" style="display:none;z-index: 2000;">
+                    <p id="msg_retorno_success"></p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>*@
             <div class="modal-header">
                 <h4 class="modal-title">Lançamento</h4>
             </div>
@@ -16,19 +29,6 @@
                         </div>
                     </div>
                     <hr class="hrLine" />
-                    <!--Alert retorno ajax-->
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder" style="display:none;z-index: 2000;">
-                        <p id="msg_retorno"></p>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder_success" style="display:none;z-index: 2000;">
-                        <p id="msg_retorno_success"></p>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
                     <div class="row">
                         @{
                             DateTime today = DateTime.Today;
@@ -141,9 +141,9 @@
                 </div>
                 <div id="validaForm" style="display:none;margin-left: 15px;margin-right: 15px;">
 
-                </div>                
+                </div>
                 <div class="modal-footer">
-                    <a class="btn btn-secondary" asp-controller="ContaCorrenteMov" asp-action="Index" asp-route-contacorrente_id="@Model.filtro.contacorrente_id" asp-route-dataInicio="@Model.filtro.dataInicio.ToString("yyyy-M-d")" asp-route-dataFim="@Model.filtro.dataFim.ToString("yyyy-M-d")">Fechar</a>                    
+                    <a class="btn btn-secondary" asp-controller="ContaCorrenteMov" asp-action="Index" asp-route-contacorrente_id="@Model.filtro.contacorrente_id" asp-route-dataInicio="@Model.filtro.dataInicio.ToString("yyyy-M-d")" asp-route-dataFim="@Model.filtro.dataFim.ToString("yyyy-M-d")">Fechar</a>
                     <button type="button" onclick="gravarLancamentoCCM('Create')" class="btn btn-info">Gravar</button>
                 </div>
             </form>
@@ -151,8 +151,60 @@
     </div><!-- /.modal-dialog -->
 </div>
 
+<!--Gravação com sucesso-->
+<div class="modal fade" id="ccm_gravado_sucesso" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Lançamento</h5>
+            </div>
+            <div class="modal-body">
+                <p>Lançamento gravado com sucesso!</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-secondary" asp-controller="ContaCorrenteMov" asp-action="Index" asp-route-contacorrente_id="@Model.filtro.contacorrente_id" asp-route-dataInicio="@Model.filtro.dataInicio.ToString("yyyy-M-d")" asp-route-dataFim="@Model.filtro.dataFim.ToString("yyyy-M-d")">Voltar</a>
+                <button type="button" class="btn btn-success" onclick="close_ccm_gravado_sucesso()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Gravação com Erro-->
+<div class="modal fade" id="ccm_gravado_erro" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Lançamento</h5>
+            </div>
+            <div class="modal-body">
+                <p id="msg_retorno"></p>
+            </div>
+            <div class="modal-footer">                
+                <button type="button" class="btn btn-info" onclick="close_ccm_gravado_erro()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 <script>
     execDatapicker();
+    modal_modal();
+    function close_ccm_gravado_sucesso() {
+        document.getElementById('ccm_valor').value = "";
+        document.getElementById('ccm_memorando').value = "";
+        document.getElementById('ccm_nf_data_emissao').value = "";
+        document.getElementById('ccm_nf_valor').value = "";
+        document.getElementById('ccm_nf_serie').value = "";
+        document.getElementById('ccm_nf_numero').value = "";
+        document.getElementById('ccm_nf_chave').value = "";
+        document.getElementById('nf_ccm').checked = false;
+        document.getElementById('box_nf').style.display = 'none';
+        document.getElementById('ccm_valor').focus();
+        $('#ccm_gravado_sucesso').modal('hide');
+    }
+    function close_ccm_gravado_erro() {
+        $('#ccm_gravado_erro').modal('hide');
+    }
 </script>

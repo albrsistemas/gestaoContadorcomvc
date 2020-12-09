@@ -198,6 +198,11 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Detelhes Serviço Prestado";
                 }
+                //Log
+                if (pagina.Contains("Log/Index"))
+                {
+                    retorno = "LOG";
+                }
 
             }
 

@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
 {
+    [Authorize]
     public class VendaController : Controller
     {
         [Autoriza(permissao = "vendaList")]
