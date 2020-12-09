@@ -135,7 +135,7 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Criar lançamento caixa
-        public string cadastrarCCM(int usuario_id, int conta_id, DateTime data, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id)
+        public string cadastrarCCM(int usuario_id, int conta_id, DateTime data, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id, bool ccm_nf, DateTime ccm_nf_data_emissao, Decimal ccm_nf_valor, string ccm_nf_serie, string ccm_nf_numero, string ccm_nf_chave)
         {
             string retorno = "Lançamento cadastrado com sucesso!";
 
@@ -148,7 +148,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "call pr_cadastrarCCM(@ccm_conta_id, @ccm_ccorrente_id, @ccm_data, @ccm_valor, @ccm_memorando, @ccm_participante_id, @categoria_id)";
+                comando.CommandText = "call pr_cadastrarCCM(@ccm_conta_id, @ccm_ccorrente_id, @ccm_data, @ccm_valor, @ccm_memorando, @ccm_participante_id, @categoria_id, @ccm_nf, @ccm_nf_data_emissao, @ccm_nf_valor, @ccm_nf_serie, @ccm_nf_numero, @ccm_nf_chave)";
                 comando.Parameters.AddWithValue("@ccm_conta_id", conta_id);
                 comando.Parameters.AddWithValue("@ccm_ccorrente_id", ccorrente_id);
                 comando.Parameters.AddWithValue("@ccm_data", data);
@@ -156,6 +156,12 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@ccm_memorando", memorando);
                 comando.Parameters.AddWithValue("@ccm_participante_id", participante_id);
                 comando.Parameters.AddWithValue("@categoria_id", categoria_id);
+                comando.Parameters.AddWithValue("@ccm_nf", ccm_nf);
+                comando.Parameters.AddWithValue("@ccm_nf_data_emissao", ccm_nf_data_emissao);
+                comando.Parameters.AddWithValue("@ccm_nf_valor", ccm_nf_valor);
+                comando.Parameters.AddWithValue("@ccm_nf_serie", ccm_nf_serie);
+                comando.Parameters.AddWithValue("@ccm_nf_numero", ccm_nf_numero);
+                comando.Parameters.AddWithValue("@ccm_nf_chave", ccm_nf_chave);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -178,6 +184,193 @@ namespace gestaoContadorcomvc.Models
             }
 
             return retorno;
+        }
+
+        //Busca CCM
+        public Vm_ccm buscaCCM(int usuario_id, int conta_id, int ccm_id)
+        {
+            Vm_ccm vm = new Vm_ccm();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT ccm.*, COALESCE(nf.ccm_nf_id, 0) as nota ,nf.* from conta_corrente_mov as ccm left JOIN ccm_nf as nf on nf.ccm_nf_ccm_id = ccm.ccm_id WHERE ccm.ccm_id = @ccm_id and ccm.ccm_conta_id = @conta_id;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@ccm_id", ccm_id);                
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        if (DBNull.Value != leitor["ccm_id"])
+                        {
+                            vm.ccm_id = Convert.ToInt32(leitor["ccm_id"]);
+                        }
+                        else
+                        {
+                            vm.ccm_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["ccm_conta_id"])
+                        {
+                            vm.ccm_conta_id = Convert.ToInt32(leitor["ccm_conta_id"]);
+                        }
+                        else
+                        {
+                            vm.ccm_conta_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["ccm_ccorrente_id"])
+                        {
+                            vm.ccm_ccorrente_id = Convert.ToInt32(leitor["ccm_ccorrente_id"]);
+                        }
+                        else
+                        {
+                            vm.ccm_ccorrente_id = 0;
+                        }
+
+                        vm.ccm_movimento = leitor["ccm_movimento"].ToString();
+                        vm.ccm_contra_partida_tipo = leitor["ccm_contra_partida_tipo"].ToString();
+                        vm.ccm_memorando = leitor["ccm_memorando"].ToString();
+                        vm.ccm_origem = leitor["ccm_origem"].ToString();
+
+                        if (DBNull.Value != leitor["ccm_participante_id"])
+                        {
+                            vm.ccm_participante_id = Convert.ToInt32(leitor["ccm_participante_id"]);
+                        }
+                        else
+                        {
+                            vm.ccm_participante_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["ccm_contra_partida_id"])
+                        {
+                            vm.ccm_contra_partida_id = Convert.ToInt32(leitor["ccm_contra_partida_id"]);
+                        }
+                        else
+                        {
+                            vm.ccm_contra_partida_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["ccm_data"])
+                        {
+                            vm.ccm_data = Convert.ToDateTime(leitor["ccm_data"]);
+                        }
+                        else
+                        {
+                            vm.ccm_data = new DateTime();
+                        }
+
+                        if (DBNull.Value != leitor["ccm_valor"])
+                        {
+                            vm.ccm_valor = Convert.ToDecimal(leitor["ccm_valor"]);
+                        }
+                        else
+                        {
+                            vm.ccm_valor = 0;
+                        }
+
+                        if (DBNull.Value != leitor["ccm_op_id"])
+                        {
+                            vm.ccm_op_id = Convert.ToInt32(leitor["ccm_op_id"]);
+                        }
+                        else
+                        {
+                            vm.ccm_op_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["ccm_oppb_id"])
+                        {
+                            vm.ccm_oppb_id = Convert.ToInt32(leitor["ccm_oppb_id"]);
+                        }
+                        else
+                        {
+                            vm.ccm_oppb_id = 0;
+                        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        if (DBNull.Value != leitor["data"])
+                        {
+                            mov.data = Convert.ToDateTime(leitor["data"]);
+                        }
+                        else
+                        {
+                            mov.data = new DateTime();
+                        }
+
+                        mov.categoria = leitor["categoria"].ToString();
+                        mov.memorando = leitor["memorando"].ToString();
+                        mov.participante = leitor["cliente_fornecedor"].ToString();
+
+                        if (DBNull.Value != leitor["valor"])
+                        {
+                            mov.valor = Convert.ToDecimal(leitor["valor"]);
+                        }
+                        else
+                        {
+                            mov.valor = 0;
+                        }
+
+                        if (DBNull.Value != leitor["saldo"])
+                        {
+                            mov.saldo = Convert.ToDecimal(leitor["saldo"]);
+                        }
+                        else
+                        {
+                            mov.saldo = 0;
+                        }
+
+                        ccms.Add(mov);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message.Substring(0, 300);
+                log.log("Conta_corrente_mov", "Vm_conta_corrente_mov", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return ccms;
         }
 
 

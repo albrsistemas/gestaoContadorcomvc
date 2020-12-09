@@ -3357,7 +3357,27 @@ function gravarLancamentoCCM() {
 
     if (document.getElementById('ccm_memorando') && document.getElementById('ccm_memorando').value.length < 3) {
         retorno += 'Obrigatório memorando com no mínimo três caracteres.';
-        validacao = false;
+        validacao = false;    
+    }
+
+    let nota = document.getElementById('nf_ccm').value;
+    if (nota) {
+        if (document.getElementById('ccm_nf_data_emissao') && (document.getElementById('ccm_nf_data_emissao').value == 0 || document.getElementById('ccm_nf_data_emissao').value == '' || document.getElementById('ccm_nf_data_emissao').value == null)) {
+            retorno += "Data de emissão da nota fiscal é inválida.;";
+            validacao = false;
+        }
+        if (document.getElementById('ccm_nf_valor') && (document.getElementById('ccm_nf_valor').value == 0 || document.getElementById('ccm_nf_valor').value == '' || document.getElementById('ccm_nf_valor').value == null)) {
+            retorno += "Valor da nota fiscal é inválida.;";
+            validacao = false;
+        }
+        if (document.getElementById('ccm_nf_serie') && (document.getElementById('ccm_nf_serie').value == '' || document.getElementById('ccm_nf_serie').value == null)) {
+            retorno += "Série da nota fiscal é inválida.;";
+            validacao = false;
+        }
+        if (document.getElementById('ccm_nf_numero') && (document.getElementById('ccm_nf_numero').value == 0 || document.getElementById('ccm_nf_numero').value == '' || document.getElementById('ccm_nf_numero').value == null)) {
+            retorno += "Número da nota fiscal é inválida.;";
+            validacao = false;
+        }
     }
 
     if (validacao == false) {
@@ -3376,10 +3396,31 @@ function gravarLancamentoCCM() {
         let categoria_id = document.getElementById('categoria_id').value;
         let ccm_participante_id = document.getElementById('ccm_participante_id').value;
         let ccorrente_id = document.getElementById('ccorrente_id').value;
+        let ccm_nf = document.getElementById('nf_ccm').checked;
+        let ccm_nf_data_emissao = document.getElementById('ccm_nf_data_emissao').value;
+        let ccm_nf_valor = document.getElementById('ccm_nf_valor').value;
+        let ccm_nf_serie = document.getElementById('ccm_nf_serie').value;
+        let ccm_nf_numero = document.getElementById('ccm_nf_numero').value;
+        let ccm_nf_chave = document.getElementById('ccm_nf_chave').value;
+
 
         $.ajax({
             url: "/ContaCorrenteMov/Create",
-            data: { __RequestVerificationToken: gettoken(), data: date, valor: valor, memorando: memorando, categoria_id: categoria_id, participante_id: ccm_participante_id, ccorrente_id: ccorrente_id },
+            data: {
+                __RequestVerificationToken: gettoken(),
+                data: date,
+                valor: valor,
+                memorando: memorando,
+                categoria_id: categoria_id,
+                participante_id: ccm_participante_id,
+                ccorrente_id: ccorrente_id,
+                ccm_nf: ccm_nf,
+                ccm_nf_data_emissao: ccm_nf_data_emissao,
+                ccm_nf_valor: ccm_nf_valor,
+                ccm_nf_serie: ccm_nf_serie,
+                ccm_nf_numero: ccm_nf_numero,
+                ccm_nf_chave: ccm_nf_chave
+            },
             type: 'POST',
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
@@ -3406,6 +3447,14 @@ function gravarLancamentoCCM() {
                     });
                     document.getElementById('ccm_valor').value = "";
                     document.getElementById('ccm_memorando').value = "";
+
+                    document.getElementById('ccm_nf_data_emissao').value = "";
+                    document.getElementById('ccm_nf_valor').value = "";
+                    document.getElementById('ccm_nf_serie').value = "";
+                    document.getElementById('ccm_nf_numero').value = "";
+                    document.getElementById('ccm_nf_chave').value = "";
+                    document.getElementById('nf_ccm').checked = false;
+                    document.getElementById('box_nf').style.display = 'none';
                     return;
                 }
             }
@@ -3454,4 +3503,13 @@ function consultaParticipanteCCM(id) {
             }
         }
     });
+}
+
+function ccm_nf(id, box) {
+    let check = document.getElementById(id);
+    if (check.checked) {
+        document.getElementById(box).style.display = 'block';
+    } else {
+        document.getElementById(box).style.display = 'none';
+    }
 }

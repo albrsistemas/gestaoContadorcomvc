@@ -102,13 +102,16 @@ namespace gestaoContadorcomvc.Controllers
             f.dataInicio = Convert.ToDateTime(dataInicio);
             f.dataFim = Convert.ToDateTime(dataFim);
             ccm.filtro = f;
+            Ccm_nf nf = new Ccm_nf();
+            nf.ccm_nf = false;
+            ccm.nf = nf;
 
             return View(ccm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(string dataInicio, string dataFim, int contacorrente_id, DateTime data, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id)
+        public IActionResult Create(string dataInicio, string dataFim, int contacorrente_id, DateTime data, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id, bool ccm_nf, DateTime ccm_nf_data_emissao, Decimal ccm_nf_valor, string ccm_nf_serie, string ccm_nf_numero, string ccm_nf_chave)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -126,7 +129,7 @@ namespace gestaoContadorcomvc.Controllers
                 f.dataFim = Convert.ToDateTime(dataFim);
                 vm_ccm.filtro = f;
 
-                retorno = ccm.cadastrarCCM(user.usuario_id, user.usuario_conta_id, data, valor, memorando, categoria_id, participante_id, ccorrente_id);
+                retorno = ccm.cadastrarCCM(user.usuario_id, user.usuario_conta_id, data, valor, memorando, categoria_id, participante_id, ccorrente_id, ccm_nf, ccm_nf_data_emissao, ccm_nf_valor, ccm_nf_serie, ccm_nf_numero, ccm_nf_chave);
 
                 return Json(JsonConvert.SerializeObject(retorno));
             }
