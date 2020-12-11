@@ -264,7 +264,7 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Categorias do cliente
-        public List<Selects> getCategoriasCliente(int conta_id, bool semCategegoria)
+        public List<Selects> getCategoriasCliente(int conta_id, bool semCategoria)
         {
             List<Selects> categorias = new List<Selects>();
 
@@ -285,7 +285,7 @@ namespace gestaoContadorcomvc.Models
                 var leitor = comando.ExecuteReader();
                 Selects semCat = new Selects();
                 //add select 'Sem Categoria'
-                if (semCategegoria)
+                if (semCategoria)
                 {
                     semCat.value = "0";
                     semCat.text = "Sem Categoria";
@@ -1319,6 +1319,40 @@ namespace gestaoContadorcomvc.Models
                     conn.Close();
                 }
             }
+
+            return selects;
+        }
+
+        public List<Selects> getTipoCtaFinanceira()
+        {
+            List<Selects> selects = new List<Selects>();
+            selects.Add(new Selects
+            {
+                value = "Parcelada",
+                text = "Parcelada"
+            });
+            selects.Add(new Selects
+            {
+                value = "Recorrente",
+                text = "Recorrente"
+            });
+
+            return selects;
+        }
+
+        public List<Selects> getMovContaCorrente()
+        {
+            List<Selects> selects = new List<Selects>();
+            selects.Add(new Selects
+            {
+                value = "S",
+                text = "Saída"
+            });
+            selects.Add(new Selects
+            {
+                value = "E",
+                text = "Entrada"
+            });
 
             return selects;
         }

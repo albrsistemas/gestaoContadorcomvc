@@ -1,0 +1,193 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_contasFinanceiras
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Contas Financeiras</h4>
+            </div>
+            <form asp-controller="ContasFinanceiras" asp-action="Create">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p>Nova conta parcela ou recorrente</p>
+                        </div>
+                    </div>
+                    <hr class="hrLine" />
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="input-group mb-3">
+                                <label class="control-label">Participante</label>
+                                <input type="text" class="form-control" autofocus name="fornecedor" id="fornecedor" placeholder="Iniciais do nome ou cnpj/cpf do cliente" onkeyup="consultaParticipante(this.id)" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" id="button-addon2" data-toggle="modal" data-target="#modal_fornecedor">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" asp-for="participante.op_part_id" class="form-control" /> <!--ID do participante-->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="cf.cf_nome" class="control-label"></label>
+                                <input asp-for="cf.cf_nome" id="complemento" class="form-control" />
+                                <span asp-validation-for="cf.cf_nome" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="cf.cf_tipo" class="control-label"></label>
+                                <select asp-items="@ViewBag.tipoCtaFinaceira" value="@TempData["cf_tipo"]" id="cf_tipo" name="cf_tipo" class="form-control"></select>
+                                <span asp-validation-for="cf.cf_tipo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="cf.cf_escopo" class="control-label"></label>
+                                <select asp-items="@ViewBag.movCxBco" value="@TempData["cf_escopo"]" id="cf_escopo" name="cf_escopo" class="form-control"></select>
+                                <span asp-validation-for="cf.cf_escopo" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="displey_validacao">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="msg_valid" id="msg_valid">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-info" onclick="gravarBaixa('Create')">Gravar</button>
+                </div>
+
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!--Dados do fornecedor-->
+<div class="modal fade" id="modal_fornecedor" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Fornecedor</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="participante.op_part_nome" class="control-label"></label>
+                            <input asp-for="participante.op_part_nome" id="nome" class="form-control" />
+                            <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="participante.op_part_tipo" class="control-label"></label>
+                            <select readonly="readonly" asp-items="@ViewBag.tipoPessoa" value="@TempData["op_part_tipo"]" id="participante_tipoPessoa" name="op_part_tipo" onchange="tipoPessoa(this.value)" class="form-control"></select> <!--ID alterado para 'participante_tipoPessoa' em razão da função 'mascaraCNPJ_CPF' que usa a informação deste campo-->
+                            <span asp-validation-for="participante.op_part_tipo" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <div class="form-group">
+                            <label asp-for="participante.op_part_cnpj_cpf" class="control-label" id="label_cnpj_cpf">CPF</label>
+                            <input asp-for="participante.op_part_cnpj_cpf" id="op_part_cnpj_cpf" class="form-control" onkeyup="mascaraCNPJ_cpf(this.id, this.value)" readonly="readonly" />
+                            <span asp-validation-for="participante.op_part_cnpj_cpf" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <fieldset>
+                    <legend>Endereço</legend>
+                    <div class="row">
+                        <div class="col-12 col-md-2">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_cep" class="control-label"></label>
+                                <input asp-for="participante.op_part_cep" id="cep" class="form-control" />
+                                <span asp-validation-for="participante.op_part_cep" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_logradouro" class="control-label"></label>
+                                <input asp-for="participante.op_part_logradouro" class="form-control" id="rua" />
+                                <span asp-validation-for="participante.op_part_logradouro" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_numero" class="control-label"></label>
+                                <input asp-for="participante.op_part_numero" id="numero" class="form-control" />
+                                <span asp-validation-for="participante.op_part_numero" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_complemento" class="control-label"></label>
+                                <input asp-for="participante.op_part_complemento" id="complemento" class="form-control" />
+                                <span asp-validation-for="participante.op_part_complemento" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_bairro" class="control-label"></label>
+                                <input asp-for="participante.op_part_bairro" class="form-control" id="bairro" />
+                                <span asp-validation-for="participante.op_part_bairro" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-5">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_cidade" class="control-label"></label>
+                                <input asp-for="participante.op_part_cidade" class="form-control" id="cidade" />
+                                <span asp-validation-for="participante.op_part_cidade" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <div class="form-group">
+                                <label asp-for="participante.op_uf_ibge_codigo" class="control-label"></label>
+                                <select asp-items="@ViewBag.ufIbge" value="@TempData["op_uf_ibge_codigo"]" id="uf" name="op_uf_ibge_codigo" class="form-control"></select>
+                                <span asp-validation-for="participante.op_uf_ibge_codigo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-5">
+                            <div class="form-group">
+                                <label asp-for="participante.op_paisesIBGE_codigo" class="control-label"></label>
+                                <select asp-items="@ViewBag.paisesIbge" value="@TempData["op_paisesIBGE_codigo"]" id="op_paisesIBGE_codigo" name="op_paisesIBGE_codigo" class="form-control"></select>
+                                <span asp-validation-for="participante.op_paisesIBGE_codigo" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" onclick="dadorParticipante('edit', 0)">Gravar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
