@@ -3578,26 +3578,45 @@ function ajustaEditFormaPgto() {
 }
 
 function contasFinanceiras(id, vlr) {
-    if (vlr == 'Parcelada') {                
-        document.getElementById('cf_numero_parcelas').value = 0;
-        document.getElementById('grupo_nParcelas').style.display = 'block';
-        document.getElementById('grupo_recorrencia').style.display = 'none';
-        document.getElementById('grupo_vlrParcelas').style.display = 'block';
+    if (vlr == 'Parcelada') {                        
+        document.getElementById('op_parcela_fp_id').style.display = 'block';        
+        document.getElementById('grupo_vlrParcelas').style.display = 'block';        
         document.getElementById('text_dataFinal_recorencia').innerHTML = '';
+        document.getElementById('grupo_dadosNF').style.display = 'block';
+        document.getElementById('grupo_cf_data_final').style.display = 'block';
     }
 
-    if (vlr == 'Recorrente') {
-        document.getElementById('cf_numero_parcelas').value = 0;
-        document.getElementById('grupo_nParcelas').style.display = 'none';
-        document.getElementById('grupo_recorrencia').style.display = 'block';
+    if (vlr == 'Recorrente') {        
+        document.getElementById('op_parcela_fp_id').style.display = 'none';
         document.getElementById('grupo_vlrParcelas').style.display = 'none';
-        document.getElementById('text_dataFinal_recorencia').innerHTML = 'Na conta do tipo "Recorrente" se não for informada uma data final o sistema gerará a quantidade de parcelas até o último mês do ano seguinte. Nas baixa da parcela será incluída uma nova recorrência ao final.';
+        document.getElementById('grupo_cf_data_final').style.display = 'none';
+        document.getElementById('grupo_dadosNF').style.display = 'none';
+        operacao_nf('r_sem_nf'); //zerar campos relacionadas a nota fiscal
+        document.getElementById('r_sem_nf').checked = true; //Seleciona opção sem nota fiscal
+        document.getElementById('text_dataFinal_recorencia').innerHTML = 'Na conta do tipo "Recorrente" se não for informada uma data final o sistema gerará a quantidade de parcelas até o último mês do ano seguinte. Na baixa da parcela será incluída uma nova recorrência ao final.';
     }
 
 }
 
+function changeRecorrencia(id, vlr) {
+    if (vlr == "Unica") {
+        document.getElementById('cf_data_final').value = '';
+        document.getElementById('cf_data_final').setAttribute("disabled", "disabled");
+    } else {
+        document.getElementById('cf_data_final').removeAttribute("disabled");
+    }
+}
+
 function editCategoriaContasFinanceiras() {
     GerarSelectFormaPagamento();
+}
+
+function tipoNF(id, vlr) {
+    if (vlr == 1) {
+        document.getElementById('op_nf_chave').setAttribute("disabled", "disabled");        
+    } else {
+        document.getElementById('op_nf_chave').removeAttribute("disabled");
+    }
 }
 
 function GerarSelectFormaPagamento() {

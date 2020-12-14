@@ -1437,6 +1437,54 @@ namespace gestaoContadorcomvc.Models
             return selects;
         }
 
+        //Lista tipos documentos tipo_nf
+        public List<Selects> getTipoNF()
+        {
+            List<Selects> selects = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from tipo_nf WHERE tipo_nf.tipo_nf_status = 'Ativo';";                
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects select = new Selects();
+
+                        select.value = leitor["tipo_nf_codigo"].ToString();
+                        select.text = leitor["tipo_nf_descricao"].ToString();
+                        select.disabled = false;
+
+                        selects.Add(select);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return selects;
+        }
+
 
     }
 }

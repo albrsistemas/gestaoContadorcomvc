@@ -68,21 +68,14 @@
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="cf.cf_valor_operacao" class="control-label">Valor Operação</label>
-                <input asp-for="cf.cf_valor_operacao" name="cf_valor_operacao" class="form-control" />
+                <input asp-for="cf.cf_valor_operacao" name="cf_valor_operacao" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
                 <span asp-validation-for="cf.cf_valor_operacao" class="text-danger"></span>
             </div>
         </div>
-        <div class="col-6" id="grupo_nParcelas" style="display:block">
-            <div class="form-group">
-                <label asp-for="cf.cf_numero_parcelas" class="control-label">Nº Parcelas</label>
-                <input asp-for="cf.cf_numero_parcelas" name="cf_numero_parcelas" id="cf_numero_parcelas" class="form-control" />
-                <span asp-validation-for="cf.cf_numero_parcelas" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-6" id="grupo_recorrencia" style="display:none">
+        <div class="col-6">
             <div class="form-group">
                 <label asp-for="cf.cf_recorrencia" class="control-label">Recorrência</label>
-                <select asp-items="@ViewBag.recorrencias" value="@TempData["cf_recorrencia"]" id="cf_recorrencia" name="cf_recorrencia" class="form-control"></select>
+                <select asp-items="@ViewBag.recorrencias" value="@TempData["cf_recorrencia"]" id="cf_recorrencia" name="cf_recorrencia" class="form-control" onchange="changeRecorrencia(this.id, this.value)"></select>
                 <span asp-validation-for="cf.cf_recorrencia" class="text-danger"></span>
             </div>
         </div>
@@ -92,14 +85,14 @@
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="cf.cf_valor_parcela_bruta" class="control-label">Valor Parcela Integral</label>
-                    <input asp-for="cf.cf_valor_parcela_bruta" name="cf_valor_parcela_bruta" id="cf_valor_parcela_bruta" class="form-control" />
+                    <input asp-for="cf.cf_valor_parcela_bruta" name="cf_valor_parcela_bruta" id="cf_valor_parcela_bruta" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
                     <span asp-validation-for="cf.cf_valor_parcela_bruta" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="cf.cf_valor_parcela_liquida" class="control-label">Parcela sem Juros</label>
-                    <input asp-for="cf.cf_valor_parcela_liquida" name="cf_valor_parcela_liquida" id="cf_valor_parcela_liquida" class="form-control" />
+                    <input asp-for="cf.cf_valor_parcela_liquida" name="cf_valor_parcela_liquida" id="cf_valor_parcela_liquida" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
                     <span asp-validation-for="cf.cf_valor_parcela_liquida" class="text-danger"></span>
                 </div>
             </div>
@@ -108,29 +101,30 @@
     <div class="row">
         <div class="col-6">
             <label asp-for="cf.cf_data_inicial" class="control-label">Data Primeira Parcela</label>
-            <input type="text" asp-for="cf.cf_data_inicial" name="cf_data_inicial" class="form-control datepicker" />
+            <input type="text" asp-for="cf.cf_data_inicial" name="cf_data_inicial" id="cf_data_inicial" class="form-control datepicker" />
             <span asp-validation-for="cf.cf_data_inicial" class="text-danger"></span>
         </div>
-        <div class="col-6">
+        <div class="col-6" id="grupo_cf_data_final" style="display:block">
             <label asp-for="cf.cf_data_final" class="control-label">Data Última Parcela</label>
-            <input type="text" asp-for="cf.cf_data_final" name="cf_data_final" class="form-control datepicker" />
+            <input type="text" asp-for="cf.cf_data_final" name="cf_data_final" id="cf_data_final" class="form-control datepicker" disabled />
             <span asp-validation-for="cf.cf_data_final" class="text-danger"></span>
         </div>
     </div>
-    <p class="text-info" id="text_dataFinal_recorencia"></p>    
+    <p class="text-info" id="text_dataFinal_recorencia"></p>
     <fieldset id="grupo_dadosNF" style="display:block">
-        <legend>Nota Fiscal</legend>
+        <legend>Dcoumento</legend>
         <div class="row">
-            <div class="col-12">
-                <div class="radio-toolbar">
-                    <input type="radio" asp-for="op.op_comNF" id="r_sem_nf" value="0" checked onclick="operacao_nf(this.id)">
-                    <label for="r_sem_nf" id="label1">Sem Nota Fiscal</label>
-
-                    <input type="radio" asp-for="op.op_comNF" value="1" id="r_nf_eletronica" onclick="operacao_nf(this.id)">
-                    <label for="r_nf_eletronica" id="label3">Nota Fiscal Eletrônica</label>
-
-                    <input type="radio" asp-for="op.op_comNF" value="2" id="r_nf_manual" onclick="operacao_nf(this.id)">
-                    <label for="r_nf_manual" id="label2">Nota Fiscal Manual</label>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="nf.op_nf_tipo" class="control-label">Tipo Documento</label>
+                    <select asp-items="@ViewBag.tipoNF" value="@TempData["op_nf_tipo"]" id="op_nf_tipo" name="op_nf_tipo" class="form-control" onchange="tipoNF(this.id, this.value)"></select>
+                    <span asp-validation-for="nf.op_nf_tipo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="nf.op_nf_data_emissao" class="control-label">Data de Emissão</label>
+                    <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control datepicker" disabled="disabled" />
                 </div>
             </div>
         </div>
@@ -144,17 +138,20 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-6 col-md-4">
+            <div class="col-12">
                 <div class="form-group">
-                    <label asp-for="nf.op_nf_data_emissao" class="control-label">Data de Emissão</label>
-                    <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control datepicker" disabled="disabled" />
+                    <label asp-for="nf.op_nf_chave" class="control-label">Chave de Acesso</label>
+                    <input asp-for="nf.op_nf_chave" id="op_nf_chave" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '44','chave_acesso')" onblur="chave_acesso_nf_op(this.id, this.value)" disabled="disabled" />
+                    <span class="text-info" id="chave_acesso"></span>
                 </div>
-            </div>            
-            <div class="col-6 col-md-4">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
                 <label asp-for="nf.op_nf_serie" class="control-label">Série</label>
                 <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control" disabled="disabled" />
             </div>
-            <div class="col-6 col-md-4">
+            <div class="col-6">
                 <label asp-for="nf.op_nf_numero" class="control-label">Número</label>
                 <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control" disabled="disabled" />
             </div>
@@ -200,7 +197,7 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label asp-for="participante.op_part_nome" class="control-label"></label>
-                            <input asp-for="participante.op_part_nome" id="nome" class="form-control" />
+                            <input disabled="disabled" asp-for="participante.op_part_nome" id="nome" class="form-control" />
                             <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>
                         </div>
                     </div>
@@ -209,14 +206,14 @@
                     <div class="col-12 col-md-4">
                         <div class="form-group">
                             <label asp-for="participante.op_part_tipo" class="control-label"></label>
-                            <select readonly="readonly" asp-items="@ViewBag.tipoPessoa" value="@TempData["op_part_tipo"]" id="participante_tipoPessoa" name="op_part_tipo" onchange="tipoPessoa(this.value)" class="form-control"></select> <!--ID alterado para 'participante_tipoPessoa' em razão da função 'mascaraCNPJ_CPF' que usa a informação deste campo-->
+                            <select disabled="disabled" asp-items="@ViewBag.tipoPessoa" value="@TempData["op_part_tipo"]" id="participante_tipoPessoa" name="op_part_tipo" onchange="tipoPessoa(this.value)" class="form-control"></select> <!--ID alterado para 'participante_tipoPessoa' em razão da função 'mascaraCNPJ_CPF' que usa a informação deste campo-->
                             <span asp-validation-for="participante.op_part_tipo" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-12 col-md-8">
                         <div class="form-group">
                             <label asp-for="participante.op_part_cnpj_cpf" class="control-label" id="label_cnpj_cpf">CPF</label>
-                            <input asp-for="participante.op_part_cnpj_cpf" id="op_part_cnpj_cpf" class="form-control" onkeyup="mascaraCNPJ_cpf(this.id, this.value)" readonly="readonly" />
+                            <input asp-for="participante.op_part_cnpj_cpf" id="op_part_cnpj_cpf" class="form-control" onkeyup="mascaraCNPJ_cpf(this.id, this.value)" disabled="disabled" />
                             <span asp-validation-for="participante.op_part_cnpj_cpf" class="text-danger"></span>
                         </div>
                     </div>
@@ -227,21 +224,21 @@
                         <div class="col-12 col-md-2">
                             <div class="form-group">
                                 <label asp-for="participante.op_part_cep" class="control-label"></label>
-                                <input asp-for="participante.op_part_cep" id="cep" class="form-control" />
+                                <input disabled="disabled" asp-for="participante.op_part_cep" id="cep" class="form-control" />
                                 <span asp-validation-for="participante.op_part_cep" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-12 col-md-8">
                             <div class="form-group">
                                 <label asp-for="participante.op_part_logradouro" class="control-label"></label>
-                                <input asp-for="participante.op_part_logradouro" class="form-control" id="rua" />
+                                <input disabled="disabled" asp-for="participante.op_part_logradouro" class="form-control" id="rua" />
                                 <span asp-validation-for="participante.op_part_logradouro" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-12 col-md-2">
                             <div class="form-group">
                                 <label asp-for="participante.op_part_numero" class="control-label"></label>
-                                <input asp-for="participante.op_part_numero" id="numero" class="form-control" />
+                                <input disabled="disabled" asp-for="participante.op_part_numero" id="numero" class="form-control" />
                                 <span asp-validation-for="participante.op_part_numero" class="text-danger"></span>
                             </div>
                         </div>
@@ -250,14 +247,14 @@
                         <div class="col-12 col-md-6">
                             <div class="form-group">
                                 <label asp-for="participante.op_part_complemento" class="control-label"></label>
-                                <input asp-for="participante.op_part_complemento" id="complemento" class="form-control" />
+                                <input disabled="disabled" asp-for="participante.op_part_complemento" id="complemento" class="form-control" />
                                 <span asp-validation-for="participante.op_part_complemento" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group">
                                 <label asp-for="participante.op_part_bairro" class="control-label"></label>
-                                <input asp-for="participante.op_part_bairro" class="form-control" id="bairro" />
+                                <input disabled="disabled" asp-for="participante.op_part_bairro" class="form-control" id="bairro" />
                                 <span asp-validation-for="participante.op_part_bairro" class="text-danger"></span>
                             </div>
                         </div>
@@ -266,21 +263,21 @@
                         <div class="col-12 col-md-5">
                             <div class="form-group">
                                 <label asp-for="participante.op_part_cidade" class="control-label"></label>
-                                <input asp-for="participante.op_part_cidade" class="form-control" id="cidade" />
+                                <input disabled="disabled" asp-for="participante.op_part_cidade" class="form-control" id="cidade" />
                                 <span asp-validation-for="participante.op_part_cidade" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-12 col-md-2">
                             <div class="form-group">
                                 <label asp-for="participante.op_uf_ibge_codigo" class="control-label"></label>
-                                <select asp-items="@ViewBag.ufIbge" value="@TempData["op_uf_ibge_codigo"]" id="uf" name="op_uf_ibge_codigo" class="form-control"></select>
+                                <select disabled="disabled" asp-items="@ViewBag.ufIbge" value="@TempData["op_uf_ibge_codigo"]" id="uf" name="op_uf_ibge_codigo" class="form-control"></select>
                                 <span asp-validation-for="participante.op_uf_ibge_codigo" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-12 col-md-5">
                             <div class="form-group">
                                 <label asp-for="participante.op_paisesIBGE_codigo" class="control-label"></label>
-                                <select asp-items="@ViewBag.paisesIbge" value="@TempData["op_paisesIBGE_codigo"]" id="op_paisesIBGE_codigo" name="op_paisesIBGE_codigo" class="form-control"></select>
+                                <select disabled="disabled" asp-items="@ViewBag.paisesIbge" value="@TempData["op_paisesIBGE_codigo"]" id="op_paisesIBGE_codigo" name="op_paisesIBGE_codigo" class="form-control"></select>
                                 <span asp-validation-for="participante.op_paisesIBGE_codigo" class="text-danger"></span>
                             </div>
                         </div>
@@ -288,7 +285,6 @@
                 </fieldset>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info" onclick="dadorParticipante('edit', 0)">Gravar</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
