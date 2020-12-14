@@ -1268,9 +1268,12 @@ function consultaParticipante(id) {
             if (document.getElementById('op_categoria_id')) {
                 document.getElementById('op_categoria_id').value = ui.item.categoria_id;
             }
+            if (document.getElementById('op_part_participante_id')) {
+                document.getElementById('op_part_participante_id').value = ui.item.id;
+            }
 
             dadorParticipante('insert',ui.item.id);
-            modal_fornecedor
+            //modal_fornecedor
         }
     });
 }
@@ -3579,7 +3582,7 @@ function ajustaEditFormaPgto() {
 
 function contasFinanceiras(id, vlr) {
     if (vlr == 'Parcelada') {                        
-        document.getElementById('op_parcela_fp_id').style.display = 'block';        
+        document.getElementById('grupo_formaPagamento').style.display = 'block';        
         document.getElementById('grupo_vlrParcelas').style.display = 'block';        
         document.getElementById('text_dataFinal_recorencia').innerHTML = '';
         document.getElementById('grupo_dadosNF').style.display = 'block';
@@ -3587,7 +3590,7 @@ function contasFinanceiras(id, vlr) {
     }
 
     if (vlr == 'Recorrente') {        
-        document.getElementById('op_parcela_fp_id').style.display = 'none';
+        document.getElementById('grupo_formaPagamento').style.display = 'none';        
         document.getElementById('grupo_vlrParcelas').style.display = 'none';
         document.getElementById('grupo_cf_data_final').style.display = 'none';
         document.getElementById('grupo_dadosNF').style.display = 'none';
@@ -3612,11 +3615,24 @@ function editCategoriaContasFinanceiras() {
 }
 
 function tipoNF(id, vlr) {
-    if (vlr == 1) {
-        document.getElementById('op_nf_chave').setAttribute("disabled", "disabled");        
+    if (vlr == 0) {
+        document.getElementById('op_nf_data_emissao').setAttribute("disabled", "disabled");
+        document.getElementById('op_nf_chave').setAttribute("disabled", "disabled");
+        document.getElementById('op_nf_serie').setAttribute("disabled", "disabled");
+        document.getElementById('op_nf_numero').setAttribute("disabled", "disabled");        
     } else {
-        document.getElementById('op_nf_chave').removeAttribute("disabled");
+        document.getElementById('op_nf_data_emissao').removeAttribute("disabled");        
+        document.getElementById('op_nf_serie').removeAttribute("disabled");
+        document.getElementById('op_nf_numero').removeAttribute("disabled");
+
+        if (vlr == 1) {
+            document.getElementById('op_nf_chave').removeAttribute("disabled");
+        } else {
+            document.getElementById('op_nf_chave').setAttribute("disabled", "disabled");
+        } 
     }
+
+    
 }
 
 function GerarSelectFormaPagamento() {
@@ -3650,5 +3666,194 @@ function GerarSelectFormaPagamento() {
                 document.getElementById('sub').removeAttribute("disabled");
             }
         });
+    }
+}
+
+function gravarContasFinanceiras() {
+    let valida = [];
+    let nome = document.getElementById('cf_nome');
+    let categoria = document.getElementById('cf_categoria_id');
+    let op_parcela_fp_id = document.getElementById('op_parcela_fp_id');
+    let vlrOperacao = document.getElementById('cf_valor_operacao');
+    let cf_valor_parcela_bruta = document.getElementById('cf_valor_parcela_bruta');
+    let cf_valor_parcela_liquida = document.getElementById('cf_valor_parcela_liquida');
+    let cf_data_inicial = document.getElementById('cf_data_inicial');    
+
+    let op_nf_data_emissao = document.getElementById('op_nf_data_emissao');
+    let op_nf_chave = document.getElementById('op_nf_chave');
+    let op_nf_numero = document.getElementById('op_nf_numero');
+    let op_nf_tipo = document.getElementById('op_nf_tipo');
+
+    //Limpara a matrix validação;
+    valida.splice(0, valida.length);
+    //Limpa div validação
+    document.getElementById('msg_valid').innerHTML = '';
+
+    let cf_tipo = document.getElementById('cf_tipo');
+
+    //nome    
+    if (nome.value.length < 5 && (nome.value == null || nome.value == '')) {
+        valida.push('Nome não pode ser vazio e deve possuir mais de três caracteres!');
+    }
+
+    //categoria    
+    if (categoria.value == 0 || categoria.value == null) {
+        valida.push('Obrigatório informar uma categoria!');        
+    }
+
+    //Forma de pagamento        
+    if (cf_tipo.value == 'Parcelada' && (op_parcela_fp_id.value == 0 || op_parcela_fp_id.value == null)) {
+        valida.push('É obrigatório informar a forma de pagamento para contas do tipo Parcelada!');
+    }
+
+    //Valor da operação    
+    if (vlrOperacao.value == 0 || vlrOperacao.value == null || vlrOperacao.value < 0) {
+        valida.push('O valor da operação deve ser maior que zero!');
+    }
+
+    //Data inicial
+    let data_in = (cf_data_inicial.value).split('/');
+    let d_in = new Date(data_in[2], data_in[1], data_in[0]);
+    if (data_in.length < 3 || d_in == 'Invalid Date' || data_in[2].length < 4 || data_in[1] > 12 || data_in[1] < 1 || data_in[0] > 31 || data_in[0] < 1 || data_in == '' || data_in == null) {
+        valida.push('Data da primeira parcela inválida!');
+    }    
+
+    //Valor das parcelas    
+    if (cf_tipo.value == 'Parcelada') {
+
+        //Valores das parcelas
+        if (cf_valor_parcela_bruta.value == 0 || cf_valor_parcela_bruta.value == null || cf_valor_parcela_bruta.value < 0) {
+            valida.push('O valor da parcela integral deve ser maior que zero!');
+        }
+        if (cf_valor_parcela_liquida.value == 0 || cf_valor_parcela_liquida.value == null || cf_valor_parcela_liquida.value < 0) {
+            valida.push('O valor da parcela sem juros deve ser maior que zero!');
+        }
+
+        //Dados do documento        
+        if (op_nf_tipo.value != 0) {
+
+            if (op_nf_tipo.value == 1 && (op_nf_chave.value.length != 44)) {
+                valida.push('A chave de acesso do documento é obrigatório e deve ter 44 digitos!');
+            } 
+
+            let data = (op_nf_data_emissao.value).split('/');
+            let d = new Date(data[2], data[1], data[0]);
+            if (data.length < 3 || d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1 || data == '' || data == null) {
+                valida.push('Data de emissão do documento inválido!');                
+            }
+
+            if (op_nf_numero.value == 0 || op_nf_numero.value == null || op_nf_numero.value.length < 1) {
+                valida.push('Número do documento inválido!');
+            }
+        }
+    }
+
+    if (valida.length > 0) {
+        for (let i = 0; i < valida.length; i++) {
+            $('#msg_valid').append('<span class="text-danger">' + valida[i] + '</span></br>');
+        }
+    } else {
+        cf = {
+            op: {
+                op_id: 0,
+                op_tipo: '',
+                op_data: op_nf_data_emissao.value,
+                op_previsao_entrega: '',
+                op_data_saida: '',
+                op_obs: document.getElementById('op_obs').value,
+                op_numero_ordem: '',
+                op_categoria_id: categoria.value,
+                op_comParticipante: false,
+                op_comRetencoes: false,
+                op_comTransportador: false,
+                possui_parcelas: false,
+                op_comNF: 0,
+            },
+            cf: {
+                cf_id: 0,
+                cf_nome: nome.value,
+                cf_categoria_id: categoria.value,
+                cf_valor_operacao: vlrOperacao.value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }),
+                cf_valor_parcela_bruta: '0,00',
+                cf_valor_parcela_liquida: '0,00',
+                cf_recorrencia: document.getElementById('cf_recorrencia').value,
+                cf_data_inicial: cf_data_inicial.value,
+                cf_data_final: null,
+                cf_tipo: cf_tipo.value,
+                cf_status: document.getElementById('cf_status').value,
+            },
+            parcelas: {
+                op_parcela_fp_id: 0,
+            },
+            nf: {
+                op_nf_id: 0,
+                op_nf_op_id: 0,
+                op_nf_chave: '',
+                op_nf_data_emissao: '',
+                op_nf_data_entrada_saida: '',
+                op_nf_serie: '',
+                op_nf_numero: '',
+                existe: false,
+                op_nf_tipo: 0,
+            },
+            participante: {
+                op_part_participante_id: 0,
+            }
+        };
+
+        if (document.getElementById('op_part_participante_id').value > 0) {
+            cf.op.op_comParticipante = true;
+            cf.participante.op_part_participante_id = document.getElementById('op_part_participante_id').value;
+        }
+
+        if (cf_tipo.value == 'Parcelada') {
+            cf.op.op_comNF = op_nf_tipo.value;
+            cf.nf.op_nf_tipo = op_nf_tipo.value;            
+
+            if (op_nf_tipo.value != 0) {
+                cf.nf.op_nf_chave = op_nf_chave.value;
+                cf.nf.op_nf_data_emissao = op_nf_data_emissao.value;
+                cf.nf.op_nf_numero = op_nf_numero.value;
+                cf.nf.op_nf_serie = document.getElementById('op_nf_serie').value;
+            }
+
+            cf.cf.cf_valor_parcela_bruta = cf_valor_parcela_bruta.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            cf.cf.cf_valor_parcela_liquida = cf_valor_parcela_liquida.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            cf.parcelas.op_parcela_fp_id = op_parcela_fp_id.value;
+        } else {
+            cf.op.op_comNF = 0;
+            cf.nf.op_nf_tipo = 0;
+        }
+        
+
+        console.log(cf);      
+
+        /*
+
+        $.ajax({
+            url: "/ContasFinanceiras/Create",
+            data: { __RequestVerificationToken: gettoken(), categoria_id: categoria_id },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                document.getElementById('text_formaPgto').innerHTML = "Gerando lista de formas de pagamento";
+                document.getElementById('sub').setAttribute("disabled", "disabled");
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("erro");
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                var results = JSON.parse(data);
+                $('#op_parcela_fp_id').children('option').remove(); //Remove todos os itens do select
+
+                for (i = 0; i < results.length; i++) { //Adiciona os item recebidos no results no select
+                    $('#op_parcela_fp_id').append($("<option></option>").attr("value", results[i].value).text(results[i].text));
+                }
+
+                document.getElementById('text_formaPgto').innerHTML = "";
+                document.getElementById('sub').removeAttribute("disabled");
+            }
+        });
+        */
     }
 }

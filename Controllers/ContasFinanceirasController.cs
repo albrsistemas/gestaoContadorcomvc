@@ -50,7 +50,7 @@ namespace gestaoContadorcomvc.Controllers
         // POST: ContasFinanceirasController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(IFormCollection collection, Vm_contasFinanceiras cf)
         {
             try
             {
