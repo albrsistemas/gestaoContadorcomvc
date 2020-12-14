@@ -1340,19 +1340,99 @@ namespace gestaoContadorcomvc.Models
             return selects;
         }
 
-        public List<Selects> getMovContaCorrente()
+        public List<Selects> getRecorrencias()
         {
             List<Selects> selects = new List<Selects>();
             selects.Add(new Selects
             {
-                value = "S",
-                text = "Saída"
+                value = "Unica",
+                text = "Única"
             });
             selects.Add(new Selects
             {
-                value = "E",
-                text = "Entrada"
+                value = "Semanal",
+                text = "Semanal"
             });
+            selects.Add(new Selects
+            {
+                value = "Quinzenal",
+                text = "Quinzenal"
+            });
+            selects.Add(new Selects
+            {
+                value = "Mensal",
+                text = "Mensal"
+            });
+            selects.Add(new Selects
+            {
+                value = "Bimestral",
+                text = "Bimestral"
+            });
+            selects.Add(new Selects
+            {
+                value = "Trimestral",
+                text = "Trimestral"
+            });
+            selects.Add(new Selects
+            {
+                value = "Semestral",
+                text = "Semestral"
+            });
+            selects.Add(new Selects
+            {
+                value = "Anual",
+                text = "Anual"
+            });
+
+            return selects;
+        }
+
+        //Lista formas de pagamento de acrodo com o contexto da categoria
+        public List<Selects> getFormaPgto_categoria_id(int conta_id, int categoria_id)
+        {
+            List<Selects> selects = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "call pr_formaPgto_categoria(@conta_id,@categoria_id);";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@categoria_id", categoria_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects select = new Selects();
+
+                        select.value = leitor["fp_id"].ToString();
+                        select.text = leitor["fp_nome"].ToString();
+                        select.disabled = false;
+
+                        selects.Add(select);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
 
             return selects;
         }

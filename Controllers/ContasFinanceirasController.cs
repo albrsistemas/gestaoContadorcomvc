@@ -8,6 +8,7 @@ using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
 {
@@ -34,13 +35,13 @@ namespace gestaoContadorcomvc.Controllers
 
             Selects select = new Selects();
             ViewBag.tipoCtaFinaceira = select.getTipoCtaFinanceira().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Parcelada" });
-            ViewBag.movCxBco = select.getMovContaCorrente().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "S" });
+            ViewBag.recorrencias = select.getRecorrencias().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Unica" });
             ViewBag.status = select.getStatus().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Ativo" });
-            ViewBag.categoria = select.getCategoriasCliente(user.usuario_conta_id,true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.categoria = select.getCategoriasCliente(user.usuario_conta_id,false).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });            
 
+            Vm_contasFinanceiras vmcf = new Vm_contasFinanceiras();
 
-
-            return View();
+            return View(vmcf);
         }
 
         // POST: ContasFinanceirasController/Create
@@ -98,6 +99,21 @@ namespace gestaoContadorcomvc.Controllers
             {
                 return View();
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GerarSelectFormaPagamento(int categoria_id)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Selects select = new Selects();
+            List<Selects> lista = new List<Selects>();
+            lista = select.getFormaPgto_categoria_id(user.usuario_conta_id, categoria_id);
+
+            return Json(JsonConvert.SerializeObject(lista));
         }
     }
 }

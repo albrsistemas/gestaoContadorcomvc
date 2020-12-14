@@ -158,6 +158,11 @@ function Page() {
         let d = new Date();
         document.getElementById('op_data').value = d.toLocaleDateString();
     }
+
+    //Carregar formas pagamento no contas financeiras
+    if (document.getElementById('text_formaPgto')) {
+        GerarSelectFormaPagamento();
+    }
 }
 
 function carregarEdit(id) {   
@@ -637,9 +642,9 @@ $(".DetailsCCOPlano").click(function () {
 
 $(function () {
     $(".datepicker").datepicker({
-        buttonImageOnly: true,        
-        changeMonth: false,
-        changeYear: false,
+        buttonImageOnly: true,
+        changeMonth: true,
+        changeYear: true,
         dateFormat: 'dd/mm/yy',
         dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'],
         dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
@@ -903,6 +908,12 @@ function tamanhoDigitado(id, vlr, limit, msg) {
 }
 
 function decimal(id, vlr, limit, alerta) {
+
+    if (vlr == 0 || vlr == '0' || vlr == '0.00' || vlr == '0,00') {
+        document.getElementById(id).value = (0).toFixed(2);;
+        return;
+    }
+
     let matriz = vlr.replace('.','').split(","); 
     //console.log(vlr);
     //console.log(matriz);
@@ -2958,11 +2969,13 @@ function operacao_nf(id) {
     if (id == 'r_sem_nf') {
         document.getElementById('op_nf_chave').disabled = true;
         document.getElementById('op_nf_data_emissao').disabled = true;
-        document.getElementById('op_nf_data_entrada_saida').disabled = true;
+        if (document.getElementById('op_nf_data_entrada_saida')) {
+            document.getElementById('op_nf_data_entrada_saida').disabled = true;
+            document.getElementById('op_nf_data_entrada_saida').value = "";
+        }        
         document.getElementById('op_nf_serie').disabled = true;
         document.getElementById('op_nf_numero').disabled = true;
-        document.getElementById('op_nf_data_emissao').value = "";
-        document.getElementById('op_nf_data_entrada_saida').value = "";
+        document.getElementById('op_nf_data_emissao').value = "";        
         document.getElementById('op_nf_serie').value = "";
         document.getElementById('op_nf_numero').value = "";
         document.getElementById('op_nf_chave').value = "";
@@ -2972,21 +2985,31 @@ function operacao_nf(id) {
     if (id == 'r_nf_eletronica') {
         document.getElementById('op_nf_chave').disabled = false;
         document.getElementById('op_nf_data_emissao').disabled = false;
-        document.getElementById('op_nf_data_entrada_saida').disabled = false;
+        if (document.getElementById('op_nf_data_entrada_saida')) {
+            document.getElementById('op_nf_data_entrada_saida').disabled = false;
+        }        
         document.getElementById('op_nf_serie').disabled = true;
-        document.getElementById('op_nf_numero').disabled = true;        
-        document.getElementById('op_nf_data_entrada_saida').value = document.getElementById('op_data').value;
-        document.getElementById('op_nf_data_emissao').value = document.getElementById('op_data').value;
+        document.getElementById('op_nf_numero').disabled = true;
+        if (document.getElementById('op_data')) {
+            document.getElementById('op_nf_data_entrada_saida').value = document.getElementById('op_data').value;
+            document.getElementById('op_nf_data_emissao').value = document.getElementById('op_data').value;
+        }
+        
+        
     }
 
     if (id == 'r_nf_manual') {
         document.getElementById('op_nf_chave').disabled = true;
         document.getElementById('op_nf_data_emissao').disabled = false;
-        document.getElementById('op_nf_data_entrada_saida').disabled = false;
+        if (document.getElementById('op_nf_data_entrada_saida')) {
+            document.getElementById('op_nf_data_entrada_saida').disabled = false;
+        }
         document.getElementById('op_nf_serie').disabled = false;
         document.getElementById('op_nf_numero').disabled = false;
-        document.getElementById('op_nf_data_entrada_saida').value = document.getElementById('op_data').value;
-        document.getElementById('op_nf_data_emissao').value = document.getElementById('op_data').value;
+        if (document.getElementById('op_data')) {
+            document.getElementById('op_nf_data_entrada_saida').value = document.getElementById('op_data').value;
+            document.getElementById('op_nf_data_emissao').value = document.getElementById('op_data').value;
+        }        
         document.getElementById('op_nf_serie').value = "";
         document.getElementById('op_nf_numero').value = "";
         document.getElementById('op_nf_chave').value = "";
@@ -3552,4 +3575,61 @@ function ajustaEditFormaPgto() {
     let m = document.getElementById('fp_meio_pgto_nfe').value;
     meioPgto(m);
     document.getElementById('fp_vinc_conta_corrente').value = c;
+}
+
+function contasFinanceiras(id, vlr) {
+    if (vlr == 'Parcelada') {                
+        document.getElementById('cf_numero_parcelas').value = 0;
+        document.getElementById('grupo_nParcelas').style.display = 'block';
+        document.getElementById('grupo_recorrencia').style.display = 'none';
+        document.getElementById('grupo_vlrParcelas').style.display = 'block';
+        document.getElementById('text_dataFinal_recorencia').innerHTML = '';
+    }
+
+    if (vlr == 'Recorrente') {
+        document.getElementById('cf_numero_parcelas').value = 0;
+        document.getElementById('grupo_nParcelas').style.display = 'none';
+        document.getElementById('grupo_recorrencia').style.display = 'block';
+        document.getElementById('grupo_vlrParcelas').style.display = 'none';
+        document.getElementById('text_dataFinal_recorencia').innerHTML = 'Na conta do tipo "Recorrente" se não for informada uma data final o sistema gerará a quantidade de parcelas até o último mês do ano seguinte. Nas baixa da parcela será incluída uma nova recorrência ao final.';
+    }
+
+}
+
+function editCategoriaContasFinanceiras() {
+    GerarSelectFormaPagamento();
+}
+
+function GerarSelectFormaPagamento() {
+    let categoria_id = 0;
+    if (document.getElementById('cf_categoria_id')) {
+        categoria_id = document.getElementById('cf_categoria_id').value;
+    }
+
+    if (categoria_id > 0) {
+        $.ajax({
+            url: "/ContasFinanceiras/GerarSelectFormaPagamento",
+            data: { __RequestVerificationToken: gettoken(), categoria_id: categoria_id },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                document.getElementById('text_formaPgto').innerHTML = "Gerando lista de formas de pagamento";
+                document.getElementById('sub').setAttribute("disabled", "disabled");
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("erro");
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                var results = JSON.parse(data);
+                $('#op_parcela_fp_id').children('option').remove(); //Remove todos os itens do select
+
+                for (i = 0; i < results.length; i++) { //Adiciona os item recebidos no results no select
+                    $('#op_parcela_fp_id').append($("<option></option>").attr("value", results[i].value).text(results[i].text));
+                }                
+
+                document.getElementById('text_formaPgto').innerHTML = "";
+                document.getElementById('sub').removeAttribute("disabled");
+            }
+        });
+    }
 }

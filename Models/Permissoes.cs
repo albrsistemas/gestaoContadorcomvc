@@ -96,6 +96,11 @@ namespace gestaoContadorcomvc.Models
         public bool servicoPCreate { get; set; }
         public bool servicoPEdit { get; set; }
         public bool servicoPDelete { get; set; }
+        //Contas Financeiras
+        public bool contasFList { get; set; }
+        public bool contasFCreate { get; set; }
+        public bool contasFPEdit { get; set; }
+        public bool contasFDelete { get; set; }
 
 
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
