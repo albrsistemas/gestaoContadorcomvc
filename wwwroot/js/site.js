@@ -3678,7 +3678,9 @@ function gravarContasFinanceiras() {
     let vlrOperacao = document.getElementById('cf_valor_operacao');
     let cf_valor_parcela_bruta = document.getElementById('cf_valor_parcela_bruta');
     let cf_valor_parcela_liquida = document.getElementById('cf_valor_parcela_liquida');
-    let cf_data_inicial = document.getElementById('cf_data_inicial');    
+    let cf_data_inicial = document.getElementById('cf_data_inicial'); 
+    let cf_data_final = document.getElementById('cf_data_final');
+    let participante_id = document.getElementById('op_part_participante_id');  
 
     let op_nf_data_emissao = document.getElementById('op_nf_data_emissao');
     let op_nf_chave = document.getElementById('op_nf_chave');
@@ -3700,6 +3702,11 @@ function gravarContasFinanceiras() {
     //categoria    
     if (categoria.value == 0 || categoria.value == null) {
         valida.push('Obrigatório informar uma categoria!');        
+    }
+
+    //Participante
+    if (participante_id.value == null || participante_id.value == "" || participante_id.value == 0) {
+        valida.push('É obrigatório informar um participante!');
     }
 
     //Forma de pagamento        
@@ -3809,7 +3816,8 @@ function gravarContasFinanceiras() {
 
         if (cf_tipo.value == 'Parcelada') {
             cf.op.op_comNF = op_nf_tipo.value;
-            cf.nf.op_nf_tipo = op_nf_tipo.value;            
+            cf.nf.op_nf_tipo = op_nf_tipo.value;
+            cf.cf.cf_data_final = cf_data_final.value;
 
             if (op_nf_tipo.value != 0) {
                 cf.nf.op_nf_chave = op_nf_chave.value;
@@ -3818,26 +3826,39 @@ function gravarContasFinanceiras() {
                 cf.nf.op_nf_serie = document.getElementById('op_nf_serie').value;
             }
 
-            cf.cf.cf_valor_parcela_bruta = cf_valor_parcela_bruta.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
-            cf.cf.cf_valor_parcela_liquida = cf_valor_parcela_liquida.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            cf.cf.cf_valor_parcela_bruta = cf_valor_parcela_bruta.value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            cf.cf.cf_valor_parcela_liquida = cf_valor_parcela_liquida.value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
             cf.parcelas.op_parcela_fp_id = op_parcela_fp_id.value;
         } else {
             cf.op.op_comNF = 0;
             cf.nf.op_nf_tipo = 0;
         }
+
+        if (cf_tipo.value == 'Recorrente') {
+            cf.cf.cf_valor_parcela_bruta = vlrOperacao.value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            cf.cf.cf_valor_parcela_liquida = vlrOperacao.value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+
+            if (cf_data_final.value == "" || cf_data_final.value == null) {
+                cf.cf.cf_data_final = null;
+            } else {
+                cf.cf.cf_data_final = cf_data_final.value;
+            }
+        }
+
+        //número de parcelas
+        let parcelas = ContasFinanceiras_gerarParcelas();
+        cf.cf.cf_numero_parcelas = parcelas.length;
         
 
         console.log(cf);      
 
-        /*
-
         $.ajax({
             url: "/ContasFinanceiras/Create",
-            data: { __RequestVerificationToken: gettoken(), categoria_id: categoria_id },
+            data: { __RequestVerificationToken: gettoken(), vmcf: cf },
             type: 'POST',
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
-                document.getElementById('text_formaPgto').innerHTML = "Gerando lista de formas de pagamento";
+                document.getElementById('text_gravando').innerHTML = "Gravando conta financeira, aguarde...";
                 document.getElementById('sub').setAttribute("disabled", "disabled");
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -3845,17 +3866,27 @@ function gravarContasFinanceiras() {
             },
             success: function (data, textStatus, XMLHttpRequest) {
                 var results = JSON.parse(data);
-                $('#op_parcela_fp_id').children('option').remove(); //Remove todos os itens do select
+                console.log(results);
 
-                for (i = 0; i < results.length; i++) { //Adiciona os item recebidos no results no select
-                    $('#op_parcela_fp_id').append($("<option></option>").attr("value", results[i].value).text(results[i].text));
-                }
-
-                document.getElementById('text_formaPgto').innerHTML = "";
+                document.getElementById('text_gravando').innerHTML = "";
                 document.getElementById('sub').removeAttribute("disabled");
+
+                if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                    document.getElementById('msg_retorno').innerHTML = XMLHttpRequest.responseJSON;
+                    document.getElementById('btn_ok').style.display = 'none';                    
+                    document.getElementById('btn_cancel').style.display = 'block';                    
+                    $('#modal_retorno').modal('show');
+                    return;
+                }
+                if (XMLHttpRequest.responseJSON.includes('sucesso!')) {
+                    document.getElementById('msg_retorno').innerHTML = XMLHttpRequest.responseJSON;
+                    document.getElementById('btn_ok').style.display = 'block';
+                    document.getElementById('btn_cancel').style.display = 'none';
+                    $('#modal_retorno').modal('show');
+                }
             }
         });
-        */
+        
     }
 }
 
@@ -3870,6 +3901,7 @@ function ContasFinanceiras_gerarParcelas() {
     let recorrencia = document.getElementById('cf_recorrencia').value;
     let tipo = document.getElementById('cf_tipo').value;
     let vencimento = new Date();
+    let parcelas = [];    
 
     if (data_start == 'Invalid Date') {
         if (tipo == 'Parcelada') {
@@ -3879,6 +3911,17 @@ function ContasFinanceiras_gerarParcelas() {
             alert('Data Primeira Ocorrência Inválida!')
         }        
         return;
+    }
+
+    if (recorrencia == 'Unica') {
+        let parcela = {
+            vencimento: data_start.toLocaleDateString(),
+            valor_integral: vlr_i,
+            valor_liquido: vlr_l,
+        };
+        parcelas.push(parcela);
+
+        return parcelas;
     }
 
     if (tipo == 'Parcelada') {
@@ -3903,7 +3946,7 @@ function ContasFinanceiras_gerarParcelas() {
     vencimento = data_start;
     
 
-    let parcelas = [];    
+    
 
     while (vencimento < data_end) {        
         let parcela = {

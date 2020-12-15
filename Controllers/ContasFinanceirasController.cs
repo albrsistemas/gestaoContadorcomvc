@@ -50,15 +50,37 @@ namespace gestaoContadorcomvc.Controllers
         // POST: ContasFinanceirasController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection, Vm_contasFinanceiras cf)
+        public ActionResult Create(IFormCollection collection, Vm_contasFinanceiras vmcf)
         {
+            string retorno = "";
             try
             {
-                return RedirectToAction(nameof(Index));
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+                Selects select = new Selects();
+                ViewBag.tipoCtaFinaceira = select.getTipoCtaFinanceira().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Parcelada" });
+                ViewBag.recorrencias = select.getRecorrencias().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Unica" });
+                ViewBag.status = select.getStatus().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Ativo" });
+                ViewBag.categoria = select.getCategoriasCliente(user.usuario_conta_id, false).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+                ViewBag.tipoNF = select.getTipoNF().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+                ViewBag.ufIbge = select.getUF_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "35" });
+                ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1058" });
+
+                ContasFinanceiras cf = new ContasFinanceiras();
+
+                retorno = cf.cadastrarContaFinanceira(user.usuario_id, user.usuario_conta_id, vmcf);
+
+                return Json(JsonConvert.SerializeObject(retorno));
             }
             catch
             {
-                return View();
+                if(retorno == "")
+                {
+                    retorno = "Erro ao cadastrar a conta financeira. Tente novamente. Se persistir entre em contato com o suporte!";
+                }
+                return Json(JsonConvert.SerializeObject(retorno));
             }
         }
 
