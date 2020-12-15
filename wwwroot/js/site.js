@@ -3585,18 +3585,19 @@ function contasFinanceiras(id, vlr) {
         document.getElementById('grupo_formaPagamento').style.display = 'block';        
         document.getElementById('grupo_vlrParcelas').style.display = 'block';        
         document.getElementById('text_dataFinal_recorencia').innerHTML = '';
-        document.getElementById('grupo_dadosNF').style.display = 'block';
-        document.getElementById('grupo_cf_data_final').style.display = 'block';
+        document.getElementById('grupo_dadosNF').style.display = 'block';        
+        document.getElementById('lab_cf_data_inicial').innerHTML = 'Data Primeira Parcela';
+        document.getElementById('lab_cf_data_final').innerHTML = 'Data Última Parcela';
     }
 
     if (vlr == 'Recorrente') {        
         document.getElementById('grupo_formaPagamento').style.display = 'none';        
-        document.getElementById('grupo_vlrParcelas').style.display = 'none';
-        document.getElementById('grupo_cf_data_final').style.display = 'none';
+        document.getElementById('grupo_vlrParcelas').style.display = 'none';        
         document.getElementById('grupo_dadosNF').style.display = 'none';
-        operacao_nf('r_sem_nf'); //zerar campos relacionadas a nota fiscal
-        document.getElementById('r_sem_nf').checked = true; //Seleciona opção sem nota fiscal
+        operacao_nf('r_sem_nf'); //zerar campos relacionadas a nota fiscal        
         document.getElementById('text_dataFinal_recorencia').innerHTML = 'Na conta do tipo "Recorrente" se não for informada uma data final o sistema gerará a quantidade de parcelas até o último mês do ano seguinte. Na baixa da parcela será incluída uma nova recorrência ao final.';
+        document.getElementById('lab_cf_data_inicial').innerHTML = 'Data Primeira Ocorrência';
+        document.getElementById('lab_cf_data_final').innerHTML = 'Data Limite';
     }
 
 }
@@ -3856,4 +3857,112 @@ function gravarContasFinanceiras() {
         });
         */
     }
+}
+
+function ContasFinanceiras_gerarParcelas() {    
+    let di = document.getElementById('cf_data_inicial').value;
+    let df = document.getElementById('cf_data_final').value;
+    let vlr_i = document.getElementById('cf_valor_parcela_bruta').value;
+    let vlr_l = document.getElementById('cf_valor_parcela_liquida').value;
+    let vlr_operacao = document.getElementById('cf_valor_operacao').value;
+    let data_start = new Date(di.substr(6, 4) + ',' + di.substr(3, 2) + ',' + di.substr(0, 2));
+    let data_end = new Date(df.substr(6, 4) + ',' + df.substr(3, 2) + ',' + df.substr(0, 2));
+    let recorrencia = document.getElementById('cf_recorrencia').value;
+    let tipo = document.getElementById('cf_tipo').value;
+    let vencimento = new Date();
+
+    if (data_start == 'Invalid Date') {
+        if (tipo == 'Parcelada') {
+            alert('Data Primeira Parcela Inválida!')
+        }
+        if (tipo == 'Recorrente') {
+            alert('Data Primeira Ocorrência Inválida!')
+        }        
+        return;
+    }
+
+    if (tipo == 'Parcelada') {
+        if (data_end == 'Invalid Date') {
+            alert('Data Última Parcela Inválida!');
+            return;
+        }        
+    }
+
+
+    if (tipo == 'Recorrente') {
+        if (data_end == 'Invalid Date') {
+            let agora = new Date();
+            let depois = new Date(agora.getFullYear() + 1, 11, 31);
+            data_end = depois;
+        }  
+
+        vlr_i = vlr_operacao;
+        vlr_l = vlr_operacao;
+    }
+
+    vencimento = data_start;
+    
+
+    let parcelas = [];    
+
+    while (vencimento < data_end) {        
+        let parcela = {
+            vencimento: vencimento.toLocaleDateString(),
+            valor_integral: vlr_i,
+            valor_liquido: vlr_l,
+        };
+        parcelas.push(parcela);        
+
+        if (recorrencia == 'Semanal') {
+            vencimento.setHours(vencimento.getHours() + (24 * 7));
+        }
+
+        if (recorrencia == 'Quinzenal') {
+            vencimento.setHours(vencimento.getHours() + (24 * 15));
+        }
+
+        if (recorrencia == 'Mensal') {
+            vencimento.setMonth(vencimento.getMonth() + 1);
+        }
+
+        if (recorrencia == 'Bimestral') {
+            vencimento.setMonth(vencimento.getMonth() + 2);
+        }
+
+        if (recorrencia == 'Trimestral') {
+            vencimento.setMonth(vencimento.getMonth() + 3);
+        }
+
+        if (recorrencia == 'Semestral') {
+            vencimento.setMonth(vencimento.getMonth() + 6);
+        }
+
+        if (recorrencia == 'Anual') {
+            vencimento.setMonth(vencimento.getMonth() + 12);
+        }
+    }      
+
+    if (tipo == 'Parcelada' || (tipo == 'Recorrente' && data_end != 'Invalid Date')) {
+        let parcela = {
+            vencimento: data_end.toLocaleDateString(),
+            valor_integral: vlr_i,
+            valor_liquido: vlr_l,
+        };
+        parcelas.push(parcela);
+    }
+
+    return parcelas;
+}
+
+function visualizarParcelasCtasF() {
+    let parcelas = ContasFinanceiras_gerarParcelas();
+    document.getElementById('linhas_parcelas').innerHTML = '';
+
+    if (parcelas.length > 0) {
+        for (let i = 0; i < parcelas.length; i++) {
+            document.getElementById('linhas_parcelas').innerHTML += '<tr><th scope="row">' + (parseInt(i) + 1) + '</th><td>' + parcelas[i].vencimento + '</td><td>' + parcelas[i].valor_integral + '</td><td>' + parcelas[i].valor_liquido + '</td></tr>';
+        }
+    } 
+
+    $("#modal_parcelas").modal('show');
 }
