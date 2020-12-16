@@ -1173,6 +1173,11 @@ namespace gestaoContadorcomvc.Models
                     value = "4",
                     text = "Serviço Tomado"
                 });
+                TipoOperacao.Add(new Selects
+                {
+                    value = "5",
+                    text = "Contas Financeiras"
+                });
             }
             if (contexto == "Rcebimento")
             {
@@ -1185,6 +1190,11 @@ namespace gestaoContadorcomvc.Models
                 {
                     value = "3",
                     text = "Prestação de Serviço"
+                });
+                TipoOperacao.Add(new Selects
+                {
+                    value = "5",
+                    text = "Contas Financeiras"
                 });
             }
 

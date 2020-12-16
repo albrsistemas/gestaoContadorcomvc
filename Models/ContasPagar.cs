@@ -14,6 +14,7 @@ namespace gestaoContadorcomvc.Models
     {
         public int operacao { get; set; }
         public DateTime vencimento { get; set; }
+        public string categoria_nome { get; set; }
         public string fornecedor { get; set; }
         public string referencia { get; set; }
         public string formaPgto { get; set; }
@@ -130,6 +131,7 @@ namespace gestaoContadorcomvc.Models
                         conta.fornecedor = leitor["participante"].ToString();
                         conta.referencia = leitor["referencia"].ToString();                       
                         conta.formaPgto = leitor["formaPgto"].ToString();                       
+                        conta.categoria_nome = leitor["categoria_nome"].ToString();                       
 
                         if (DBNull.Value != leitor["valorOriginal"])
                         {
