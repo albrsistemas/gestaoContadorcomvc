@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Asn1.Crmf;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 
 namespace gestaoContadorcomvc.Models
@@ -18,7 +19,11 @@ namespace gestaoContadorcomvc.Models
         public Decimal cf_valor_parcela_bruta { get; set; }
         public Decimal cf_valor_parcela_liquida { get; set; }
         public string cf_recorrencia { get; set; }
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime cf_data_inicial { get; set; }
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? cf_data_final { get; set; }
         public string cf_escopo { get; set; }
         public string cf_tipo { get; set; }
@@ -140,6 +145,151 @@ namespace gestaoContadorcomvc.Models
             }
 
             return retorno;
+        }
+
+        //Buscar conta financeira para gerar CFR_realização
+        public Vm_contasFinanceiras gerarCFR(int parcela_id, int conta_id)
+        {
+            Vm_contasFinanceiras vmcf = new Vm_contasFinanceiras();
+            Operacao op = new Operacao();
+            ContasFinanceiras cf = new ContasFinanceiras();
+            Op_parcelas parcelas = new Op_parcelas();
+            Op_participante participante = new Op_participante();
+            Op_nf nf = new Op_nf();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT opp.*, op.*,cf.*,part.* from op_parcelas as opp left JOIN operacao as op on op.op_id = opp.op_parcela_op_id left JOIN contas_financeiras as cf on cf.cf_op_id = op.op_id LEFT JOIN op_participante as part on part.op_id = op.op_id WHERE opp.op_parcela_id = @parcela_id and op.op_conta_id = @conta_id;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@parcela_id", parcela_id);
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        //contas financeiras
+                        cf.cf_nome = leitor["cf_nome"].ToString();
+
+                        if (DBNull.Value != leitor["cf_categoria_id"])
+                        {
+                            cf.cf_categoria_id = Convert.ToInt32(leitor["cf_categoria_id"]);
+                        }
+                        else
+                        {
+                            cf.cf_categoria_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["cf_valor_operacao"])
+                        {
+                            cf.cf_valor_operacao = Convert.ToDecimal(leitor["cf_valor_operacao"]);
+                        }
+                        else
+                        {
+                            cf.cf_valor_operacao = 0;
+                        }
+
+                        if (DBNull.Value != leitor["cf_valor_parcela_bruta"])
+                        {
+                            cf.cf_valor_parcela_bruta = Convert.ToDecimal(leitor["cf_valor_parcela_bruta"]);
+                        }
+                        else
+                        {
+                            cf.cf_valor_parcela_bruta = 0;
+                        }
+
+                        if (DBNull.Value != leitor["cf_valor_parcela_liquida"])
+                        {
+                            cf.cf_valor_parcela_liquida = Convert.ToDecimal(leitor["cf_valor_parcela_liquida"]);
+                        }
+                        else
+                        {
+                            cf.cf_valor_parcela_liquida = 0;
+                        }
+
+                        if (DBNull.Value != leitor["cf_data_inicial"])
+                        {
+                            cf.cf_data_inicial = Convert.ToDateTime(leitor["cf_data_inicial"]);
+                        }
+                        else
+                        {
+                            cf.cf_data_inicial = new DateTime();
+                        }
+
+
+
+                        //Operação
+                        op.op_obs = leitor["op_obs"].ToString();
+
+                        //participante
+                        if (DBNull.Value != leitor["op_part_participante_id"])
+                        {
+                            participante.op_part_participante_id = Convert.ToInt32(leitor["op_part_participante_id"]);
+                        }
+                        else
+                        {
+                            participante.op_part_participante_id = 0;
+                        }
+
+                        participante.op_part_nome = leitor["op_part_nome"].ToString();
+                        participante.op_part_tipo = leitor["op_part_tipo"].ToString();
+                        participante.op_part_cnpj_cpf = leitor["op_part_cnpj_cpf"].ToString();
+                        participante.op_part_cep = leitor["op_part_cep"].ToString();
+                        participante.op_part_logradouro = leitor["op_part_logradouro"].ToString();
+                        participante.op_part_numero = leitor["op_part_numero"].ToString();
+                        participante.op_part_complemento = leitor["op_part_complemento"].ToString();
+                        participante.op_part_bairro = leitor["op_part_bairro"].ToString();
+                        participante.op_part_cidade = leitor["op_part_cidade"].ToString();
+
+                        if (DBNull.Value != leitor["op_uf_ibge_codigo"])
+                        {
+                            participante.op_uf_ibge_codigo = Convert.ToInt32(leitor["op_uf_ibge_codigo"]);
+                        }
+                        else
+                        {
+                            participante.op_uf_ibge_codigo = 0;
+                        }
+
+                        if (DBNull.Value != leitor["op_paisesIBGE_codigo"])
+                        {
+                            participante.op_paisesIBGE_codigo = Convert.ToInt32(leitor["op_paisesIBGE_codigo"]);
+                        }
+                        else
+                        {
+                            participante.op_paisesIBGE_codigo = 0;
+                        }
+                    }
+                }
+                leitor.Close();
+
+                vmcf.cf = cf;
+                vmcf.op = op;
+                vmcf.participante = participante;
+                vmcf.parcelas = parcelas;
+                vmcf.nf = nf;
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message.Substring(0, 300);                
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return vmcf;
         }
 
 

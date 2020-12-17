@@ -1,0 +1,372 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_contasFinanceiras
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Realização de conta financeira recorrente</h4>
+            </div>
+            <form asp-controller="ContasFinanceiras" asp-action="CFR_realizacao">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="cf.cf_nome" class="control-label">Descrição</label>
+                                <input autofocus asp-for="cf.cf_nome" id="cf_nome" class="form-control" />
+                                <span asp-validation-for="cf.cf_nome" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="cf.cf_tipo" class="control-label">Tipo</label>
+                                <select disabled asp-items="@ViewBag.tipoCtaFinaceira" value="@TempData["cf_tipo"]" id="cf_tipo" name="cf_tipo" class="form-control" onclick="contasFinanceiras(this.id, this.value)"></select>
+                                <span asp-validation-for="cf.cf_tipo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="cf.cf_status" class="control-label">Status</label>
+                                <select asp-items="@ViewBag.status" value="@TempData["cf_status"]" id="cf_status" name="cf_status" class="form-control" disabled></select>
+                                <span asp-validation-for="cf.cf_status" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="cf.cf_categoria_id" class="control-label">Categoria</label>
+                                <select asp-items="@ViewBag.categoria" value="@TempData["cf_categoria_id"]" id="cf_categoria_id" name="cf_categoria_id" class="form-control" onchange="editCategoriaContasFinanceiras()"></select>
+                                <span asp-validation-for="cf.cf_categoria_id" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6" id="grupo_formaPagamento">
+                            <div class="form-group">
+                                <label asp-for="parcelas.op_parcela_fp_id" class="control-label">Forma Pagamento</label>
+                                <select asp-items="@ViewBag.formaPgto" value="@TempData["op_parcela_fp_id"]" id="op_parcela_fp_id" name="op_parcela_fp_id" class="form-control"></select>
+                                <span class="text-info" id="text_formaPgto"></span><br />
+                                <span asp-validation-for="parcelas.op_parcela_fp_id" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="control-label">Participante</label>
+                            <div class="input-group mb-3">
+                                <input asp-for="participante.op_part_nome" disabled type="text" class="form-control" name="fornecedor" id="fornecedor" placeholder="Iniciais do nome ou cnpj/cpf do cliente" onkeyup="consultaParticipante(this.id)" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" id="button-addon2" data-toggle="modal" data-target="#modal_fornecedor">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" asp-for="participante.op_part_participante_id" id="op_part_participante_id" class="form-control" /> <!--ID do participante-->
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="cf.cf_valor_operacao" class="control-label">Valor Operação</label>
+                                <input asp-for="cf.cf_valor_operacao" name="cf_valor_operacao" id="cf_valor_operacao" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
+                                <span asp-validation-for="cf.cf_valor_operacao" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="cf.cf_recorrencia" class="control-label">Recorrência Parcelas</label>
+                                <select asp-items="@ViewBag.recorrencias" value="@TempData["cf_recorrencia"]" id="cf_recorrencia" name="cf_recorrencia" class="form-control" onchange="changeRecorrencia(this.id, this.value)"></select>
+                                <span asp-validation-for="cf.cf_recorrencia" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="grupo_vlrParcelas" style="display:block">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="cf.cf_valor_parcela_bruta" class="control-label">Valor Parcela Integral</label>
+                                    <input asp-for="cf.cf_valor_parcela_bruta" name="cf_valor_parcela_bruta" id="cf_valor_parcela_bruta" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
+                                    <span asp-validation-for="cf.cf_valor_parcela_bruta" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="cf.cf_valor_parcela_liquida" class="control-label">Parcela sem Juros</label>
+                                    <input asp-for="cf.cf_valor_parcela_liquida" name="cf_valor_parcela_liquida" id="cf_valor_parcela_liquida" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
+                                    <span asp-validation-for="cf.cf_valor_parcela_bruta" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <label asp-for="cf.cf_data_inicial" class="control-label" id="lab_cf_data_inicial">Data Primeira Parcela</label>
+                            <input type="text" asp-for="cf.cf_data_inicial" name="cf_data_inicial" id="cf_data_inicial" class="form-control datepicker" />
+                            <span asp-validation-for="cf.cf_data_inicial" class="text-danger"></span>
+                        </div>
+                        <div class="col-6" id="grupo_cf_data_final" style="display:block">
+                            <label asp-for="cf.cf_data_final" class="control-label" id="lab_cf_data_final">Data Última Parcela</label>
+                            <input type="text" asp-for="cf.cf_data_final" name="cf_data_final" id="cf_data_final" class="form-control datepicker" disabled />
+                            <span asp-validation-for="cf.cf_data_final" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <p class="text-info" id="text_dataFinal_recorencia"></p>
+                    <div class="row">
+                        <div class="col-12" style="text-align:right">
+                            <span style="cursor:pointer" onclick="visualizarParcelasCtasF()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eyeglasses" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M4 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm2.625.547a3 3 0 0 0-5.584.953H.5a.5.5 0 0 0 0 1h.541A3 3 0 0 0 7 8a1 1 0 0 1 2 0 3 3 0 0 0 5.959.5h.541a.5.5 0 0 0 0-1h-.541a3 3 0 0 0-5.584-.953A1.993 1.993 0 0 0 8 6c-.532 0-1.016.208-1.375.547zM14 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0z" />
+                                </svg>
+                                Visualizar Parcelas
+                            </span>
+                        </div>
+                    </div>
+                    <fieldset id="grupo_dadosNF" style="display:block">
+                        <legend>Documento</legend>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="nf.op_nf_tipo" class="control-label">Tipo Documento</label>
+                                    <select asp-items="@ViewBag.tipoNF" value="@TempData["op_nf_tipo"]" id="op_nf_tipo" name="op_nf_tipo" class="form-control" onchange="tipoNF(this.id, this.value)"></select>
+                                    <span asp-validation-for="nf.op_nf_tipo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="nf.op_nf_data_emissao" class="control-label">Data de Emissão</label>
+                                    <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control datepicker" disabled="disabled" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label asp-for="nf.op_nf_serie" class="control-label">Série</label>
+                                <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control" disabled="disabled" />
+                            </div>
+                            <div class="col-6">
+                                <label asp-for="nf.op_nf_numero" class="control-label">Número</label>
+                                <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control" disabled="disabled" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="nf.op_nf_chave" class="control-label">Chave de Acesso</label>
+                                    <input asp-for="nf.op_nf_chave" id="op_nf_chave" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '44','chave_acesso')" onblur="chave_acesso_nf_op(this.id, this.value)" disabled="disabled" />
+                                    <span class="text-info" id="chave_acesso"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Observações</legend>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <textarea asp-for="op.op_obs" id="op_obs" rows="3" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_obs')"></textarea>
+                                    <span class="text-info" id="msg_obs"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="displey_validacao">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="msg_valid" id="msg_valid">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <p id="text_gravando" class="text-info"></p>
+
+                    <button type="button" class="btn btn-info" id="sub" onclick="gravarContasFinanceiras()">Gravar</button>
+                    <a class="btn btn-secondary" asp-controller="ContasFinanceiras" asp-action="Index">Cancelar</a>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-info" onclick="gravarBaixa('Create')">Gravar</button>
+                </div>
+
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!--Contas Financeiras-->
+<!--Dados do fornecedor-->
+<div class="modal fade" id="modal_fornecedor" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Fornecedor</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="participante.op_part_nome" class="control-label"></label>
+                            <input disabled="disabled" asp-for="participante.op_part_nome" id="nome" class="form-control" />
+                            <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="participante.op_part_tipo" class="control-label"></label>
+                            <select disabled="disabled" asp-items="@ViewBag.tipoPessoa" value="@TempData["op_part_tipo"]" id="participante_tipoPessoa" name="op_part_tipo" onchange="tipoPessoa(this.value)" class="form-control"></select> <!--ID alterado para 'participante_tipoPessoa' em razão da função 'mascaraCNPJ_CPF' que usa a informação deste campo-->
+                            <span asp-validation-for="participante.op_part_tipo" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <div class="form-group">
+                            <label asp-for="participante.op_part_cnpj_cpf" class="control-label" id="label_cnpj_cpf">CPF</label>
+                            <input asp-for="participante.op_part_cnpj_cpf" id="op_part_cnpj_cpf" class="form-control" onkeyup="mascaraCNPJ_cpf(this.id, this.value)" disabled="disabled" />
+                            <span asp-validation-for="participante.op_part_cnpj_cpf" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <fieldset>
+                    <legend>Endereço</legend>
+                    <div class="row">
+                        <div class="col-12 col-md-2">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_cep" class="control-label"></label>
+                                <input disabled="disabled" asp-for="participante.op_part_cep" id="cep" class="form-control" />
+                                <span asp-validation-for="participante.op_part_cep" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_logradouro" class="control-label"></label>
+                                <input disabled="disabled" asp-for="participante.op_part_logradouro" class="form-control" id="rua" />
+                                <span asp-validation-for="participante.op_part_logradouro" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_numero" class="control-label"></label>
+                                <input disabled="disabled" asp-for="participante.op_part_numero" id="numero" class="form-control" />
+                                <span asp-validation-for="participante.op_part_numero" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_complemento" class="control-label"></label>
+                                <input disabled="disabled" asp-for="participante.op_part_complemento" id="complemento" class="form-control" />
+                                <span asp-validation-for="participante.op_part_complemento" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_bairro" class="control-label"></label>
+                                <input disabled="disabled" asp-for="participante.op_part_bairro" class="form-control" id="bairro" />
+                                <span asp-validation-for="participante.op_part_bairro" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-5">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_cidade" class="control-label"></label>
+                                <input disabled="disabled" asp-for="participante.op_part_cidade" class="form-control" id="cidade" />
+                                <span asp-validation-for="participante.op_part_cidade" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <div class="form-group">
+                                <label asp-for="participante.op_uf_ibge_codigo" class="control-label"></label>
+                                <select disabled="disabled" asp-items="@ViewBag.ufIbge" value="@TempData["op_uf_ibge_codigo"]" id="uf" name="op_uf_ibge_codigo" class="form-control"></select>
+                                <span asp-validation-for="participante.op_uf_ibge_codigo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-5">
+                            <div class="form-group">
+                                <label asp-for="participante.op_paisesIBGE_codigo" class="control-label"></label>
+                                <select disabled="disabled" asp-items="@ViewBag.paisesIbge" value="@TempData["op_paisesIBGE_codigo"]" id="op_paisesIBGE_codigo" name="op_paisesIBGE_codigo" class="form-control"></select>
+                                <span asp-validation-for="participante.op_paisesIBGE_codigo" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Dados do parcelas-->
+<div class="modal fade" id="modal_parcelas" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Contas Financeiras</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Vencimento</th>
+                                        <th scope="col">Valor Integral</th>
+                                        <th scope="col">Valor Líquido</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="linhas_parcelas">
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Retorno back-end-->
+<div class="modal fade" id="modal_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Contas Financeiras</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <p id="msg_retorno"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="btn_ok" class="btn btn-success" asp-controller="ContasFinanceiras" asp-action="Create">OK</a>
+                <button id="btn_cancel" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--gerar forma de pagamentos-->
+<script>
+    GerarSelectFormaPagamento();
+</script>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

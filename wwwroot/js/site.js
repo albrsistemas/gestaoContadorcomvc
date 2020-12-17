@@ -4009,3 +4009,11 @@ function visualizarParcelasCtasF() {
 
     $("#modal_parcelas").modal('show');
 }
+
+//Realizar conta recorrente
+$(".CFR_realizacao").click(function () {
+    var parcela_id = $(this).attr("data-parcela_id");    
+    $("#modal").load("/ContasFinanceiras/CFR_realizacao?parcela_id=" + parcela_id, function () {
+        $("#modal").modal('show');
+    })
+});

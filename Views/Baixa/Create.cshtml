@@ -68,6 +68,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
+                                <label class="control-label">Memorando</label>
                                 <textarea asp-for="obs" id="parcela_obs" rows="3" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '200','msg_obs')"></textarea>
                                 <span class="text-info" id="msg_obs"></span>
                                 <span asp-validation-for="obs" class="text-danger"></span>
@@ -76,8 +77,7 @@
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            <div class="form-group">
-                                <label class="control-label">Memorando</label>
+                            <div class="form-group">                                
                                 <label asp-for="data" class="control-label">Data Pagamento</label>
                                 <input value="@(Model.data.ToShortDateString())" name="data" id="data" class="form-control datepicker" />
                                 <span asp-validation-for="desconto" class="text-danger"></span>

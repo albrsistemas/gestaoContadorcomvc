@@ -26,6 +26,8 @@ namespace gestaoContadorcomvc.Models
         public int meio_pgto { get; set; }
         public int fp_id { get; set; }
         public string tipo { get; set; }
+        public string tipo_op { get; set; }
+
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -132,6 +134,7 @@ namespace gestaoContadorcomvc.Models
                         conta.referencia = leitor["referencia"].ToString();                       
                         conta.formaPgto = leitor["formaPgto"].ToString();                       
                         conta.categoria_nome = leitor["categoria_nome"].ToString();                       
+                        conta.tipo_op = leitor["tipo_op"].ToString();                       
 
                         if (DBNull.Value != leitor["valorOriginal"])
                         {

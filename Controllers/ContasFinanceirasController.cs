@@ -140,5 +140,28 @@ namespace gestaoContadorcomvc.Controllers
 
             return Json(JsonConvert.SerializeObject(lista));
         }
+
+        public ActionResult CFR_realizacao(int parcela_id)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            ContasFinanceiras cf = new ContasFinanceiras();
+            Vm_contasFinanceiras vmcf = new Vm_contasFinanceiras();
+            vmcf = cf.gerarCFR(parcela_id, user.usuario_conta_id);
+
+            Selects select = new Selects();
+            ViewBag.tipoCtaFinaceira = select.getTipoCtaFinanceira().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Parcelada" });
+            ViewBag.recorrencias = select.getRecorrencias().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Unica" });
+            ViewBag.status = select.getStatus().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Ativo" });
+            ViewBag.categoria = select.getCategoriasCliente(user.usuario_conta_id, false).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.cf.cf_categoria_id.ToString() });
+            ViewBag.tipoNF = select.getTipoNF().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.ufIbge = select.getUF_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.participante.op_uf_ibge_codigo.ToString() });
+            ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.participante.op_paisesIBGE_codigo.ToString() });
+
+            return View(vmcf);
+        }
+
     }
 }
