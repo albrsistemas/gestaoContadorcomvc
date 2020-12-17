@@ -3581,7 +3581,7 @@ function ajustaEditFormaPgto() {
 }
 
 function contasFinanceiras(id, vlr) {
-    if (vlr == 'Parcelada') {                        
+    if (vlr == 'Realizada') {                        
         document.getElementById('grupo_formaPagamento').style.display = 'block';        
         document.getElementById('grupo_vlrParcelas').style.display = 'block';        
         document.getElementById('text_dataFinal_recorencia').innerHTML = '';
@@ -3590,12 +3590,12 @@ function contasFinanceiras(id, vlr) {
         document.getElementById('lab_cf_data_final').innerHTML = 'Data Última Parcela';
     }
 
-    if (vlr == 'Recorrente') {        
+    if (vlr == 'Realizar') {        
         document.getElementById('grupo_formaPagamento').style.display = 'none';        
         document.getElementById('grupo_vlrParcelas').style.display = 'none';        
         document.getElementById('grupo_dadosNF').style.display = 'none';
         operacao_nf('r_sem_nf'); //zerar campos relacionadas a nota fiscal        
-        document.getElementById('text_dataFinal_recorencia').innerHTML = 'Na conta do tipo "Recorrente" se não for informada uma data final o sistema gerará a quantidade de parcelas até o último mês do ano seguinte. Na baixa da parcela será incluída uma nova recorrência ao final.';
+        document.getElementById('text_dataFinal_recorencia').innerHTML = 'Na conta do tipo "Realizar" se não for informada uma data final o sistema gerará a quantidade de parcelas até o último mês do ano seguinte. Na baixa da parcela será incluída uma nova recorrência ao final.';
         document.getElementById('lab_cf_data_inicial').innerHTML = 'Data Primeira Ocorrência';
         document.getElementById('lab_cf_data_final').innerHTML = 'Data Limite';
     }
@@ -3670,7 +3670,7 @@ function GerarSelectFormaPagamento() {
     }
 }
 
-function gravarContasFinanceiras() {
+function gravarContasFinanceiras(context) {
     let valida = [];
     let nome = document.getElementById('cf_nome');
     let categoria = document.getElementById('cf_categoria_id');
@@ -3678,9 +3678,9 @@ function gravarContasFinanceiras() {
     let vlrOperacao = document.getElementById('cf_valor_operacao');
     let cf_valor_parcela_bruta = document.getElementById('cf_valor_parcela_bruta');
     let cf_valor_parcela_liquida = document.getElementById('cf_valor_parcela_liquida');
-    let cf_data_inicial = document.getElementById('cf_data_inicial'); 
+    let cf_data_inicial = document.getElementById('cf_data_inicial');
     let cf_data_final = document.getElementById('cf_data_final');
-    let participante_id = document.getElementById('op_part_participante_id');  
+    let participante_id = document.getElementById('op_part_participante_id');
 
     let op_nf_data_emissao = document.getElementById('op_nf_data_emissao');
     let op_nf_chave = document.getElementById('op_nf_chave');
@@ -3701,7 +3701,7 @@ function gravarContasFinanceiras() {
 
     //categoria    
     if (categoria.value == 0 || categoria.value == null) {
-        valida.push('Obrigatório informar uma categoria!');        
+        valida.push('Obrigatório informar uma categoria!');
     }
 
     //Participante
@@ -3710,8 +3710,8 @@ function gravarContasFinanceiras() {
     }
 
     //Forma de pagamento        
-    if (cf_tipo.value == 'Parcelada' && (op_parcela_fp_id.value == 0 || op_parcela_fp_id.value == null)) {
-        valida.push('É obrigatório informar a forma de pagamento para contas do tipo Parcelada!');
+    if (cf_tipo.value == 'Realizada' && (op_parcela_fp_id.value == 0 || op_parcela_fp_id.value == null)) {
+        valida.push('É obrigatório informar a forma de pagamento para contas do tipo Realizada!');
     }
 
     //Valor da operação    
@@ -3724,10 +3724,10 @@ function gravarContasFinanceiras() {
     let d_in = new Date(data_in[2], data_in[1], data_in[0]);
     if (data_in.length < 3 || d_in == 'Invalid Date' || data_in[2].length < 4 || data_in[1] > 12 || data_in[1] < 1 || data_in[0] > 31 || data_in[0] < 1 || data_in == '' || data_in == null) {
         valida.push('Data da primeira parcela inválida!');
-    }    
+    }
 
     //Valor das parcelas    
-    if (cf_tipo.value == 'Parcelada') {
+    if (cf_tipo.value == 'Realizada') {
 
         //Valores das parcelas
         if (cf_valor_parcela_bruta.value == 0 || cf_valor_parcela_bruta.value == null || cf_valor_parcela_bruta.value < 0) {
@@ -3742,12 +3742,12 @@ function gravarContasFinanceiras() {
 
             if (op_nf_tipo.value == 1 && (op_nf_chave.value.length != 44)) {
                 valida.push('A chave de acesso do documento é obrigatório e deve ter 44 digitos!');
-            } 
+            }
 
             let data = (op_nf_data_emissao.value).split('/');
             let d = new Date(data[2], data[1], data[0]);
             if (data.length < 3 || d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1 || data == '' || data == null) {
-                valida.push('Data de emissão do documento inválido!');                
+                valida.push('Data de emissão do documento inválido!');
             }
 
             if (op_nf_numero.value == 0 || op_nf_numero.value == null || op_nf_numero.value.length < 1) {
@@ -3814,7 +3814,7 @@ function gravarContasFinanceiras() {
             cf.participante.op_part_participante_id = document.getElementById('op_part_participante_id').value;
         }
 
-        if (cf_tipo.value == 'Parcelada') {
+        if (cf_tipo.value == 'Realizada') {
             cf.op.op_comNF = op_nf_tipo.value;
             cf.nf.op_nf_tipo = op_nf_tipo.value;
             cf.cf.cf_data_final = cf_data_final.value;
@@ -3834,7 +3834,7 @@ function gravarContasFinanceiras() {
             cf.nf.op_nf_tipo = 0;
         }
 
-        if (cf_tipo.value == 'Recorrente') {
+        if (cf_tipo.value == 'Realizar') {
             cf.cf.cf_valor_parcela_bruta = vlrOperacao.value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
             cf.cf.cf_valor_parcela_liquida = vlrOperacao.value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
 
@@ -3848,13 +3848,18 @@ function gravarContasFinanceiras() {
         //número de parcelas
         let parcelas = ContasFinanceiras_gerarParcelas();
         cf.cf.cf_numero_parcelas = parcelas.length;
+
+        let parcela_id = 0;
+
+        if (context == 'CFR_realizacao') {
+            document.getElementById('parcela_id').value;
+        }
+
         
 
-        console.log(cf);      
-
         $.ajax({
-            url: "/ContasFinanceiras/Create",
-            data: { __RequestVerificationToken: gettoken(), vmcf: cf },
+            url: "/ContasFinanceiras/" + context,
+            data: { __RequestVerificationToken: gettoken(), vmcf: cf, parcela_id: parcela_id },
             type: 'POST',
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
@@ -3873,8 +3878,8 @@ function gravarContasFinanceiras() {
 
                 if (XMLHttpRequest.responseJSON.includes('Erro')) {
                     document.getElementById('msg_retorno').innerHTML = XMLHttpRequest.responseJSON;
-                    document.getElementById('btn_ok').style.display = 'none';                    
-                    document.getElementById('btn_cancel').style.display = 'block';                    
+                    document.getElementById('btn_ok').style.display = 'none';
+                    document.getElementById('btn_cancel').style.display = 'block';
                     $('#modal_retorno').modal('show');
                     return;
                 }
@@ -3886,7 +3891,7 @@ function gravarContasFinanceiras() {
                 }
             }
         });
-        
+
     }
 }
 
@@ -3904,10 +3909,10 @@ function ContasFinanceiras_gerarParcelas() {
     let parcelas = [];    
 
     if (data_start == 'Invalid Date') {
-        if (tipo == 'Parcelada') {
+        if (tipo == 'Realizada') {
             alert('Data Primeira Parcela Inválida!')
         }
-        if (tipo == 'Recorrente') {
+        if (tipo == 'Realizar') {
             alert('Data Primeira Ocorrência Inválida!')
         }        
         return;
@@ -3924,7 +3929,7 @@ function ContasFinanceiras_gerarParcelas() {
         return parcelas;
     }
 
-    if (tipo == 'Parcelada') {
+    if (tipo == 'Realizada') {
         if (data_end == 'Invalid Date') {
             alert('Data Última Parcela Inválida!');
             return;
@@ -3932,7 +3937,7 @@ function ContasFinanceiras_gerarParcelas() {
     }
 
 
-    if (tipo == 'Recorrente') {
+    if (tipo == 'Realizar') {
         if (data_end == 'Invalid Date') {
             let agora = new Date();
             let depois = new Date(agora.getFullYear() + 1, 11, 31);
@@ -3985,7 +3990,7 @@ function ContasFinanceiras_gerarParcelas() {
         }
     }      
 
-    if (tipo == 'Parcelada' || (tipo == 'Recorrente' && data_end != 'Invalid Date')) {
+    if (tipo == 'Realizada' || (tipo == 'Realizar' && data_end != 'Invalid Date')) {
         let parcela = {
             vencimento: data_end.toLocaleDateString(),
             valor_integral: vlr_i,
@@ -4012,8 +4017,13 @@ function visualizarParcelasCtasF() {
 
 //Realizar conta recorrente
 $(".CFR_realizacao").click(function () {
+    modal_modal();
     var parcela_id = $(this).attr("data-parcela_id");    
     $("#modal").load("/ContasFinanceiras/CFR_realizacao?parcela_id=" + parcela_id, function () {
         $("#modal").modal('show');
     })
 });
+
+function closeModal(id) {
+    $("#" + id).modal('hide');
+}

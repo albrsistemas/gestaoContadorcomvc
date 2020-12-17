@@ -79,7 +79,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label asp-for="cf.cf_recorrencia" class="control-label">Recorrência Parcelas</label>
-                                <select asp-items="@ViewBag.recorrencias" value="@TempData["cf_recorrencia"]" id="cf_recorrencia" name="cf_recorrencia" class="form-control" onchange="changeRecorrencia(this.id, this.value)"></select>
+                                <select disabled asp-items="@ViewBag.recorrencias" value="@TempData["cf_recorrencia"]" id="cf_recorrencia" name="cf_recorrencia" class="form-control" onchange="changeRecorrencia(this.id, this.value)"></select>
                                 <span asp-validation-for="cf.cf_recorrencia" class="text-danger"></span>
                             </div>
                         </div>
@@ -185,13 +185,11 @@
 
                     <br />
                     <p id="text_gravando" class="text-info"></p>
-
-                    <button type="button" class="btn btn-info" id="sub" onclick="gravarContasFinanceiras()">Gravar</button>
-                    <a class="btn btn-secondary" asp-controller="ContasFinanceiras" asp-action="Index">Cancelar</a>
                 </div>
+                <input type="hidden" name="parcela_id" value="@TempData["parcela_id"]" />
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-info" onclick="gravarBaixa('Create')">Gravar</button>
+                    <button type="button" class="btn btn-info" id="sub" onclick="gravarContasFinanceiras('CFR_realizacao')">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>                    
                 </div>
 
             </form>
@@ -300,7 +298,7 @@
                 </fieldset>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modal_fornecedor')">Cancelar</button>
             </div>
         </div>
     </div>
@@ -335,7 +333,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modal_parcelas')">Cancelar</button>
             </div>
         </div>
     </div>
@@ -366,6 +364,18 @@
 <!--gerar forma de pagamentos-->
 <script>
     GerarSelectFormaPagamento();
+    //Instrução modal sobre modal
+    $(document).on('show.bs.modal', '.modal', function () {
+        var zIndex = 1040 + (10 * $('.modal:visible').length);
+        $(this).css('z-index', zIndex);
+        setTimeout(function () {
+            $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+        }, 0);
+    });
+    //Instrução para correção da barra de rolagem no fechamento de modal sobre modal
+    $(document).on('hidden.bs.modal', '.modal', function () {
+        $('.modal:visible').length && $(document.body).addClass('modal-open');
+    });
 </script>
 
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>

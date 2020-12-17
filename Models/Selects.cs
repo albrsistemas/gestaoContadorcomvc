@@ -1338,13 +1338,13 @@ namespace gestaoContadorcomvc.Models
             List<Selects> selects = new List<Selects>();
             selects.Add(new Selects
             {
-                value = "Parcelada",
-                text = "Parcelada"
+                value = "Realizada",
+                text = "Realizada"
             });
             selects.Add(new Selects
             {
-                value = "Recorrente",
-                text = "Recorrente"
+                value = "Realizar",
+                text = "À Realizar"
             });
 
             return selects;

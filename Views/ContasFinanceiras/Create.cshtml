@@ -182,7 +182,7 @@
     <br />
     <p id="text_gravando" class="text-info"></p>
 
-    <button type="button" class="btn btn-info" id="sub" onclick="gravarContasFinanceiras()">Gravar</button>
+    <button type="button" class="btn btn-info" id="sub" onclick="gravarContasFinanceiras('Create')">Gravar</button>
     <a class="btn btn-secondary" asp-controller="ContasFinanceiras" asp-action="Index">Cancelar</a>
 
 </form>
@@ -330,7 +330,7 @@
 
 <!--Retorno back-end-->
 <div class="modal fade" id="modal_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">Contas Financeiras</h5>
