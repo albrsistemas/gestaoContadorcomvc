@@ -67,7 +67,7 @@ namespace gestaoContadorcomvc.Models
                 }
 
                 //Operação
-                comando.CommandText = "call pr_operacao(@op_tipo, @op_data, @op_conta_id, @op_obs, @op_previsao_entrega, @op_data_saida, @op_categoria_id, @op_comParticipante, @op_comRetencoes, @op_comTransportador, @op_comNF);";                
+                comando.CommandText = "call pr_operacao(@op_tipo, @op_data, @op_conta_id, @op_obs, @op_previsao_entrega, @op_data_saida, @op_categoria_id, @op_comParticipante, @op_comRetencoes, @op_comTransportador, @op_comNF, @op_escopo_caixa);";                
                 comando.Parameters.AddWithValue("@op_tipo", op.operacao.op_tipo);
                 comando.Parameters.AddWithValue("@op_data", op.operacao.op_data);
                 comando.Parameters.AddWithValue("@op_conta_id", conta_id);
@@ -79,6 +79,19 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@op_comRetencoes", retencoes);
                 comando.Parameters.AddWithValue("@op_comTransportador", op.operacao.op_comTransportador);
                 comando.Parameters.AddWithValue("@op_comNF", op.operacao.op_comNF);
+                
+                string escopo = "";
+                if(op.operacao.op_tipo == "Compra" || op.operacao.op_tipo == "ServicoTomado")
+                {
+                    escopo = "S";
+                }
+
+                if (op.operacao.op_tipo == "Venda" || op.operacao.op_tipo == "ServicoPrestado")
+                {
+                    escopo = "E";
+                }
+
+                comando.Parameters.AddWithValue("@op_escopo_caixa", escopo);
                 comando.ExecuteNonQuery();
 
 

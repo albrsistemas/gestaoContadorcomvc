@@ -6,7 +6,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Realização de conta financeira recorrente</h4>
+                <h4 class="modal-title">Realização de conta financeira a realizar</h4>
             </div>
             <form asp-controller="ContasFinanceiras" asp-action="CFR_realizacao">
                 <div class="modal-body">
@@ -186,7 +186,7 @@
                     <br />
                     <p id="text_gravando" class="text-info"></p>
                 </div>
-                <input type="hidden" name="parcela_id" value="@TempData["parcela_id"]" />
+                <input type="hidden" name="parcela_id" id="parcela_id" value="@TempData["parcela_id"].ToString()" />
                 <div class="modal-footer">
                     <button type="button" class="btn btn-info" id="sub" onclick="gravarContasFinanceiras('CFR_realizacao')">Gravar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>                    
@@ -341,7 +341,7 @@
 
 <!--Retorno back-end-->
 <div class="modal fade" id="modal_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">Contas Financeiras</h5>
@@ -354,7 +354,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a id="btn_ok" class="btn btn-success" asp-controller="ContasFinanceiras" asp-action="Create">OK</a>
+                <a id="btn_ok" class="btn btn-success" asp-controller="ContasPagar" asp-action="Index">OK</a>
                 <button id="btn_cancel" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
         </div>

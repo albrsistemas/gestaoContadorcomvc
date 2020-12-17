@@ -3852,7 +3852,7 @@ function gravarContasFinanceiras(context) {
         let parcela_id = 0;
 
         if (context == 'CFR_realizacao') {
-            document.getElementById('parcela_id').value;
+            parcela_id = document.getElementById('parcela_id').value;
         }
 
         
