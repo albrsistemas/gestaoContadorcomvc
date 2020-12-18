@@ -424,9 +424,17 @@ function mask_classificaoCategoriaGrupo(valor, id, escopo) {
     let tamanho = valor.length;
     if (tamanho == 1) {
         document.getElementById(id).value = valor + ".";
+    }    
+    if (tamanho > 4) {
+        document.getElementById(id).value = valor.substring(0, 4);
     }
-    if (tamanho > 3) {
-        document.getElementById(id).value = valor.substring(0, 3);
+}
+
+function verificaClassificacaoGrupo(id, vlr) {
+    let tamanho = vlr.length;
+    if (tamanho != 4) {
+        alert('A Classificação deve ter 4 caracteres, exemplo: 2.01');
+        document.getElementById(id).focus();
     }
 }
 
