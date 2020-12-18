@@ -15,16 +15,18 @@ namespace gestaoContadorcomvc.Models
         public int cf_id { get; set; }
         public string cf_nome { get; set; }
         public int cf_categoria_id { get; set; }
-        public Decimal cf_valor_operacao { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = true)]
+        public Decimal cf_valor_operacao { get; set; }        
         public Decimal cf_valor_parcela_bruta { get; set; }
         public Decimal cf_valor_parcela_liquida { get; set; }
         public string cf_recorrencia { get; set; }
 
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
         public DateTime cf_data_inicial { get; set; }
 
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime? cf_data_final { get; set; }
+        [DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
+        public DateTime cf_data_final { get; set; }
         public string cf_escopo { get; set; }
         public string cf_tipo { get; set; }
         public string cf_status { get; set; }
@@ -390,6 +392,125 @@ namespace gestaoContadorcomvc.Models
             }
 
             return retorno;
+        }
+
+        //Lista contas financeiras
+        public Vm_contasFinanceiras listaCF(int usuario_id, int conta_id)
+        {
+            Vm_contasFinanceiras vmcf = new Vm_contasFinanceiras();
+
+            List<ContasFinanceiras> lista = new List<ContasFinanceiras>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from contas_financeiras WHERE contas_financeiras.cf_conta_id = @conta_id;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);                
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        ContasFinanceiras cf = new ContasFinanceiras();
+
+                        //contas financeiras
+                        if (DBNull.Value != leitor["cf_op_id"])
+                        {
+                            cf.cf_op_id = Convert.ToInt32(leitor["cf_op_id"]);
+                        }
+                        else
+                        {
+                            cf.cf_op_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["cf_categoria_id"])
+                        {
+                            cf.cf_categoria_id = Convert.ToInt32(leitor["cf_categoria_id"]);
+                        }
+                        else
+                        {
+                            cf.cf_categoria_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["cf_valor_operacao"])
+                        {
+                            cf.cf_valor_operacao = Convert.ToDecimal(leitor["cf_valor_operacao"]);
+                        }
+                        else
+                        {
+                            cf.cf_valor_operacao = 0;
+                        }
+
+                        if (DBNull.Value != leitor["cf_valor_parcela_bruta"])
+                        {
+                            cf.cf_valor_parcela_bruta = Convert.ToDecimal(leitor["cf_valor_parcela_bruta"]);
+                        }
+                        else
+                        {
+                            cf.cf_valor_parcela_bruta = 0;
+                        }
+
+                        if (DBNull.Value != leitor["cf_valor_parcela_liquida"])
+                        {
+                            cf.cf_valor_parcela_liquida = Convert.ToDecimal(leitor["cf_valor_parcela_liquida"]);
+                        }
+                        else
+                        {
+                            cf.cf_valor_parcela_liquida = 0;
+                        }
+
+                        if (DBNull.Value != leitor["cf_data_inicial"])
+                        {
+                            cf.cf_data_inicial = Convert.ToDateTime(leitor["cf_data_inicial"]);
+                        }
+                        else
+                        {
+                            cf.cf_data_inicial = new DateTime();
+                        }
+
+                        if (DBNull.Value != leitor["cf_data_final"])
+                        {
+                            cf.cf_data_final = Convert.ToDateTime(leitor["cf_data_final"]);
+                        }
+                        else
+                        {
+                            cf.cf_data_final = new DateTime();
+                        }
+
+                        cf.cf_nome = leitor["cf_nome"].ToString();
+                        cf.cf_recorrencia = leitor["cf_recorrencia"].ToString();
+                        cf.cf_status = leitor["cf_status"].ToString();
+                        cf.cf_tipo = leitor["cf_tipo"].ToString();
+
+                        lista.Add(cf);
+                    }
+                }
+                leitor.Close();
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message.Substring(0, 300);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            vmcf.contas = lista;
+
+            return vmcf;
         }
 
 

@@ -17,7 +17,16 @@ namespace gestaoContadorcomvc.Controllers
         // GET: ContasFinanceirasController
         public ActionResult Index()
         {
-            return View();
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            ContasFinanceiras cf = new ContasFinanceiras();
+            Vm_contasFinanceiras vmcf = new Vm_contasFinanceiras();
+            vmcf = cf.listaCF(user.usuario_id, user.usuario_conta_id);
+            vmcf.user = user;
+
+            return View(vmcf);
         }
 
         // GET: ContasFinanceirasController/Details/5

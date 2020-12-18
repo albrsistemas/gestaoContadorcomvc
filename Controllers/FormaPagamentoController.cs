@@ -287,7 +287,7 @@ namespace gestaoContadorcomvc.Controllers
                 lista = select.getContasCorrenteTipo(user.usuario_conta_id, "Caixa");
             }
 
-            if (identificacao.Equals("Pagamento") && (meioPgto.Equals("02") || meioPgto.Equals("04")))
+            if (identificacao.Equals("Pagamento") && (meioPgto.Equals("02") || meioPgto.Equals("04") || meioPgto.Equals("99")))
             {
                 lista = select.getContasCorrenteTipo(user.usuario_conta_id, "Banco");
             }
@@ -313,7 +313,7 @@ namespace gestaoContadorcomvc.Controllers
                 lista = select.getContasCorrenteTipo(user.usuario_conta_id, "Maquininha de Cartão");
             }
 
-            if (identificacao.Equals("Recebimento") && meioPgto.Equals("15"))
+            if (identificacao.Equals("Recebimento") && (meioPgto.Equals("15") || meioPgto.Equals("99")))
             {
                 lista = select.getContasCorrenteTipo(user.usuario_conta_id, "Banco");
             }

@@ -203,6 +203,23 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "LOG";
                 }
+                //Contas Financeiras
+                if (pagina.Contains("ContasFinanceiras/Index"))
+                {
+                    retorno = "Contas Financeiras";
+                }
+                if (pagina.Contains("ContasFinanceiras/Create"))
+                {
+                    retorno = "Incluir Conta Financeira";
+                }
+                if (pagina.Contains("ContasFinanceiras/Edit"))
+                {
+                    retorno = "Alterar Conta Financeira";
+                }
+                if (pagina.Contains("ContasFinanceiras/Details"))
+                {
+                    retorno = "Detelhes Conta Financeira";
+                }
 
             }
 

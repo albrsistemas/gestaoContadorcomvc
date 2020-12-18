@@ -148,7 +148,7 @@
                         <td>@item.formaPgto</td>
                         <td>@item.valorOriginal.ToString("N2")</td>
                         <td>@item.saldo.ToString("N2")</td>
-                        <td>
+                        <td style="white-space:nowrap">                           
                             @{
                                 if (item.saldo > 0)
                                 {
@@ -224,7 +224,7 @@
                                             if (Model.user.Role == "adm" || (Model.user._permissoes.baixaList || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete))
                                             {
                                                 <!--Exibe combo para selecionar parcela-->
-                                                <input type="checkbox" id="cp_@item.parcela_id" onchange="fechamento_de_cartao(this.id)" style="margin-left:3px;">
+                                                <input type="checkbox" id="cp_@item.parcela_id" onchange="fechamento_de_cartao(this.id)" style="margin-left:3px;cursor:pointer;">
                                             }
                                         }
                                     }
