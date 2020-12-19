@@ -121,10 +121,10 @@ namespace gestaoContadorcomvc.Controllers
 
             Selects select = new Selects();
             ViewBag.tipoContaCorrente = select.getTiposContaCorrente().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == d["ccorrente_status"] });
-
+                        
             vm_corrente.ccorrente_nome = d["ccorrente_nome"];
             vm_corrente.ccorrente_tipo = d["ccorrente_tipo"];
-            vm_corrente.ccorrente_saldo_abertura = Convert.ToDecimal(d["ccorrente_saldo_abertura"].ToString().Replace(".", ","));
+            vm_corrente.ccorrente_saldo_abertura = Convert.ToDecimal(d["ccorrente_saldo_abertura"]);
             vm_corrente.ccorrente_masc_contabil = d["ccorrente_masc_contabil"];
             vm_corrente.ccorrente_status = d["ccorrente_status"];
             vm_corrente.ccorrente_id = ccorrente_id;

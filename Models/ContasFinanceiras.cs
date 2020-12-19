@@ -89,7 +89,7 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@cf_valor_parcela_liquida", vmcf.cf.cf_valor_parcela_liquida);
                 comando.Parameters.AddWithValue("@cf_recorrencia", vmcf.cf.cf_recorrencia);
                 comando.Parameters.AddWithValue("@cf_data_inicial", vmcf.cf.cf_data_inicial);
-                if(vmcf.cf.cf_data_final == null)
+                if(vmcf.cf.cf_data_final == null || vmcf.cf.cf_data_final.ToString().Equals("01/01/0001 00:00:00"))
                 {
                     comando.Parameters.AddWithValue("@cf_data_final", null);
                 }
