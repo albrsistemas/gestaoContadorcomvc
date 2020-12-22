@@ -1,0 +1,135 @@
+﻿@model gestaoContadorcomvc.Models.Relatorios.Categoria_opp
+
+@{
+    ViewData["Title"] = "Categoria x Parcela";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .container{
+        min-width: 100%;
+    }
+</style>
+
+<h2>Relatório por Categorias</h2>
+<form asp-controller="Categoria_opp" asp-action="Create">
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">    
+                <label class="control-label">Visão</label>
+                <select asp-for="visao" name="visao" id="visao" class="form-control">
+                    <option value="contas">Contas</option>
+                    <option value="caixa">Caixa</option>
+                </select>                
+            </div>
+        </div>
+        <div class="col-6">
+            <label class="control-label">Ano</label>
+            <div class="input-group mb-3">
+                <input asp-for="ano" type="text" class="form-control" autofocus name="ano" id="ano" placeholder="ano com quatro dígitos" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z" />
+                            <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<hr class="hrLine" />
+<div class="table-responsive">
+    <table class="table">
+        <caption>Categorias x Parcelas</caption>
+        <thead>            
+            <tr class="tab_grupo_0">
+                <th scope="col" style="white-space:nowrap;text-align:left">Classificação</th>
+                <th scope="col" style="white-space:nowrap;text-align:left">Descrição</th>
+                <th scope="col">Janeiro</th>
+                <th scope="col">Fevereiro</th>
+                <th scope="col">Março</th>
+                <th scope="col">Abril</th>
+                <th scope="col">Maio</th>
+                <th scope="col">Junho</th>
+                <th scope="col">Julho</th>
+                <th scope="col">Agosto</th>
+                <th scope="col">Setembro</th>
+                <th scope="col">Outubro</th>
+                <th scope="col">Novembro</th>
+                <th scope="col">Dezembro</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model.lista != null)
+                {
+                    foreach (var item in Model.lista)
+                    {
+                        if (item.classificacao.Length == 1)
+                        {
+                            <tr class="tab_grupo_1">
+                                <td style="white-space:nowrap;text-align:left">@item.classificacao</td>
+                                <td style="white-space:nowrap;text-align:left">@item.descricao</td>
+                                <td>@item.jan.ToString("N")</td>
+                                <td>@item.fev.ToString("N")</td>
+                                <td>@item.marc.ToString("N")</td>
+                                <td>@item.abr.ToString("N")</td>
+                                <td>@item.mai.ToString("N")</td>
+                                <td>@item.jul.ToString("N")</td>
+                                <td>@item.jul.ToString("N")</td>
+                                <td>@item.ago.ToString("N")</td>
+                                <td>@item.sete.ToString("N")</td>
+                                <td>@item.outu.ToString("N")</td>
+                                <td>@item.nov.ToString("N")</td>
+                                <td>@item.dez.ToString("N")</td>
+                            </tr>
+                        }
+
+                        if (item.classificacao.Length == 4)
+                        {
+                            <tr class="tab_grupo_2">
+                                <td style="white-space:nowrap;text-align:left">@item.classificacao</td>
+                                <td style="white-space:nowrap;text-align:left">@item.descricao</td>
+                                <td>@item.jan.ToString("N")</td>
+                                <td>@item.fev.ToString("N")</td>
+                                <td>@item.marc.ToString("N")</td>
+                                <td>@item.abr.ToString("N")</td>
+                                <td>@item.mai.ToString("N")</td>
+                                <td>@item.jul.ToString("N")</td>
+                                <td>@item.jul.ToString("N")</td>
+                                <td>@item.ago.ToString("N")</td>
+                                <td>@item.sete.ToString("N")</td>
+                                <td>@item.outu.ToString("N")</td>
+                                <td>@item.nov.ToString("N")</td>
+                                <td>@item.dez.ToString("N")</td>
+                            </tr>
+                        }
+
+                        if (item.classificacao.Length > 4)
+                        {
+                            <tr class="tab_grupo_3">
+                                <td style="white-space:nowrap;text-align:left">@item.classificacao</td>
+                                <td style="white-space:nowrap;text-align:left">@item.descricao</td>
+                                <td>@item.jan.ToString("N")</td>
+                                <td>@item.fev.ToString("N")</td>
+                                <td>@item.marc.ToString("N")</td>
+                                <td>@item.abr.ToString("N")</td>
+                                <td>@item.mai.ToString("N")</td>
+                                <td>@item.jul.ToString("N")</td>
+                                <td>@item.jul.ToString("N")</td>
+                                <td>@item.ago.ToString("N")</td>
+                                <td>@item.sete.ToString("N")</td>
+                                <td>@item.outu.ToString("N")</td>
+                                <td>@item.nov.ToString("N")</td>
+                                <td>@item.dez.ToString("N")</td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>

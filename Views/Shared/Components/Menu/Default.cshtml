@@ -70,18 +70,34 @@
                         @if (usuario.Role == "adm" || usuario._permissoes.ContasRList)
                         {
                             <a class="dropdown-item" asp-controller="ContasReceber" asp-action="Index">Contas a Receber</a>
-                        }                        
+                        }
                         @if (usuario.Role == "adm" || usuario._permissoes.CCMList)
                         {
                             <a class="dropdown-item" asp-controller="ContaCorrenteMov" asp-action="Index">Conta Corrente Movimento</a>
-                        }                        
+                        }
+                    </div>
+                </li>
+            }
+        }
+        @{
+            if (usuario.Role == "adm" || usuario._permissoes.ContasPList || usuario._permissoes.CCMList)
+            {
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Relatórios
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        @if (usuario.Role == "adm" || usuario._permissoes.ContasPList)
+                        {
+                            <a class="dropdown-item" asp-controller="Categoria_opp" asp-action="Create">Categorias</a>
+                        }                       
                     </div>
                 </li>
             }
         }
 
-        <!--Removido o relatório do menu até que estejam prontos no desenvolvimento-->
 
+        <!--Removido o relatório do menu até que estejam prontos no desenvolvimento-->
         @*<li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Relatório

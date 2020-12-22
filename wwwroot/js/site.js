@@ -162,7 +162,7 @@ function Page() {
     //Carregar formas pagamento no contas financeiras
     if (document.getElementById('text_formaPgto')) {
         GerarSelectFormaPagamento();
-    }
+    } 
 }
 
 function carregarEdit(id) {   
@@ -535,8 +535,10 @@ $(document).ready(function () {
 
 $(document).ready(function () {
     $('.js_example_basic_single').select2({
-        width: 'resolve'
+        width: 'resolve',
+        containerCssClass: ':all:',        
     });
+    $('.js_example_basic_single').style.width = '100%';
 });
 
 function contabilizacao(vlr) {

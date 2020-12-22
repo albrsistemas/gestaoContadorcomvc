@@ -1,10 +1,69 @@
 ﻿/*CSS criado no desenvolvimento*/
+.select2-container .select2-selection--single {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    height: 38px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+    .select2-container .select2-selection--single:focus {
+        color: #495057;
+        background-color: #fff;
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+
+/* line 131 */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444;
+    line-height: 25px;
+}
+
+/* line 139 */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 20px;
+}
+
+.tab_grupo_0 {
+    font-weight: bold;
+    font-size: 14px;
+    font-family: sans-serif;
+    text-align: right;
+    border-bottom: 3px solid white;
+}
+.tab_grupo_1 {
+    font-weight: bold;
+    font-size: 14px;
+    font-family: sans-serif;
+    background-color: #e1e4e6;
+    text-align: right;
+}
+.tab_grupo_2 {
+    font-weight: bold;
+    font-size: 14px;
+    font-family: sans-serif;
+    text-align: right;
+}
+.tab_grupo_3 {
+    font-size: 12px;
+    font-family: sans-serif;
+    text-align: right;
+}
+
 .ui-datepicker {
     z-index: 99999 !important
 }
 .ui-autocomplete {
     z-index: 9999 !important;
 }
+
 .box_monthPicker {
     background-color: #ffe699;
     padding: 10px;

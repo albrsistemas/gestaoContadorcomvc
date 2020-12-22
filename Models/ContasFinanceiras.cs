@@ -410,7 +410,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT * from contas_financeiras WHERE contas_financeiras.cf_conta_id = @conta_id;";
+                comando.CommandText = "SELECT * from contas_financeiras as cf WHERE cf.cf_conta_id = @conta_id ORDER by cf.cf_tipo DESC, cf.cf_nome ASC, cf.cf_data_inicial ASC;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);                
                 Transacao.Commit();
 

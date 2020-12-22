@@ -244,7 +244,7 @@
             <div class="col-12 col-md-4">
                 <div class="form-group">
                     <label asp-for="operacao.op_categoria_id" class="control-label">Categoria</label>
-                    <select asp-items="@ViewBag.categoria" value="@TempData["operacao.op_categoria_id"]" id="op_categoria_id" name="operacao.op_categoria_id" class="form-control"></select>
+                    <select asp-items="@ViewBag.categoria" value="@TempData["operacao.op_categoria_id"]" id="op_categoria_id" style="width:100%" name="operacao.op_categoria_id" class="form-control js_example_basic_single"></select>
                     <span asp-validation-for="operacao.op_categoria_id" class="text-danger"></span>
                 </div>
             </div>
