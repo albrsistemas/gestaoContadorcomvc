@@ -537,8 +537,7 @@ $(document).ready(function () {
     $('.js_example_basic_single').select2({
         width: 'resolve',
         containerCssClass: ':all:',        
-    });
-    $('.js_example_basic_single').style.width = '100%';
+    });    
 });
 
 function contabilizacao(vlr) {

@@ -19,7 +19,7 @@
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="cf.cf_tipo" class="control-label">Tipo</label>
-                <select asp-items="@ViewBag.tipoCtaFinaceira" value="@TempData["cf_tipo"]" id="cf_tipo" name="cf_tipo" class="form-control" onclick="contasFinanceiras(this.id, this.value)"></select>
+                <select asp-items="@ViewBag.tipoCtaFinaceira" value="@TempData["cf_tipo"]" id="cf_tipo" name="cf_tipo" class="form-control" onchange="contasFinanceiras(this.id, this.value)"></select>
                 <span asp-validation-for="cf.cf_tipo" class="text-danger"></span>
             </div>
         </div>

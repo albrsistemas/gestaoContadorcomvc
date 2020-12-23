@@ -1,7 +1,16 @@
 ﻿<script>
-    $('#cf_categoria_id').select2({
-        dropdownParent: $('#modal'),
-        width: 'resolve',
-        containerCssClass: ':all:',
-    });
+    if (document.getElementById('cf_categoria_id')) {
+        $('#cf_categoria_id').select2({
+            dropdownParent: $('#modal'),
+            width: 'resolve',
+            containerCssClass: ':all:',
+        });
+    }
+    if (document.getElementById('categoria_id')) {
+        $('#categoria_id').select2({
+            dropdownParent: $('#modal'),
+            width: 'resolve',
+            containerCssClass: ':all:',
+        });
+    }
 </script>

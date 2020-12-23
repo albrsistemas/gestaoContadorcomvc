@@ -179,7 +179,7 @@
             <div class="modal-body">
                 <p id="msg_retorno"></p>
             </div>
-            <div class="modal-footer">                
+            <div class="modal-footer">
                 <button type="button" class="btn btn-info" onclick="close_ccm_gravado_erro()">OK</button>
             </div>
         </div>
@@ -200,7 +200,7 @@
         document.getElementById('ccm_nf_numero').value = "";
         document.getElementById('ccm_nf_chave').value = "";
         document.getElementById('nf_ccm').checked = false;
-        document.getElementById('box_nf').style.display = 'none';        
+        document.getElementById('box_nf').style.display = 'none';
         $('#ccm_gravado_sucesso').modal('hide');
         $('#modal').on('shown.bs.modal', function () {
             $('#ccm_valor').focus();
@@ -210,3 +210,5 @@
         $('#ccm_gravado_erro').modal('hide');
     }
 </script>
+
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
