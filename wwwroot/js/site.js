@@ -155,8 +155,11 @@ function Page() {
     }
     //Carregar data nos input de id = op_data
     if (document.getElementById('op_data')) {
-        let d = new Date();
-        document.getElementById('op_data').value = d.toLocaleDateString();
+        let x = window.location.href.split('/');
+        if (x.includes('Create')) {
+            let d = new Date();
+            document.getElementById('op_data').value = d.toLocaleDateString();
+        }
     }
 
     //Carregar formas pagamento no contas financeiras
@@ -1596,10 +1599,16 @@ function totaisOperacao() {
     decimal('op_totais_seguro', op_totais_seguro.toString().replace('.', ','), '6', false);
     decimal('op_totais_desp_aces', op_totais_desp_aces.toString().replace('.', ','), '6', false);
     decimal('op_totais_desconto', op_totais_desconto.toString().replace('.', ','), '6', false);
-    decimal('op_totais_preco_itens', op_totais_preco_itens.toString().replace('.', ','), '6', false);
+    if (document.getElementById('op_totais_preco_itens')) {
+        decimal('op_totais_preco_itens', op_totais_preco_itens.toString().replace('.', ','), '6', false);
+    }
     decimal('op_totais_total_op', op_totais_total_op.toString().replace('.', ','), '6', false);
-    decimal('op_totais_icms_st', op_totais_icms_st.toString().replace('.', ','), '6', false);
-    decimal('op_totais_ipi', op_totais_ipi.toString().replace('.', ','), '6', false);
+    if (document.getElementById('op_totais_icms_st')) {
+        decimal('op_totais_icms_st', op_totais_icms_st.toString().replace('.', ','), '6', false);
+    }
+    if (document.getElementById('op_totais_ipi')) {
+        decimal('op_totais_ipi', op_totais_ipi.toString().replace('.', ','), '6', false);
+    }    
 
     if (document.getElementById('op_totais_preco_itens')) {
         operacao.totais.op_totais_preco_itens = document.getElementById('op_totais_preco_itens').value;
@@ -2552,6 +2561,23 @@ function gravarOperacao(contexto, tipo_operacao) {
         }
     }   
 
+    //29/12
+    if (tipo_operacao == 'ServicoTomado') {
+        if (operacao.retencoes.op_ret_inss.replace('.', '').replace(',', '.') * 1 > 0 || operacao.retencoes.op_ret_issqn.replace('.', '').replace(',', '.') * 1 > 0 || operacao.retencoes.op_ret_irrf.replace('.', '').replace(',', '.') * 1 > 0 || operacao.retencoes.op_ret_pis.replace('.', '').replace(',', '.') * 1 > 0 || operacao.retencoes.op_ret_cofins.replace('.', '').replace(',', '.') * 1 > 0 || operacao.retencoes.op_ret_csll.replace('.', '').replace(',', '.') * 1 > 0) {
+            operacao.operacao.op_comRetencoes = true;
+        } else {
+            operacao.operacao.op_comRetencoes = false;
+        }
+        operacao.operacao.op_comParticipante = true;
+        operacao.operacao.op_comTransportador = false;
+
+        if (contexto == 'Create') {
+            operacao.participante.existe = false;
+            operacao.retencoes.existe = false;
+            operacao.transportador.existe = false;
+        }
+    }
+
     totalRetencoes(); //Verificando as retenções
 
     let validacao = [];
@@ -2600,6 +2626,7 @@ function gravarOperacao(contexto, tipo_operacao) {
         //Postar o formulário de compra
 
         //alert('Tudo ok. Para os próximos episódios teremos a persistência no banco de dados!');        
+
         
         $.ajax({
             url: "/" + tipo_operacao + "/" + contexto,
@@ -2635,7 +2662,10 @@ function gravarOperacao(contexto, tipo_operacao) {
                     }
                     if (tipo_operacao == 'ServicoPrestado') {
                         document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/ServicoPrestado/Index">Fechar</a>';
-                    }                    
+                    }
+                    if (tipo_operacao == 'ServicoTomado') {
+                        document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/ServicoTomado/Index">Fechar</a>';
+                    }
                     $('#modal_mensagem_retorno').modal('show');
 
                     return;
@@ -2663,6 +2693,7 @@ function gravarOperacao(contexto, tipo_operacao) {
                 }
             }
         });
+        
         
     }
     

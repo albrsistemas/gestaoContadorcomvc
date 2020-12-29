@@ -356,7 +356,7 @@
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label asp-for="operacao.op_data" class="control-label">Data do Serviço</label>
-                    <input type="text" name="operacao.op_data" id="op_data" autocomplete="off" class="form-control datepicker" disabled="disabled" />
+                    <input type="text" name="operacao.op_data" value="@Model.operacao.op_data.ToShortDateString()" id="op_data" autocomplete="off" class="form-control datepicker" disabled="disabled" />
                     <span asp-validation-for="operacao.op_data" class="text-danger"></span>
                 </div>
             </div>

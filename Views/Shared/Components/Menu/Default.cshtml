@@ -40,14 +40,15 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Lançamento
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                        
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         @if (usuario.Role == "adm" || usuario._permissoes.compraList)
                         {<a class="dropdown-item" asp-controller='Compra' asp-action='Index'>Compra</a>}
                         @if (usuario.Role == "adm" || usuario._permissoes.vendaList)
                         {<a class="dropdown-item" asp-controller='Venda' asp-action='Index'>Venda</a>}
                         @if (usuario.Role == "adm" || usuario._permissoes.servicoPList)
                         {<a class="dropdown-item" asp-controller='ServicoPrestado' asp-action='Index'>Prestação de Serviço</a>}
-                        <a class="dropdown-item" href="#">Serviço Tomado</a>
+                        @if (usuario.Role == "adm" || usuario._permissoes.servicoTList)
+                        {<a class="dropdown-item" asp-controller='ServicoTomado' asp-action='Index'>Serviço Tomado</a>}                        
                         @if (usuario.Role == "adm" || usuario._permissoes.contasFList)
                         {<a class="dropdown-item" asp-controller='ContasFinanceiras' asp-action='Index'>Contas Financeiras</a>}
                     </div>

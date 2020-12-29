@@ -11,12 +11,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+
 namespace gestaoContadorcomvc.Controllers
 {
     [Authorize]
-    public class ServicoPrestadoController : Controller
+    public class ServicoTomadoController : Controller
     {
-        [Autoriza(permissao = "servicoPList")]
+        [Autoriza(permissao = "servicoTList")]
         public ActionResult Index()
         {
             Usuario usuario = new Usuario();
@@ -25,7 +26,7 @@ namespace gestaoContadorcomvc.Controllers
 
             Operacao operacao = new Operacao();
             Vm_operacao op = new Vm_operacao();
-            op.operacoes = operacao.listaOperacao(user.usuario_id, user.usuario_conta_id, "ServicoPrestado");
+            op.operacoes = operacao.listaOperacao(user.usuario_id, user.usuario_conta_id, "ServicoTomado");
             op.user = user;
 
             return View(op);
@@ -42,14 +43,13 @@ namespace gestaoContadorcomvc.Controllers
             ViewBag.tipoPessoa = select.getTipoPessoa().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1" });
             ViewBag.ufIbge = select.getUF_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "35" });
             ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1058" });
-            ViewBag.categoria = select.getCategoriasClienteComEscopo(user.usuario_conta_id, true, true, false).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
-            ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Recebimento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.categoria = select.getCategoriasClienteComEscopo(user.usuario_conta_id, true,false,true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
+            ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             ViewBag.modFrete = select.getModFrete().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
-            ViewBag.statusServico = select.getStatusServico().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
 
             return View();
         }
-                
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection, Vm_operacao op)
@@ -62,7 +62,7 @@ namespace gestaoContadorcomvc.Controllers
 
             try
             {
-                op.operacao.op_tipo = "ServicoPrestado";
+                op.operacao.op_tipo = "ServicoTomado";
                 Operacao operacao = new Operacao();
                 retorno = operacao.cadastraOperacao(user.usuario_id, user.usuario_conta_id, op);
 
@@ -74,32 +74,7 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
-        [Autoriza(permissao = "servicoPEdit")]
-        public ActionResult Details(int id)
-        {
-            Usuario usuario = new Usuario();
-            Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
-
-            Operacao op = new Operacao();
-            Vm_operacao vm_op = new Vm_operacao();
-
-            vm_op = op.buscaOperacao(user.usuario_id, user.usuario_conta_id, id);
-            vm_op.user = user;
-
-            Selects select = new Selects();
-            ViewBag.tipoPessoa = select.getTipoPessoa().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_part_tipo });
-            ViewBag.ufIbge = select.getUF_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_uf_ibge_codigo.ToString() });
-            ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_paisesIBGE_codigo.ToString() });
-            ViewBag.categoria = select.getCategoriasClienteComEscopo(user.usuario_conta_id, true,true,false).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.operacao.op_categoria_id.ToString() });
-            ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Recebimento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
-            ViewBag.modFrete = select.getModFrete().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.transportador.op_transportador_modalidade_frete });
-            ViewBag.statusServico = select.getStatusServico().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.servico.op_servico_status });
-
-            return View(vm_op);
-        }
-
-        [Autoriza(permissao = "servicoPEdit")]
+        [Autoriza(permissao = "servicoTEdit")]
         public ActionResult Edit(int id)
         {
             Usuario usuario = new Usuario();
@@ -117,10 +92,10 @@ namespace gestaoContadorcomvc.Controllers
             ViewBag.tipoPessoa = select.getTipoPessoa().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_part_tipo });
             ViewBag.ufIbge = select.getUF_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_uf_ibge_codigo.ToString() });
             ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_paisesIBGE_codigo.ToString() });
-            ViewBag.categoria = select.getCategoriasClienteComEscopo(user.usuario_conta_id, true, true, false).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.operacao.op_categoria_id.ToString() });
-            ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Recebimento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.categoria = select.getCategoriasClienteComEscopo(user.usuario_conta_id, true, false, true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.operacao.op_categoria_id.ToString() });
+            ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             ViewBag.modFrete = select.getModFrete().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.transportador.op_transportador_modalidade_frete });
-            ViewBag.statusServico = select.getStatusServico().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.servico.op_servico_status });
+            
 
             if (vm_op.operacao.possui_parcelas)
             {
@@ -143,7 +118,7 @@ namespace gestaoContadorcomvc.Controllers
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
                 user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
-                
+
                 Operacao operacao = new Operacao();
                 retorno = operacao.alterarOperacao(user.usuario_id, user.usuario_conta_id, op);
 
@@ -157,5 +132,51 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
+
+        [Autoriza(permissao = "servicoTEdit")]
+        public ActionResult Details(int id)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Operacao op = new Operacao();
+            Vm_operacao vm_op = new Vm_operacao();
+
+            vm_op = op.buscaOperacao(user.usuario_id, user.usuario_conta_id, id);
+            vm_op.user = user;
+
+            Selects select = new Selects();
+            ViewBag.tipoPessoa = select.getTipoPessoa().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_part_tipo });
+            ViewBag.ufIbge = select.getUF_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_uf_ibge_codigo.ToString() });
+            ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_paisesIBGE_codigo.ToString() });
+            ViewBag.categoria = select.getCategoriasClienteComEscopo(user.usuario_conta_id, true, false, true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.operacao.op_categoria_id.ToString() });
+            ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.modFrete = select.getModFrete().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.transportador.op_transportador_modalidade_frete });            
+
+            return View(vm_op);
+        }
+
+
+        // GET: ServicoTomadoController/Delete/5
+        public ActionResult Delete(int id)
+        {
+            return View();
+        }
+
+        // POST: ServicoTomadoController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, IFormCollection collection)
+        {
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
     }
 }

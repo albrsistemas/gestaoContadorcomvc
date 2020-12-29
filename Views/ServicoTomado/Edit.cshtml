@@ -1,7 +1,7 @@
 ﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_operacao
 
 @{
-    ViewData["Title"] = "Serviço Prestado";
+    ViewData["Title"] = "Serviço Tomado";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <style>
@@ -64,20 +64,20 @@
 </style>
 
 @{
-    if (TempData["msgSP"] != null && TempData["msgSP"].ToString().Contains("sucesso"))
+    if (TempData["msgST"] != null && TempData["msgST"].ToString().Contains("sucesso"))
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
-            <strong>Sucesso!</strong> @TempData["msgSP"].ToString()
+            <strong>Sucesso!</strong> @TempData["msgST"].ToString()
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
     }
 
-    if (TempData["msgSP"] != null && TempData["msgSP"].ToString().Contains("Erro"))
+    if (TempData["msgST"] != null && TempData["msgST"].ToString().Contains("Erro"))
     {
         <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
-            <strong>Erro!</strong> @TempData["msgSP"].ToString()
+            <strong>Erro!</strong> @TempData["msgST"].ToString()
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -85,10 +85,10 @@
     }
 }
 
-<h2>Prestação de Serviço</h2>
+<h2>Serviço Tomado</h2>
 <hr class="hrLine" />
 <span class="text-primary" id="carregamento"></span>
-<form asp-controller="ServicoPrestado" asp-action="Create">
+<form asp-controller="ServicoPrestado" asp-action="Edit">
     <input type="hidden" id="carregamentoCompra" asp-for="operacao.op_id" />
     <fieldset>
         <legend>Cliente</legend>
@@ -107,99 +107,7 @@
             </div>
         </div>
         <input type="hidden" asp-for="participante.op_part_id" class="form-control" /> <!--ID do participante-->
-    </fieldset>
-    <fieldset>
-        <legend>Dados Gerais</legend>
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group">
-                    <label asp-for="servico.op_servico_status" class="control-label">Satatus</label>
-                    <select asp-items="@ViewBag.statusServico" value="@TempData["op_servico_status"]" id="op_servico_status" class="form-control"></select>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label asp-for="servico.op_servico_equipamento" class="control-label">Descrição do equipamento</label>
-                    <textarea asp-for="servico.op_servico_equipamento" id="op_servico_equipamento" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_op_servico_equipamento')"></textarea>
-                    <span class="text-info" id="msg_op_servico_equipamento"></span>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label asp-for="servico.op_servico_nSerie" class="control-label">Número de série do equipamento</label>
-                    <input asp-for="servico.op_servico_nSerie" id="op_servico_nSerie" class="form-control" />
-                    <span asp-validation-for="servico.op_servico_nSerie" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label asp-for="servico.op_servico_problema" class="control-label">Descrição do problema</label>
-                    <textarea asp-for="servico.op_servico_problema" id="op_servico_problema" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_op_servico_problema')"></textarea>
-                    <span class="text-info" id="msg_op_servico_problema"></span>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label asp-for="servico.op_servico_obsReceb" class="control-label">Observações do recebimento</label>
-                    <textarea asp-for="servico.op_servico_obsReceb" id="op_servico_obsReceb" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_op_servico_obsReceb')"></textarea>
-                    <span class="text-info" id="msg_op_servico_obsReceb"></span>
-                </div>
-            </div>
-        </div>
-    </fieldset>
-    <fieldset>
-        <legend>Peças</legend>
-        <div class="row">
-            <div class="col-10" style="padding-right: 0px;">
-                <div class="include_item_label" style="width: 40%">Descrição</div>
-                <div class="include_item_label" style="width: 15%">Código</div>
-                <div class="include_item_label" style="width: 15%">Valor Unit.</div>
-                <div class="include_item_label" style="width: 15%">Quantidade</div>
-                <div class="include_item_label" style="width: 15%">Valor Total</div>
-            </div>
-            <div class="col-10" style="padding-right: 0px;">
-                <input type="text" class="include_item" style="width: 40%" id="prod_descricao" onkeyup="consultaProdutos(this.id, 'compra')" placeholder="Digite o nome ou código do produto" />
-                <input type="text" class="include_item" style="width: 15%" id="prod_codigo" readonly="readonly" />
-                <input type="text" class="include_item" style="width: 15%" id="prod_valor" onblur="ajusta_item(this.id, this.value)" />
-                <input type="text" class="include_item" style="width: 15%" id="prod_quantidade" onblur="ajusta_item(this.id, this.value)" />
-                <input type="text" class="include_item" style="width: 15%" id="prod_valorTotal" readonly="readonly" onblur="incluir_item()" />
-                <input type="hidden" id="produto_id" value="0" />
-                <input type="hidden" id="unidade" value="" />
-            </div>
-            <div class="col-2" style="text-align: right;padding-top: 6px;padding-left: 0px;">
-
-            </div>
-        </div>
-        <div id="box_itens" style="margin-top: 10px;">
-            @{
-                foreach (var item in Model.itens)
-                {
-                <div id="item_@item.op_item_produto_id" class="row item_@item.op_item_produto_id">
-                    <div class="col-10" style="padding-right: 0px;">
-                        <input type="text" class="include_item" style="width: 40%" id="prod_descricao_@item.op_item_produto_id" readonly="readonly" value="@item.op_item_nome" />
-                        <input type="text" class="include_item" style="width: 15%" id="prod_codigo_@item.op_item_produto_id" readonly="readonly" value="@item.op_item_codigo" />
-                        <input type="text" class="include_item" style="width: 15%" id="prod_valor_@item.op_item_produto_id" readonly="readonly" value="@item.op_item_preco.ToString("N")" />
-                        <input type="text" class="include_item" style="width: 15%" id="prod_quantidade_@item.op_item_produto_id" readonly="readonly" value="@item.op_item_qtd.ToString("N")" />
-                        <input type="text" class="include_item" style="width: 15%" id="prod_valorTotal_@item.op_item_produto_id" readonly="readonly" value="@item.op_item_valor_total.ToString("N")" />
-                        <input type="hidden" id="produto_id_@item.op_item_produto_id" value="" />
-                        <input type="hidden" id="@item.op_item_id" value="" />
-                    </div>
-
-                    <div class="col-2" style="text-align: right;padding-top: 6px;padding-left: 0px;">
-                        <svg id="@String.Concat("E",item.op_item_id)" onclick="edit_item(this.id)" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer">
-                            <path fill - rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                        </svg>
-                        <svg id="@String.Concat("D",item.op_item_id)" onclick="delete_item(this.id, 'confirmação')" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer">
-                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                            <path fill - rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                        </svg>
-                    </div>
-                </div>
-                }
-            }
-        </div>
-        <br />
-    </fieldset>
+    </fieldset>  
     <fieldset>
         <legend>Serviços executados</legend>
         <div class="row">
@@ -245,35 +153,15 @@
                     <input asp-for="totais.op_totais_desconto" id="op_totais_desconto" class="form-control" readonly="readonly" />
                 </div>
             </div>
-        </div>
+        </div>       
         <div class="row">
             <div class="col-6 col-md-6">
-                <div class="form-group">
-                    <label asp-for="totais.op_totais_icms_st" class="control-label">ICMS-ST das peças</label>
-                    <input asp-for="totais.op_totais_icms_st" id="op_totais_icms_st" class="form-control" readonly="readonly" />
-                </div>
-            </div>
-            <div class="col-6 col-md-6">
-                <div class="form-group">
-                    <label asp-for="totais.op_totais_ipi" class="control-label">IPI das peças</label>
-                    <input asp-for="totais.op_totais_ipi" id="op_totais_ipi" class="form-control" readonly="readonly" />
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6 col-md-4">
                 <div class="form-group">
                     <label asp-for="totais.op_totais_preco_servicos" class="control-label" style="font-weight:bold;font-size:16px;">Valor do Serviço</label>
                     <input asp-for="totais.op_totais_preco_servicos" id="op_totais_preco_servicos" class="form-control" readonly="readonly" /> <!--Colocar este campo nos totais-->
                 </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="form-group">
-                    <label asp-for="totais.op_totais_preco_itens" class="control-label" style="font-weight:bold;font-size:16px;">Total das Peças</label>
-                    <input asp-for="totais.op_totais_preco_itens" id="op_totais_preco_itens" class="form-control" readonly="readonly" />
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
+            </div>            
+            <div class="col-6 col-md-6">
                 <div class="form-group">
                     <label asp-for="totais.op_totais_total_op" class="control-label" style="font-weight:bold;font-size:16px;">Total do Serviço Prestado</label>
                     <input asp-for="totais.op_totais_total_op" id="op_totais_total_op" class="form-control" readonly="readonly" />
@@ -347,7 +235,7 @@
     <fieldset>
         <legend>Detalhes</legend>
         <div class="row">
-            <div class="col-12 col-md-2">
+            <div class="col-6 col-md-2">
                 <div class="form-group">
                     <label asp-for="operacao.op_numero_ordem" class="control-label">Número Ordem de Serviço</label>
                     <input asp-for="operacao.op_numero_ordem" id="op_numero_ordem" class="form-control" readonly="readonly" />
@@ -359,18 +247,11 @@
                     <input type="text" name="operacao.op_data" value="@Model.operacao.op_data.ToShortDateString()" id="op_data" autocomplete="off" class="form-control datepicker" />
                     <span asp-validation-for="operacao.op_data" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="form-group">
-                    <label asp-for="operacao.op_previsao_entrega" class="control-label">Data Prevista Entrega</label>
-                    <input type="text" name="operacao.op_previsao_entrega" id="op_previsao_entrega" autocomplete="off" class="form-control datepicker" />
-                    <span asp-validation-for="operacao.op_previsao_entrega" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
+            </div>            
+            <div class="col-12 col-md-7">
                 <div class="form-group">
                     <label asp-for="operacao.op_categoria_id" class="control-label">Categoria</label>
-                    <select asp-items="@ViewBag.categoria" value="@TempData["operacao.op_categoria_id"]" id="op_categoria_id" name="operacao.op_categoria_id" class="form-control js_example_basic_single" style="width:100%"></select>
+                    <select asp-items="@ViewBag.categoria" id="op_categoria_id" name="operacao.op_categoria_id" class="form-control js_example_basic_single" style="width:100%"></select>
                     <span asp-validation-for="operacao.op_categoria_id" class="text-danger"></span>
                 </div>
             </div>
@@ -811,14 +692,14 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Serviço Prestado</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">Serviço Tomado</h5>
                 </div>
                 <div class="modal-body">
-                    <p>Serviço Prestado gravado com sucesso!</p>
+                    <p>Serviço Toamdo gravado com sucesso!</p>
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-info" asp-controller="ServicoPrestado" asp-action="Create">Novo Serviço Prestado</a>
-                    <a class="btn btn-secondary" asp-controller="ServicoPrestado" asp-action="Index">Fechar</a>
+                    <a class="btn btn-info" asp-controller="ServicoTomado" asp-action="Create">Novo Serviço Tomado</a>
+                    <a class="btn btn-secondary" asp-controller="ServicoTomado" asp-action="Index">Fechar</a>
                 </div>
             </div>
         </div>
@@ -930,8 +811,8 @@
 
     <br />
 
-    <button type="button" class="btn btn-info" id="sub" onclick="gravarOperacao('Edit', 'ServicoPrestado')">Gravar</button>
-    <a class="btn btn-secondary" asp-controller="ServicoPrestado" asp-action="Index">Cancelar</a>
+    <button type="button" class="btn btn-info" id="sub" onclick="gravarOperacao('Edit', 'ServicoTomado')">Gravar</button>
+    <a class="btn btn-secondary" asp-controller="ServicoTomado" asp-action="Index">Cancelar</a>
 
     <div class="displey_validacao">
         <div class="row">
@@ -945,5 +826,5 @@
     </div>
 </form>
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ScriptPartial_ServicoPrestado");}
+    @{await Html.RenderPartialAsync("_ScriptPartial_ServicoTomado");}
 }
