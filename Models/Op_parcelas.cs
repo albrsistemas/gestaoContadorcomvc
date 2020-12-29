@@ -80,8 +80,6 @@ namespace gestaoContadorcomvc.Models
                 {
                     while (parc.Read())
                     {
-                        
-
                         if (DBNull.Value != parc["parcela_id"])
                         {
                             conta.parcela_id = Convert.ToInt32(parc["parcela_id"]);
@@ -90,6 +88,50 @@ namespace gestaoContadorcomvc.Models
                         {
                             conta.parcela_id = 0;
                         }
+
+                        if (DBNull.Value != parc["venc"])
+                        {
+                            conta.vencimento = Convert.ToDateTime(parc["venc"]);
+                        }
+                        else
+                        {
+                            conta.vencimento = new DateTime();
+                        }
+
+                        conta.referencia = parc["referencia"].ToString();
+
+                        conta.formaPgto = parc["formaPgto"].ToString();
+
+                        if (DBNull.Value != parc["valorOriginal"])
+                        {
+                            conta.valorOriginal = Convert.ToDecimal(parc["valorOriginal"]);
+                        }
+                        else
+                        {
+                            conta.valorOriginal = 0;
+                        }
+                        
+                        if (DBNull.Value != parc["saldo"])
+                        {
+                            conta.saldo = Convert.ToDecimal(parc["saldo"]);
+                        }
+                        else
+                        {
+                            conta.saldo = 0;
+                        }
+
+                        if (DBNull.Value != parc["prazo"])
+                        {
+                            conta.prazo = Convert.ToInt32(parc["prazo"]);
+                        }
+                        else
+                        {
+                            conta.prazo = 0;
+                        }
+
+
+
+                        //----desnecessários
 
                         if (DBNull.Value != parc["fp_meio_pgto_nfe"])
                         {
@@ -118,55 +160,12 @@ namespace gestaoContadorcomvc.Models
                             conta.operacao = 0;
                         }
 
-                        if (DBNull.Value != parc["venc"])
-                        {
-                            conta.vencimento = Convert.ToDateTime(parc["venc"]);
-                        }
-                        else
-                        {
-                            conta.vencimento = new DateTime();
-                        }
-
                         conta.fornecedor = parc["participante"].ToString();
-                        conta.referencia = parc["referencia"].ToString();
-                        conta.formaPgto = parc["formaPgto"].ToString();
-                        conta.tipo = parc["tipo"].ToString();
+                        
+                        
+                        conta.tipo = parc["tipo_op"].ToString();                       
 
-                        if (DBNull.Value != parc["valorOriginal"])
-                        {
-                            conta.valorOriginal = Convert.ToDecimal(parc["valorOriginal"]);
-                        }
-                        else
-                        {
-                            conta.valorOriginal = 0;
-                        }
-
-                        if (DBNull.Value != parc["baixas"])
-                        {
-                            conta.baixas = Convert.ToDecimal(parc["baixas"]);
-                        }
-                        else
-                        {
-                            conta.baixas = 0;
-                        }
-
-                        if (DBNull.Value != parc["saldo"])
-                        {
-                            conta.saldo = Convert.ToDecimal(parc["saldo"]);
-                        }
-                        else
-                        {
-                            conta.saldo = 0;
-                        }
-
-                        if (DBNull.Value != parc["prazo"])
-                        {
-                            conta.prazo = Convert.ToInt32(parc["prazo"]);
-                        }
-                        else
-                        {
-                            conta.prazo = 0;
-                        }
+                        
                     }
                 }
                 parc.Close();

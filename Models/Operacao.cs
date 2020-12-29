@@ -320,7 +320,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT op.op_id, op.op_numero_ordem, op.op_data, p.op_part_nome, t.op_totais_total_op from operacao as op LEFT join op_participante as p on p.op_id = op.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = op.op_id WHERE op.op_conta_id = @conta_id and op.op_tipo = @tipo;";
+                comando.CommandText = "SELECT op.op_id, op.op_numero_ordem, op.op_data, p.op_part_nome, t.op_totais_total_op, s.op_servico_status from operacao as op LEFT join op_participante as p on p.op_id = op.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = op.op_id left JOIN op_servico as s on s.op_servico_op_id = op.op_id WHERE op.op_conta_id = @conta_id and op.op_tipo = @tipo;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@tipo", tipo);
                 comando.ExecuteNonQuery();
@@ -336,9 +336,11 @@ namespace gestaoContadorcomvc.Models
                         Operacao operacao = new Operacao();
                         Op_totais totais = new Op_totais();
                         Op_participante participante = new Op_participante();
+                        Op_servico servico = new Op_servico();
                         op.operacao = operacao;
                         op.totais = totais;
                         op.participante = participante;
+                        op.servico = servico;
 
 
                         if (DBNull.Value != leitor["op_id"])
@@ -378,6 +380,7 @@ namespace gestaoContadorcomvc.Models
                         }
 
                         op.participante.op_part_nome = leitor["op_part_nome"].ToString();
+                        op.servico.op_servico_status = leitor["op_servico_status"].ToString();
 
                         ops.Add(op);
                     }

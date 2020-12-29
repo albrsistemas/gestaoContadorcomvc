@@ -72,10 +72,11 @@
             </div>
             <div class="col-list-body">
                 <div class="row">
-                    <div class="col-12 col-md-2"><strong>Número</strong></div>
+                    <div class="col-12 col-md-1"><strong>Número</strong></div>
                     <div class="col-12 col-md-2"><strong>Data</strong></div>
-                    <div class="col-12 col-md-5"><strong>Cliente</strong></div>
-                    <div class="col-12 col-md-3" style="text-align:right;"><strong>Total</strong></div>
+                    <div class="col-12 col-md-4"><strong>Cliente</strong></div>
+                    <div class="col-12 col-md-3"><strong>Status</strong></div>
+                    <div class="col-12 col-md-2" style="text-align:right;"><strong>Total</strong></div>
                 </div>
             </div>
             <div class="col-list-rigth" style="padding-right: 10px;">
@@ -96,12 +97,14 @@
                     <div class="col-12 line_list_title_mobile"><strong>Número: </strong>@item.operacao.op_numero_ordem</div>
                     <div class="col-12 line_list_title_mobile"><strong>Data: </strong>@item.operacao.op_data.ToShortDateString()</div>
                     <div class="col-12 line_list_title_mobile"><strong>Cliente: </strong>@item.participante.op_part_nome</div>
+                    <div class="col-12 line_list_title_mobile"><strong>Status: </strong>@item.servico.op_servico_status</div>
                     <div class="col-12 line_list_title_mobile"><strong>Total: </strong>@item.totais.op_totais_total_op.ToString("N2")</div>
 
-                    <div class="col-2 line_list_title_full">@item.operacao.op_numero_ordem</div>
+                    <div class="col-1 line_list_title_full">@item.operacao.op_numero_ordem</div>
                     <div class="col-2 line_list_title_full">@item.operacao.op_data.ToShortDateString()</div>
-                    <div class="col-5 line_list_title_full">@item.participante.op_part_nome</div>
-                    <div class="col-3 line_list_title_full" style="text-align:right;">@item.totais.op_totais_total_op.ToString("N2")</div>
+                    <div class="col-4 line_list_title_full">@item.participante.op_part_nome</div>
+                    <div class="col-3 line_list_title_full">@item.servico.op_servico_status</div>
+                    <div class="col-2 line_list_title_full" style="text-align:right;">@item.totais.op_totais_total_op.ToString("N2")</div>
                 </div>
             </div>
             <div class="col-list-rigth" style="padding-right: 10px;">

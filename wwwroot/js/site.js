@@ -3549,6 +3549,9 @@ function consultaParticipanteCCM(id) {
             if (document.getElementById('ccm_participante_id')) {
                 document.getElementById('ccm_participante_id').value = ui.item.id;
             }
+            if (document.getElementById('participante_id')) {
+                document.getElementById('participante_id').value = ui.item.id;
+            }
         }
     });
 }
