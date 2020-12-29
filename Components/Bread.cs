@@ -199,6 +199,23 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Detelhes Serviço Prestado";
                 }
+                //Serviço Tomado
+                if (pagina.Contains("ServicoTomado/Index"))
+                {
+                    retorno = "Serviços Tomados";
+                }
+                if (pagina.Contains("ServicoTomado/Create"))
+                {
+                    retorno = "Incluir Serviço Tomado";
+                }
+                if (pagina.Contains("ServicoTomado/Edit"))
+                {
+                    retorno = "Alterar Serviço Tomado";
+                }
+                if (pagina.Contains("ServicoTomado/Details"))
+                {
+                    retorno = "Detelhes Serviço Tomado";
+                }
                 //Log
                 if (pagina.Contains("Log/Index"))
                 {

@@ -103,7 +103,7 @@ namespace gestaoContadorcomvc.Models
         public bool contasFDelete { get; set; }
         //Relatórios
         public bool rCategoriasList { get; set; }
-        //Serviços Prestados ok
+        //Serviços Tomados ok
         public bool servicoTList { get; set; }
         public bool servicoTCreate { get; set; }
         public bool servicoTEdit { get; set; }
@@ -493,6 +493,10 @@ namespace gestaoContadorcomvc.Models
                         permissao.contasFEdit = Convert.ToBoolean(leitor["contasFEdit"]);
                         permissao.contasFDelete = Convert.ToBoolean(leitor["contasFDelete"]);
                         permissao.rCategoriasList = Convert.ToBoolean(leitor["rCategoriasList"]);
+                        permissao.servicoTList = Convert.ToBoolean(leitor["servicoTList"]);
+                        permissao.servicoTCreate = Convert.ToBoolean(leitor["servicoTCreate"]);
+                        permissao.servicoTEdit = Convert.ToBoolean(leitor["servicoTEdit"]);
+                        permissao.servicoTDelete = Convert.ToBoolean(leitor["servicoTDelete"]);
                     }
                 }
             }
