@@ -26,6 +26,7 @@ namespace gestaoContadorcomvc.Models
         public bool op_comTransportador { get; set; }
         public int op_comNF { get; set; }
         public bool possui_parcelas { get; set; }
+        public string op_escopo_caixa { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      

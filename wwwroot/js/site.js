@@ -3629,7 +3629,12 @@ function tipoNF(id, vlr) {
         document.getElementById('op_nf_data_emissao').setAttribute("disabled", "disabled");
         document.getElementById('op_nf_chave').setAttribute("disabled", "disabled");
         document.getElementById('op_nf_serie').setAttribute("disabled", "disabled");
-        document.getElementById('op_nf_numero').setAttribute("disabled", "disabled");        
+        document.getElementById('op_nf_numero').setAttribute("disabled", "disabled");
+
+        document.getElementById('op_nf_data_emissao').value = "";
+        document.getElementById('op_nf_chave').value = "";
+        document.getElementById('op_nf_serie').value = "";
+        document.getElementById('op_nf_numero').value = "";
     } else {
         document.getElementById('op_nf_data_emissao').removeAttribute("disabled");        
         document.getElementById('op_nf_serie').removeAttribute("disabled");
@@ -3658,8 +3663,10 @@ function GerarSelectFormaPagamento() {
             type: 'POST',
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
-                document.getElementById('text_formaPgto').innerHTML = "Gerando lista de formas de pagamento";
-                document.getElementById('sub').setAttribute("disabled", "disabled");
+                if (document.getElementById('text_formaPgto')) {
+                    document.getElementById('text_formaPgto').innerHTML = "Gerando lista de formas de pagamento";
+                    document.getElementById('sub').setAttribute("disabled", "disabled");
+                }                
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 alert("erro");
@@ -3671,9 +3678,10 @@ function GerarSelectFormaPagamento() {
                 for (i = 0; i < results.length; i++) { //Adiciona os item recebidos no results no select
                     $('#op_parcela_fp_id').append($("<option></option>").attr("value", results[i].value).text(results[i].text));
                 }                
-
-                document.getElementById('text_formaPgto').innerHTML = "";
-                document.getElementById('sub').removeAttribute("disabled");
+                if (document.getElementById('text_formaPgto')) {
+                    document.getElementById('text_formaPgto').innerHTML = "";
+                    document.getElementById('sub').removeAttribute("disabled");
+                }
             }
         });
     }
@@ -3906,9 +3914,15 @@ function gravarContasFinanceiras(context) {
 
 function ContasFinanceiras_gerarParcelas() {    
     let di = document.getElementById('cf_data_inicial').value;
-    let df = document.getElementById('cf_data_final').value;
-    let vlr_i = document.getElementById('cf_valor_parcela_bruta').value;
-    let vlr_l = document.getElementById('cf_valor_parcela_liquida').value;
+    let df = document.getElementById('cf_data_final').value
+    let vlr_i = "0";
+    if (document.getElementById('cf_valor_parcela_bruta')) {
+        vlr_i = document.getElementById('cf_valor_parcela_bruta').value;
+    }
+    let vlr_l = "0";
+    if (document.getElementById('cf_valor_parcela_liquida')) {
+        vlr_l = document.getElementById('cf_valor_parcela_liquida').value;
+    }
     let vlr_operacao = document.getElementById('cf_valor_operacao').value;
     let data_start = new Date(di.substr(6, 4) + ',' + di.substr(3, 2) + ',' + di.substr(0, 2));
     let data_end = new Date(df.substr(6, 4) + ',' + df.substr(3, 2) + ',' + df.substr(0, 2));
@@ -4035,4 +4049,18 @@ $(".CFR_realizacao").click(function () {
 
 function closeModal(id) {
     $("#" + id).modal('hide');
+}
+
+function CFR_dataFinal(id, vlr) {
+    document.getElementById('cf_data_final').value = vlr;    
+}
+
+function editVencimento(context, id, vlr, parcela_id) {
+    if (context == 'open') {
+        $("#modal_edit_venc").modal('show');
+        document.getElementById('venc').value = vlr;
+        document.getElementById('nParcela_id').value = parcela_id;
+    }
+
+    execDatapicker();
 }

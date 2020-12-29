@@ -141,14 +141,14 @@
                 {
                     <tr>
                         <th scope="row">@i</th>
-                        <td>@item.vencimento.ToShortDateString()</td>
+                        <td onclick="editVencimento('open', this.id, '@item.vencimento.ToShortDateString()', @item.parcela_id)" style="cursor:pointer">@item.vencimento.ToShortDateString()</td>
                         <td>@item.referencia</td>
                         <td>@item.categoria_nome</td>
                         <td>@item.fornecedor</td>
                         <td>@item.formaPgto</td>
                         <td>@item.valorOriginal.ToString("N2")</td>
                         <td>@item.saldo.ToString("N2")</td>
-                        <td style="white-space:nowrap">                           
+                        <td style="white-space:nowrap">
                             @{
                                 if (item.saldo > 0)
                                 {
@@ -263,7 +263,8 @@
                             <input type="hidden" id="formaPgto_@item.parcela_id" value="@item.fp_id" />
                             <input type="hidden" id="nomeCartao_@item.parcela_id" value="@item.formaPgto" />
                         </td>
-                    </tr>        
+                    </tr>
+
                     i++;
                 }
             }
@@ -272,232 +273,260 @@
 </div>
 
 
-           
-            <div id="mySidenav" class="sidenav" style="transition: 0.0s;border-top:2px solid #ff4400">
-                <h3>
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-funnel" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z" />
-                    </svg>
-                    Filtros
-                </h3>
-                <form asp-controller="ContasPagar" asp-action="Index">
-                    <div class="row" style="padding:5px;">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label class="control-label">Data Inicial</label>
-                                <input type="text" asp-for="filter.dataInicial" id="dataInicial" autocomplete="off" class="form-control datepicker" style="font-size:15px;" />
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label class="control-label">Data Final</label>
-                                <input type="text" asp-for="filter.dataFinal" id="dataFinal" autocomplete="off" class="form-control datepicker" style="font-size:15px;" />
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="control-label">Vencimento</label>
-                                <select asp-items="@ViewBag.vencimento" value="@TempData["vencimento"]" id="vencimento" asp-for="filter.vencimento" class="form-control"></select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="control-label">Fornecedor</label>
-                                <input type="text" asp-for="filter.fornecedor_nome" id="pesquisaParticipante" class="form-control" placeholder="Iniciais do nome ou cnpj/cpf" onkeyup="consultaParticipanteCCM(this.id)" />
-                                <input type="hidden" asp-for="filter.fornecedor_id" id="participante_id" />
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="control-label">Forma de Pagamento</label>
-                                <select asp-items="@ViewBag.formaPgto" value="@TempData["formaPgto"]" id="formaPgto" asp-for="filter.formaPgto" class="form-control"></select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="control-label">Operação</label>
-                                <select asp-items="@ViewBag.tipoOpercao" value="@TempData["tipoOperacao"]" id="tipoOperacao" asp-for="filter.operacao" class="form-control"></select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="control-label">Situação</label>
-                                <select asp-items="@ViewBag.situacao" value="@TempData["situacao"]" id="situacao" asp-for="filter.situacao" class="form-control"></select>
-                            </div>
-                        </div>
 
-                        <div class="col-12">
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-info" style="width:100%">Filtrar</button>
-                            </div>
-                        </div>
-                        <div class="col-12" style="text-align:center">
-                            <div class="form-group">
-                                <a asp-controller="ContasPagar" asp-action="Index">Limpar Filtros</a>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+<div id="mySidenav" class="sidenav" style="transition: 0.0s;border-top:2px solid #ff4400">
+    <h3>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-funnel" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z" />
+        </svg>
+        Filtros
+    </h3>
+    <form asp-controller="ContasPagar" asp-action="Index">
+        <div class="row" style="padding:5px;">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="control-label">Data Inicial</label>
+                    <input type="text" asp-for="filter.dataInicial" id="dataInicial" autocomplete="off" class="form-control datepicker" style="font-size:15px;" />
+                </div>
             </div>
-            <!--Dados do retenções-->
-            <div class="modal fade" id="modal_fechamento_cartao" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">Fechamento Cartão de Crédito</h5>
-                        </div>
-                        <div class="modal-body">
-                            <p>Quantidade de parcelas selecionadas: <strong id="modal_quantidade_parcelas"></strong></p>
-                            <p>Valor total das parcelas selecionadas: <strong id="modal_vlr_total"></strong></p>
-                            <hr class="hrLine" />
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label class="control-label">Referência</label>
-                                        <input type="text" id="modal_fc_referencia" onclick="monthPicker(this.id, 'open', this.value)" autocomplete="off" class="form-control" style="font-size:15px;" />
-                                        <div class="box_monthPicker" id="box_monthPicker" style="display:none">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Mês</label>
-                                                        <select class="form-control" id="box_monthPicker_mes">
-                                                            <option>01</option>
-                                                            <option>02</option>
-                                                            <option>03</option>
-                                                            <option>04</option>
-                                                            <option>05</option>
-                                                            <option>06</option>
-                                                            <option>07</option>
-                                                            <option>08</option>
-                                                            <option>09</option>
-                                                            <option>10</option>
-                                                            <option>11</option>
-                                                            <option>12</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Ano</label>
-                                                        <select class="form-control" id="box_monthPicker_ano">
-                                                            <option>2017</option>
-                                                            <option>2018</option>
-                                                            <option>2019</option>
-                                                            <option>2020</option>
-                                                            <option>2021</option>
-                                                            <option>2022</option>
-                                                            <option>2023</option>
-                                                            <option>2024</option>
-                                                            <option>2025</option>
-                                                            <option>2026</option>
-                                                            <option>2027</option>
-                                                            <option>2028</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <input type="hidden" id="id_cliente" />
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <button type="button" class="btn btn-info" onclick="monthPicker(this.id, 'close', '')" style="width: 100%;">Selecionar</button>
-                                                </div>
-                                            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="control-label">Data Final</label>
+                    <input type="text" asp-for="filter.dataFinal" id="dataFinal" autocomplete="off" class="form-control datepicker" style="font-size:15px;" />
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="control-label">Vencimento</label>
+                    <select asp-items="@ViewBag.vencimento" value="@TempData["vencimento"]" id="vencimento" asp-for="filter.vencimento" class="form-control"></select>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="control-label">Fornecedor</label>
+                    <input type="text" asp-for="filter.fornecedor_nome" id="pesquisaParticipante" class="form-control" placeholder="Iniciais do nome ou cnpj/cpf" onkeyup="consultaParticipanteCCM(this.id)" />
+                    <input type="hidden" asp-for="filter.fornecedor_id" id="participante_id" />
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="control-label">Forma de Pagamento</label>
+                    <select asp-items="@ViewBag.formaPgto" value="@TempData["formaPgto"]" id="formaPgto" asp-for="filter.formaPgto" class="form-control"></select>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="control-label">Operação</label>
+                    <select asp-items="@ViewBag.tipoOpercao" value="@TempData["tipoOperacao"]" id="tipoOperacao" asp-for="filter.operacao" class="form-control"></select>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="control-label">Situação</label>
+                    <select asp-items="@ViewBag.situacao" value="@TempData["situacao"]" id="situacao" asp-for="filter.situacao" class="form-control"></select>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-info" style="width:100%">Filtrar</button>
+                </div>
+            </div>
+            <div class="col-12" style="text-align:center">
+                <div class="form-group">
+                    <a asp-controller="ContasPagar" asp-action="Index">Limpar Filtros</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!--Dados do retenções-->
+<div class="modal fade" id="modal_fechamento_cartao" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Fechamento Cartão de Crédito</h5>
+            </div>
+            <div class="modal-body">
+                <p>Quantidade de parcelas selecionadas: <strong id="modal_quantidade_parcelas"></strong></p>
+                <p>Valor total das parcelas selecionadas: <strong id="modal_vlr_total"></strong></p>
+                <hr class="hrLine" />
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Referência</label>
+                            <input type="text" id="modal_fc_referencia" onclick="monthPicker(this.id, 'open', this.value)" autocomplete="off" class="form-control" style="font-size:15px;" />
+                            <div class="box_monthPicker" id="box_monthPicker" style="display:none">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Mês</label>
+                                            <select class="form-control" id="box_monthPicker_mes">
+                                                <option>01</option>
+                                                <option>02</option>
+                                                <option>03</option>
+                                                <option>04</option>
+                                                <option>05</option>
+                                                <option>06</option>
+                                                <option>07</option>
+                                                <option>08</option>
+                                                <option>09</option>
+                                                <option>10</option>
+                                                <option>11</option>
+                                                <option>12</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Ano</label>
+                                            <select class="form-control" id="box_monthPicker_ano">
+                                                <option>2017</option>
+                                                <option>2018</option>
+                                                <option>2019</option>
+                                                <option>2020</option>
+                                                <option>2021</option>
+                                                <option>2022</option>
+                                                <option>2023</option>
+                                                <option>2024</option>
+                                                <option>2025</option>
+                                                <option>2026</option>
+                                                <option>2027</option>
+                                                <option>2028</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label class="control-label">Vencimento</label>
-                                        <input type="text" id="modal_fc_vencimento" autocomplete="off" class="form-control datepicker" style="font-size:15px;" />
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label class="control-label">Tarifa Bancarária</label>
-                                        <input id="modal_fc_tarifas_bancarias" class="form-control" onchange="decimal(this.id, this.value)" />
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label class="control-label">Suguro Cartão</label>
-                                        <input id="modal_fc_seguro_cartao" class="form-control" onchange="decimal(this.id, this.value)" />
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label class="control-label">Abatimentos</label>
-                                        <input id="modal_fc_abatimentos_cartao" class="form-control" onchange="decimal(this.id, this.value)" />
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label class="control-label">Acréscimos</label>
-                                        <input id="modal_fc_acrescimos_cartao" class="form-control" onchange="decimal(this.id, this.value)" />
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label class="control-label">Forma de Pagamento</label>
-                                        <select asp-items="@ViewBag.formaPgto_cartao" value="@TempData["formaPgto_cartao"]" id="modal_fc_forma_pgto_boleto_fatura" name="fc_forma_pgto_boleto_fatura" class="form-control"></select>
+                                <input type="hidden" id="id_cliente" />
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button type="button" class="btn btn-info" onclick="monthPicker(this.id, 'close', '')" style="width: 100%;">Selecionar</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-info" id="gravar_fatura" onclick="gravar_fatura_cartao('enviar')">Gravar</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Vencimento</label>
+                            <input type="text" id="modal_fc_vencimento" autocomplete="off" class="form-control datepicker" style="font-size:15px;" />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Tarifa Bancarária</label>
+                            <input id="modal_fc_tarifas_bancarias" class="form-control" onchange="decimal(this.id, this.value)" />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Suguro Cartão</label>
+                            <input id="modal_fc_seguro_cartao" class="form-control" onchange="decimal(this.id, this.value)" />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Abatimentos</label>
+                            <input id="modal_fc_abatimentos_cartao" class="form-control" onchange="decimal(this.id, this.value)" />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Acréscimos</label>
+                            <input id="modal_fc_acrescimos_cartao" class="form-control" onchange="decimal(this.id, this.value)" />
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="control-label">Forma de Pagamento</label>
+                            <select asp-items="@ViewBag.formaPgto_cartao" value="@TempData["formaPgto_cartao"]" id="modal_fc_forma_pgto_boleto_fatura" name="fc_forma_pgto_boleto_fatura" class="form-control"></select>
                         </div>
                     </div>
                 </div>
             </div>
-            <!--Gravação com sucesso-->
-            <div class="modal fade" id="modal_sucesso_faturaCartao" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-sm">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">Fechamento Cartão de Crédito</h5>
-                        </div>
-                        <div class="modal-body">
-                            <p>Fatura cartão de crédito gravada com sucesso!</p>
-                        </div>
-                        <div class="modal-footer">
-                            <a class="btn btn-info" asp-controller="ContasPagar" asp-action="Index">OK</a>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" id="gravar_fatura" onclick="gravar_fatura_cartao('enviar')">Gravar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Gravação com sucesso-->
+<div class="modal fade" id="modal_sucesso_faturaCartao" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Fechamento Cartão de Crédito</h5>
+            </div>
+            <div class="modal-body">
+                <p>Fatura cartão de crédito gravada com sucesso!</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-info" asp-controller="ContasPagar" asp-action="Index">OK</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal erro-->
+<div class="modal fade" id="modal_mensagem_retornoF" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_labelF" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mensagem_retorno_labelF"></h5>
+            </div>
+            <div class="modal-body" id="mensagem_retorno_conteudoF">
+
+            </div>
+            <div class="modal-footer" id="mensagem_retorno_rodapeF">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Opções botão direito-->
+<div class="modal fade" id="modal_opcoes_rigth" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Opções</h5>
+            </div>
+            <div class="modal-body">
+                <p id="confirmeDeleteCartao"></p>
+            </div>
+            <div class="modal-footer" id="footerCartao">
+                <a class="btn btn-danger" asp-controller="ContasPagar" asp-action="deleteFaturaCartao" id="btn_excluir_cartao">Excluir</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Alteração data vencimento-->
+<div class="modal fade" id="modal_edit_venc" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Alterar Vencimento</h5>
+            </div>
+            <form asp-controller="ContasPagar" asp-action="editVencimento">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="control-label">Vencimento</label>                                
+                                <input id="venc" name="venc" class="form-control datepicker" />                                
+                                <input type="hidden" id="nParcela_id" name="nParcela_id" class="form-control" />                                
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!--Modal erro-->
-            <div class="modal fade" id="modal_mensagem_retornoF" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_labelF" aria-hidden="true">
-                <div class="modal-dialog modal-sm">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="mensagem_retorno_labelF"></h5>
-                        </div>
-                        <div class="modal-body" id="mensagem_retorno_conteudoF">
-
-                        </div>
-                        <div class="modal-footer" id="mensagem_retorno_rodapeF">
-
-                        </div>
-                    </div>
+                <div class="modal-footer" id="footerCartao">
+                    <button type="submit" class="btn btn-info">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
-            </div>
-
-            <!--Opções botão direito-->
-            <div class="modal fade" id="modal_opcoes_rigth" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-sm">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">Opções</h5>
-                        </div>
-                        <div class="modal-body">
-                            <p id="confirmeDeleteCartao"></p>
-                        </div>
-                        <div class="modal-footer" id="footerCartao">
-                            <a class="btn btn-danger" asp-controller="ContasPagar" asp-action="deleteFaturaCartao" id="btn_excluir_cartao">Excluir</a>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </form>            
+        </div>
+    </div>
+</div>

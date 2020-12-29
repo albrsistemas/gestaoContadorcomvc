@@ -105,7 +105,7 @@
                     <div class="row">
                         <div class="col-6">
                             <label asp-for="cf.cf_data_inicial" class="control-label" id="lab_cf_data_inicial">Data Primeira Parcela</label>
-                            <input type="text" asp-for="cf.cf_data_inicial" name="cf_data_inicial" id="cf_data_inicial" class="form-control datepicker" />
+                            <input type="text" asp-for="cf.cf_data_inicial" name="cf_data_inicial" id="cf_data_inicial" class="form-control datepicker" onchange="CFR_dataFinal(this.id, this.value)" />
                             <span asp-validation-for="cf.cf_data_inicial" class="text-danger"></span>
                         </div>
                         <div class="col-6" id="grupo_cf_data_final" style="display:block">

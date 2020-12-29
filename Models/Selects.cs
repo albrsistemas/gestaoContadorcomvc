@@ -332,6 +332,95 @@ namespace gestaoContadorcomvc.Models
             return categorias;
         }
 
+        //Categorias do cliente
+        public List<Selects> getCategoriasClienteComEscopo(int conta_id, bool semCategoria, bool entradas, bool saidas)
+        {
+            List<Selects> categorias = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                string escopo = "";
+
+                if (entradas)
+                {
+                    escopo += "'Entrada'";
+                }
+                else
+                {
+                    escopo += "''";
+                }
+
+                if (saidas)
+                {
+                    escopo += ",'Saida'";
+                }
+                else
+                {
+                    escopo += ",''";
+                }
+
+                comando.CommandText = "SELECT c.categoria_id, c.categoria_classificacao, c.categoria_nome, c.categoria_tipo from categoria as c WHERE c.categoria_conta_id = @conta_id and c.categoria_status = 'Ativo' and c.categoria_escopo in (" + escopo + ") order by c.categoria_classificacao;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+                Selects semCat = new Selects();
+                //add select 'Sem Categoria'
+                if (semCategoria)
+                {
+                    semCat.value = "0";
+                    semCat.text = "Sem Categoria";
+                    semCat.disabled = false;
+
+                    categorias.Add(semCat);
+                }
+
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects categoria = new Selects();
+
+                        string texto = leitor["categoria_classificacao"].ToString() + " - " + leitor["categoria_nome"].ToString();
+                        categoria.value = leitor["categoria_id"].ToString();
+                        categoria.text = texto;
+                        string tipo = leitor["categoria_tipo"].ToString();
+                        if (tipo.Equals("Sintetica"))
+                        {
+                            categoria.disabled = true;
+                        }
+                        else
+                        {
+                            categoria.disabled = false;
+                        }
+
+                        categorias.Add(categoria);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return categorias;
+        }
+
         //Lista uf igbe (origem: arquivo txt sped fiscal)
         public List<Selects> getUF_ibge()
         {
@@ -995,6 +1084,55 @@ namespace gestaoContadorcomvc.Models
                 comando.CommandText = "SELECT f.fp_id, f.fp_nome from forma_pagamento as f WHERE f.fp_conta_id = @conta_id and f.fp_status = 'Ativo' and f.fp_identificacao = @identificacao;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@identificacao", identificacao);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects select = new Selects();
+
+                        select.value = leitor["fp_id"].ToString();
+                        select.text = leitor["fp_nome"].ToString();
+                        select.disabled = false;
+
+                        selects.Add(select);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return selects;
+        }
+
+        //Lista formas de pagamento
+        public List<Selects> getFormaPgtoGeral(int conta_id)
+        {
+            List<Selects> selects = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT f.fp_id, f.fp_nome from forma_pagamento as f WHERE f.fp_conta_id = @conta_id and f.fp_status = 'Ativo';";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);                
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 

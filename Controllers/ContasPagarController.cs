@@ -9,6 +9,7 @@ using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
 {
@@ -81,7 +82,28 @@ namespace gestaoContadorcomvc.Controllers
             return View(vm_cp);
         }
 
-        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult editVencimento(DateTime venc, int nParcela_id)
+        {
+            string retorno = "";
+
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Op_parcelas p = new Op_parcelas();
+
+            retorno = p.alteraVencimentoParcela(user.usuario_id, user.usuario_conta_id, nParcela_id, venc);
+
+            TempData["msgCP"] = retorno;
+
+            return RedirectToAction(nameof(Index));
+
+            //return Json(JsonConvert.SerializeObject(retorno));
+        }
+
+
 
 
     }

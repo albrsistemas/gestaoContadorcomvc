@@ -121,8 +121,8 @@
                 <div class="col-12 col-md-3"><strong>Nome</strong></div>
                 <div class="col-12 col-md-2"><strong>Tipo</strong></div>
                 <div class="col-12 col-md-2"><strong>Recorrência</strong></div>
-                <div class="col-12 col-md-2"><strong>Data Inicial</strong></div>
-                <div class="col-12 col-md-2"><strong>Data Final</strong></div>
+                <div class="col-12 col-md-2" style="text-align:center"><strong>Data Inicial</strong></div>
+                <div class="col-12 col-md-2" style="text-align:center"><strong>Data Final</strong></div>
                 <div class="col-12 col-md-1" style="text-align:right"><strong>Valor</strong></div>
             </div>
         </div>
@@ -161,11 +161,11 @@
                     <div class="col-3 line_list_title_full">@item.cf_nome</div>
                     <div class="col-2 line_list_title_full">@item.cf_tipo</div>
                     <div class="col-2 line_list_title_full">@item.cf_recorrencia</div>
-                    <div class="col-2 line_list_title_full">@item.cf_data_inicial.ToShortDateString()</div>
+                    <div class="col-2 line_list_title_full" style="text-align:center">@item.cf_data_inicial.ToShortDateString()</div>
                     @{
                         if (item.cf_data_final.ToShortDateString() != "01/01/0001")
                         {
-                            <div class="col-2 line_list_title_full">@item.cf_data_final.ToShortDateString()</div>
+                            <div class="col-2 line_list_title_full" style="text-align:center">@item.cf_data_final.ToShortDateString()</div>
                         }
                         else
                         {

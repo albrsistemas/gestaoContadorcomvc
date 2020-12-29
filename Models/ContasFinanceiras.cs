@@ -34,6 +34,7 @@ namespace gestaoContadorcomvc.Models
         public int cf_numero_parcelas { get; set; }
         public DateTime cf_dataCriacao { get; set; }
         public int cf_op_id { get; set; }
+        public int cf_forma_pgto { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -193,6 +194,15 @@ namespace gestaoContadorcomvc.Models
                             cf.cf_categoria_id = 0;
                         }
 
+                        if (DBNull.Value != leitor["cf_forma_pgto"])
+                        {
+                            cf.cf_forma_pgto = Convert.ToInt32(leitor["cf_forma_pgto"]);
+                        }
+                        else
+                        {
+                            cf.cf_forma_pgto = 0;
+                        }
+
                         if (DBNull.Value != leitor["cf_valor_operacao"])
                         {
                             cf.cf_valor_operacao = Convert.ToDecimal(leitor["cf_valor_operacao"]);
@@ -223,20 +233,14 @@ namespace gestaoContadorcomvc.Models
                         if (DBNull.Value != leitor["cf_data_inicial"])
                         {
                             cf.cf_data_inicial = Convert.ToDateTime(leitor["cf_data_inicial"]);
+                            cf.cf_data_final = Convert.ToDateTime(leitor["cf_data_inicial"]);
+                            //A data final é igual a data inicial, pois na realização a recorrência é 'Única'
                         }
                         else
                         {
                             cf.cf_data_inicial = new DateTime();
-                        }
-
-                        if (DBNull.Value != leitor["cf_data_final"])
-                        {
-                            cf.cf_data_final = Convert.ToDateTime(leitor["cf_data_final"]);
-                        }
-                        else
-                        {
                             cf.cf_data_final = new DateTime();
-                        }
+                        }                        
 
                         //Operação
                         op.op_obs = leitor["op_obs"].ToString();
@@ -548,7 +552,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT cf.*, part.*, nf.*, op.op_obs FROM contas_financeiras as cf left JOIN operacao as op on op.op_id = cf.cf_op_id left JOIN op_participante as part on part.op_id = op.op_id left JOIN op_nf as nf on nf.op_nf_op_id = op.op_id WHERE cf.cf_id = @id and op.op_conta_id = @conta_id;";
+                comando.CommandText = "SELECT cf.*, part.*, nf.*, op.op_obs, op.op_escopo_caixa FROM contas_financeiras as cf left JOIN operacao as op on op.op_id = cf.cf_op_id left JOIN op_participante as part on part.op_id = op.op_id left JOIN op_nf as nf on nf.op_nf_op_id = op.op_id WHERE cf.cf_id = @id and op.op_conta_id = @conta_id;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@id", id);
                 Transacao.Commit();
@@ -562,6 +566,15 @@ namespace gestaoContadorcomvc.Models
                         //contas financeiras
                         cf.cf_nome = leitor["cf_nome"].ToString();
 
+                        if (DBNull.Value != leitor["cf_id"])
+                        {
+                            cf.cf_id = Convert.ToInt32(leitor["cf_id"]);
+                        }
+                        else
+                        {
+                            cf.cf_id = 0;
+                        }
+
                         if (DBNull.Value != leitor["cf_categoria_id"])
                         {
                             cf.cf_categoria_id = Convert.ToInt32(leitor["cf_categoria_id"]);
@@ -569,6 +582,15 @@ namespace gestaoContadorcomvc.Models
                         else
                         {
                             cf.cf_categoria_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["cf_forma_pgto"])
+                        {
+                            cf.cf_forma_pgto = Convert.ToInt32(leitor["cf_forma_pgto"]);
+                        }
+                        else
+                        {
+                            cf.cf_forma_pgto = 0;
                         }
 
                         if (DBNull.Value != leitor["cf_valor_operacao"])
@@ -616,8 +638,13 @@ namespace gestaoContadorcomvc.Models
                             cf.cf_data_final = new DateTime();
                         }
 
+                        cf.cf_status = leitor["cf_status"].ToString();
+                        cf.cf_tipo = leitor["cf_tipo"].ToString();
+                        cf.cf_recorrencia = leitor["cf_recorrencia"].ToString();
+
                         //Operação
                         op.op_obs = leitor["op_obs"].ToString();
+                        op.op_escopo_caixa = leitor["op_escopo_caixa"].ToString();
 
                         //participante
                         if (DBNull.Value != leitor["op_part_participante_id"])
@@ -656,6 +683,47 @@ namespace gestaoContadorcomvc.Models
                         {
                             participante.op_paisesIBGE_codigo = 0;
                         }
+
+                        //NF
+                        if (DBNull.Value != leitor["op_nf_id"])
+                        {
+                            nf.op_nf_id = Convert.ToInt32(leitor["op_nf_id"]);
+                        }
+                        else
+                        {
+                            nf.op_nf_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["op_nf_op_id"])
+                        {
+                            nf.op_nf_op_id = Convert.ToInt32(leitor["op_nf_op_id"]);
+                        }
+                        else
+                        {
+                            nf.op_nf_op_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["op_nf_tipo"])
+                        {
+                            nf.op_nf_tipo = Convert.ToInt32(leitor["op_nf_tipo"]);
+                        }
+                        else
+                        {
+                            nf.op_nf_tipo = 0;
+                        }
+
+                        if (DBNull.Value != leitor["op_nf_data_emissao"])
+                        {
+                            nf.op_nf_data_emissao = Convert.ToDateTime(leitor["op_nf_data_emissao"]);
+                        }
+                        else
+                        {
+                            nf.op_nf_data_emissao = new DateTime();
+                        }
+
+                        nf.op_nf_serie = leitor["op_nf_serie"].ToString();
+                        nf.op_nf_numero = leitor["op_nf_numero"].ToString();
+                        
                     }
                 }
                 leitor.Close();
@@ -679,6 +747,62 @@ namespace gestaoContadorcomvc.Models
             }
 
             return vmcf;
+        }
+
+        public string alterarContaFinanceira(int usuario_id, int conta_id, Vm_contasFinanceiras vmcf)
+        {
+            string retorno = "Conta Financeira alterada com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "call pr_contasFinanceirasEdit(@conta_id, @cf_id, @categoria_id, @cf_nome, @cf_status, @op_nf_tipo, @op_nf_chave, @op_nf_data_emissao, @op_nf_serie, @op_nf_numero, @op_obs);";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@cf_id", vmcf.cf.cf_id);
+                comando.Parameters.AddWithValue("@categoria_id", vmcf.op.op_categoria_id);
+                comando.Parameters.AddWithValue("@cf_nome", vmcf.cf.cf_nome);
+                if(vmcf.cf.cf_tipo == "Realizar")
+                {
+                    comando.Parameters.AddWithValue("@cf_status", vmcf.cf.cf_status);
+                }
+                else
+                {
+                    comando.Parameters.AddWithValue("@cf_status", "Ativo");
+                }                
+                comando.Parameters.AddWithValue("@op_nf_tipo", vmcf.nf.op_nf_tipo);
+                comando.Parameters.AddWithValue("@op_nf_chave", vmcf.nf.op_nf_chave);
+                comando.Parameters.AddWithValue("@op_nf_data_emissao", vmcf.nf.op_nf_data_emissao);
+                comando.Parameters.AddWithValue("@op_nf_serie", vmcf.nf.op_nf_serie);
+                comando.Parameters.AddWithValue("@op_nf_numero", vmcf.nf.op_nf_numero);
+                comando.Parameters.AddWithValue("@op_obs", vmcf.op.op_obs);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Alteração da conta financeira nome atual: " + vmcf.cf.cf_nome + " alterada com sucesso";
+                log.log("ContasFinanceiras", "alterarContaFinanceira", "Sucesso", msg, conta_id, usuario_id);
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao alterar a conta financeira. Tente novamente. Se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("ContasFinanceiras", "alterarContaFinanceira", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
         }
 
 

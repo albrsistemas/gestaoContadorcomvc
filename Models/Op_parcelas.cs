@@ -310,6 +310,51 @@ namespace gestaoContadorcomvc.Models
             return retorno;
         }
 
+        //Altera data de vencimento parcela
+        public string alteraVencimentoParcela(int usuario_id, int conta_id, int parcela_id, DateTime venc)
+        {
+            string retorno = "Data de vencimento alterada com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                //Parcela
+                comando.CommandText = "UPDATE op_parcelas set op_parcelas.op_parcela_vencimento_alterado = @data WHERE op_parcelas.op_parcela_id = @parcela_id;";
+                comando.Parameters.AddWithValue("@data", venc);
+                comando.Parameters.AddWithValue("@parcela_id", parcela_id);
+                comando.ExecuteNonQuery();
+
+                Transacao.Commit();
+
+                string msg = "Alteração data de vencimento da parcela_id: " + parcela_id + " alterada com sucesso";
+                log.log("Op_parcelas", "alteraVencimentoParcela", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao alterar o vencimento da parcela. Tente novamente. Se persistir entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("Op_parcelas", "alteraVencimentoParcela", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
+
 
     }
 }

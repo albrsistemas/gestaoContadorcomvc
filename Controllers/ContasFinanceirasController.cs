@@ -106,9 +106,35 @@ namespace gestaoContadorcomvc.Controllers
 
             Selects select = new Selects();
             ViewBag.tipoCtaFinaceira = select.getTipoCtaFinanceira().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.cf.cf_tipo });
+
+            if (vmcf.cf.cf_tipo == "Realizar")
+            {
+                List<Selects> selects = new List<Selects>();
+                selects.Add(new Selects
+                {
+                    value = "0",
+                    text = "Não se Aplica",
+                    disabled = true
+                });
+                ViewBag.formaPgto = selects.Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
+            }
+            else
+            {
+                ViewBag.formaPgto = select.getFormaPgtoGeral(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.cf.cf_forma_pgto.ToString() });
+            }
+
             ViewBag.recorrencias = select.getRecorrencias().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.cf.cf_recorrencia });
-            ViewBag.status = select.getStatus().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.cf.cf_status });
-            ViewBag.categoria = select.getCategoriasCliente(user.usuario_conta_id, false).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.cf.cf_categoria_id.ToString() });
+            ViewBag.status = select.getStatus().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.cf.cf_status });           
+            if (vmcf.op.op_escopo_caixa == "S")
+            {
+                ViewBag.categoria = select.getCategoriasClienteComEscopo(user.usuario_conta_id, false, false, true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.cf.cf_categoria_id.ToString() });
+            }
+            else
+            {
+                ViewBag.categoria = select.getCategoriasClienteComEscopo(user.usuario_conta_id, false, true, false).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.cf.cf_categoria_id.ToString() });
+            }
+            
+            
             ViewBag.tipoNF = select.getTipoNF().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.nf.op_nf_tipo.ToString() });
             ViewBag.ufIbge = select.getUF_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.participante.op_uf_ibge_codigo.ToString() });
             ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.participante.op_paisesIBGE_codigo.ToString() });
@@ -119,15 +145,34 @@ namespace gestaoContadorcomvc.Controllers
         // POST: ContasFinanceirasController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Vm_contasFinanceiras vmcf)
         {
+            string retorno = "";
+
             try
             {
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+                ContasFinanceiras cf = new ContasFinanceiras();
+
+                retorno = cf.alterarContaFinanceira(user.usuario_id, user.usuario_conta_id, vmcf);
+
+                TempData["msgCF"] = retorno;
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                if (retorno == "")
+                {
+                    retorno = "Erro ao cadastrar a conta financeira. Tente novamente. Se persistir entre em contato com o suporte!";
+                }
+
+                TempData["msgCF"] = retorno;
+
+                return RedirectToAction(nameof(Index));
             }
         }
 
