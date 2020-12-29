@@ -1317,7 +1317,7 @@ namespace gestaoContadorcomvc.Models
                     text = "Contas Financeiras"
                 });
             }
-            if (contexto == "Rcebimento")
+            if (contexto == "Recebimento")
             {
                 TipoOperacao.Add(new Selects
                 {

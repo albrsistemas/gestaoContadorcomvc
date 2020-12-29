@@ -13,13 +13,19 @@ namespace gestaoContadorcomvc.Models.ViewModel
     {
         public int operacao { get; set; }
         public DateTime vencimento { get; set; }
+        public string categoria_nome { get; set; }
         public string fornecedor { get; set; }
         public string referencia { get; set; }
+        public string formaPgto { get; set; }
         public Decimal valorOriginal { get; set; }
         public Decimal baixas { get; set; }
         public Decimal saldo { get; set; }
         public int prazo { get; set; }
         public int parcela_id { get; set; }
+        public int meio_pgto { get; set; }
+        public int fp_id { get; set; }
+        public string tipo { get; set; }
+        public string tipo_op { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -41,7 +47,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         Log log = new Log();
 
         //lista contas a pagar para index
-        public Vm_contas_receber listaContasReceber(int usuario_id, int conta_id)
+        public Vm_contas_receber listaContasReceber(int usuario_id, int conta_id, int participante, int formaPgto, int vencimento, int situacao, int tipo, string dataInicial, string dataFinal)
         {
             List<ContasReceber> cps = new List<ContasReceber>();
             Vm_contas_receber cp = new Vm_contas_receber();
@@ -57,9 +63,16 @@ namespace gestaoContadorcomvc.Models.ViewModel
             {
                 DateTime today = DateTime.Today;
 
-                comando.CommandText = "SELECT cp.*, case WHEN vencimento<@hoje THEN '2' WHEN vencimento = @hoje THEN '1' ELSE '3' END as prazo from view_contaspagar as cp WHERE conta_id = @conta_id and tipo IN ('Venda', 'ServicoPrestado') and(fp_meio_pgto_nfe in (05, 15)) and saldo > 0 ORDER by prazo, vencimento ASC;";
+                comando.CommandText = "call pr_contasReceber(@conta_id,@hoje,@participante,@formaPgto,@vencimento,@situacao,@tipo,@dataInicial,@dataFinal);";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@hoje", today);
+                comando.Parameters.AddWithValue("@participante", participante);
+                comando.Parameters.AddWithValue("@formaPgto", formaPgto);
+                comando.Parameters.AddWithValue("@vencimento", vencimento);
+                comando.Parameters.AddWithValue("@situacao", situacao);
+                comando.Parameters.AddWithValue("@tipo", tipo);
+                comando.Parameters.AddWithValue("@dataInicial", dataInicial);
+                comando.Parameters.AddWithValue("@dataFinal", dataFinal);
                 Transacao.Commit();
 
                 var leitor = comando.ExecuteReader();
@@ -79,6 +92,24 @@ namespace gestaoContadorcomvc.Models.ViewModel
                             conta.parcela_id = 0;
                         }
 
+                        if (DBNull.Value != leitor["fp_meio_pgto_nfe"])
+                        {
+                            conta.meio_pgto = Convert.ToInt32(leitor["fp_meio_pgto_nfe"]);
+                        }
+                        else
+                        {
+                            conta.meio_pgto = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fp_id"])
+                        {
+                            conta.fp_id = Convert.ToInt32(leitor["fp_id"]);
+                        }
+                        else
+                        {
+                            conta.fp_id = 0;
+                        }
+
                         if (DBNull.Value != leitor["operacao_"])
                         {
                             conta.operacao = Convert.ToInt32(leitor["operacao_"]);
@@ -88,26 +119,20 @@ namespace gestaoContadorcomvc.Models.ViewModel
                             conta.operacao = 0;
                         }
 
-                        if (DBNull.Value != leitor["vencimento"])
+                        if (DBNull.Value != leitor["venc"])
                         {
-                            conta.vencimento = Convert.ToDateTime(leitor["vencimento"]);
+                            conta.vencimento = Convert.ToDateTime(leitor["venc"]);
                         }
                         else
                         {
                             conta.vencimento = new DateTime();
                         }
 
-                        conta.fornecedor = leitor["fornecedor"].ToString();
+                        conta.fornecedor = leitor["participante"].ToString();
                         conta.referencia = leitor["referencia"].ToString();
-
-                        if (DBNull.Value != leitor["valorOriginal"])
-                        {
-                            conta.valorOriginal = Convert.ToDecimal(leitor["valorOriginal"]);
-                        }
-                        else
-                        {
-                            conta.valorOriginal = 0;
-                        }
+                        conta.formaPgto = leitor["formaPgto"].ToString();
+                        conta.categoria_nome = leitor["categoria_nome"].ToString();
+                        conta.tipo_op = leitor["tipo_op"].ToString();
 
                         if (DBNull.Value != leitor["valorOriginal"])
                         {
@@ -154,7 +179,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
             catch (Exception e)
             {
                 string msg = e.Message.Substring(0, 300);
-                log.log("ContasReceber", "listaContasReceber", "Erro", msg, conta_id, usuario_id);
+                log.log("ContasPagar", "listaContasPagar", "Erro", msg, conta_id, usuario_id);
             }
             finally
             {
@@ -166,5 +191,18 @@ namespace gestaoContadorcomvc.Models.ViewModel
 
             return cp;
         }
+    }
+
+    public class cp_filterCR
+    {
+        public string dataInicial { get; set; }
+        public string dataFinal { get; set; }
+        public int vencimento { get; set; }
+        public string fornecedor_nome { get; set; }
+        public int fornecedor_id { get; set; }
+        public int formaPgto { get; set; }
+        public int operacao { get; set; }
+        public int situacao { get; set; }
+        public bool contexto { get; set; } //oriente a view se as informações estão filtradas ou não;
     }
 }

@@ -40,8 +40,7 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Lançamento
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        @*<a class="dropdown-item" href="#">Orçamento Financeiro</a>*@
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                        
                         @if (usuario.Role == "adm" || usuario._permissoes.compraList)
                         {<a class="dropdown-item" asp-controller='Compra' asp-action='Index'>Compra</a>}
                         @if (usuario.Role == "adm" || usuario._permissoes.vendaList)
