@@ -89,18 +89,20 @@ namespace gestaoContadorcomvc.Models
         public bool CCMCreate { get; set; }
         public bool CCMEdit { get; set; }
         public bool CCMDelete { get; set; }
-        //Contas a Receber
+        //Contas a Receber ok
         public bool ContasRList { get; set; }
-        //Venda
+        //Serviços Prestados ok
         public bool servicoPList { get; set; }
         public bool servicoPCreate { get; set; }
         public bool servicoPEdit { get; set; }
         public bool servicoPDelete { get; set; }
-        //Contas Financeiras
+        //Contas Financeiras ok
         public bool contasFList { get; set; }
         public bool contasFCreate { get; set; }
-        public bool contasFPEdit { get; set; }
+        public bool contasFEdit { get; set; }
         public bool contasFDelete { get; set; }
+        //Relatórios
+        public bool rCategoriasList { get; set; }
 
 
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -474,6 +476,17 @@ namespace gestaoContadorcomvc.Models
                         permissao.CCMCreate = Convert.ToBoolean(leitor["CCMCreate"]);
                         permissao.CCMEdit = Convert.ToBoolean(leitor["CCMEdit"]);
                         permissao.CCMDelete = Convert.ToBoolean(leitor["CCMDelete"]);
+                        //Incluído em 28/12/2020
+                        permissao.ContasRList = Convert.ToBoolean(leitor["ContasRList"]);
+                        permissao.servicoPList = Convert.ToBoolean(leitor["servicoPList"]);
+                        permissao.servicoPCreate = Convert.ToBoolean(leitor["servicoPCreate"]);
+                        permissao.servicoPEdit = Convert.ToBoolean(leitor["servicoPEdit"]);
+                        permissao.servicoPDelete = Convert.ToBoolean(leitor["servicoPDelete"]);
+                        permissao.contasFList = Convert.ToBoolean(leitor["contasFList"]);
+                        permissao.contasFCreate = Convert.ToBoolean(leitor["contasFCreate"]);
+                        permissao.contasFEdit = Convert.ToBoolean(leitor["contasFEdit"]);
+                        permissao.contasFDelete = Convert.ToBoolean(leitor["contasFDelete"]);
+                        permissao.rCategoriasList = Convert.ToBoolean(leitor["rCategoriasList"]);
                     }
                 }
             }

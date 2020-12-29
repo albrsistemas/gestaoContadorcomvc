@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,9 +14,10 @@ using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
 {
+    [Authorize]
     public class ContasFinanceirasController : Controller
     {
-        // GET: ContasFinanceirasController
+        [Autoriza(permissao = "contasFList")]
         public ActionResult Index()
         {
             Usuario usuario = new Usuario();
@@ -29,13 +32,7 @@ namespace gestaoContadorcomvc.Controllers
             return View(vmcf);
         }
 
-        // GET: ContasFinanceirasController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: ContasFinanceirasController/Create
+        [Autoriza(permissao = "contasFCreate")]
         public ActionResult Create()
         {
             Usuario usuario = new Usuario();
@@ -93,7 +90,7 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
-        // GET: ContasFinanceirasController/Edit/5
+        [Autoriza(permissao = "contasFEdit")]
         public ActionResult Edit(int id)
         {
             Usuario usuario = new Usuario();
@@ -176,7 +173,7 @@ namespace gestaoContadorcomvc.Controllers
             }
         }
 
-        // GET: ContasFinanceirasController/Delete/5
+        [Autoriza(permissao = "contasFDelete")]
         public ActionResult Delete(int id)
         {
             return View();
@@ -212,6 +209,7 @@ namespace gestaoContadorcomvc.Controllers
             return Json(JsonConvert.SerializeObject(lista));
         }
 
+        [Autoriza(permissao = "contasFCreate")]
         public ActionResult CFR_realizacao(int parcela_id)
         {
             Usuario usuario = new Usuario();

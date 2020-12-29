@@ -171,7 +171,7 @@ namespace gestaoContadorcomvc.Models
                 }
                 parc.Close();
 
-                //Parcelas relaconadas
+                //Parcelas relacionadas
                 comando.CommandText = "call pr_parcelas_referenciadas(@conta_id,@parcela_id);";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@parcela_id", parcela_id);

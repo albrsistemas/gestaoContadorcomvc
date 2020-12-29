@@ -220,6 +220,11 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Detelhes Conta Financeira";
                 }
+                //Relatórios
+                if (pagina.Contains("Categoria_opp/Create"))
+                {
+                    retorno = "Relatório por Categorias";
+                }
 
             }
 

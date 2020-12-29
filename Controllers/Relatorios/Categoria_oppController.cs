@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.Relatorios;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace gestaoContadorcomvc.Controllers.Relatorios
 {
+    [Authorize]
     public class Categoria_oppController : Controller
     {
+        [Autoriza(permissao = "rCategoriasList")]
         public ActionResult Create()
         {
             Usuario usuario = new Usuario();
