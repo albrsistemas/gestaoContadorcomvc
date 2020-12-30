@@ -6,8 +6,15 @@
 }
 
 <style>
-    .container{
+    .container {
         min-width: 100%;
+        overflow: auto;
+    }
+    .table > tbody > tr:hover {
+        background-color: #f5f4ba;
+    }
+    .table > tbody > tr > td:hover {
+        background-color: #edeb7e;
     }
 </style>
 
@@ -41,8 +48,8 @@
 </form>
 <hr class="hrLine" />
 <div class="table-responsive">
-    <table class="table">
-        <caption>Categorias x Parcelas</caption>
+    <table class="table table-sm">
+        <caption>Por Categorias</caption>
         <thead>            
             <tr class="tab_grupo_0">
                 <th scope="col" style="white-space:nowrap;text-align:left">Classificação</th>

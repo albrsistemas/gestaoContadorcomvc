@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 using gestaoContadorcomvc.Areas.Contabilidade.Models;
 using gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel;
-using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
@@ -15,9 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
     [Area("Contabilidade")]
-    [Route("Contabilidade/[controller]/[action]")]
-    //[FiltroAutenticacao]
-    //[FiltroContabilidade]
+    [Route("Contabilidade/[controller]/[action]")]    
     [Authorize(Roles = "Contabilidade")]    
     public class HomeController : Controller
     {
@@ -27,7 +19,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             Vm_usuario user = new Vm_usuario();
             user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
-            Vm_home home = new Vm_home();
+            Vm_home_contabilidade home = new Vm_home_contabilidade();
             home.user = user;
 
             return View(home);
