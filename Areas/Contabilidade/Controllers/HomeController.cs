@@ -5,8 +5,10 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using gestaoContadorcomvc.Areas.Contabilidade.Models;
+using gestaoContadorcomvc.Areas.Contabilidade.Models.ViewModel;
 using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models.Autenticacao;
+using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,21 +23,14 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
     {
         public IActionResult Index()
         {
-            //List<string> roles = new List<string>();
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
-            //string user = "";
+            Vm_home home = new Vm_home();
+            home.user = user;
 
-            //if (HttpContext.User.Identity.IsAuthenticated)
-            //{
-            //    foreach(Claim ci in HttpContext.User.Claims)
-            //    {
-            //        roles.Add(ci.Value);
-            //    }
-
-            //    user = HttpContext.User.Identity.Name;
-            //}
-
-            return View();
+            return View(home);
         }
 
         public IActionResult Error(string controller, string action)

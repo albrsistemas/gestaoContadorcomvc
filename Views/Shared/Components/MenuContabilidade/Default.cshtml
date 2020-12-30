@@ -39,7 +39,7 @@
                                 {<a class="dropdown-item" asp-area="Contabilidade" asp-controller='Categoria' asp-action='Index'>Categorias</a>}
                                 <a class="dropdown-item" asp-area="Contabilidade" asp-controller='Lancamento' asp-action='Index'>Lançamentos</a>
                                 <a class="dropdown-item" asp-area="Contabilidade" asp-controller='Balancete' asp-action='Create'>Balancete</a>                                
-                                <a class="dropdown-item" href="#">DRE</a>
+                                @*<a class="dropdown-item" href="#">DRE</a>*@
                             </div>
                         </li>
                     }
@@ -52,11 +52,11 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Olá, @nome[0]</a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Minha Conta</a>
+                        @*<a class="dropdown-item" href="#">Minha Conta</a>*@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" asp-controller="Conta" asp-action="Logout">Sair</a>
                     </div>
-                </li>
+                </li>                
             </ul>
         }
     }
