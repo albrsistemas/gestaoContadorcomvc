@@ -101,6 +101,27 @@
         <form class="box" autocomplete="off" asp-action="Login">
             <div class="faixa"></div>
             <div class="container-fluid">
+                @{
+                    if (TempData["forgot_retorno"] != null)
+                    {
+                        if (TempData["forgot_retorno"].ToString().Contains("sucesso"))
+                        {
+                            <div class="row" style="margin-top:25px;">
+                                <div class="col-12">
+                                    <div class="alert alert-success" role="alert">@TempData["forgot_retorno"].ToString()</div>
+                                </div>
+                            </div>
+                        }
+                        if (TempData["forgot_retorno"].ToString().Contains("Erro"))
+                        {
+                            <div class="row" style="margin-top:25px;">
+                                <div class="col-12">
+                                    <div class="alert alert-danger" role="alert">@TempData["forgot_retorno"].ToString()</div>
+                                </div>
+                            </div>
+                        }
+                    }
+                }
                 <h1 class="login">Login</h1>
                 <div class="form-group">
                     <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuário" autofocus>
@@ -113,12 +134,12 @@
                 </div>
 
                 @*<div class="radio-toolbar">
-                    <input type="radio" id="radio1" name="area" value="empresa" checked>
-                    <label for="radio1" id="label1">Empresa</label>
+            <input type="radio" id="radio1" name="area" value="empresa" checked>
+            <label for="radio1" id="label1">Empresa</label>
 
-                    <input type="radio" id="radio2" name="area" value="contabilidade">
-                    <label for="radio2" id="label2">Contabilidade</label>
-                </div>*@
+            <input type="radio" id="radio2" name="area" value="contabilidade">
+            <label for="radio2" id="label2">Contabilidade</label>
+        </div>*@
                 <button type="submit" class="btn btn-info botao">Entrar</button>
                 <p class="criarConta">Não é registrado? <a asp-controller="Conta" asp-action="Registro">Cria sua conta</a></p>
                 <p class="criarConta"><a asp-controller="ForgotPassword" asp-action="redefinir_senha">Esqueceu sua senha?</a></p>

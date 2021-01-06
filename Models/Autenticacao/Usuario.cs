@@ -22,8 +22,9 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         public string usuario_email { get; set; }
         public string Role { get; set; }
         public string permissoes { get; set; }
-
         public Conta conta { get; set; }
+        public string usuario_forgt_token { get; set; }
+        public DateTime usuario_forgt_data { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -678,6 +679,160 @@ namespace gestaoContadorcomvc.Models.Autenticacao
             }           
 
             return usuario;
+        }
+
+        //Busca usuário por token
+        public Vm_usuario BuscaUsuarioPorToken(string token)
+        {
+            Vm_usuario usuario = new Vm_usuario();
+
+            try
+            {
+                conn.Open();
+                MySqlCommand comando = new MySqlCommand("SELECT u.usuario_forgt_token, u.usuario_forgt_data from usuario as u WHERE u.usuario_forgt_token = @token;", conn);
+                comando.Parameters.AddWithValue("@token", token);
+
+                var leitor = comando.ExecuteReader();
+
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        //usuario.usuario_nome = leitor["usuario_nome"].ToString();
+                        //usuario.usuario_email = leitor["usuario_email"].ToString();
+                        //usuario.usuario_dcto = leitor["usuario_dcto"].ToString();
+                        //usuario.usuario_conta_id = Convert.ToInt32(leitor["usuario_conta_id"]);
+                        //usuario.usuario_id = Convert.ToInt32(leitor["usuario_id"]);
+                        //usuario.Role = leitor["Role"].ToString();
+                        //usuario.permissoes = leitor["usuario_permissoes"].ToString();
+                        //usuario.usuario_ultimoCliente = leitor["usuario_ultimoCliente"].ToString();
+                        if (DBNull.Value != leitor["usuario_forgt_data"])
+                        {
+                            usuario.usuario_forgt_data = Convert.ToDateTime(leitor["usuario_forgt_data"]);
+                        }
+                        else
+                        {
+                            usuario.usuario_forgt_data = new DateTime();
+                        }
+                        
+                        usuario.usuario_forgt_token = leitor["usuario_forgt_token"].ToString();
+                    }
+
+                    //Permissoes permissoes = new Permissoes();
+                    //permissoes = permissoes.listaPermissoes(usuario_id);
+                    //usuario._permissoes = permissoes;
+
+                    //Conta conta = new Conta();
+                    //conta = conta.buscarConta(usuario.usuario_conta_id);
+                    //usuario.conta = conta;
+                }
+                else
+                {
+                    usuario = null;
+                }
+
+
+                conn.Close();
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return usuario;
+        }
+
+        //Altera token forgot usuário
+        public string AtribuirTokenForgot(int usuario_id, int conta_id, string email, string token)
+        {
+            string retorno = "sucesso";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                DateTime hoje = DateTime.Today;
+
+                comando.CommandText = "UPDATE usuario set usuario.usuario_forgt_token = @token, usuario.usuario_forgt_data = @data WHERE usuario.usuario_email = @email;";                
+                comando.Parameters.AddWithValue("@email", email);
+                comando.Parameters.AddWithValue("@token", token);
+                comando.Parameters.AddWithValue("@data", hoje);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Solicitação de alteração de senha para o usuário ID: " + usuario_id + " enviado para e-mail: " + email;
+                log.log("Usuario", "AtribuirTokenForgot", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                string msg = "olicitação de alteração de senha para o usuário ID: " + usuario_id + " fracassou" + e.Message.ToString().Substring(0, 300);
+                retorno = "Erro";
+                log.log("Usuario", "EditPassword", "Erro", msg, conta_id, usuario_id);
+                Transacao.Rollback();
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
+        //Altera senha do usuário
+        public string EditSenhaTokenForgot(string novasenha, string token)
+        {
+            string retorno = "Redefinição de senha realizada com sucesso";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                DateTime hoje = DateTime.Today;
+
+                comando.CommandText = "UPDATE usuario set usuario.usuario_senha = md5(@novasenha), usuario.usuario_forgt_token = '', usuario.usuario_forgt_data = '' WHERE usuario.usuario_forgt_token = @token;";
+                comando.Parameters.AddWithValue("@novasenha", novasenha);
+                comando.Parameters.AddWithValue("@token", token);                
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+            }
+            catch (Exception e)
+            {   
+                retorno = "Erro ao gravar a nova senha!";                
+
+                Transacao.Rollback();
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
         }
 
 

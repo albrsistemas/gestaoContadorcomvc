@@ -1,7 +1,5 @@
-﻿@model gestaoContadorcomvc.Models.Autenticacao.ForgotPassword
-
-@{
-    ViewData["Title"] = "Redefinir Senha";
+﻿@{
+    ViewData["Title"] = "Token Inválido";
     Layout = null;
 }
 
@@ -107,51 +105,23 @@
 </head>
 <body>
     <div class="container">
-        <form class="box" autocomplete="off" asp-controller="ForgotPassword" asp-action="redefinir_senha">
+        <form class="box" autocomplete="off">
             <div class="faixa"></div>
-            <div class="container-fluid">
-                <h1 class="login">Redefir Senha</h1>
+            <div class="container-fluid">                
                 <div class="row">
                     <div class="col-12">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" autofocus asp-for="email" id="email" placeholder="Digite seu e-mail" aria-label="Recipient's username" aria-describedby="button-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-info" type="submit" id="button-addon2">Enviar</button>
-                            </div>
-                        </div>
-                        <span asp-validation-for="email" class="text-danger"></span>
-                    </div>
+                        @{
+                            if (TempData["token_invalido"] != null)
+                            {
+                                <div class="row" style="margin-top:25px;">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger" role="alert">@TempData["token_invalido"].ToString()</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>                    
                 </div>
-
-                @{
-                    if (TempData["error"] != null)
-                    {
-                        <div class="row">
-                            <div class="col-12">
-                                <span class="text-danger">@TempData["error"].ToString()</span>
-                            </div>
-                        </div>
-                    }
-
-                    if (TempData["sucesso"] != null)
-                    {
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="alert alert-success" role="alert">@TempData["sucesso"].ToString()</div>
-                            </div>
-                        </div>
-                    }
-
-                    if (TempData["falha"] != null)
-                    {
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="alert alert-danger" role="alert">@TempData["falha"].ToString()</div>
-                            </div>
-                        </div>
-                    }
-
-                }
             </div>
         </form>
     </div>

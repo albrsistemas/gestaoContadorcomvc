@@ -58,5 +58,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public Permissoes _permissoes { get; set; }
         public IEnumerable<gestaoContadorcomvc.Models.ViewModel.Vm_usuario> usuarios { get; set; }
         public string usuario_ultimoCliente { get; set; }
+        public string usuario_forgt_token { get; set; }
+        public DateTime usuario_forgt_data { get; set; }
     }
 }
