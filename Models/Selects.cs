@@ -1633,6 +1633,33 @@ namespace gestaoContadorcomvc.Models
             return selects;
         }
 
+        public List<Selects> getContaTipo()
+        {
+            List<Selects> selects = new List<Selects>();
+            selects.Add(new Selects
+            {
+                value = "Pessoa Física",
+                text = "Pessoa Física"
+            });
+            selects.Add(new Selects
+            {
+                value = "Entidade",
+                text = "Entidade"
+            });
+            selects.Add(new Selects
+            {
+                value = "Empresa",
+                text = "Empresa"
+            });
+            selects.Add(new Selects
+            {
+                value = "Contabilidade",
+                text = "Contabilidade"
+            });
+
+            return selects;
+        }
+
 
     }
 }

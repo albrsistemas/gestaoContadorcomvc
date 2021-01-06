@@ -123,6 +123,10 @@ input[type=number] {
     font-size: 15px;
     font-weight: bold;
     color: darkblue;
+    white-space: nowrap;
+    width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .bread_menu {

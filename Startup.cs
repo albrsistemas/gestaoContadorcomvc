@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using gestaoContadorcomvc.Services;
 
 namespace gestaoContadorcomvc
 {
@@ -30,6 +31,10 @@ namespace gestaoContadorcomvc
             services.AddControllersWithViews();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            //Registrando classes de serviço de e-mail
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.AddTransient<IEmailSender, AuthMessageSender>();
 
             //Configuração para uso de autenticação por token jwtbearer
             //var key = Encoding.ASCII.GetBytes(Settings.Secret);

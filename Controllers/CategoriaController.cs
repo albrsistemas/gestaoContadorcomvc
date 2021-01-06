@@ -270,7 +270,7 @@ namespace gestaoContadorcomvc.Controllers
         }
 
         //Verificar se classificação da categoria existe
-        public IActionResult classificacaoExiste(string categoria_classificacao)
+        public IActionResult classificacaoExiste(string categoria_classificacao, int pc_id, int planoContas_id)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -281,8 +281,7 @@ namespace gestaoContadorcomvc.Controllers
             bool existe = categoria.classificacaoExiste(categoria_classificacao, user.usuario_conta_id);
 
             return Json(!existe);
-        }
-
+        }      
 
     }
 }

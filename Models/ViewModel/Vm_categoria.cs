@@ -14,8 +14,13 @@ namespace gestaoContadorcomvc.Models.ViewModel
 
         [Display(Name = "Classificação")]
         [Required(ErrorMessage = "A classificação é obrigatória.")]
-        [Remote("classificacaoExiste", "Categoria", ErrorMessage = "Classificação já existe")]
+        //[Remote("classificacaoExiste", "Categoria", ErrorMessage = "Classificação já existe")]
         public string categoria_classificacao { get; set; }
+
+        [Display(Name = "Classificação")]
+        [Required(ErrorMessage = "A classificação é obrigatória.")]
+        [Remote("classificacaoExistenoPlano", "Categoria", ErrorMessage = "Classificação já existe")]
+        public string categoria_classificacao_dePlano { get; set; }
 
         [Display(Name = "Nome")]
         [Required(ErrorMessage = "O nome é obrigatório.")]

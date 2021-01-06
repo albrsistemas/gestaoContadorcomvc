@@ -621,6 +621,65 @@ namespace gestaoContadorcomvc.Models.Autenticacao
             }
         }
 
+        //Busca usuário por e-mail
+        public Vm_usuario BuscaUsuarioPorEmail(string email)
+        {
+            Vm_usuario usuario = new Vm_usuario();
+
+            try
+            {
+                conn.Open();
+                MySqlCommand comando = new MySqlCommand("SELECT * from usuario WHERE usuario.usuario_email = @email;", conn);
+                comando.Parameters.AddWithValue("@email", email);
+
+                var leitor = comando.ExecuteReader();
+
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        usuario.usuario_nome = leitor["usuario_nome"].ToString();
+                        usuario.usuario_email = leitor["usuario_email"].ToString();
+                        usuario.usuario_dcto = leitor["usuario_dcto"].ToString();
+                        usuario.usuario_conta_id = Convert.ToInt32(leitor["usuario_conta_id"]);
+                        usuario.usuario_id = Convert.ToInt32(leitor["usuario_id"]);
+                        usuario.Role = leitor["Role"].ToString();
+                        usuario.permissoes = leitor["usuario_permissoes"].ToString();
+                        usuario.usuario_ultimoCliente = leitor["usuario_ultimoCliente"].ToString();
+                    }
+
+                    Permissoes permissoes = new Permissoes();
+                    permissoes = permissoes.listaPermissoes(usuario_id);
+                    usuario._permissoes = permissoes;
+
+                    Conta conta = new Conta();
+                    conta = conta.buscarConta(usuario.usuario_conta_id);
+                    usuario.conta = conta;
+                }
+                else
+                {
+                    usuario = null;
+                }
+                    
+
+                conn.Close();
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }           
+
+            return usuario;
+        }
+
 
     }
 

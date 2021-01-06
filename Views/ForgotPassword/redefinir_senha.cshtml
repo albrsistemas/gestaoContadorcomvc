@@ -1,5 +1,7 @@
-﻿
+﻿@model gestaoContadorcomvc.Models.Autenticacao.ForgotPassword
+
 @{
+    ViewData["Title"] = "Redefinir Senha";
     Layout = null;
 }
 
@@ -34,16 +36,18 @@
             text-align: center;
             padding-bottom: 5px;
         }
-        .box input{
-            text-align: center;
-        }
-        .box input:hover{
-            color: #495057;
-            background-color: #fff;
-            border-color: #80bdff;
-            outline: 0;
-            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-        }
+
+            .box input {
+                text-align: center;
+            }
+
+                .box input:hover {
+                    color: #495057;
+                    background-color: #fff;
+                    border-color: #80bdff;
+                    outline: 0;
+                    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+                }
 
         .faixa {
             width: 100%;
@@ -60,17 +64,20 @@
             margin-top: 35px;
             margin-bottom: 40px;
         }
-        .botao{
+
+        .botao {
             width: 100%;
             margin-top: 10px;
         }
-        .criarConta{
+
+        .criarConta {
             margin-top: 10px;
         }
-        
+
         .radio-toolbar input[type="radio"] {
             display: none;
         }
+
         .radio-toolbar label {
             float: left;
             background-color: #17a2b8;
@@ -82,50 +89,48 @@
             cursor: pointer;
             user-select: none;
         }
+
         .radio-toolbar input[type="radio"]:checked + label {
             background-color: #138496;
         }
+
         #label1 {
             border-bottom-left-radius: 5px;
             border-top-left-radius: 5px;
         }
+
         #label2 {
             border-bottom-right-radius: 5px;
             border-top-right-radius: 5px;
         }
-
     </style>
 </head>
-<body>    
+<body>
     <div class="container">
-        <form class="box" autocomplete="off" asp-action="Login">
+        <form class="box" autocomplete="off" asp-controller="" asp-action="Login">
             <div class="faixa"></div>
             <div class="container-fluid">
-                <h1 class="login">Login</h1>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuário" autofocus>
-                </div>
-                <div class="form-group">
-                    <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha">
-                </div>
-                <div class="form-group">
-                    <select asp-items="@ViewBag.conta_tipo" value="@TempData["conta_tipo"]" id="conta_tipo" name="conta_tipo" class="form-control"></select>
+                <h1 class="login">Redefir Senha</h1>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" autofocus asp-for="email" id="email" placeholder="Digite seu e-mail" aria-label="Recipient's username" aria-describedby="button-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-info" type="submit" id="button-addon2">Enviar</button>
+                            </div>
+                        </div>
+                        <span asp-validation-for="email" class="text-danger"></span>
+                    </div>
                 </div>
 
-                @*<div class="radio-toolbar">
-                    <input type="radio" id="radio1" name="area" value="empresa" checked>
-                    <label for="radio1" id="label1">Empresa</label>
-
-                    <input type="radio" id="radio2" name="area" value="contabilidade">
-                    <label for="radio2" id="label2">Contabilidade</label>
-                </div>*@
-                <button type="submit" class="btn btn-info botao">Entrar</button>
-                <p class="criarConta">Não é registrado? <a asp-controller="Conta" asp-action="Registro">Cria sua conta</a></p>
-                <p class="criarConta"><a asp-controller="ForgotPassword" asp-action="redefinir_senha">Esqueceu sua senha?</a></p>
                 @{
-                    if (TempData["errorLogin"] != null)
+                    if (TempData["error"] != null)
                     {
-                        <span class="text-danger">@TempData["errorLogin"].ToString()</span>
+                        <div class="row">
+                            <div class="col-12">
+                                <span class="text-danger">@TempData["error"].ToString()</span>
+                            </div>
+                        </div>
                     }
                 }
             </div>
