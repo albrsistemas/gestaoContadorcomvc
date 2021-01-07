@@ -374,7 +374,21 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a id="btn_ok" class="btn btn-success" asp-controller="ContasPagar" asp-action="Index">OK</a>
+                @{
+                    if (TempData["contexto"] != null)
+                    {
+                        if (TempData["contexto"].ToString().Equals("receber"))
+                        {
+                            <a id="btn_ok" class="btn btn-success" asp-controller="ContasReceber" asp-action="Index">OK</a>
+                        }
+
+                        if (TempData["contexto"].ToString().Equals("pagar"))
+                        {
+                            <a id="btn_ok" class="btn btn-success" asp-controller="ContasPagar" asp-action="Index">OK</a>
+                        }
+                    }
+                }
+
                 <button id="btn_cancel" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
         </div>

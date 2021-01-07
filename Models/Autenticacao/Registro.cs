@@ -146,7 +146,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                 MySqlCommand comando = new MySqlCommand("select usuario_email from usuario where usuario_email = @email", conn);
                 comando.Parameters.AddWithValue("@email", conta_email);
                 var leitor = comando.ExecuteReader();
-                    localizado = leitor.HasRows;
+                   localizado = leitor.HasRows;
                 conn.Clone();
             }
             catch (Exception e)

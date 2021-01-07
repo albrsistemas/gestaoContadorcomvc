@@ -53,7 +53,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
             try
             {
                 conn.Open();
-                MySqlCommand comando = new MySqlCommand("select * from usuario where usuario_senha = md5(@senha) and usuario_user = md5(@usuario) and usuario_status != 'Deletado';", conn);
+                MySqlCommand comando = new MySqlCommand("select * from usuario where usuario_senha = md5(@senha) and (usuario_user = md5(@usuario) or usuario.usuario_email = @usuario) and usuario_status != 'Deletado';", conn);
                 comando.Parameters.AddWithValue("@senha", senha);
                 comando.Parameters.AddWithValue("@usuario", usuario);
 

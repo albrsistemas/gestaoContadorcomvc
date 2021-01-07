@@ -449,6 +449,8 @@ function montaClassificacao(valor, grupo) {
 $(".SelectClient").click(function () {
     //var id = $(this).attr("data-id");
     var url = window.location.href;
+    url =  url.replace('&', '|');
+    console.log(url);    
     $("#modal").load("/Contabilidade/Clientes/SelectCliente?url=" + url, function () {
         $("#modal").modal('show');
     })
@@ -4076,7 +4078,8 @@ function visualizarParcelasCtasF() {
 $(".CFR_realizacao").click(function () {
     modal_modal();
     var parcela_id = $(this).attr("data-parcela_id");    
-    $("#modal").load("/ContasFinanceiras/CFR_realizacao?parcela_id=" + parcela_id, function () {
+    var contexto = $(this).attr("data-contexto");
+    $("#modal").load("/ContasFinanceiras/CFR_realizacao?parcela_id=" + parcela_id + '&contexto=' + contexto, function () {
         $("#modal").modal('show');
     })
 });

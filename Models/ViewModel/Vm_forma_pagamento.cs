@@ -12,6 +12,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
 
         [Display(Name = "Descrição")]
         [Required(ErrorMessage = "A descrição é obrigatória")]
+        [StringLength(30, MinimumLength = 4, ErrorMessage = "Mínimo de 4 caracteres e máximo de 30")]
         public string fp_nome { get; set; }
 
         [Display(Name = "Meio de Pagamento")]

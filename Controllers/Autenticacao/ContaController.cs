@@ -80,7 +80,15 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
                         
             if (user != null && user.usuario_id > 0)
             {
-                if (conta.conta_tipo != collection["conta_tipo"])
+                if (conta.conta_tipo.ToUpper().Equals("CONTABILIDADE"))
+                {
+                    if (collection["conta_tipo"] != "Contabilidade" && collection["conta_tipo"] != "Empresa")
+                    {
+                        return View(TempData["errorLogin"] = "Usuário não pertence ao tipo de conta especificado");
+                    }
+                }
+
+                if (conta.conta_tipo.ToUpper() != "CONTABILIDADE" && conta.conta_tipo != collection["conta_tipo"])
                 {
                     return View(TempData["errorLogin"] = "Usuário não pertence ao tipo de conta especificado");
                 }
@@ -102,10 +110,13 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
             TempData["user"] = user.usuario_nome;
 
-            if (collection["conta_tipo"].Equals("Contabilidade") && conta.conta_tipo.ToUpper().Equals("CONTABILIDADE"))
+            if (conta.conta_tipo.ToUpper().Equals("CONTABILIDADE"))
             {
-                return RedirectToAction("Index", "Home", new { area = "Contabilidade" });
-            }
+                if(collection["conta_tipo"] == "Contabilidade")
+                {
+                    return RedirectToAction("Index", "Home", new { area = "Contabilidade" });
+                }
+            }   
             
             return RedirectToAction("Index", "Home");
         }

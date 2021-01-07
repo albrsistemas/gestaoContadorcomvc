@@ -210,7 +210,7 @@ namespace gestaoContadorcomvc.Controllers
         }
 
         [Autoriza(permissao = "contasFCreate")]
-        public ActionResult CFR_realizacao(int parcela_id)
+        public ActionResult CFR_realizacao(int parcela_id, string contexto)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -230,6 +230,8 @@ namespace gestaoContadorcomvc.Controllers
             ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vmcf.participante.op_paisesIBGE_codigo.ToString() });
 
             TempData["parcela_id"] = parcela_id;
+
+            TempData["contexto"] = contexto;
 
             return View(vmcf);
         }

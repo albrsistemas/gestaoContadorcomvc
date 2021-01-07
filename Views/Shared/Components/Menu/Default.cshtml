@@ -50,8 +50,7 @@
                         @if ((usuario.conta.conta_tipo != "Pessoa Física") && (usuario.Role == "adm" || usuario._permissoes.servicoTList))
                         {<a class="dropdown-item" asp-controller='ServicoTomado' asp-action='Index'>Serviço Tomado</a>}
                         @if (usuario.Role == "adm" || usuario._permissoes.contasFList)
-                        {<a class="dropdown-item" asp-controller='ContasFinanceiras' asp-action='Index'>Contas Financeiras</a>}
-                        <a class="dropdown-item" asp-controller='Email' asp-action='EnviaEmail'>Enviar E-mail</a>                        
+                        {<a class="dropdown-item" asp-controller='ContasFinanceiras' asp-action='Index'>Contas Financeiras</a>}                                                
                     </div>
                 </li>
             }
@@ -122,6 +121,7 @@
                             @if (usuario.Role == "adm" || usuario._permissoes.config)
                             {
                                 <a class="dropdown-item" asp-controller="Configuracoes" asp-action="Index">Configurações</a>
+                                <a class="dropdown-item" asp-controller='Email' asp-action='EnviaEmail'>Contato Suporte</a>
                             }
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" asp-controller="Conta" asp-action="Logout">Sair</a>
