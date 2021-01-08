@@ -13,6 +13,6 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public Op_participante participante { get; set; }
         public Op_nf nf { get; set; }
         public IEnumerable<ContasFinanceiras> contas { get; set; }
-        public Vm_usuario user { get; set; }
+        public Vm_usuario user { get; set; }        
     }
 }

@@ -1,0 +1,29 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_contasFinanceiras
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirmação Exclusão</h4>
+            </div>
+            <form asp-controller="ContasFinanceiras" asp-action="Delete">
+                <div class="modal-body">
+                    <p>Confirme a exclusão da conta financeira:</p>
+                    <span><strong>Nome: </strong>@Model.cf.cf_nome</span><br>
+                    <span><strong>Data Cadastro: </strong>@Model.cf.cf_dataCriacao.ToShortDateString()</span><br>
+                    <span><strong>Tipo: </strong>@Model.cf.cf_tipo</span><br>
+                    <span><strong>Valor: </strong>@Model.cf.cf_valor_operacao.ToString("N")</span><br>
+
+                    <input type="hidden" name="cf_id" value="@Model.cf.cf_id" />
+
+                </div>                
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>

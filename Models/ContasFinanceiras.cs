@@ -35,6 +35,7 @@ namespace gestaoContadorcomvc.Models
         public DateTime cf_dataCriacao { get; set; }
         public int cf_op_id { get; set; }
         public int cf_forma_pgto { get; set; }
+        public Decimal baixas { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -421,7 +422,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT * from contas_financeiras as cf WHERE cf.cf_conta_id = @conta_id ORDER by cf.cf_tipo DESC, cf.cf_nome ASC, cf.cf_data_inicial ASC;";
+                comando.CommandText = "SELECT (SELECT COALESCE(sum(op_parcelas_baixa.oppb_valor),0) from op_parcelas_baixa WHERE op_parcelas_baixa.oppb_op_id = cf.cf_op_id) as baixas, cf.* from contas_financeiras as cf WHERE cf.cf_conta_id = @conta_id ORDER by cf.cf_dataCriacao DESC";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);                
                 Transacao.Commit();
 
@@ -432,6 +433,16 @@ namespace gestaoContadorcomvc.Models
                     while (leitor.Read())
                     {
                         ContasFinanceiras cf = new ContasFinanceiras();
+
+                        //Baixas soma
+                        if (DBNull.Value != leitor["baixas"])
+                        {
+                            cf.baixas = Convert.ToDecimal(leitor["baixas"]);
+                        }
+                        else
+                        {
+                            cf.baixas = 0;
+                        }
 
                         //contas financeiras
                         if (DBNull.Value != leitor["cf_id"])
@@ -504,6 +515,15 @@ namespace gestaoContadorcomvc.Models
                         else
                         {
                             cf.cf_data_final = new DateTime();
+                        }
+
+                        if (DBNull.Value != leitor["cf_dataCriacao"])
+                        {
+                            cf.cf_dataCriacao = Convert.ToDateTime(leitor["cf_dataCriacao"]);
+                        }
+                        else
+                        {
+                            cf.cf_dataCriacao = new DateTime();
                         }
 
                         cf.cf_nome = leitor["cf_nome"].ToString();
@@ -636,6 +656,15 @@ namespace gestaoContadorcomvc.Models
                         else
                         {
                             cf.cf_data_final = new DateTime();
+                        }
+
+                        if (DBNull.Value != leitor["cf_dataCriacao"])
+                        {
+                            cf.cf_dataCriacao = Convert.ToDateTime(leitor["cf_dataCriacao"]);
+                        }
+                        else
+                        {
+                            cf.cf_dataCriacao = new DateTime();
                         }
 
                         cf.cf_status = leitor["cf_status"].ToString();
@@ -805,6 +834,96 @@ namespace gestaoContadorcomvc.Models
             return retorno;
         }
 
+        
 
+        public Decimal baixasPorCF(int cf_id)
+        {
+            Decimal baixas = 0;
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT COALESCE(sum(op_parcelas_baixa.oppb_valor),0) as baixas from op_parcelas_baixa WHERE op_parcelas_baixa.oppb_op_id = (SELECT contas_financeiras.cf_op_id from contas_financeiras WHERE contas_financeiras.cf_id = @cf_id);";                
+                comando.Parameters.AddWithValue("@cf_id", cf_id);                
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        if (DBNull.Value != leitor["baixas"])
+                        {
+                            baixas = Convert.ToDecimal(leitor["baixas"]);
+                        }
+                        else
+                        {
+                            baixas = 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return baixas;
+        }
+        
+
+        public string deleteContaFinanceira(int usuario_id, int conta_id, int cf_id)
+        {
+            string retorno = "Conta Financeira apagada com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "call pr_contasFinanceirasDelete(@conta_id, @cf_id);";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@cf_id", cf_id);                
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Exclusão da conta financeira ID: " + cf_id + " excluida com sucesso";
+                log.log("ContasFinanceiras", "deleteContaFinanceira", "Sucesso", msg, conta_id, usuario_id);
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao excluir a conta financeira. Tente novamente. Se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("ContasFinanceiras", "deleteContaFinanceira", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
     }
 }

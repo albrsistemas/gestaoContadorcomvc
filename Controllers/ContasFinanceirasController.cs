@@ -176,21 +176,57 @@ namespace gestaoContadorcomvc.Controllers
         [Autoriza(permissao = "contasFDelete")]
         public ActionResult Delete(int id)
         {
-            return View();
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            ContasFinanceiras cf = new ContasFinanceiras();
+
+            if(cf.baixasPorCF(id) > 0)
+            {
+                TempData["msgCF"] = "Erro. Conta financeira possui baixas e não pode ser excluído. Para excluir exclua as baixas!";
+
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                Vm_contasFinanceiras vmcf = new Vm_contasFinanceiras();
+                vmcf = cf.buscaCF(id, user.usuario_conta_id);
+                return View(vmcf);
+            }
         }
 
         // POST: ContasFinanceirasController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int cf_id, IFormCollection collection)
         {
+            string retorno = "";
+
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
             try
             {
+                ContasFinanceiras cf = new ContasFinanceiras();
+
+                retorno = cf.deleteContaFinanceira(user.usuario_id, user.usuario_conta_id, cf_id);
+
+                TempData["msgCF"] = retorno;
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                if(retorno == "")
+                {
+                    retorno = "Ocorreu um erro no processamento da solicitação de exclusão!";
+                }
+
+                TempData["msgCF"] = retorno;
+
+                return RedirectToAction(nameof(Index));
             }
         }
 
