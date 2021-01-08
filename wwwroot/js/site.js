@@ -3311,8 +3311,9 @@ function gravar_fatura_cartao(contexto) {
                             $('#modal_mensagem_retornoF').modal('show');
                             return;
                         }
-                        if (XMLHttpRequest.responseJSON.includes('Fatura cartão cadastrada com sucesso!')) {                           
+                        if (XMLHttpRequest.responseJSON.includes('sucesso!')) {                           
                             $("#modal_fechamento_cartao").modal('hide');
+                            document.getElementById('cartao_gravado_sucesso').innerHTML = XMLHttpRequest.responseJSON;
                             $('#modal_sucesso_faturaCartao').modal('show');
                             /*
                             if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
@@ -3373,6 +3374,31 @@ function monthPicker(id, contexto, vlr) {
         document.getElementById(id_cliente).value = mes + "/" + ano;
 
         document.getElementById('box_monthPicker').style.display = 'none';
+
+        $.ajax({
+            url: "/FechamentoCartao/fc_existe",
+            data: { __RequestVerificationToken: gettoken(), fc_forma_pagamento: fechamento_cartao.fc_forma_pagamento, fc_referencia: mes + "/" + ano},
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                document.getElementById('gravar_fatura').setAttribute("disabled", "disabled");
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("erro");
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                var results = JSON.parse(data);
+                if (results != null) {
+                    document.getElementById("retorno_fc_existe").innerHTML = "Já existe uma fatura para este cartão nesta competência. As parcelas selecionadas serão acrescentadas a esta fatura!";
+                    document.getElementById("retorno_fc_existe").style.display = 'block';
+                } else {
+                    document.getElementById("retorno_fc_existe").innerHTML = "";
+                    document.getElementById("retorno_fc_existe").style.display = 'none';
+                }
+
+                document.getElementById('gravar_fatura').removeAttribute("disabled");
+            }
+        });
     }
 }
 

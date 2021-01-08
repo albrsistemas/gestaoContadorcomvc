@@ -47,9 +47,15 @@ namespace gestaoContadorcomvc.Models
         Log log = new Log();
 
         //Cadastrar fechamento cartão
-        public string cadastraFechamentoCartao(int conta_id, int usuario_id, Fechamento_cartao fc)
+        public string cadastraFechamentoCartao(int conta_id, int usuario_id, Fechamento_cartao fc, bool fechamento_existe, int fechamento_existe_op, int fechamento_existe_fc_id)
         {
             string retorno = "Fatura cartão cadastrada com sucesso!";
+
+            if (fechamento_existe)
+            {
+                retorno = "Fatura do cartão atualizada com sucesso!";
+            }
+            
 
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
@@ -62,8 +68,11 @@ namespace gestaoContadorcomvc.Models
             {
                 DateTime today = DateTime.Today;
 
-                comando.CommandText = "call pr_fechamentoCartao (@conta_id, @hoje, @fc_forma_pagamento, @fc_qtd_parcelas, @fc_valor_total, @fc_tarifas_bancarias, @fc_seguro_cartao, @fc_abatimentos_cartao, @fc_acrescimos_cartao, @fc_referencia, @fc_vencimento, @fc_nome_cartao, @fc_matriz_parcelas, @fc_forma_pgto_boleto_fatura);";
+                comando.CommandText = "call pr_fechamentoCartao (@conta_id, @hoje, @fc_forma_pagamento, @fc_qtd_parcelas, @fc_valor_total, @fc_tarifas_bancarias, @fc_seguro_cartao, @fc_abatimentos_cartao, @fc_acrescimos_cartao, @fc_referencia, @fc_vencimento, @fc_nome_cartao, @fc_matriz_parcelas, @fc_forma_pgto_boleto_fatura, @fechamento_existe, @fechamento_existe_op, @fechamento_existe_fc_id);";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@fechamento_existe", fechamento_existe);
+                comando.Parameters.AddWithValue("@fechamento_existe_op", fechamento_existe_op);
+                comando.Parameters.AddWithValue("@fechamento_existe_fc_id", fechamento_existe_fc_id);
                 comando.Parameters.AddWithValue("@hoje", today);
                 comando.Parameters.AddWithValue("@fc_forma_pagamento", fc.fc_forma_pagamento);
                 comando.Parameters.AddWithValue("@fc_qtd_parcelas", fc.fc_qtd_parcelas);
@@ -88,6 +97,11 @@ namespace gestaoContadorcomvc.Models
             {
                 retorno = "Erro ao cadastrar a fatura do cartão. Tente novamente. Se persistir, entre em contato com o suporte!";
 
+                if (fechamento_existe)
+                {
+                    retorno = "Erro ao atualizar a fatura do cartão. Tente novamente. Se persistir, entre em contato com o suporte!";
+                }
+
                 string msg = e.Message.Substring(0, 300);
                 log.log("Fechamento_cartao", "cadastraFechamentoCartao", "Erro", msg, conta_id, usuario_id);
             }
@@ -100,6 +114,164 @@ namespace gestaoContadorcomvc.Models
             }
 
             return retorno;
+        }
+
+        public Fechamento_cartao buscaPorRef(int fc_forma_pagamento, string fc_referencia)
+        {
+            Fechamento_cartao fc = new Fechamento_cartao();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from fechamento_cartao as f WHERE f.fc_forma_pagamento = @fc_forma_pagamento and f.fc_referencia = @fc_referencia;";
+                comando.Parameters.AddWithValue("@fc_forma_pagamento", fc_forma_pagamento);
+                comando.Parameters.AddWithValue("@fc_referencia", fc_referencia);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        if (DBNull.Value != leitor["fc_id"])
+                        {
+                            fc.fc_id = Convert.ToInt32(leitor["fc_id"]);
+                        }
+                        else
+                        {
+                            fc.fc_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fc_conta_id"])
+                        {
+                            fc.fc_conta_id = Convert.ToInt32(leitor["fc_conta_id"]);
+                        }
+                        else
+                        {
+                            fc.fc_conta_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fc_forma_pagamento"])
+                        {
+                            fc.fc_forma_pagamento = Convert.ToInt32(leitor["fc_forma_pagamento"]);
+                        }
+                        else
+                        {
+                            fc.fc_forma_pagamento = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fc_qtd_parcelas"])
+                        {
+                            fc.fc_qtd_parcelas = Convert.ToInt32(leitor["fc_qtd_parcelas"]);
+                        }
+                        else
+                        {
+                            fc.fc_qtd_parcelas = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fc_op_id"])
+                        {
+                            fc.fc_op_id = Convert.ToInt32(leitor["fc_op_id"]);
+                        }
+                        else
+                        {
+                            fc.fc_op_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fc_forma_pgto_boleto_fatura"])
+                        {
+                            fc.fc_forma_pgto_boleto_fatura = Convert.ToInt32(leitor["fc_forma_pgto_boleto_fatura"]);
+                        }
+                        else
+                        {
+                            fc.fc_forma_pgto_boleto_fatura = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fc_valor_total"])
+                        {
+                            fc.fc_valor_total = Convert.ToDecimal(leitor["fc_valor_total"]);
+                        }
+                        else
+                        {
+                            fc.fc_valor_total = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fc_seguro_cartao"])
+                        {
+                            fc.fc_seguro_cartao = Convert.ToDecimal(leitor["fc_seguro_cartao"]);
+                        }
+                        else
+                        {
+                            fc.fc_seguro_cartao = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fc_abatimentos_cartao"])
+                        {
+                            fc.fc_abatimentos_cartao = Convert.ToDecimal(leitor["fc_abatimentos_cartao"]);
+                        }
+                        else
+                        {
+                            fc.fc_abatimentos_cartao = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fc_acrescimos_cartao"])
+                        {
+                            fc.fc_acrescimos_cartao = Convert.ToDecimal(leitor["fc_acrescimos_cartao"]);
+                        }
+                        else
+                        {
+                            fc.fc_acrescimos_cartao = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fc_tarifas_bancarias"])
+                        {
+                            fc.fc_tarifas_bancarias = Convert.ToDecimal(leitor["fc_tarifas_bancarias"]);
+                        }
+                        else
+                        {
+                            fc.fc_tarifas_bancarias = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fc_vencimento"])
+                        {
+                            fc.fc_vencimento = Convert.ToDateTime(leitor["fc_vencimento"]);
+                        }
+                        else
+                        {
+                            fc.fc_vencimento = new DateTime();
+                        }
+
+                        fc.fc_referencia = leitor["fc_referencia"].ToString();
+                        fc.fc_nome_cartao = leitor["fc_nome_cartão"].ToString();
+                        fc.fc_matriz_parcelas_text = leitor["fc_matriz_parcelas"].ToString();
+                    }
+                }
+                else
+                {
+                    fc = null;
+                }
+            }
+            catch (Exception)
+            {
+                
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return fc;
         }
 
 
