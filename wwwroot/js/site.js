@@ -1216,13 +1216,18 @@ function consultaParticipante(id) {
                 type: 'POST',
                 dataType: 'json',
                 beforeSend: function (XMLHttpRequest) {
-
+                    if (document.getElementById('msg_consuta_participante')) {
+                        document.getElementById('msg_consuta_participante').innerHTML = 'pesquisando...';
+                    }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     document.getElementById('fornecedor').value = 'Nenhum participante informado';
                     alert("erro");
                 },
                 success: function (data, textStatus, XMLHttpRequest) {
+                    if (document.getElementById('msg_consuta_participante')) {
+                        document.getElementById('msg_consuta_participante').innerHTML = '';
+                    }
                     var results = JSON.parse(data);                    
                     var autocompleteObjects = [];
                     for (var i = 0; i < results.length; i++) {
@@ -2281,7 +2286,9 @@ function dadorParticipante(contexto, op_part_participante_id) {
         operacao.participante.op_part_participante_id = op_part_participante_id;
     }
 
-    $('#modal_fornecedor').modal('hide');
+    if (document.getElementById('modal_fornecedor')) {
+        $('#modal_fornecedor').modal('hide');
+    }
 }
 
 function dadosOperacao() {
@@ -4193,7 +4200,7 @@ function modal_sobre_modal_open(id){
     $(document).on('hidden.bs.modal', '.modal', function () {
         $('.modal:visible').length && $(document.body).addClass('modal-open');
     });
-
+    $("#" + id).modal({ backdrop: 'static', keyboard: false})
     $("#" + id).modal('show');
 }
 
@@ -4203,22 +4210,6 @@ function modal_itemEspecifico() {
     $("#modal_item").modal('show');
 }
 
-function change_especie(id, vlr) {
-    if (vlr == 1) {
-        document.getElementById('itens_operacao').style.display = 'block';
-        document.getElementById('servico_operacao').style.display = 'none';
-        document.getElementById('outros_operacao').style.display = 'none';
-    }
-    if (vlr == 2) {
-        document.getElementById('itens_operacao').style.display = 'none';
-        document.getElementById('servico_operacao').style.display = 'block';
-        document.getElementById('outros_operacao').style.display = 'none';
-    }
-    if (vlr == 3) {
-        document.getElementById('itens_operacao').style.display = 'none';
-        document.getElementById('servico_operacao').style.display = 'none';
-        document.getElementById('outros_operacao').style.display = 'block';
-    }
-}
+
 
 

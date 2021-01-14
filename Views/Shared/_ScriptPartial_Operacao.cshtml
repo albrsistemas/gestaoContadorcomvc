@@ -1,0 +1,150 @@
+﻿<script>
+    //Variáveis
+    participante_default = {
+        op_part_id: 0,
+        op_part_nome: '',
+        op_part_tipo: '',
+        op_part_cnpj_cpf: '',
+        op_part_cep: '',
+        op_part_cidade: '',
+        op_part_bairro: '',
+        op_part_logradouro: '',
+        op_part_numero: '',
+        op_part_complemento: '',
+        op_paisesIBGE_codigo: 0,
+        op_uf_ibge_codigo: 0,
+        op_part_participante_id: 0,
+        existe: false,
+        controleEdit: '',
+    };
+
+    retencoes_default = {
+        op_ret_id: '',
+        op_ret_pis: '',
+        op_ret_cofins: '',
+        op_ret_csll: '',
+        op_ret_irrf: '',
+        op_ret_inss: '',
+        op_ret_issqn: '',
+        existe: false,
+    };
+
+    transportador_default = {
+        op_transportador_id: 0,
+        op_transportador_nome: '',
+        op_transportador_cnpj_cpf: '',
+        op_transportador_modalidade_frete: '',
+        op_transportador_volume_qtd: 0,
+        op_transportador_volume_peso_bruto: 0,
+        op_transportador_participante_id: 0,
+        existe: false,
+    };
+
+    nf_default = {
+        op_nf_id: 0,
+        op_nf_op_id: 0,
+        op_nf_chave: '',
+        op_nf_data_emissao: '',
+        op_nf_data_entrada_saida: '',
+        op_nf_serie: '',
+        op_nf_numero: '',
+        existe: false,
+    };
+
+    servico_default = {
+        op_servico_id: 0,
+        op_servico_op_id: 0,
+        op_servico_equipamento: '',
+        op_servico_nSerie: '',
+        op_servico_problema: '',
+        op_servico_obsReceb: '',
+        op_servico_servico_executado: '',
+        op_servico_valor: 0,
+        op_servico_status: '',
+        op_servico_lc116: '',
+    };
+
+    //Funcções
+    function change_especie(id, vlr) {
+        if (vlr == 1) { //Compra/Venda Produtos
+            document.getElementById('itens_operacao').style.display = 'block';
+            document.getElementById('servico_operacao').style.display = 'none';
+            document.getElementById('outros_operacao').style.display = 'none';
+
+            //Retorna serviços a defoult
+            retornaServicoDefault();
+        }
+        if (vlr == 2) { //Serviços
+            document.getElementById('itens_operacao').style.display = 'none';
+            document.getElementById('servico_operacao').style.display = 'block';
+            document.getElementById('outros_operacao').style.display = 'none';
+
+            //Remove os itens da operação
+            excluirTodosItensOperacao();
+        }
+        if (vlr == 3) {//Outros
+            document.getElementById('itens_operacao').style.display = 'none';
+            document.getElementById('servico_operacao').style.display = 'none';
+            document.getElementById('outros_operacao').style.display = 'block';
+
+            //Remove os itens da operação
+            excluirTodosItensOperacao();
+            //Retorna serviços a defoult
+            retornaServicoDefault();
+        }
+    }
+
+    function excluirTodosItensOperacao() { //Exclui todos os itens da matriz de itens de operação.itens.
+        operacao.itens.splice(0, operacao.itens.length);
+        document.getElementById('itens').value = 'Não informado';
+    }
+
+    function retornaServicoDefault() {
+        operacao.servico = servico_default;
+        document.getElementById('servicos').value = 'Não informado';
+    }
+
+    function gravar_servico_operacao() {
+        operacao.servico.op_servico_servico_executado = document.getElementById('op_servico_servico_executado').value;
+        operacao.servico.op_servico_lc116 = document.getElementById('op_servico_lc116').value;
+        operacao.servico.op_servico_valor = document.getElementById('op_servico_valor').value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+
+        document.getElementById('servicos').value = 'LC 116/2003: ' + operacao.servico.op_servico_lc116 + ' | Valor: ' + operacao.servico.op_servico_valor;
+    }
+
+    function retornaParticipanteDefault() {
+        operacao.participante = participante_default;
+        document.getElementById('participante').value = 'Não informado';
+        //Limpa campos do modal
+        document.getElementById('nome').value = '';
+        document.getElementById('participante_tipoPessoa').value = 1;
+        document.getElementById('op_part_cnpj_cpf').value = '';
+        document.getElementById('cep').value = '';
+        document.getElementById('rua').value = '';
+        document.getElementById('numero').value = '';
+        document.getElementById('complemento').value = '';
+        document.getElementById('bairro').value = '';
+        document.getElementById('cidade').value = '';
+        document.getElementById('uf').value = 35;
+        document.getElementById('op_paisesIBGE_codigo').value = 1058;
+        //Fechando modal
+        if (document.getElementById('modal_participante')) {
+            $('#modal_participante').modal('hide');
+        }
+    }
+
+    function gravarDadosParticipante(contexto, op_part_participante_id) {
+        dadorParticipante(contexto, op_part_participante_id)
+
+        if (document.getElementById('participante')) {
+            document.getElementById('participante').value = operacao.participante.op_part_nome;
+        }
+
+        if (document.getElementById('modal_participante')) {
+            $('#modal_participante').modal('hide');
+        }
+    }
+
+
+    
+</script>

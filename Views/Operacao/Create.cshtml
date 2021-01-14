@@ -6,13 +6,22 @@
 }
 
 <style>
-    .linha_itens{
+    .ui-datepicker {
+        width: 17em;
+        padding: .2em .2em 0;
+        display: none;
+        font-size: 80.0%;
+    }
+
+    .linha_itens {
         font-size: 12px;
     }
+
     .table > thead > tr > th {
         white-space: nowrap;
         font-size: 12px;
     }
+
     .col-list-rigth {
         width: 90px;
         text-align: right;
@@ -74,7 +83,7 @@
 
 <h2>Operação</h2>
 <hr class="hrLine" />
-
+<form asp-controller="Operacao" asp-action="Create"></form> <!--Apenas para geração do token-->
 <div class="row">
     <div class="col-6">
         <div class="form-group">
@@ -85,11 +94,11 @@
     </div>
     <div class="col-6">
         <div class="form-group">
-            <label asp-for="totais.op_totais_total_op" class="control-label">Espécie</label>
-            <select id="especie" onchange="change_especie(this.id, this.value)" class="form-control form-control-sm">
+            <label asp-for="operacao.op_especie" class="control-label">Espécie</label>
+            <select id="op_especie" onchange="change_especie(this.id, this.value)" class="form-control form-control-sm">
                 <option value="1">Compra/Venda Produtos</option>
                 <option value="2">Serviços</option>
-                <option value="3" selected>Outros Gastos/Receitas</option>
+                <option value="3" selected>Outros</option>
             </select>
             <span asp-validation-for="totais.op_totais_total_op" class="text-danger"></span>
         </div>
@@ -99,9 +108,9 @@
     <div class="col-12">
         <label class="control-label">Participante</label>
         <div class="input-group mb-3">
-            <input asp-for="participante.op_part_nome" disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="fornecedor" id="fornecedor" value="Não informado" onkeyup="consultaParticipante(this.id)" onblur="verificaParticipante(this.id, this.value)" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <input asp-for="participante.op_part_nome" disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="participante" id="participante" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
             <div class="input-group-append">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" data-toggle="modal" data-target="#modal_fornecedor">
+                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="modal_sobre_modal_open('modal_participante')">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                     </svg>
@@ -141,9 +150,9 @@
     <div class="col-12">
         <label class="control-label">Serviços</label>
         <div class="input-group mb-3">
-            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="servicos" id="itens" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="servicos" id="servicos" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
             <div class="input-group-append">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="modal_itens()">
+                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="modal_sobre_modal_open('m_servico')">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                     </svg>
@@ -163,25 +172,12 @@
 </div>
 <!--Outros Valores e Retenções-->
 <div class="row">
-    <div class="col-6">
-        <label class="control-label">Outros Valores</label>
-        <div class="input-group mb-3">
-            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="itens" id="itens" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" data-toggle="modal" data-target="#modal_fornecedor">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="col-6">
+    <div class="col-12">
         <label class="control-label">Retenções</label>
         <div class="input-group mb-3">
             <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="itens" id="itens" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
             <div class="input-group-append">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" data-toggle="modal" data-target="#modal_fornecedor">
+                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="modal_sobre_modal_open('m_retencoes')">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                     </svg>
@@ -193,16 +189,23 @@
 <!--Total Operação-->
 <div class="row">
     <div class="col-12">
-        <div class="form-group">
-            <label asp-for="totais.op_totais_total_op" class="control-label">Valor a Faturar</label>
-            <input disabled asp-for="totais.op_totais_total_op" id="op_totais_total_op" class="form-control form-control-sm form-control form-control-sm-sm" placeholder="Valor Operação" onchange="decimal(this.id, this.value, '2', true)" />
-            <span asp-validation-for="totais.op_totais_total_op" class="text-danger"></span>
+        <label class="control-label">Totais da Operação</label>
+        <div class="input-group mb-3">
+            <input disabled type="text" class="form-control form-control-sm" id="totais" aria-label="Recipient's username" aria-describedby="button-addon2" style="font-size:25px;font-weight:bold;text-align:center;" value="1.590,25">
+            <div class="input-group-append">
+                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="modal_sobre_modal_open('m_totais')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calculator" viewBox="0 0 16 16">
+                        <path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z" />
+                        <path d="M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-2zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-4z" />
+                    </svg>
+                </button>
+            </div>
         </div>
     </div>
 </div>
 <!--Parcela e Dcto Fiscal-->
 <div class="row">
-    <div class="col-6">
+    <div class="col-12 col-md-6">
         <label class="control-label">Parcelas</label>
         <div class="input-group mb-3">
             <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="itens" id="itens" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
@@ -215,12 +218,12 @@
             </div>
         </div>
     </div>
-    <div class="col-6">
+    <div class="col-12 col-md-6">
         <label class="control-label">Documento Fiscal</label>
         <div class="input-group mb-3">
             <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="itens" id="itens" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
             <div class="input-group-append">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" data-toggle="modal" data-target="#modal_fornecedor">
+                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="modal_sobre_modal_open('lista_dctos_fiscais')">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                     </svg>
@@ -262,7 +265,7 @@
 </div>
 
 <!--Dados do fornecedor-->
-<div class="modal fade" id="modal_fornecedor" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="modal_participante" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -272,9 +275,10 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
-                            <label asp-for="participante.op_part_nome" class="control-label" onkeyup="consultaParticipante(this.id)"></label>
-                            <input asp-for="participante.op_part_nome" id="nome" class="form-control form-control-sm" />
+                            <label asp-for="participante.op_part_nome" class="control-label"></label>
+                            <input asp-for="participante.op_part_nome" id="nome" class="form-control form-control-sm" onkeyup="consultaParticipante(this.id)" />
                             <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>
+                            <span class="text-info" id="msg_consuta_participante"></span>
                         </div>
                     </div>
                 </div>
@@ -361,7 +365,8 @@
                 </fieldset>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info" onclick="dadorParticipante('edit', 0)">Gravar</button>
+                <button type="button" class="btn btn-danger" onclick="retornaParticipanteDefault()">Excluir</button>
+                <button type="button" class="btn btn-info" onclick="gravarDadosParticipante('insert', 0)">Gravar</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
@@ -506,37 +511,37 @@
                             <div class="form-group">
                                 <label class="control-label linha_itens">Descrição</label>
                                 <input id="item_nome" class="form-control form-control-sm linha_itens" />
-                            </div>                            
+                            </div>
                         </div>
                     </div>
                     <div class="col-6 col-md-2">
                         <div class="form-group">
                             <label class="control-label linha_itens">Código</label>
                             <input id="item_codigo" class="form-control form-control-sm linha_itens" />
-                        </div>                        
+                        </div>
                     </div>
                     <div class="col-6 col-md-2">
                         <div class="form-group">
                             <label class="control-label linha_itens">Quantidade</label>
                             <input id="item_quantidade" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '6')" />
-                        </div>                            
                         </div>
+                    </div>
                     <div class="col-6 col-md-2">
                         <div class="form-group">
                             <label class="control-label linha_itens">Valor Unitário</label>
                             <input id="item_vlr_unitario" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '6')" />
-                        </div>                            
+                        </div>
                     </div>
                     <div class="col-6 col-md-2">
                         <div class="form-group">
                             <label class="control-label linha_itens">Valor Total</label>
                             <input id="item_vlr_total" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '6')" />
-                        </div>                            
+                        </div>
                     </div>
                     <div class="col-12">
                         <button type="button" class="btn btn-sm btn-info" style="width:100%;">Incluir</button>
                     </div>
-                    </div>
+                </div>
                 <hr class="hrLine" />
                 <div class="table-responsive">
                     <table class="table table-sm">
@@ -546,6 +551,7 @@
                                 <th scope="col">Ações</th>
                                 <th scope="col">Descrição</th>
                                 <th scope="col">Código</th>
+                                <th scope="col">Quantidade</th>
                                 <th scope="col">Valor Unitário</th>
                                 <th scope="col">Valor Total</th>
                                 <th scope="col">NCM</th>
@@ -553,13 +559,31 @@
                             </tr>
                         </thead>
                         <tbody>
-                           
+                            <tr>
+                                <td>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="cursor:pointer;" onclick="modal_sobre_modal_open('modal_item')">
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" style="cursor:pointer;">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                    </svg>
+                                </td>
+                                <td>Parafuso 8"</td>
+                                <td>P8</td>
+                                <td>1000</td>
+                                <td>0,25</td>
+                                <td>250,00</td>
+                                <td>8523.40.28</td>
+                                <td>1725.15.00</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>                
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
@@ -641,8 +665,236 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>                
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
 </div>
+
+<!--Inclusão do item de serviço-->
+<div class="modal fade" id="m_servico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Serviço Executado</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="servico.op_servico_servico_executado" class="control-label">Descrição do serviço executado</label>
+                            <textarea asp-for="servico.op_servico_servico_executado" id="op_servico_servico_executado" rows="4" class="form-control form-control-sm" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_op_servico_servico_executado')"></textarea>
+                            <span class="text-info" id="msg_op_servico_servico_executado"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="servico.op_servico_lc116" class="control-label">Cód. LC 116/03</label>
+                            <input asp-for="servico.op_servico_lc116" id="op_servico_lc116" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="servico.op_servico_valor" class="control-label">Valor do Serviço</label>
+                            <input asp-for="servico.op_servico_valor" id="op_servico_valor" class="form-control form-control-sm" onchange="decimal(this.id, this.value, '2', true)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger">Excluir</button>
+                <button type="button" class="btn btn-info" onclick="gravar_servico_operacao()">Gravar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Retenções-->
+<div class="modal fade" id="m_retencoes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Retenções Tributárias</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="retencoes.op_ret_inss" class="control-label">INSS</label>
+                            <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control form-control-sm" onchange="updateRetençõesTotais(this.id, this.value,'confirmar')" />
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" id="ret_inss_parcela" class="custom-control-input">
+                                <label class="custom-control-label" for="ret_inss_parcela">Descontar INSS na primeira parcela</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="retencoes.op_ret_issqn" class="control-label">ISSQN</label>
+                            <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control form-control-sm" onchange="updateRetençõesTotais(this.id, this.value,'confirmar')" />
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" id="ret_iss_parcela" class="custom-control-input">
+                                <label class="custom-control-label" for="ret_iss_parcela">Descontar ISSQN na primeira parcela</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="retencoes.op_ret_irrf" class="control-label">IRRF</label>
+                            <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control form-control-sm" onchange="updateRetençõesTotais(this.id, this.value,'confirmar')" />
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" id="ret_irrf_parcela" class="custom-control-input">
+                                <label class="custom-control-label" for="ret_irrf_parcela">Descontar IRRF na primeira parcela</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="retencoes.op_ret_pis" class="control-label">PIS</label>
+                            <input asp-for="retencoes.op_ret_pis" id="op_ret_pis" class="form-control form-control-sm" readonly="readonly" />
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="retencoes.op_ret_cofins" class="control-label">COFINS</label>
+                            <input asp-for="retencoes.op_ret_cofins" id="op_ret_cofins" class="form-control form-control-sm" readonly="readonly" />
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="retencoes.op_ret_csll" class="control-label">CSLL</label>
+                            <input asp-for="retencoes.op_ret_csll" id="op_ret_csll" class="form-control form-control-sm" readonly="readonly" />
+                        </div>
+                    </div>
+                </div>
+                <p>As retenções de PIS, COFINS e CSLL devem ser informadas diretamente na parcela.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger">Excluir</button>
+                <button type="button" class="btn btn-info">Gravar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Inclusão de nota fiscal-->
+<div class="modal fade" id="lista_dctos_fiscais" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Documento Fiscal/Contábil</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label asp-for="nf.op_nf_tipo" class="control-label linha_itens">Tipo Documento</label>
+                                <select asp-items="@ViewBag.tipoNF" value="@TempData["op_nf_tipo"]" id="op_nf_tipo" name="op_nf_tipo" class="form-control form-control-sm linha_itens" onchange="tipoNF(this.id, this.value)"></select>
+                                <span asp-validation-for="nf.op_nf_tipo" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <label asp-for="nf.op_nf_data_emissao" class="control-label linha_itens">Data de Emissão</label>
+                            <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" disabled="disabled" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label asp-for="nf.op_nf_serie" class="control-label linha_itens">Série</label>
+                                <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control form-control-sm linha_itens" disabled="disabled" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <label asp-for="nf.op_nf_numero" class="control-label linha_itens">Número</label>
+                            <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control form-control-sm linha_itens" disabled="disabled" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="nf.op_nf_chave" class="control-label linha_itens">Chave de Acesso</label>
+                            <input asp-for="nf.op_nf_chave" id="op_nf_chave" class="form-control form-control-sm linha_itens" onkeyup="tamanhoDigitado(this.id, this.value, '44','chave_acesso')" onblur="chave_acesso_nf_op(this.id, this.value)" disabled="disabled" />
+                            <span class="text-info" id="chave_acesso"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-sm btn-info" style="width:100%;">Incluir</button>
+                    </div>
+                </div>
+                <hr class="hrLine" />
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <caption>Lista de Parcelas</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Ações</th>
+                                <th scope="col">Tipo</th>
+                                <th scope="col">Data Emissão</th>
+                                <th scope="col">Série</th>
+                                <th scope="col">Número</th>
+                                <th scope="col">Chave de Acesso</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger">Excluir</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Totais da Operação-->
+<div class="modal fade" id="m_totais" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Totais da Operação</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <p><strong>Soma dos Itens: </strong><span>R$ 1.526,30</span></p>
+                        <p><strong>Valor do Serviço Executado: </strong><span>R$ 450,63</span></p>
+                        <p><strong>Frete: </strong><span>R$ 25,00</span></p>
+                        <p><strong>Seguros: </strong><span>R$ 54,00</span></p>
+                        <p><strong>Despesas Acessórias: </strong><span>R$ 86,90</span></p>
+                        <p><strong>Desconto: </strong><span>R$ 0,00</span></p>
+                        <p><strong>ICMS: </strong><span>R$ 45,60</span></p>
+                        <p><strong>ICMS-ST: </strong><span>R$ 75,32</span></p>
+                        <p><strong>IPI: </strong><span>R$ 42,98</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ScriptPartial_Operacao");}
+}
