@@ -178,7 +178,26 @@ namespace gestaoContadorcomvc.Controllers
         [Autoriza(permissao = "compraDelete")]
         public ActionResult Delete(int id)
         {
-            return View();
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Operacao op = new Operacao();
+
+            if (op.SomabaixasPorOp(id) > 0)
+            {
+                TempData["msgCompra"] = "Erro. Esta compra possui baixas e não pode ser excluído. Apque primeiro as baixas no movimento de conta corrente!";
+
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {   
+                Vm_operacao vm_op = new Vm_operacao();
+
+                vm_op = op.buscaOperacao(user.usuario_id, user.usuario_conta_id, id);
+                vm_op.user = user;
+                return View(vm_op);
+            }
         }
 
         // POST: CompraController/Delete/5

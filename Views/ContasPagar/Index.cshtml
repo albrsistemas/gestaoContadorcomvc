@@ -454,6 +454,9 @@
                             <select asp-items="@ViewBag.formaPgto_cartao" value="@TempData["formaPgto_cartao"]" id="modal_fc_forma_pgto_boleto_fatura" name="fc_forma_pgto_boleto_fatura" class="form-control"></select>
                         </div>
                     </div>
+                    <div class="col-12">
+                        <span class="text-danger" style="display:none" id="retorno_fc_existe"></span>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -471,7 +474,7 @@
                 <h5 class="modal-title" id="staticBackdropLabel">Fechamento Cartão de Crédito</h5>
             </div>
             <div class="modal-body">
-                <p>Fatura cartão de crédito gravada com sucesso!</p>
+                <p id="cartao_gravado_sucesso"></p>
             </div>
             <div class="modal-footer">
                 <a class="btn btn-info" asp-controller="ContasPagar" asp-action="Index">OK</a>

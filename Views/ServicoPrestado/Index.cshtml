@@ -30,6 +30,39 @@
     .titulo {
         background-color: #d9d8d4;
     }
+
+    /*CSS criado no desenvolvimento*/
+    .select2-container .select2-selection--single {
+        box-sizing: border-box;
+        cursor: pointer;
+        display: block;
+        height: 30px;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+        .select2-container .select2-selection--single:focus {
+            color: #495057;
+            background-color: #fff;
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+    /* line 131 */
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #444;
+        line-height: 25px;
+    }
+
+    /* line 139 */
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 30px;
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        width: 20px;
+    }
 </style>
 
 @{
@@ -60,7 +93,7 @@
 @{
     if (Model.user.Role.Equals("adm") || Model.user._permissoes.servicoPCreate)
     {
-        <a class="btn btn-info" style="margin-bottom:10px;" asp-controller="ServicoPrestado" asp-action="Create">Novo</a>
+        <a class="btn btn-info" style="margin-bottom:10px;" asp-controller="ServicoPrestado" asp-action="Create">Novo</a>        
     }
 
     //Cabeçalho
@@ -130,6 +163,5 @@
             </div>
         </div>
     }
-
-
 }
+

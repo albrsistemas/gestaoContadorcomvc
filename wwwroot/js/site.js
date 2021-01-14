@@ -166,6 +166,13 @@ function Page() {
     if (document.getElementById('text_formaPgto')) {
         GerarSelectFormaPagamento();
     } 
+
+    if (document.getElementById('op_categoria_id')) {
+        $("#op_categoria_id").select2({
+            placeholder: "Selecione uma categoria",
+            allowClear: true
+        });
+    }
 }
 
 function carregarEdit(id) {   
@@ -1212,6 +1219,7 @@ function consultaParticipante(id) {
 
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    document.getElementById('fornecedor').value = 'Nenhum participante informado';
                     alert("erro");
                 },
                 success: function (data, textStatus, XMLHttpRequest) {
@@ -1285,11 +1293,43 @@ function consultaParticipante(id) {
             if (document.getElementById('op_part_participante_id')) {
                 document.getElementById('op_part_participante_id').value = ui.item.id;
             }
+                        
+            if (document.getElementById('cf_categoria_id')) {
+                $('#cf_categoria_id').val(ui.item.categoria_id.toString()); 
+                $('#cf_categoria_id').trigger('change');
+            }
 
+            //Carregando dados do parcitipante no opjeto operação.
             dadorParticipante('insert',ui.item.id);
-            //modal_fornecedor
+            
         }
     });
+}
+
+function verificaParticipante(id, vlr) { //Parada 13-01
+    if (vlr == "" || vlr == null || operacao.participante.op_part_nome != vlr) {
+        participante = {
+            op_part_id: 0,
+            op_part_nome: '',
+            op_part_tipo: '',
+            op_part_cnpj_cpf: '',
+            op_part_cep: '',
+            op_part_cidade: '',
+            op_part_bairro: '',
+            op_part_logradouro: '',
+            op_part_numero: '',
+            op_part_complemento: '',
+            op_paisesIBGE_codigo: 0,
+            op_uf_ibge_codigo: 0,
+            op_part_participante_id: 0,
+            existe: false,
+            controleEdit: '',
+        };
+
+        operacao.participante = participante;
+
+        document.getElementById(id).value = '';
+    }
 }
 
 //Autocomplete lista de produtos
@@ -3659,6 +3699,12 @@ function contasFinanceiras(id, vlr) {
         document.getElementById('grupo_dadosNF').style.display = 'block';        
         document.getElementById('lab_cf_data_inicial').innerHTML = 'Data Primeira Parcela';
         document.getElementById('lab_cf_data_final').innerHTML = 'Data Última Parcela';
+        if (document.getElementById('label_parcelamento')) {
+            document.getElementById('label_parcelamento').innerHTML = 'Parcelamento';
+        }
+        if (document.getElementById('label_cf_recorrencia')) {
+            document.getElementById('label_cf_recorrencia').innerHTML = 'Recorrência Parcelas';
+        }
     }
 
     if (vlr == 'Realizar') {        
@@ -3666,9 +3712,15 @@ function contasFinanceiras(id, vlr) {
         document.getElementById('grupo_vlrParcelas').style.display = 'none';        
         document.getElementById('grupo_dadosNF').style.display = 'none';
         operacao_nf('r_sem_nf'); //zerar campos relacionadas a nota fiscal        
-        document.getElementById('text_dataFinal_recorencia').innerHTML = 'Na conta do tipo "Realizar" se não for informada uma data final o sistema gerará a quantidade de parcelas até o último mês do ano seguinte. Na baixa da parcela será incluída uma nova recorrência ao final.';
+        document.getElementById('text_dataFinal_recorencia').innerHTML = 'Na conta do tipo "À Realizar" se não for informada uma Data Limite o sistema gerará a quantidade de ocorrências até o último mês do ano seguinte. Na baixa da parcela será incluída uma nova recorrência ao final.';
         document.getElementById('lab_cf_data_inicial').innerHTML = 'Data Primeira Ocorrência';
         document.getElementById('lab_cf_data_final').innerHTML = 'Data Limite';
+        if (document.getElementById('label_parcelamento')) {
+            document.getElementById('label_parcelamento').innerHTML = 'Recorrência';
+        }
+        if (document.getElementById('label_cf_recorrencia')) {
+            document.getElementById('label_cf_recorrencia').innerHTML = 'Recorrência';
+        }
     }
 
 }
@@ -4127,3 +4179,46 @@ function editVencimento(context, id, vlr, parcela_id) {
 
     execDatapicker();
 }
+
+function modal_sobre_modal_open(id){
+    //Instrução para correções na abertura de modal sobre modal
+    $(document).on('show.bs.modal', '.modal', function () {
+        var zIndex = 1040 + (10 * $('.modal:visible').length);
+        $(this).css('z-index', zIndex);
+        setTimeout(function () {
+            $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+        }, 0);
+    });
+    //Instrução para correção da barra de rolagem no fechamento de modal sobre modal
+    $(document).on('hidden.bs.modal', '.modal', function () {
+        $('.modal:visible').length && $(document.body).addClass('modal-open');
+    });
+
+    $("#" + id).modal('show');
+}
+
+function modal_itemEspecifico() {
+    modal_modal();
+
+    $("#modal_item").modal('show');
+}
+
+function change_especie(id, vlr) {
+    if (vlr == 1) {
+        document.getElementById('itens_operacao').style.display = 'block';
+        document.getElementById('servico_operacao').style.display = 'none';
+        document.getElementById('outros_operacao').style.display = 'none';
+    }
+    if (vlr == 2) {
+        document.getElementById('itens_operacao').style.display = 'none';
+        document.getElementById('servico_operacao').style.display = 'block';
+        document.getElementById('outros_operacao').style.display = 'none';
+    }
+    if (vlr == 3) {
+        document.getElementById('itens_operacao').style.display = 'none';
+        document.getElementById('servico_operacao').style.display = 'none';
+        document.getElementById('outros_operacao').style.display = 'block';
+    }
+}
+
+

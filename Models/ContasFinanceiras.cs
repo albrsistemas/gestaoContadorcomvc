@@ -79,7 +79,7 @@ namespace gestaoContadorcomvc.Models
                 }
                 if (vmcf.cf.cf_tipo == "Realizar")
                 {
-                    comando.Parameters.AddWithValue("@op_data", vmcf.cf.cf_data_inicial);
+                    comando.Parameters.AddWithValue("@op_data", vmcf.op.op_data);
                 }                                
                 comando.Parameters.AddWithValue("@op_obs", vmcf.op.op_obs);
                 comando.Parameters.AddWithValue("@op_categoria_id", vmcf.op.op_categoria_id);
@@ -231,20 +231,17 @@ namespace gestaoContadorcomvc.Models
                             cf.cf_valor_parcela_liquida = 0;
                         }
 
-                        if (DBNull.Value != leitor["cf_data_inicial"])
-                        {
-                            cf.cf_data_inicial = Convert.ToDateTime(leitor["cf_data_inicial"]);
-                            cf.cf_data_final = Convert.ToDateTime(leitor["cf_data_inicial"]);
-                            //A data final é igual a data inicial, pois na realização a recorrência é 'Única'
-                        }
-                        else
-                        {
-                            cf.cf_data_inicial = new DateTime();
-                            cf.cf_data_final = new DateTime();
-                        }                        
+                        DateTime hj = DateTime.Today;
+                        //A data inicial e final da parcela é a data de hoje, pois está sendo realizada. Caso seja posterior usuário deve alterar
+                        cf.cf_data_inicial = hj;
+                        cf.cf_data_final = hj;
+                        //A data final é igual a data inicial, pois na realização a recorrência é 'Única'
 
                         //Operação
+                        DateTime thisDay = DateTime.Today;
+
                         op.op_obs = leitor["op_obs"].ToString();
+                        op.op_data = thisDay;                        
 
                         //participante
                         if (DBNull.Value != leitor["op_part_participante_id"])
@@ -572,7 +569,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT cf.*, part.*, nf.*, op.op_obs, op.op_escopo_caixa FROM contas_financeiras as cf left JOIN operacao as op on op.op_id = cf.cf_op_id left JOIN op_participante as part on part.op_id = op.op_id left JOIN op_nf as nf on nf.op_nf_op_id = op.op_id WHERE cf.cf_id = @id and op.op_conta_id = @conta_id;";
+                comando.CommandText = "SELECT cf.*, part.*, nf.*, op.op_obs, op.op_data, op.op_escopo_caixa FROM contas_financeiras as cf left JOIN operacao as op on op.op_id = cf.cf_op_id left JOIN op_participante as part on part.op_id = op.op_id left JOIN op_nf as nf on nf.op_nf_op_id = op.op_id WHERE cf.cf_id = @id and op.op_conta_id = @conta_id;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@id", id);
                 Transacao.Commit();
@@ -674,6 +671,14 @@ namespace gestaoContadorcomvc.Models
                         //Operação
                         op.op_obs = leitor["op_obs"].ToString();
                         op.op_escopo_caixa = leitor["op_escopo_caixa"].ToString();
+                        if (DBNull.Value != leitor["op_data"])
+                        {
+                            op.op_data = Convert.ToDateTime(leitor["op_data"]);
+                        }
+                        else
+                        {
+                            op.op_data = new DateTime();
+                        }
 
                         //participante
                         if (DBNull.Value != leitor["op_part_participante_id"])

@@ -2,6 +2,13 @@
 @{
     Layout = null;
 }
+<style>
+    legend {
+        font-size: 15px;
+        font-weight: bold;
+    }
+</style>
+
 <div class="container">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -20,14 +27,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label asp-for="cf.cf_tipo" class="control-label">Tipo</label>
-                                <select disabled asp-items="@ViewBag.tipoCtaFinaceira" value="@TempData["cf_tipo"]" id="cf_tipo" name="cf_tipo" class="form-control" onclick="contasFinanceiras(this.id, this.value)"></select>
-                                <span asp-validation-for="cf.cf_tipo" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-6">
+                        <div class="col-6 col-md-3">
                             <div class="form-group">
                                 <label asp-for="cf.cf_status" class="control-label">Status</label>
                                 @{
@@ -43,33 +43,33 @@
                                 <span asp-validation-for="cf.cf_status" class="text-danger"></span>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
+                        <div class="col-6 col-md-3">
                             <div class="form-group">
-                                <label asp-for="cf.cf_categoria_id" class="control-label">Categoria</label><br />
-                                <select asp-items="@ViewBag.categoria" value="@TempData["cf_categoria_id"]" id="cf_categoria_id" name="op.op_categoria_id" class="form-control" style="width:100%"></select>
-                                <span asp-validation-for="cf.cf_categoria_id" class="text-danger"></span>
+                                <label asp-for="cf.cf_tipo" class="control-label">Tipo</label>
+                                <select disabled asp-items="@ViewBag.tipoCtaFinaceira" value="@TempData["cf_tipo"]" id="cf_tipo" name="cf_tipo" class="form-control" onclick="contasFinanceiras(this.id, this.value)"></select>
+                                <span asp-validation-for="cf.cf_tipo" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="col-6" id="grupo_formaPagamento">
-                            @{
-                                if (Model.cf.cf_tipo == "Realizada")
-                                {
-                                    <div class="form-group">
-                                        <label asp-for="parcelas.op_parcela_fp_id" class="control-label">Forma Pagamento</label>
-                                        <select disabled asp-items="@ViewBag.formaPgto" value="@TempData["op_parcela_fp_id"]" id="op_parcela_fp_id" name="op_parcela_fp_id" class="form-control"></select>
-                                        <span asp-validation-for="parcelas.op_parcela_fp_id" class="text-danger"></span>
-                                    </div>
-                                }
-                            }
+                        <div class="col-6 col-md-3">
+                            <div class="form-group">
+                                <label asp-for="op.op_data" class="control-label">Data Opereção</label>
+                                <input type="text" asp-for="op.op_data" id="op_data" class="form-control col-form-label-sm datepicker" />
+                                <span asp-validation-for="op.op_data" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="form-group">
+                                <label asp-for="cf.cf_valor_operacao" class="control-label">Valor Operação</label>
+                                <input disabled asp-for="cf.cf_valor_operacao" name="cf_valor_operacao" id="cf_valor_operacao" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
+                                <span asp-validation-for="cf.cf_valor_operacao" class="text-danger"></span>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12">
                             <label class="control-label">Participante</label>
                             <div class="input-group mb-3">
-                                <input asp-for="participante.op_part_nome" disabled type="text" class="form-control" name="fornecedor" id="fornecedor" placeholder="Iniciais do nome ou cnpj/cpf do cliente" onkeyup="consultaParticipante(this.id)" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                <input asp-for="participante.op_part_nome" disabled type="text" class="form-control" name="fornecedor" id="fornecedor" placeholder="Nenhum participante informado. Digite as iniciais do nome ou CNPJ/CPF!" onkeyup="consultaParticipante(this.id)" onblur="verificaParticipante(this.id, this.value)" aria-label="Recipient's username" aria-describedby="button-addon2">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button" id="button-addon2" data-toggle="modal" data-target="#modal_fornecedor">
                                         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -82,95 +82,112 @@
                     </div>
                     <input type="hidden" asp-for="participante.op_part_participante_id" id="op_part_participante_id" class="form-control" /> <!--ID do participante-->
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-12">
                             <div class="form-group">
-                                <label asp-for="cf.cf_valor_operacao" class="control-label">Valor Operação</label>
-                                <input disabled asp-for="cf.cf_valor_operacao" name="cf_valor_operacao" id="cf_valor_operacao" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
-                                <span asp-validation-for="cf.cf_valor_operacao" class="text-danger"></span>
+                                <label asp-for="cf.cf_categoria_id" class="control-label">Categoria</label><br />
+                                <select asp-items="@ViewBag.categoria" value="@TempData["cf_categoria_id"]" id="cf_categoria_id" name="op.op_categoria_id" class="form-control" style="width:100%"></select>
+                                <span asp-validation-for="cf.cf_categoria_id" class="text-danger"></span>
                             </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label asp-for="cf.cf_recorrencia" class="control-label">Recorrência Parcelas</label>
-                                <select disabled asp-items="@ViewBag.recorrencias" value="@TempData["cf_recorrencia"]" id="cf_recorrencia" name="cf_recorrencia" class="form-control" onchange="changeRecorrencia(this.id, this.value)"></select>
-                                <span asp-validation-for="cf.cf_recorrencia" class="text-danger"></span>
-                            </div>
-                        </div>
+                        </div>                        
                     </div>
-                    <div id="grupo_vlrParcelas" style="display:block">
-                        @{
-                            if (Model.cf.cf_tipo == "Realizada")
-                            {
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label asp-for="cf.cf_valor_parcela_bruta" class="control-label">Valor Parcela Integral</label>
-                                            <input disabled asp-for="cf.cf_valor_parcela_bruta" name="cf_valor_parcela_bruta" id="cf_valor_parcela_bruta" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
-                                            <span asp-validation-for="cf.cf_valor_parcela_bruta" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label asp-for="cf.cf_valor_parcela_liquida" class="control-label">Parcela sem Juros</label>
-                                            <input disabled asp-for="cf.cf_valor_parcela_liquida" name="cf_valor_parcela_liquida" id="cf_valor_parcela_liquida" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
-                                            <span asp-validation-for="cf.cf_valor_parcela_bruta" class="text-danger"></span>
-                                        </div>
-                                    </div>
+                    <fieldset>
+                        <legend id="label_parcelamento">Parcelamento</legend>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="cf.cf_recorrencia" class="control-label">Recorrência Parcelas</label>
+                                    <select disabled asp-items="@ViewBag.recorrencias" value="@TempData["cf_recorrencia"]" id="cf_recorrencia" name="cf_recorrencia" class="form-control" onchange="changeRecorrencia(this.id, this.value)"></select>
+                                    <span asp-validation-for="cf.cf_recorrencia" class="text-danger"></span>
                                 </div>
-                            }
-                        }
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            @{
+                            </div>
+                            <div class="col-6" id="grupo_formaPagamento">
+                                @{
                                 if (Model.cf.cf_tipo == "Realizada")
                                 {
-                                    <label asp-for="cf.cf_data_inicial" class="control-label" id="lab_cf_data_inicial">Data Primeira Parcela</label>
+                                    <div class="form-group">
+                                        <label asp-for="parcelas.op_parcela_fp_id" class="control-label">Forma Pagamento</label>
+                                        <select disabled asp-items="@ViewBag.formaPgto" value="@TempData["op_parcela_fp_id"]" id="op_parcela_fp_id" name="op_parcela_fp_id" class="form-control"></select>
+                                        <span asp-validation-for="parcelas.op_parcela_fp_id" class="text-danger"></span>
+                                    </div>
                                 }
-                                else
-                                {
-                                    <label asp-for="cf.cf_data_inicial" class="control-label" id="lab_cf_data_inicial">Data Primeira Ocorrência</label>
                                 }
-                            }
-                            <input disabled type="text" asp-for="cf.cf_data_inicial" name="cf_data_inicial" id="cf_data_inicial" class="form-control datepicker" />
-                            <span asp-validation-for="cf.cf_data_inicial" class="text-danger"></span>
+                            </div>
                         </div>
-                        <div class="col-6" id="grupo_cf_data_final" style="display:block">
+                        <div id="grupo_vlrParcelas" style="display:block">
                             @{
                                 if (Model.cf.cf_tipo == "Realizada")
                                 {
-                                    <label asp-for="cf.cf_data_final" class="control-label" id="lab_cf_data_final">Data Última Parcela</label>
-                                }
-                                else
-                                {
-                                    <label asp-for="cf.cf_data_final" class="control-label" id="lab_cf_data_final">Data Limite</label>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label asp-for="cf.cf_valor_parcela_bruta" class="control-label">Valor Parcela Integral</label>
+                                                <input disabled asp-for="cf.cf_valor_parcela_bruta" name="cf_valor_parcela_bruta" id="cf_valor_parcela_bruta" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
+                                                <span asp-validation-for="cf.cf_valor_parcela_bruta" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label asp-for="cf.cf_valor_parcela_liquida" class="control-label">Parcela sem Juros</label>
+                                                <input disabled asp-for="cf.cf_valor_parcela_liquida" name="cf_valor_parcela_liquida" id="cf_valor_parcela_liquida" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
+                                                <span asp-validation-for="cf.cf_valor_parcela_bruta" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 }
                             }
-                            @{
-                                if (Model.cf.cf_data_final.ToShortDateString() == "01/01/0001")
-                                {
-                                    <input type="text" value="" name="cf_data_final" id="cf_data_final" class="form-control datepicker" disabled />
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                @{
+                                    if (Model.cf.cf_tipo == "Realizada")
+                                    {
+                                        <label asp-for="cf.cf_data_inicial" class="control-label" id="lab_cf_data_inicial">Data Primeira Parcela</label>
+                                    }
+                                    else
+                                    {
+                                        <label asp-for="cf.cf_data_inicial" class="control-label" id="lab_cf_data_inicial">Data Primeira Ocorrência</label>
+                                    }
                                 }
-                                else
-                                {
-                                    <input type="text" asp-for="cf.cf_data_final" name="cf_data_final" id="cf_data_final" class="form-control datepicker" disabled />
+                                <input disabled type="text" asp-for="cf.cf_data_inicial" name="cf_data_inicial" id="cf_data_inicial" class="form-control datepicker" />
+                                <span asp-validation-for="cf.cf_data_inicial" class="text-danger"></span>
+                            </div>
+                            <div class="col-12 col-md-6" id="grupo_cf_data_final" style="display:block">
+                                @{
+                                    if (Model.cf.cf_tipo == "Realizada")
+                                    {
+                                        <label asp-for="cf.cf_data_final" class="control-label" id="lab_cf_data_final">Data Última Parcela</label>
+                                    }
+                                    else
+                                    {
+                                        <label asp-for="cf.cf_data_final" class="control-label" id="lab_cf_data_final">Data Limite</label>
+                                    }
                                 }
+                                @{
+                                    if (Model.cf.cf_data_final.ToShortDateString() == "01/01/0001")
+                                    {
+                                        <input type="text" value="" name="cf_data_final" id="cf_data_final" class="form-control datepicker" disabled />
+                                    }
+                                    else
+                                    {
+                                        <input type="text" asp-for="cf.cf_data_final" name="cf_data_final" id="cf_data_final" class="form-control datepicker" disabled />
+                                    }
 
-                            }
-                            <span asp-validation-for="cf.cf_data_final" class="text-danger"></span>
+                                }
+                                <span asp-validation-for="cf.cf_data_final" class="text-danger"></span>
+                            </div>
                         </div>
-                    </div>                    
-                    <p class="text-info" id="text_dataFinal_recorencia"></p>
-                    <div class="row">
-                        <div class="col-12" style="text-align:right">
-                            <span style="cursor:pointer" onclick="visualizarParcelasCtasF()">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eyeglasses" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M4 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm2.625.547a3 3 0 0 0-5.584.953H.5a.5.5 0 0 0 0 1h.541A3 3 0 0 0 7 8a1 1 0 0 1 2 0 3 3 0 0 0 5.959.5h.541a.5.5 0 0 0 0-1h-.541a3 3 0 0 0-5.584-.953A1.993 1.993 0 0 0 8 6c-.532 0-1.016.208-1.375.547zM14 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0z" />
-                                </svg>
-                                Visualizar Parcelas
-                            </span>
+                        <p class="text-info" id="text_dataFinal_recorencia"></p>
+                        <div class="row">
+                            <div class="col-12" style="text-align:right">
+                                <span style="cursor:pointer" onclick="visualizarParcelasCtasF()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eyeglasses" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M4 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm2.625.547a3 3 0 0 0-5.584.953H.5a.5.5 0 0 0 0 1h.541A3 3 0 0 0 7 8a1 1 0 0 1 2 0 3 3 0 0 0 5.959.5h.541a.5.5 0 0 0 0-1h-.541a3 3 0 0 0-5.584-.953A1.993 1.993 0 0 0 8 6c-.532 0-1.016.208-1.375.547zM14 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0z" />
+                                    </svg>
+                                    Visualizar Parcelas
+                                </span>
+                            </div>
                         </div>
-                    </div>
+                    </fieldset>                    
                     <fieldset id="grupo_dadosNF" style="display:block">
                         <legend>Documento</legend>
                         <div class="row">

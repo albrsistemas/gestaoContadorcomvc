@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Asn1.Crmf;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 
 namespace gestaoContadorcomvc.Models
@@ -13,7 +14,9 @@ namespace gestaoContadorcomvc.Models
     {
         public int op_id { get; set; }
         public string op_tipo { get; set; }
-        public DateTime op_dataCriacao { get; set; }        
+        public DateTime op_dataCriacao { get; set; }
+                
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime op_data { get; set; }
         public DateTime op_previsao_entrega { get; set; } //Previsão da entrega da venda, da compra, do serviço prestado...
         public DateTime op_data_saida { get; set; } //Data de saída no caso de operação de venda
@@ -1709,6 +1712,56 @@ namespace gestaoContadorcomvc.Models
 
             return retorno;
         }
+
+        public Decimal SomabaixasPorOp(int op_id)
+        {
+            Decimal baixas = 0;
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT COALESCE(sum(b.oppb_valor),0) as baixas from op_parcelas_baixa as b WHERE b.oppb_op_id = @op_id;";
+                comando.Parameters.AddWithValue("@op_id", op_id);
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        if (DBNull.Value != leitor["baixas"])
+                        {
+                            baixas = Convert.ToDecimal(leitor["baixas"]);
+                        }
+                        else
+                        {
+                            baixas = 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return baixas;
+        }
+
 
     }
 }
