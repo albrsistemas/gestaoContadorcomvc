@@ -146,7 +146,393 @@
                 </div>
             </div>
         </div>
+        <!--Conta Corrente-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.ccorrenteList" type="checkbox" id="ccorrenteList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="ccorrenteList">Conta Corrente</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.ccorrenteCreate" id="ccorrenteCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="ccorrenteCreate">Incluir</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.ccorrenteEdit" id="ccorrenteEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="ccorrenteEdit">Alterar</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.ccorrenteDelete" id="ccorrenteDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="ccorrenteDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Forma de Pagamento-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.fpList" type="checkbox" id="fpList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="fpList">Forma de Pagamento</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.fpCreate" id="fpCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="fpCreate">Incluir</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.fpEdit" id="fpEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="fpEdit">Alterar</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.fpDelete" id="fpDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="fpDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Participante-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.participanteList" type="checkbox" id="participanteList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="participanteList">Participante</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.participanteCreate" id="participanteCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="participanteCreate">Incluir</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.participanteEdit" id="participanteEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="participanteEdit">Alterar</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.participanteDelete" id="participanteDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="participanteDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Produtos-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.produtosList" type="checkbox" id="produtosList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="produtosList">Produtos</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.produtosCreate" id="produtosCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="produtosCreate">Incluir</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.produtosEdit" id="produtosEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="produtosEdit">Alterar</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.produtosDelete" id="produtosDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="produtosDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Lançamento-->
+        <h6>Lançamento</h6>
+        <hr class="hrLine" />
+        <!--Compra-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.compraList" type="checkbox" id="compraList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="compraList">Compra</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.compraCreate" id="compraCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="compraCreate">Incluir</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.compraEdit" id="compraEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="compraEdit">Alterar</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.compraDelete" id="compraDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="compraDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Venda-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.vendaList" type="checkbox" id="vendaList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="vendaList">Venda</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.vendaCreate" id="vendaCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="vendaCreate">Incluir</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.vendaEdit" id="vendaEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="vendaEdit">Alterar</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.vendaDelete" id="vendaDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="vendaDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Serviço Prestado-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.servicoPList" type="checkbox" id="servicoPList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="servicoPList">Serviço Prestado</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.servicoPCreate" id="servicoPCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="servicoPCreate">Incluir</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.servicoPEdit" id="servicoPEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="servicoPEdit">Alterar</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.servicoPDelete" id="servicoPDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="servicoPDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Serviço Prestado-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.servicoTList" type="checkbox" id="servicoTList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="servicoTList">Serviço Tomado</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.servicoTCreate" id="servicoTCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="servicoTCreate">Incluir</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.servicoTEdit" id="servicoTEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="servicoTEdit">Alterar</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.servicoTDelete" id="servicoTDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="servicoTDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Contas Financeiras-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.contasFList" type="checkbox" id="contasFList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="contasFList">Contas Financeiras</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.contasFCreate" id="contasFCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="contasFCreate">Incluir</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.contasFEdit" id="contasFEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="contasFEdit">Alterar</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.contasFDelete" id="contasFDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="contasFDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!--Controle-->
+        <h6>Controle</h6>
+        <hr class="hrLine" />
+        <!--Contas a Pagar-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.ContasPList" type="checkbox" id="ContasPList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="ContasPList">Contas a Pagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Contas a Receber-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.ContasRList" type="checkbox" id="ContasRList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="ContasRList">Contas a Receber</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Conta Corrente-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.CCMList" type="checkbox" id="CCMList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="CCMList">Movimento Conta Corrente</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.CCMCreate" id="CCMCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="CCMCreate">Incluir</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.CCMEdit" id="CCMEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="CCMEdit">Alterar</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.CCMDelete" id="CCMDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="CCMDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Baixas-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.baixaList" type="checkbox" id="baixaList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="baixaList">Baixa (Pgtos/Receb.)</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.baixaCreate" id="baixaCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="baixaCreate">Incluir</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.baixaEdit" id="baixaEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="baixaEdit">Alterar</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.baixaDelete" id="baixaDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="baixaDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Relatórios-->
+        <h6>Relatórios</h6>
+        <hr class="hrLine" />
+        <!--Relatório por categoria-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.rCategoriasList" type="checkbox" id="rCategoriasList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="rCategoriasList">Relatório por Categorias</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--Configurações-->
         <h6>Configurações</h6>
         <hr class="hrLine" />
         <!--Cadastro Configurações-->
@@ -168,7 +554,7 @@
                 </div>
             </div>
         </div>
-        <br/>
+        <br />
 
         @{
             if (Model.conta.conta_tipo == "Contabilidade")
@@ -263,7 +649,7 @@
                                 <input class="form-check-input" type="checkbox" asp-for="_permissoes.clienteConfigEdit" id="clienteConfigEdit" onclick="checkPermissoes(this.id)">
                                 <label class="form-check-label" for="clienteConfigEdit">Alterar</label>
                             </div>
-                        </div>                        
+                        </div>
                     </div>
                 </div>
                 <!--Cliente: Categorias-->
@@ -303,7 +689,6 @@
                         </div>
                     </div>
                 </div>
-
             }
         }
 

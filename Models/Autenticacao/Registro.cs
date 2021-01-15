@@ -14,6 +14,8 @@ namespace gestaoContadorcomvc.Models.Autenticacao
     public class Registro
     {
         //Atributos
+        public string conta_tipo { get; set; }
+
         [Required(ErrorMessage = "O cnpj ou cpf é obrigatório")]
         [RegularExpression(@"([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})",
          ErrorMessage = "Quantidade de dígitos do cnpj ou cpf inválido.")]
@@ -144,7 +146,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                 MySqlCommand comando = new MySqlCommand("select usuario_email from usuario where usuario_email = @email", conn);
                 comando.Parameters.AddWithValue("@email", conta_email);
                 var leitor = comando.ExecuteReader();
-                localizado = leitor.HasRows;
+                   localizado = leitor.HasRows;
                 conn.Clone();
             }
             catch (Exception e)

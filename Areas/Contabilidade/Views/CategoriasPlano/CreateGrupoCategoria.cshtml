@@ -21,7 +21,7 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label asp-for="categoria_classificacao" class="control-label"></label>
-                                    <input asp-for="categoria_classificacao" class="form-control" onkeyup="mask_classificaoCategoriaGrupo(this.value, this.id, '@(TempData["escopo"] != null ? @TempData["escopo"] : "")')" />
+                                    <input asp-for="categoria_classificacao" placeholder="Exemplo: 2.01" class="form-control" onkeyup="mask_classificaoCategoriaGrupo(this.value, this.id, '@(TempData["escopo"] != null ? @TempData["escopo"] : "")')" onblur="verificaClassificacaoGrupo(this.id, this.value)"  />
                                     <span asp-validation-for="categoria_classificacao" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">

@@ -177,11 +177,11 @@
                             {
                                 <span><strong>@item.categoria_nome.ToUpper()</strong></span>
                             }
-                            if (item.categoria_classificacao.Length == 3)
+                            if (item.categoria_classificacao.Length == 4)
                             {
                                 <span><strong>@item.categoria_nome</strong></span>
                             }
-                            if (item.categoria_classificacao.Length > 3)
+                            if (item.categoria_classificacao.Length > 4)
                             {
                                 <span>@item.categoria_nome</span>
                             }
@@ -228,7 +228,7 @@
                             }
                         }
                     }
-                    if (item.categoria_classificacao.Length == 3)
+                    if (item.categoria_classificacao.Length == 4)
                     {
                         if (!Model.cco.ccc_pref_novaCategoria)
                         {
@@ -265,7 +265,7 @@
                             }
                         }
                     }
-                    if (item.categoria_classificacao.Length > 3)
+                    if (item.categoria_classificacao.Length > 4)
                     {
                         if (!Model.cco.ccc_pref_editCategoria)
                         {

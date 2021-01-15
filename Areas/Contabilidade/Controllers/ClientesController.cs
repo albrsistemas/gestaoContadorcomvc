@@ -103,7 +103,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         }
 
         // GET: ClientesController/Edit/5
-        public ActionResult SelectCliente(string url)
+        public ActionResult SelectCliente(Uri url)
         {
             TempData["url"] = url;
 
@@ -123,6 +123,8 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SelectCliente(string cliente_id, string url)
         {
+            url = url.ToString().Replace("|", "&");
+
             string[] urlFatiada = new string[10];
             urlFatiada = url.Split("/");
 
@@ -133,7 +135,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                 user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
                 usuario.ultimoCliente(cliente_id, user.usuario_id);
 
-                return RedirectToAction(urlFatiada[5], urlFatiada[4], new { area = "Contabilidade" });
+                return Redirect(url);
             }
             catch
             {

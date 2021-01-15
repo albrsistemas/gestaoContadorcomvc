@@ -1,20 +1,24 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using gestaoContadorcomvc.Models;
-using gestaoContadorcomvc.Filtros;
-using gestaoContadorcomvc.Services;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using gestaoContadorcomvc.Models.Autenticacao;
+using gestaoContadorcomvc.Models.ViewModel;
+using System;
 
 namespace gestaoContadorcomvc.Controllers
-{   
+{
     [Authorize]
     public class HomeController : Controller
     {      
         public IActionResult Index()
-        {          
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
-            return View();
+            Vm_home home = new Vm_home();
+            home.user = user;
+
+            return View(home);
         }
 
         public IActionResult AcessoNegado()
