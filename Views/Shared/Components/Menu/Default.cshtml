@@ -9,7 +9,7 @@
         {
     <ul class="navbar-nav">
         @{
-            if (usuario.Role == "adm" || usuario._permissoes.usuarioList || usuario._permissoes.categoriaList)
+            if (usuario.Role == "adm" || usuario._permissoes.usuarioList || usuario._permissoes.categoriaList || usuario._permissoes.ccorrenteList || usuario._permissoes.fpList || usuario._permissoes.participanteList || usuario._permissoes.produtosList)
             {
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -19,51 +19,96 @@
                         @if (usuario.Role == "adm" || usuario._permissoes.usuarioList)
                         {<a class='dropdown-item' asp-controller='Usuario' asp-action='Index'>Usuários</a>}
                         @if (usuario.Role == "adm" || usuario._permissoes.categoriaList)
-                        {<a class="dropdown-item" asp-controller='Categoria' asp-action='Index'>Categorias</a>}                        
-                        <a class="dropdown-item" href="#">Caixa e Bancos</a>
-                        @*<a class="dropdown-item" href="#">Cartão de Crédito</a>*@
-                        <a class="dropdown-item" href="#">Participante</a>
-                        @*<a class="dropdown-item" href="#">Produtos</a>*@
+                        {<a class="dropdown-item" asp-controller='Categoria' asp-action='Index'>Categorias</a>}
+                        @if (usuario.Role == "adm" || usuario._permissoes.ccorrenteList)
+                        {<a class="dropdown-item" asp-controller='ContaCorrente' asp-action='Index'>Conta Corrente</a>}
+                        @if (usuario.Role == "adm" || usuario._permissoes.fpList)
+                        {<a class="dropdown-item" asp-controller='FormaPagamento' asp-action='Index'>Formas de Pagamento</a>}
+                        @if (usuario.Role == "adm" || usuario._permissoes.participanteList)
+                        {<a class="dropdown-item" asp-controller='Participante' asp-action='Index'>Participante</a>}
+                        @if ((usuario.conta.conta_tipo != "Pessoa Física") && (usuario.Role == "adm" || usuario._permissoes.produtosList))
+                        {<a class="dropdown-item" asp-controller='Produtos' asp-action='Index'>Produtos</a>}
                     </div>
                 </li>
             }
         }
 
+        @{
+            if (usuario.Role == "adm" || usuario._permissoes.compraList)
+            {
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Lançamento
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        @*@if ((usuario.conta.conta_tipo != "Pessoa Física") && (usuario.Role == "adm" || usuario._permissoes.compraList))
+                        {<a class="dropdown-item" asp-controller='Compra' asp-action='Index'>Compra</a>}
+                        @if ((usuario.conta.conta_tipo.Equals("Contabilidade") || usuario.conta.conta_tipo.Equals("Empresa")) && (usuario.Role == "adm" || usuario._permissoes.vendaList))
+                        {<a class="dropdown-item" asp-controller='Venda' asp-action='Index'>Venda</a>}
+                        @if ((usuario.conta.conta_tipo.Equals("Contabilidade") || usuario.conta.conta_tipo.Equals("Empresa")) && (usuario.Role == "adm" || usuario._permissoes.servicoPList))
+                        {<a class="dropdown-item" asp-controller='ServicoPrestado' asp-action='Index'>Prestação de Serviço</a>}
+                        @if ((usuario.conta.conta_tipo != "Pessoa Física") && (usuario.Role == "adm" || usuario._permissoes.servicoTList))
+                        {<a class="dropdown-item" asp-controller='ServicoTomado' asp-action='Index'>Serviço Tomado</a>}*@
+                        @if (usuario.Role == "adm" || usuario._permissoes.operacaoList)
+                        {<a class="dropdown-item" asp-controller='Operacao' asp-action='Index'>Operações</a>}
+                        @if (usuario.Role == "adm" || usuario._permissoes.contasFList)
+                        {<a class="dropdown-item" asp-controller='ContasFinanceiras' asp-action='Index'>Contas Financeiras</a>} 
+                        @if (usuario.Role == "adm" || usuario._permissoes.CCMList)
+                        {
+                            <a class="dropdown-item" asp-controller="ContaCorrenteMov" asp-action="Index">Conta Corrente Movimento</a>
+                        }
+                    </div>
+                </li>
+            }
+        }
+        @{
+            if (usuario.Role == "adm" || usuario._permissoes.ContasPList || usuario._permissoes.CCMList)
+            {
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Controle
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        @if (usuario.Role == "adm" || usuario._permissoes.ContasPList)
+                        {
+                            <a class="dropdown-item" asp-controller="ContasPagar" asp-action="Index">Contas a Pagar</a>
+                        }
+                        @if (usuario.Role == "adm" || usuario._permissoes.ContasRList)
+                        {
+                            <a class="dropdown-item" asp-controller="ContasReceber" asp-action="Index">Contas a Receber</a>
+                        }                        
+                    </div>
+                </li>
+            }
+        }
+        @{
+            if (usuario.Role == "adm" || usuario._permissoes.rCategoriasList)
+            {
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Relatórios
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        @if (usuario.Role == "adm" || usuario._permissoes.rCategoriasList)
+                        {
+                            <a class="dropdown-item" asp-controller="Categoria_opp" asp-action="Create">Por Categorias</a>
+                        }                       
+                    </div>
+                </li>
+            }
+        }
+
+
+        <!--Removido o relatório do menu até que estejam prontos no desenvolvimento-->
         @*<li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Lançamento
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="#">Orçamento</a>
-                <a class="dropdown-item" href="#">Compra</a>
-                <a class="dropdown-item" href="#">Venda</a>
-                <a class="dropdown-item" href="#">Prestação de Serviço</a>
-                <a class="dropdown-item" href="#">Empréstimos/Financiamentos</a>                
-            </div>
-        </li>*@
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Controle
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                @*<a class="dropdown-item" asp-controller="ContasPagar" asp-action="Index">Contas a Pagar</a>
-                <a class="dropdown-item" href="#">Contas a Receber</a>*@
-                <a class="dropdown-item" href="#">Fluxo Caixa/Bancos</a>
-                @*<a class="dropdown-item" href="#">Cartão de Crédito</a>*@
-            </div>
-        </li>
-        <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Relatório
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="#">Relatório Financeiro</a>
-                @*<a class="dropdown-item" href="#">FLuxo de Caixa Anual</a>
-                <a class="dropdown-item" href="#">Conciliação Categoria</a>
-                <a class="dropdown-item" href="#">Extrato Categoria</a>
-                <a class="dropdown-item" href="#">Comparativo Orçamento/Realizado</a>*@
+                <a class="dropdown-item" href="#">Fluxo de Caixa Anual</a>
+                <a class="dropdown-item" href="#">Ficha Financeira</a>
             </div>
-        </li>
+        </li>*@
     </ul>
             <div class="dropdown-divider"></div>
             <ul class="navbar-nav ml-auto">
@@ -78,6 +123,7 @@
                             @if (usuario.Role == "adm" || usuario._permissoes.config)
                             {
                                 <a class="dropdown-item" asp-controller="Configuracoes" asp-action="Index">Configurações</a>
+                                <a class="dropdown-item" asp-controller='Email' asp-action='EnviaEmail'>Contato Suporte</a>
                             }
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" asp-controller="Conta" asp-action="Logout">Sair</a>

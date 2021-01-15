@@ -1,0 +1,159 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_op_parcelas_baixa
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Baixa de Parcela</h4>
+            </div>
+            <form asp-controller="Baixa" asp-action="Create">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p>@Model.referencia</p>
+                        </div>
+                    </div>
+                    <hr class="hrLine" />
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="valor_parcela_original" class="control-label">Valor Original</label>
+                                <input value="@Model.valor_parcela_original.ToString("N")" name="valor_parcela_original" class="form-control" readonly="readonly" />
+                                <span asp-validation-for="valor_parcela_original" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="saldo_parcela" class="control-label">Saldo a Pagar</label>
+                                <input value="@((Model.valor_parcela_original - Model.saldo_parcela).ToString("N"))" name="saldo_parcela" id="saldo_parcela" class="form-control" readonly="readonly" />
+                                <span asp-validation-for="saldo_parcela" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="valor" class="control-label">Valor do Pagamento</label>
+                                <input value="@Model.valor.ToString("N")" name="valor" id="valor" onchange="decimal(this.id, this.value, '6')" class="form-control" />
+                                <span asp-validation-for="valor" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="juros" class="control-label">Juros</label>
+                                <input value="@Model.juros.ToString("N")" name="juros" id="juros" onchange="decimal(this.id, this.value, '6')" class="form-control" />
+                                <span asp-validation-for="juros" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="multa" class="control-label">Multa</label>
+                                <input value="@Model.multa.ToString("N")" name="multa" id="multa" onchange="decimal(this.id, this.value, '6')" class="form-control" />
+                                <span asp-validation-for="multa" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="desconto" class="control-label">Descontos</label>
+                                <input value="@Model.desconto.ToString("N")" name="desconto" id="desconto" onchange="decimal(this.id, this.value, '6')" class="form-control" />
+                                <span asp-validation-for="desconto" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="control-label">Memorando</label>
+                                <textarea asp-for="obs" id="parcela_obs" rows="3" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '200','msg_obs')"></textarea>
+                                <span class="text-info" id="msg_obs"></span>
+                                <span asp-validation-for="obs" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">                                
+                                <label asp-for="data" class="control-label">Data Pagamento</label>
+                                <input value="@(Model.data.ToShortDateString())" name="data" id="data" class="form-control datepicker" />
+                                <span asp-validation-for="desconto" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Conta Corrente</label>
+                                <select asp-items="@ViewBag.ccorrente" value="@TempData["contacorrente_id"]" id="contacorrente_id" name="contacorrente_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <input type="hidden" asp-for="parcela_id" name="parcela_id" id="parcela_id" />
+                        <input type="hidden" asp-for="baixa_id" name="baixa_id" id="baixa_id" />
+                    </div>
+                    <div class="displey_validacao">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="msg_valid" id="msg_valid">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-info" onclick="gravarBaixa('Create')">Gravar</button>
+                </div>
+
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!--Gravação com sucesso-->
+<div class="modal fade" id="modal_mensagem_sucesso" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Baixa</h5>
+            </div>
+            <div class="modal-body">
+                <p>Baixa cadastrada com sucesso!</p>
+            </div>
+            <div class="modal-footer">
+                @{
+                    if (Model.contexto == "receber")
+                    {
+                        <a class="btn btn-info" asp-controller="ContasReceber" asp-action="Index">OK</a>
+                    }
+                    if (Model.contexto == "pagar")
+                    {
+                        <a class="btn btn-info" asp-controller="ContasPagar" asp-action="Index">OK</a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal erro-->
+<div class="modal fade" id="modal_mensagem_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mensagem_retorno_label"></h5>
+            </div>
+            <div class="modal-body" id="mensagem_retorno_conteudo">
+
+            </div>
+            <div class="modal-footer" id="mensagem_retorno_rodape">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

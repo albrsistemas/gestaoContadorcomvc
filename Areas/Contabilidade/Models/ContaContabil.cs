@@ -26,6 +26,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
         public DateTime ccontabil_dataCriacao { get; set; }
         public DateTime ccontabil_dataInativacao { get; set; }
         public string ccontabil_status { get; set; }
+        public int ccontabil_natureza { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -118,6 +119,15 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
                             conta.ccontabil_dataInativacao = new DateTime();
                         }
 
+                        if (DBNull.Value != leitor["ccontabil_natureza"])
+                        {
+                            conta.ccontabil_natureza = Convert.ToInt32(leitor["ccontabil_natureza"]);
+                        }
+                        else
+                        {
+                            conta.ccontabil_natureza = 0;
+                        }
+
                         conta.ccontabil_classificacao = leitor["ccontabil_classificacao"].ToString();
                         conta.ccontabil_nome = leitor["ccontabil_nome"].ToString();
                         conta.ccontabil_apelido = leitor["ccontabil_apelido"].ToString();
@@ -146,7 +156,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
         }
 
         //Cadastrar conta contábil
-        public string cadastrarContaContabil(int conta_id, int usuario_id, string plano_id, string classificacao, string nivel, string nome, string apelido)
+        public string cadastrarContaContabil(int conta_id, int usuario_id, string plano_id, string classificacao, string nivel, string nome, string apelido, string natureza)
         {
             vm_ContaContabil conta = new vm_ContaContabil();
             string grupo = conta.grupoConta(classificacao);
@@ -168,8 +178,8 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
             try
             {
                 comando.CommandText = "insert into contacontabil (" +
-                    "ccontabil_plano_id, ccontabil_classificacao, ccontabil_nome, ccontabil_nivel, ccontabil_grupo, ccontabil_tipo, ccontabil_apelido) values (" +
-                    "@ccontabil_plano_id, @ccontabil_classificacao, @ccontabil_nome, @ccontabil_nivel, @ccontabil_grupo, @ccontabil_tipo, @ccontabil_apelido)";
+                    "ccontabil_plano_id, ccontabil_classificacao, ccontabil_nome, ccontabil_nivel, ccontabil_grupo, ccontabil_tipo, ccontabil_apelido, ccontabil_natureza) values (" +
+                    "@ccontabil_plano_id, @ccontabil_classificacao, @ccontabil_nome, @ccontabil_nivel, @ccontabil_grupo, @ccontabil_tipo, @ccontabil_apelido, @ccontabil_natureza)";
                 comando.Parameters.AddWithValue("@ccontabil_plano_id", plano_id);
                 comando.Parameters.AddWithValue("@ccontabil_classificacao", classificacao);
                 comando.Parameters.AddWithValue("@ccontabil_nome", nome);
@@ -177,6 +187,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
                 comando.Parameters.AddWithValue("@ccontabil_grupo", grupo);
                 comando.Parameters.AddWithValue("@ccontabil_tipo", tipo);
                 comando.Parameters.AddWithValue("@ccontabil_apelido", apelido);
+                comando.Parameters.AddWithValue("@ccontabil_natureza", natureza);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -254,6 +265,15 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
                             conta.ccontabil_nivel = 0;
                         }
 
+                        if (DBNull.Value != leitor["ccontabil_natureza"])
+                        {
+                            conta.ccontabil_natureza = Convert.ToInt32(leitor["ccontabil_natureza"]);
+                        }
+                        else
+                        {
+                            conta.ccontabil_natureza = 0;
+                        }
+
                         if (DBNull.Value != leitor["ccontabil_dataCriacao"])
                         {
                             conta.ccontabil_dataCriacao = Convert.ToDateTime(leitor["ccontabil_dataCriacao"]);
@@ -297,7 +317,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
         }
 
         //Editar conta contábil
-        public string editarContaContabil(int conta_id, int usuario_id, string plano_id, string ccontabil_id, string nome, string apelido)
+        public string editarContaContabil(int conta_id, int usuario_id, string plano_id, string ccontabil_id, string nome, string apelido, string natureza)
         {
             string retorno = "Conta contábil alterada com sucesso!";
 
@@ -310,10 +330,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models
 
             try
             {
-                comando.CommandText = "UPDATE contacontabil set contacontabil.ccontabil_nome = @ccontabil_nome, contacontabil.ccontabil_apelido = @ccontabil_apelido where contacontabil.ccontabil_id = @ccontabil_id";                                
+                comando.CommandText = "UPDATE contacontabil set contacontabil.ccontabil_nome = @ccontabil_nome, contacontabil.ccontabil_apelido = @ccontabil_apelido, contacontabil.ccontabil_natureza = @ccontabil_natureza  where contacontabil.ccontabil_id = @ccontabil_id";                                
                 comando.Parameters.AddWithValue("@ccontabil_nome", nome);
                 comando.Parameters.AddWithValue("@ccontabil_apelido", apelido);
                 comando.Parameters.AddWithValue("@ccontabil_id", ccontabil_id);
+                comando.Parameters.AddWithValue("@ccontabil_natureza", natureza);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 

@@ -1,0 +1,25 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_conta_corrente
+@{
+    Layout = null;
+}
+
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirmação de Exclusão</h4>
+            </div>
+            <div class="modal-body">
+                <p>Confirme a exclusão da conta corrente: </p>
+                <p><strong>Nome: </strong>@Model.ccorrente_nome</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <form asp-controller="ContaCorrente" asp-action="Delete">
+                    <input type="hidden" value="@Model.ccorrente_id" name="ccorrente_id" />
+                    <button type="submit" class="btn btn-info">Apagar</button>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>

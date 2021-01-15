@@ -48,7 +48,8 @@ namespace gestaoContadorcomvc.Models.ViewModel
 
         [Display(Name = "E-mail")]
         [Required(ErrorMessage = "O e-mail é obrigatório.")]
-        [Remote("emailExiste", "Conta", ErrorMessage = "E-mail já cadastrado")]
+        [DataType(DataType.EmailAddress, ErrorMessage = "E-mail em formato inválido.")]
+        [Remote("emailExiste", "Usuario", ErrorMessage = "E-mail já cadastrado")]
         public string usuario_email { get; set; }
 
         public string Role { get; set; }
@@ -58,5 +59,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public Permissoes _permissoes { get; set; }
         public IEnumerable<gestaoContadorcomvc.Models.ViewModel.Vm_usuario> usuarios { get; set; }
         public string usuario_ultimoCliente { get; set; }
+        public string usuario_forgt_token { get; set; }
+        public DateTime usuario_forgt_data { get; set; }
     }
 }

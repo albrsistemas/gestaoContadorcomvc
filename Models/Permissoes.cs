@@ -47,6 +47,75 @@ namespace gestaoContadorcomvc.Models
         public bool clienteCategoriasEdit { get; set; }
         public bool clienteCategoriasDelete { get; set; }
         public bool clienteCopiaPlano { get; set; }
+        //Participante
+        public bool participanteList { get; set; }
+        public bool participanteCreate { get; set; }
+        public bool participanteEdit { get; set; }
+        public bool participanteDelete { get; set; }
+        //Produtos ok
+        public bool produtosList { get; set; }
+        public bool produtosCreate { get; set; }
+        public bool produtosEdit { get; set; }
+        public bool produtosDelete { get; set; }
+        //Conta Corrente ok
+        public bool ccorrenteList { get; set; }
+        public bool ccorrenteCreate { get; set; }
+        public bool ccorrenteEdit { get; set; }
+        public bool ccorrenteDelete { get; set; }
+        //Formas de pagamento ok
+        public bool fpList { get; set; }
+        public bool fpCreate { get; set; }
+        public bool fpEdit { get; set; }
+        public bool fpDelete { get; set; }
+        //Compras Ok
+        public bool compraList { get; set; }
+        public bool compraCreate { get; set; }
+        public bool compraEdit { get; set; }
+        public bool compraDelete { get; set; }
+        //Contas a Pagar ok
+        public bool ContasPList { get; set; }
+        //Conta Corrente ok
+        public bool CCMList { get; set; }
+        //Baixas ok
+        public bool baixaList { get; set; }
+        public bool baixaCreate { get; set; }
+        public bool baixaEdit { get; set; }
+        public bool baixaDelete { get; set; }        
+        //Venda OK
+        public bool vendaList { get; set; }
+        public bool vendaCreate { get; set; }
+        public bool vendaEdit { get; set; }
+        public bool vendaDelete { get; set; }
+        public bool CCMCreate { get; set; }
+        public bool CCMEdit { get; set; }
+        public bool CCMDelete { get; set; }
+        //Contas a Receber ok
+        public bool ContasRList { get; set; }
+        //Serviços Prestados ok
+        public bool servicoPList { get; set; }
+        public bool servicoPCreate { get; set; }
+        public bool servicoPEdit { get; set; }
+        public bool servicoPDelete { get; set; }
+        //Contas Financeiras ok
+        public bool contasFList { get; set; }
+        public bool contasFCreate { get; set; }
+        public bool contasFEdit { get; set; }
+        public bool contasFDelete { get; set; }
+        //Relatórios
+        public bool rCategoriasList { get; set; }
+        //Serviços Tomados ok
+        public bool servicoTList { get; set; }
+        public bool servicoTCreate { get; set; }
+        public bool servicoTEdit { get; set; }
+        public bool servicoTDelete { get; set; }
+        
+        //Serviços Operação
+        public bool operacaoList { get; set; }
+        public bool operacaoCreate { get; set; }
+        public bool operacaoEdit { get; set; }
+        public bool operacaoDelete { get; set; }
+
+
 
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
         public IConfigurationRoot GetConfiguration()
@@ -384,6 +453,56 @@ namespace gestaoContadorcomvc.Models
                         {
                             permissao.clienteCopiaPlano = false;
                         }
+                        //Incluídos em 30/10/2020
+                        permissao.participanteList = Convert.ToBoolean(leitor["participanteList"]);
+                        permissao.participanteCreate = Convert.ToBoolean(leitor["participanteCreate"]);
+                        permissao.participanteEdit = Convert.ToBoolean(leitor["participanteEdit"]);
+                        permissao.participanteDelete = Convert.ToBoolean(leitor["participanteDelete"]);
+                        permissao.produtosList = Convert.ToBoolean(leitor["produtosList"]);
+                        permissao.produtosCreate = Convert.ToBoolean(leitor["produtosCreate"]);
+                        permissao.produtosEdit = Convert.ToBoolean(leitor["produtosEdit"]);
+                        permissao.produtosDelete = Convert.ToBoolean(leitor["produtosDelete"]);
+                        permissao.ccorrenteList = Convert.ToBoolean(leitor["ccorrenteList"]);
+                        permissao.ccorrenteCreate = Convert.ToBoolean(leitor["ccorrenteCreate"]);
+                        permissao.ccorrenteEdit = Convert.ToBoolean(leitor["ccorrenteEdit"]);
+                        permissao.ccorrenteDelete = Convert.ToBoolean(leitor["ccorrenteDelete"]);
+                        permissao.fpList = Convert.ToBoolean(leitor["fpList"]);
+                        permissao.fpCreate = Convert.ToBoolean(leitor["fpCreate"]);
+                        permissao.fpEdit = Convert.ToBoolean(leitor["fpEdit"]);
+                        permissao.fpDelete = Convert.ToBoolean(leitor["fpDelete"]);
+                        //Incluido em 19/11/2020
+                        permissao.compraList = Convert.ToBoolean(leitor["compraList"]);
+                        permissao.compraCreate = Convert.ToBoolean(leitor["compraCreate"]);
+                        permissao.compraEdit = Convert.ToBoolean(leitor["compraEdit"]);
+                        permissao.compraDelete = Convert.ToBoolean(leitor["compraDelete"]);
+                        permissao.ContasPList = Convert.ToBoolean(leitor["ContasPList"]);
+                        permissao.CCMList = Convert.ToBoolean(leitor["CCMList"]);
+                        permissao.baixaList = Convert.ToBoolean(leitor["baixaList"]);
+                        permissao.baixaCreate = Convert.ToBoolean(leitor["baixaCreate"]);
+                        permissao.baixaEdit = Convert.ToBoolean(leitor["baixaEdit"]);
+                        permissao.baixaDelete = Convert.ToBoolean(leitor["baixaDelete"]);
+                        permissao.vendaList = Convert.ToBoolean(leitor["vendaList"]);
+                        permissao.vendaCreate = Convert.ToBoolean(leitor["vendaCreate"]);
+                        permissao.vendaEdit = Convert.ToBoolean(leitor["vendaEdit"]);
+                        permissao.vendaDelete = Convert.ToBoolean(leitor["vendaDelete"]);
+                        permissao.CCMCreate = Convert.ToBoolean(leitor["CCMCreate"]);
+                        permissao.CCMEdit = Convert.ToBoolean(leitor["CCMEdit"]);
+                        permissao.CCMDelete = Convert.ToBoolean(leitor["CCMDelete"]);
+                        //Incluído em 28/12/2020
+                        permissao.ContasRList = Convert.ToBoolean(leitor["ContasRList"]);
+                        permissao.servicoPList = Convert.ToBoolean(leitor["servicoPList"]);
+                        permissao.servicoPCreate = Convert.ToBoolean(leitor["servicoPCreate"]);
+                        permissao.servicoPEdit = Convert.ToBoolean(leitor["servicoPEdit"]);
+                        permissao.servicoPDelete = Convert.ToBoolean(leitor["servicoPDelete"]);
+                        permissao.contasFList = Convert.ToBoolean(leitor["contasFList"]);
+                        permissao.contasFCreate = Convert.ToBoolean(leitor["contasFCreate"]);
+                        permissao.contasFEdit = Convert.ToBoolean(leitor["contasFEdit"]);
+                        permissao.contasFDelete = Convert.ToBoolean(leitor["contasFDelete"]);
+                        permissao.rCategoriasList = Convert.ToBoolean(leitor["rCategoriasList"]);
+                        permissao.servicoTList = Convert.ToBoolean(leitor["servicoTList"]);
+                        permissao.servicoTCreate = Convert.ToBoolean(leitor["servicoTCreate"]);
+                        permissao.servicoTEdit = Convert.ToBoolean(leitor["servicoTEdit"]);
+                        permissao.servicoTDelete = Convert.ToBoolean(leitor["servicoTDelete"]);
                     }
                 }
             }

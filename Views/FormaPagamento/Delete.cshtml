@@ -1,0 +1,25 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_forma_pagamento
+@{
+    Layout = null;
+}
+
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirmação de Exclusão</h4>
+            </div>
+            <div class="modal-body">
+                <p>Confirme a exclusão da forma de pagamento: </p>
+                <p><strong>Nome: </strong>@Model.fp_nome</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <form asp-controller="FormaPagamento" asp-action="Delete">
+                    <input type="hidden" value="@Model.fp_id" name="fp_id" />
+                    <button type="submit" class="btn btn-info">Apagar</button>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>

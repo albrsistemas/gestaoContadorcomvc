@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 
 namespace gestaoContadorcomvc.Controllers.Autenticacao
@@ -33,7 +36,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
                 Registro registro = new Registro();
                 registro.registro(collection["conta_dcto"].ToString().Replace(".","").Replace("-","").Replace("/",""),
-                    "Cliente",
+                    collection["conta_tipo"],
                     collection["usuario_nome"],
                     collection["usuario_dcto"].ToString().Replace(".", "").Replace("-", "").Replace("/", ""),
                     collection["usuario_user"],
@@ -51,19 +54,18 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
         public ActionResult Login()
         {
-            //var user = HttpContext.Session.GetObjectFromJson<Usuario>("user");
-
-            //if(user != null)
-            //{
-            //    TempData["user"] = user.usuario_nome;
-            //}
+            Selects select = new Selects();
+            ViewBag.conta_tipo = select.getContaTipo().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Empresa" });
 
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult<dynamic>> Login(IFormCollection collection)
+        public IActionResult Login(IFormCollection collection)
         {
+            //async Task<ActionResult<dynamic>>
+            Selects select = new Selects();
+            ViewBag.conta_tipo = select.getContaTipo().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Empresa" });
             //Recupera usuario
             Usuario user = new Usuario();
             user = user.buscaUsuarioLogin(collection["usuario"], collection["senha"]);
@@ -75,9 +77,22 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
             Conta conta = new Conta();
             conta = conta.buscarConta(user.usuario_conta_id);
-
+                        
             if (user != null && user.usuario_id > 0)
             {
+                if (conta.conta_tipo.ToUpper().Equals("CONTABILIDADE"))
+                {
+                    if (collection["conta_tipo"] != "Contabilidade" && collection["conta_tipo"] != "Empresa")
+                    {
+                        return View(TempData["errorLogin"] = "Usuário não pertence ao tipo de conta especificado");
+                    }
+                }
+
+                if (conta.conta_tipo.ToUpper() != "CONTABILIDADE" && conta.conta_tipo != collection["conta_tipo"])
+                {
+                    return View(TempData["errorLogin"] = "Usuário não pertence ao tipo de conta especificado");
+                }
+
                 var userClaims = new List<Claim>()
                 {
                     //definindo o cookie
@@ -95,10 +110,13 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
             TempData["user"] = user.usuario_nome;
 
-            if (collection["area"].Equals("contabilidade") && conta.conta_tipo.ToUpper().Equals("CONTABILIDADE"))
+            if (conta.conta_tipo.ToUpper().Equals("CONTABILIDADE"))
             {
-                return RedirectToAction("Index", "Home", new { area = "Contabilidade" });
-            }
+                if(collection["conta_tipo"] == "Contabilidade")
+                {
+                    return RedirectToAction("Index", "Home", new { area = "Contabilidade" });
+                }
+            }   
             
             return RedirectToAction("Index", "Home");
         }

@@ -1,0 +1,241 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_participante
+
+@{
+    ViewData["Title"] = "Participante";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    if (TempData["msgParticipante"] != null && TempData["msgParticipante"].ToString().Contains("sucesso"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Sucesso!</strong> @TempData["msgParticipante"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    if (TempData["msgParticipante"] != null && TempData["msgParticipante"].ToString().Contains("sucesso"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Sucesso!</strong> @TempData["msgParticipante"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
+
+<h2>Novo Cliente/Fornecedor</h2>
+<hr class="hrLine" />
+
+<form asp-controller="Participante" asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <fieldset>
+        <legend>Dados cadastrais</legend>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="participante_nome" class="control-label"></label>
+                    <input asp-for="participante_nome" class="form-control" />
+                    <span asp-validation-for="participante_nome" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="participante_fantasia" class="control-label"></label>
+                    <input asp-for="participante_fantasia" class="form-control" />
+                    <span asp-validation-for="participante_fantasia" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    <label asp-for="participante_codigo" class="control-label"></label>
+                    <input asp-for="participante_codigo" class="form-control" />
+                    <span asp-validation-for="participante_codigo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    <label asp-for="participante_clienteDesde" class="control-label"></label>
+                    <input type="text" value="@Model.participante_clienteDesde.ToShortDateString()" name="participante_clienteDesde" class="form-control datepicker" />
+                    <span asp-validation-for="participante_clienteDesde" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="participante_tipoPessoa" class="control-label"></label>
+                    <select asp-items="@ViewBag.tipoPessoa" value="@TempData["participante_tipoPessoa"]" id="participante_tipoPessoa" name="participante_tipoPessoa" onchange="tipoPessoa(this.value)" class="form-control"></select>
+                    <span asp-validation-for="participante_tipoPessoa" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="participante_cnpj_cpf" class="control-label" id="label_cnpj_cpf"></label>
+                    <input asp-for="participante_cnpj_cpf" id="participante_cnpj_cpf" class="form-control" onkeyup="mascaraCNPJ_cpf(this.id, this.value)" />
+                    <span asp-validation-for="participante_cnpj_cpf" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group" id="grupo_regime">
+                    <label asp-for="participante_regime_tributario" class="control-label"></label>
+                    <select asp-items="@ViewBag.regimeTributario" value="@TempData["participante_regime_tributario"]" id="participante_regime_tributario" name="participante_regime_tributario" class="form-control"></select>
+                    <span asp-validation-for="participante_regime_tributario" id="val_participante_regime_tributario" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="form-group" id="grupo_rg">
+                    <label asp-for="participante_rg" class="control-label"></label>
+                    <input asp-for="participante_rg" class="form-control" />
+                    <span asp-validation-for="participante_rg" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group" id="grupo_orgaoEmissor">
+                    <label asp-for="participante_orgaoEmissor" class="control-label"></label>
+                    <input asp-for="participante_orgaoEmissor" class="form-control" />
+                    <span asp-validation-for="participante_orgaoEmissor" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="form-group" id="grupo_contribuinte">
+                    <label asp-for="participante_contribuinte" class="control-label"></label>
+                    <select asp-items="@ViewBag.icmsContribuinte" value="@TempData["participante_contribuinte"]" id="participante_contribuinte" name="participante_contribuinte" class="form-control" onchange="contribICMS(this.value)"></select>
+                    <span asp-validation-for="participante_contribuinte" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group" id="grupo_ie">
+                    <label asp-for="participante_inscricaoEstadual" class="control-label"></label>
+                    <input asp-for="participante_inscricaoEstadual" class="form-control" />
+                    <span asp-validation-for="participante_inscricaoEstadual" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group" id="grupo_im">
+                    <label asp-for="participante_insc_municipal" class="control-label"></label>
+                    <input asp-for="participante_insc_municipal" class="form-control" />
+                    <span asp-validation-for="participante_insc_municipal" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <!--Endereço-->
+    <fieldset>
+        <legend>Endereço</legend>
+        <div class="row">
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    <label asp-for="participante_cep" class="control-label"></label>
+                    <input asp-for="participante_cep" class="form-control" />
+                    <span asp-validation-for="participante_cep" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-8">
+                <div class="form-group">
+                    <label asp-for="participante_logradouro" class="control-label"></label>
+                    <input asp-for="participante_logradouro" class="form-control" />
+                    <span asp-validation-for="participante_logradouro" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    <label asp-for="participante_numero" class="control-label"></label>
+                    <input asp-for="participante_numero" class="form-control" />
+                    <span asp-validation-for="participante_numero" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label asp-for="participante_complemento" class="control-label"></label>
+                    <input asp-for="participante_complemento" class="form-control" />
+                    <span asp-validation-for="participante_complemento" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label asp-for="participante_bairro" class="control-label"></label>
+                    <input asp-for="participante_bairro" class="form-control" />
+                    <span asp-validation-for="participante_bairro" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-5">
+                <div class="form-group">
+                    <label asp-for="participante_cidade" class="control-label"></label>
+                    <input asp-for="participante_cidade" class="form-control" />
+                    <span asp-validation-for="participante_cidade" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    <label asp-for="participante_uf" class="control-label"></label>
+                    <select asp-items="@ViewBag.ufIbge" value="@TempData["participante_uf"]" id="participante_uf" name="participante_uf" class="form-control"></select>
+                    <span asp-validation-for="participante_uf" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-5">
+                <div class="form-group">
+                    <label asp-for="participante_pais" class="control-label"></label>
+                    <select asp-items="@ViewBag.paisesIbge" value="@TempData["participante_pais"]" id="participante_pais" name="participante_pais" class="form-control"></select>
+                    <span asp-validation-for="participante_pais" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Dados Adicionais</legend>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="participante_categoria" class="control-label"></label>
+                    <select asp-items="@ViewBag.categoria" value="@TempData["participante_categoria"]" id="participante_categoria" name="participante_categoria" class="form-control js_example_basic_single" style="width:100%"></select>
+                    <span asp-validation-for="participante_categoria" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="participante_status" class="control-label"></label>
+                    <select asp-items="@ViewBag.status" value="@TempData["participante_status"]" id="participante_status" name="participante_status" class="form-control"></select>                    
+                    <span asp-validation-for="participante_status" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="participante_suframa" class="control-label"></label>
+                    <input asp-for="participante_suframa" class="form-control" />
+                    <span asp-validation-for="participante_suframa" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Observações</legend>
+        <div class="row">
+            <div class="col-12 col-md-12">
+                <div class="form-group">
+                    <textarea asp-for="participante_obs" rows="5" class="form-control"></textarea>
+                    <span asp-validation-for="participante_obs" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+
+    <input type="hidden" asp-for="participante_id" />
+
+    <br />
+
+    <button type="submit" class="btn btn-info">Gravar</button>
+    <a class="btn btn-secondary" asp-controller="Participante" asp-action="Index">Cancelar</a>
+
+</form>

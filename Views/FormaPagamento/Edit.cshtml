@@ -1,0 +1,177 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_forma_pagamento
+
+@{
+    ViewData["Title"] = "Forma de Pagamento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    if (TempData["msgFp"] != null && TempData["msgFp"].ToString().Contains("sucesso"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Sucesso!</strong> @TempData["msgFp"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    if (TempData["msgFp"] != null && TempData["msgFp"].ToString().Contains("Erro"))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Erro!</strong> @TempData["msgFp"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
+
+<h2>Alterar Forma de Pagamento</h2>
+<hr class="hrLine" />
+
+<form asp-controller="FormaPagamento" asp-action="Edit" id="formaPgto">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-12 col-md-8">
+            <div class="form-group">
+                <label asp-for="fp_nome" class="control-label"></label>
+                <input asp-for="fp_nome" class="form-control" />
+                <span asp-validation-for="fp_nome" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="fp_status" class="control-label"></label>
+                <select asp-items="@ViewBag.status" value="@TempData["fp_status"]" id="fp_status" name="fp_status" class="form-control"></select>
+                <span asp-validation-for="fp_status" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="fp_identificacao" class="control-label"></label>
+                <select asp-items="@ViewBag.Identificacao" value="@TempData["fp_identificacao"]" id="fp_identificacao" name="fp_identificacao" class="form-control" onchange="identificacaoPgto(this.value)"></select>
+                <span asp-validation-for="fp_identificacao" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="fp_meio_pgto_nfe" class="control-label"></label>
+                <select asp-items="@ViewBag.meioPgto" value="@TempData["fp_meio_pgto_nfe"]" id="fp_meio_pgto_nfe" name="fp_meio_pgto_nfe" class="form-control" onchange="meioPgto(this.value)"></select>
+                <span asp-validation-for="fp_meio_pgto_nfe" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="form-group">
+                <label asp-for="fp_vinc_conta_corrente" class="control-label"></label>
+                <select asp-items="@ViewBag.ccorrente" value="@TempData["fp_vinc_conta_corrente"]" id="fp_vinc_conta_corrente" name="fp_vinc_conta_corrente" class="form-control"></select>
+                <span class="text-info" id="text_ccorrente"></span><br />
+                <span asp-validation-for="fp_vinc_conta_corrente" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="display:block" id="opc_baixa_automatica">
+        <div class="col-12 col-md-4">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" asp-for="fp_baixa_automatica" id="fp_baixa_automatica" class="custom-control-input" onchange="baixaAutomatica(this.id)">
+                <label class="custom-control-label" for="fp_baixa_automatica" style="user-select: none;">Gerar baixa automática</label>
+            </div>
+        </div>
+    </div>
+    <br />
+    <fieldset>
+        <legend style="display:none" id="legenda_cartoes">Informações de cartões</legend>
+        <div class="row" style="display:none" id="grupo_cartoes_recebimento">
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="fp_tipo_integracao_nfe" class="control-label"></label>
+                    <select asp-items="@ViewBag.IntegracaoCartao" value="@TempData["fp_tipo_integracao_nfe"]" id="fp_tipo_integracao_nfe" name="fp_tipo_integracao_nfe" class="form-control"></select>
+                    <span asp-validation-for="fp_tipo_integracao_nfe" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="fp_bandeira_cartao" class="control-label"></label>
+                    <select asp-items="@ViewBag.bandeiraCartao" value="@TempData["fp_bandeira_cartao"]" id="fp_bandeira_cartao" name="fp_bandeira_cartao" class="form-control"></select>
+                    <span asp-validation-for="fp_bandeira_cartao" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="fp_cnpj_credenciadora_cartao" class="control-label"></label>
+                    <input asp-for="fp_cnpj_credenciadora_cartao" class="form-control" onkeyup="mascaraCNPJ(this.id, this.value)" />
+                    <span asp-validation-for="fp_cnpj_credenciadora_cartao" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="display:none" id="grupo_cartoes_pagamento">
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label asp-for="fp_dia_fechamento_cartao" class="control-label"></label>
+                    <input asp-for="fp_dia_fechamento_cartao" class="form-control" disabled="disabled" />
+                    <span asp-validation-for="fp_dia_fechamento_cartao" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label asp-for="fp_dia_vencimento_cartao" class="control-label"></label>
+                    <input asp-for="fp_dia_vencimento_cartao" class="form-control" disabled="disabled" />
+                    <span asp-validation-for="fp_dia_vencimento_cartao" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+
+    <br />
+
+    <button type="submit" class="btn btn-info" id="sub">Gravar</button>
+    <a class="btn btn-secondary" asp-controller="FormaPagamento" asp-action="Index">Cancelar</a>
+
+</form>
+@{
+    if (@Model.fp_identificacao == "Pagamento")
+    {
+        if (@Model.fp_meio_pgto_nfe == "03")
+        {
+            <script>
+                document.getElementById('legenda_cartoes').style.display = 'block';
+                document.getElementById('grupo_cartoes_pagamento').style.display = 'block';
+                document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+                document.getElementById('fp_dia_fechamento_cartao').removeAttribute("disabled");
+                document.getElementById('fp_dia_vencimento_cartao').removeAttribute("disabled");
+            </script>
+        }
+        else
+        {
+            <script>
+                document.getElementById('legenda_cartoes').style.display = 'none';
+                document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+                document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+                document.getElementById('fp_dia_fechamento_cartao').setAttribute("disabled", "disabled");
+                document.getElementById('fp_dia_vencimento_cartao').setAttribute("disabled", "disabled");
+            </script>
+        }
+    }
+
+    if (@Model.fp_identificacao == "Recebimento")
+    {
+        if(@Model.fp_meio_pgto_nfe == "03" || @Model.fp_meio_pgto_nfe == "04")
+        {
+            <script>
+                document.getElementById('legenda_cartoes').style.display = 'block';
+                document.getElementById('grupo_cartoes_recebimento').style.display = 'block';
+                document.getElementById('grupo_cartoes_pagamento').style.display = 'none';                
+            </script>
+        }
+        else
+        {
+            <script>
+                document.getElementById('legenda_cartoes').style.display = 'none';
+                document.getElementById('grupo_cartoes_recebimento').style.display = 'none';
+                document.getElementById('grupo_cartoes_pagamento').style.display = 'none';
+            </script>
+        }
+    }
+}

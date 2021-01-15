@@ -1,0 +1,773 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_operacao
+
+@{
+    ViewData["Title"] = "Nova Compra";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    legend{
+        font-size: 15px;
+        font-weight: bold;
+    }
+    .displey_validacao{
+        width: 100%;
+        padding: 30px;
+        height: auto;
+    }
+    .col{
+        padding: 0px 5px;
+    }
+    .include_item {
+        float: left;
+        height: 38px;
+        background: #FFFFFF;
+        padding: 6px 12px;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+        background-color: #fff;
+        color: #495057;
+    }
+        .include_item:focus {
+            color: #495057;
+            background-color: #fff;
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.1rem rgba(0,123,255,.25);
+        }
+    .include_item_label {
+        float: left;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    label{
+        font-size: 13px;
+    }
+    .incluirParcela {
+        width: 100%;
+        height: auto;
+        padding-top: 5px;
+        text-align: right;
+    }
+    select[readonly]{
+        background: #eee;
+        pointer-events: none;
+        touch-action: none;
+    }    
+</style>
+
+@{
+    if (TempData["msgCompra"] != null && TempData["msgCompra"].ToString().Contains("sucesso"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Sucesso!</strong> @TempData["msgCompra"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    if (TempData["msgCompra"] != null && TempData["msgCompra"].ToString().Contains("Erro"))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Erro!</strong> @TempData["msgFp"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
+
+<h2>Nova Compra</h2>
+<hr class="hrLine" />
+<form asp-controller="Compra" asp-action="Create" id="form_compra">
+    <fieldset>
+        <legend>Fornecedor</legend>
+        <div class="row">
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" autofocus name="fornecedor" id="fornecedor" placeholder="Iniciais do nome ou cnpj/cpf do fornecedor" onkeyup="consultaParticipante(this.id)" aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="button-addon2" data-toggle="modal" data-target="#modal_fornecedor">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" asp-for="participante.op_part_id" class="form-control" /> <!--ID do participante-->
+    </fieldset>
+    <fieldset>
+        <legend>Itens da compra</legend>
+        <div class="row">
+            <div class="col-10" style="padding-right: 0px;">
+                <div class="include_item_label" style="width: 40%">Descrição</div>
+                <div class="include_item_label" style="width: 15%">Código</div>
+                <div class="include_item_label" style="width: 15%">Valor Unit.</div>
+                <div class="include_item_label" style="width: 15%">Quantidade</div>
+                <div class="include_item_label" style="width: 15%">Valor Total</div>
+            </div>
+            <div class="col-10" style="padding-right: 0px;">
+                <input type="text" class="include_item" style="width: 40%" id="prod_descricao" onkeyup="consultaProdutos(this.id, 'compra')" placeholder="Digite o nome ou código do produto" />
+                <input type="text" class="include_item" style="width: 15%" id="prod_codigo" readonly="readonly" />
+                <input type="text" class="include_item" style="width: 15%" id="prod_valor" onblur="ajusta_item(this.id, this.value)" />
+                <input type="text" class="include_item" style="width: 15%" id="prod_quantidade" onblur="ajusta_item(this.id, this.value)" />
+                <input type="text" class="include_item" style="width: 15%" id="prod_valorTotal" readonly="readonly" onblur="incluir_item()" />
+                <input type="hidden" id="produto_id" value="0" />
+                <input type="hidden" id="unidade" value="" />
+            </div>
+            <div class="col-2" style="text-align: right;padding-top: 6px;padding-left: 0px;">
+
+            </div>
+        </div>
+        <div id="box_itens" style="margin-top: 10px;"></div>
+        <br />
+    </fieldset>
+    <fieldset>
+        <legend>Totais da Compra</legend>
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="totais.op_totais_frete" class="control-label"></label>
+                    <input asp-for="totais.op_totais_frete" id="op_totais_frete" class="form-control" />
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="totais.op_totais_seguro" class="control-label"></label>
+                    <input asp-for="totais.op_totais_seguro" id="op_totais_seguro" class="form-control" />
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="totais.op_totais_desp_aces" class="control-label"></label>
+                    <input asp-for="totais.op_totais_desp_aces" id="op_totais_desp_aces" class="form-control" />
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="totais.op_totais_desconto" class="control-label"></label>
+                    <input asp-for="totais.op_totais_desconto" id="op_totais_desconto" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="totais.op_totais_icms_st" class="control-label">ICMS-ST</label>
+                    <input asp-for="totais.op_totais_icms_st" id="op_totais_icms_st" class="form-control" readonly="readonly" />
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="totais.op_totais_ipi" class="control-label">IPI</label>
+                    <input asp-for="totais.op_totais_ipi" id="op_totais_ipi" class="form-control" readonly="readonly" />
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="totais.op_totais_preco_itens" class="control-label">Total dos Itens</label>
+                    <input asp-for="totais.op_totais_preco_itens" id="op_totais_preco_itens" class="form-control" readonly="readonly" />
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="totais.op_totais_total_op" class="control-label" style="font-weight:bold">Total da Compra</label>
+                    <input asp-for="totais.op_totais_total_op" id="op_totais_total_op" class="form-control" readonly="readonly" />
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Detalhes</legend>
+        <div class="row">
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    <label asp-for="operacao.op_numero_ordem" class="control-label">Número Compra</label>
+                    <input asp-for="operacao.op_numero_ordem" id="op_numero_ordem" class="form-control" readonly="readonly" />
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="operacao.op_data" class="control-label">Data da Compra</label>
+                    <input type="text" name="operacao.op_data" id="op_data" autocomplete="off" class="form-control datepicker" />
+                    <span asp-validation-for="operacao.op_data" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="operacao.op_previsao_entrega" class="control-label">Data Prevista Entrega</label>
+                    <input type="text" name="operacao.op_previsao_entrega" id="op_previsao_entrega" autocomplete="off" class="form-control datepicker" />
+                    <span asp-validation-for="operacao.op_previsao_entrega" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="operacao.op_categoria_id" class="control-label">Categoria</label>
+                    <select asp-items="@ViewBag.categoria" value="@TempData["operacao.op_categoria_id"]" id="op_categoria_id" style="width:100%" name="operacao.op_categoria_id" class="form-control js_example_basic_single"></select>
+                    <span asp-validation-for="operacao.op_categoria_id" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Pagamento</legend>
+        <div class="row">
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Forma de Pagamento</label>
+                    <select asp-items="@ViewBag.formaPgto" value="@TempData["forma_pgto"]" id="forma_pgto" name="forma_pgto" class="form-control"></select>
+                    <span asp-validation-for="forma_pgto" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label asp-for="condicoes_pgto" class="control-label">Condições de Pagamento</label>
+                    <input type="text" asp-for="condicoes_pgto" id="condicoes_pgto" class="form-control" placeholder="Qtd dias separado por virgula" />
+                    <span asp-validation-for="condicoes_pgto" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <button type="button" class="btn btn-outline-info" onclick="gerarParcela()" style="margin-top:30px;width:100%;">Gerar Parcelas</button>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-12" style=\"padding-right: 0px;\">
+                <div class="include_item_label" style="width: 11%">Dias</div>
+                <div class="include_item_label" style="width: 25%">Vencimento</div>
+                <div class="include_item_label" style="width: 26%">Valor</div>
+                <div class="include_item_label" style="width: calc(40% - 95px)">Forma</div>
+            </div>
+        </div>
+        <div class="parcela" id="parcelas">
+
+        </div>
+        <div class="incluirParcela" id="incluirParcela">
+            <label class="text-info" onclick="novaParcela('open')" style="cursor:pointer">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                    <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                </svg>
+                Incluir outra parcela
+            </label>
+        </div>
+        <div class="row">
+            <div class="col-12" id="alert_vlr_parcela">
+
+            </div>
+        </div>
+        <br />
+    </fieldset>
+    <fieldset>
+        <legend>Transportador</legend>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="control-label">Frete por conta</label>
+                    <select asp-items="@ViewBag.modFrete" value="@TempData["op_transportador_modalidade_frete"]" id="op_transportador_modalidade_frete" name="op_transportador_modalidade_frete" class="form-control" onchange="modFrete(this.value)"></select>
+                    <span asp-validation-for="transportador.op_transportador_modalidade_frete" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-8">
+                <div class="form-group">
+                    <label asp-for="transportador.op_transportador_nome" class="control-label"></label>
+                    <input asp-for="transportador.op_transportador_nome" id="op_transportador_nome" class="form-control" onkeyup="getTransportador(this.id)" placeholder="Digite as iniciais do nome ou cnpj/cpf" />
+                    <span asp-validation-for="transportador.op_transportador_nome" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <label asp-for="transportador.op_transportador_cnpj_cpf" class="control-label">CNPJ/CPF</label>
+                    <input asp-for="transportador.op_transportador_cnpj_cpf" id="op_transportador_cnpj_cpf" class="form-control" />
+                    <span asp-validation-for="transportador.op_transportador_cnpj_cpf" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="transportador.op_transportador_volume_qtd" class="control-label"></label>
+                    <input asp-for="transportador.op_transportador_volume_qtd" id="op_transportador_volume_qtd" class="form-control" />
+                    <span asp-validation-for="transportador.op_transportador_volume_qtd" id="op_transportador_volume_qtd" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="transportador.op_transportador_volume_peso_bruto" class="control-label"></label>
+                    <input asp-for="transportador.op_transportador_volume_peso_bruto" id="op_transportador_volume_peso_bruto" class="form-control" />
+                    <span asp-validation-for="transportador.op_transportador_volume_peso_bruto" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" asp-for="transportador.op_transportador_participante_id" id="op_transportador_participante_id" />
+    </fieldset>
+    <fieldset>
+        <legend>Nota Fiscal</legend>
+        <div class="row">
+            <div class="col-12">
+                <div class="radio-toolbar">
+                    <input type="radio" asp-for="operacao.op_comNF" id="r_sem_nf" value="0" checked onclick="operacao_nf(this.id)">
+                    <label for="r_sem_nf" id="label1">Sem Nota Fiscal</label>
+
+                    <input type="radio" asp-for="operacao.op_comNF" value="1" id="r_nf_eletronica" onclick="operacao_nf(this.id)">
+                    <label for="r_nf_eletronica" id="label3">Nota Fiscal Eletrônica</label>
+
+                    <input type="radio" asp-for="operacao.op_comNF" value="2" id="r_nf_manual" onclick="operacao_nf(this.id)">
+                    <label for="r_nf_manual" id="label2">Nota Fiscal Manual</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="nf.op_nf_chave" class="control-label">Chave de Acesso</label>
+                    <input asp-for="nf.op_nf_chave" id="op_nf_chave" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '44','chave_acesso')" onblur="chave_acesso_nf_op(this.id, this.value)" disabled="disabled" />
+                    <span class="text-info" id="chave_acesso"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="nf.op_nf_data_emissao" class="control-label">Data de Emissão</label>
+                    <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control datepicker" disabled="disabled" />
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="form-group">
+                    <label asp-for="nf.op_nf_data_entrada_saida" class="control-label">Data de Entrada</label>
+                    <input type="text" asp-for="nf.op_nf_data_entrada_saida" id="op_nf_data_entrada_saida" autocomplete="off" class="form-control datepicker" disabled="disabled" />
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <label asp-for="nf.op_nf_serie" class="control-label">Série</label>
+                <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control" disabled="disabled" />
+            </div>
+            <div class="col-6 col-md-3">
+                <label asp-for="nf.op_nf_numero" class="control-label">Número</label>
+                <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control" disabled="disabled" />
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Observações</legend>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <textarea asp-for="operacao.op_obs" id="op_obs" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_obs')"></textarea>
+                    <span class="text-info" id="msg_obs"></span>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+
+
+
+
+
+    <!--Modais-->
+    <!--Dados do fornecedor-->
+    <div class="modal fade" id="modal_fornecedor" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Fornecedor</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_nome" class="control-label"></label>
+                                <input asp-for="participante.op_part_nome" id="nome" class="form-control" />
+                                <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_tipo" class="control-label"></label>
+                                <select readonly="readonly" asp-items="@ViewBag.tipoPessoa" value="@TempData["op_part_tipo"]" id="participante_tipoPessoa" name="op_part_tipo" onchange="tipoPessoa(this.value)" class="form-control"></select> <!--ID alterado para 'participante_tipoPessoa' em razão da função 'mascaraCNPJ_CPF' que usa a informação deste campo-->
+                                <span asp-validation-for="participante.op_part_tipo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_cnpj_cpf" class="control-label" id="label_cnpj_cpf">CPF</label>
+                                <input asp-for="participante.op_part_cnpj_cpf" id="op_part_cnpj_cpf" class="form-control" onkeyup="mascaraCNPJ_cpf(this.id, this.value)" readonly="readonly" />
+                                <span asp-validation-for="participante.op_part_cnpj_cpf" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <fieldset>
+                        <legend>Endereço</legend>
+                        <div class="row">
+                            <div class="col-12 col-md-2">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_part_cep" class="control-label"></label>
+                                    <input asp-for="participante.op_part_cep" id="cep" class="form-control" />
+                                    <span asp-validation-for="participante.op_part_cep" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_part_logradouro" class="control-label"></label>
+                                    <input asp-for="participante.op_part_logradouro" class="form-control" id="rua" />
+                                    <span asp-validation-for="participante.op_part_logradouro" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_part_numero" class="control-label"></label>
+                                    <input asp-for="participante.op_part_numero" id="numero" class="form-control" />
+                                    <span asp-validation-for="participante.op_part_numero" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_part_complemento" class="control-label"></label>
+                                    <input asp-for="participante.op_part_complemento" id="complemento" class="form-control" />
+                                    <span asp-validation-for="participante.op_part_complemento" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_part_bairro" class="control-label"></label>
+                                    <input asp-for="participante.op_part_bairro" class="form-control" id="bairro" />
+                                    <span asp-validation-for="participante.op_part_bairro" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-5">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_part_cidade" class="control-label"></label>
+                                    <input asp-for="participante.op_part_cidade" class="form-control" id="cidade" />
+                                    <span asp-validation-for="participante.op_part_cidade" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_uf_ibge_codigo" class="control-label"></label>
+                                    <select asp-items="@ViewBag.ufIbge" value="@TempData["op_uf_ibge_codigo"]" id="uf" name="op_uf_ibge_codigo" class="form-control"></select>
+                                    <span asp-validation-for="participante.op_uf_ibge_codigo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-5">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_paisesIBGE_codigo" class="control-label"></label>
+                                    <select asp-items="@ViewBag.paisesIbge" value="@TempData["op_paisesIBGE_codigo"]" id="op_paisesIBGE_codigo" name="op_paisesIBGE_codigo" class="form-control"></select>
+                                    <span asp-validation-for="participante.op_paisesIBGE_codigo" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" onclick="dadorParticipante('edit', 0)">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Dados do item-->
+    <div class="modal fade" id="modal_item" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Item</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_nome" class="control-label"></label>
+                                <input asp-for="item.op_item_nome" id="op_item_nome" class="form-control" />
+                                <span asp-validation-for="item.op_item_nome" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_codigo" class="control-label"></label>
+                                <input asp-for="item.op_item_codigo" id="op_item_codigo" class="form-control" />
+                                <span asp-validation-for="item.op_item_codigo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_cod_fornecedor" class="control-label"></label>
+                                <input asp-for="item.op_item_cod_fornecedor" id="op_item_cod_fornecedor" class="form-control" />
+                                <span asp-validation-for="item.op_item_cod_fornecedor" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-3">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_unidade" class="control-label"></label>
+                                <input asp-for="item.op_item_unidade" id="op_item_unidade" class="form-control" />
+                                <span asp-validation-for="item.op_item_unidade" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_preco" class="control-label"></label>
+                                <input asp-for="item.op_item_preco" id="op_item_preco" class="form-control" onchange="changeItens(this.id, this.value)" />
+                                <span asp-validation-for="item.op_item_preco" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_qtd" class="control-label"></label>
+                                <input asp-for="item.op_item_qtd" id="op_item_qtd" class="form-control" onchange="changeItens(this.id, this.value)" />
+                                <span asp-validation-for="item.op_item_qtd" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">Valor Total</label>
+                                <input id="item_valor_total" class="form-control" readonly="readonly" />
+                            </div>
+                        </div>
+                    </div>
+                    <fieldset>
+                        <legend>Outros Valores</legend>
+                        <div class="row">
+                            <div class="col-6 col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="item.op_item_frete" class="control-label"></label>
+                                    <input asp-for="item.op_item_frete" id="op_item_frete" class="form-control" onchange="changeItens(this.id, this.value)" />
+                                    <span asp-validation-for="item.op_item_frete" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="item.op_item_seguros" class="control-label"></label>
+                                    <input asp-for="item.op_item_seguros" id="op_item_seguros" class="form-control" onchange="changeItens(this.id, this.value)" />
+                                    <span asp-validation-for="item.op_item_seguros" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="item.op_item_desp_aces" class="control-label"></label>
+                                    <input asp-for="item.op_item_desp_aces" id="op_item_desp_aces" class="form-control" onchange="changeItens(this.id, this.value)" />
+                                    <span asp-validation-for="item.op_item_desp_aces" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="item.op_item_desconto" class="control-label"></label>
+                                    <input asp-for="item.op_item_desconto" id="op_item_desconto" class="form-control" onchange="changeItens(this.id, this.value)" />
+                                    <span asp-validation-for="item.op_item_desconto" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Impostos</legend>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="item.op_item_vlr_ipi" class="control-label"></label>
+                                    <input asp-for="item.op_item_vlr_ipi" id="op_item_vlr_ipi" class="form-control" onchange="decimal(this.id, this.value, '6')" />
+                                    <span asp-validation-for="item.op_item_vlr_ipi" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="item.op_item_vlr_icms_st" class="control-label"></label>
+                                    <input asp-for="item.op_item_vlr_icms_st" id="op_item_vlr_icms_st" class="form-control" onchange="decimal(this.id, this.value, '6')" />
+                                    <span asp-validation-for="item.op_item_vlr_icms_st" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <input type="hidden" id="op_item_numero_controle_edicao_item" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" onclick="gravar_item()">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Remover item-->
+    <div class="modal fade" id="modal_item_delete" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Item</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Confirma a exclusão do item?</p>
+                    <input type="hidden" id="item_delete" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="delete_item('0','confirmado')">Excluir</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Remover parcela-->
+    <div class="modal fade" id="modal_parcela_delete" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Parcela</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Confirma a exclusão da parcela?</p>
+                    <input type="hidden" id="parcela_delete" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="delete_parcela('0','confirmado')">Excluir</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Aguardando gravar-->
+    <div class="modal fade" id="modal_mensagem" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticLabel"></h5>
+                </div>
+                <div class="modal-body" id="conteudo">
+
+                </div>
+                <div class="modal-footer" id="rodape">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Gravação com sucesso-->
+    <div class="modal fade" id="modal_mensagem_sucesso" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Compra</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Compra cadastrada com sucesso!</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-info" asp-controller="Compra" asp-action="Create">Nova Compra</a>
+                    <a class="btn btn-secondary" asp-controller="Compra" asp-action="Index">Fechar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--add parcela-->
+    <div class="modal fade" id="modal_parcela_insert" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Inserir parcela</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12" style=\"padding-right: 0px;\">
+                            <div class="include_item_label" style="width: 11%">Dias</div>
+                            <div class="include_item_label" style="width: 25%">Vencimento</div>
+                            <div class="include_item_label" style="width: 26%">Valor</div>
+                            <div class="include_item_label" style="width: calc(40% - 95px)">Forma</div>
+                        </div>
+                    </div>
+                    <div id="novaParcela">
+
+                    </div>
+                    <input type="hidden" id="parcela_numeroControle" />
+                    <input type="hidden" id="data_operacao" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" onclick="novaParcela('gravar')">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Dados do retenções-->
+    <div class="modal fade" id="modal_retencoes" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Retenções</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="control-label">Valor Bruto</label>
+                                <input id="op_parcela_valor_bruto" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
+                            </div>
+                        </div>
+                        @*<div class="col-6">
+                                <div class="form-group">
+                                    <label class="control-label">Valor Líquido</label>
+                                    <input id="op_parcela_valor" class="form-control" onchange="edit_vlr_parcela(this.id, this.value)" />
+                                </div>
+                            </div>*@
+                    </div>
+                    <input type="hidden" id="controleEditParcela" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" id="gravar_parcela" onclick="edit_parcela(this.id, 'gravar')">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--mensagem retorno-->
+    <div class="modal fade" id="modal_mensagem_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mensagem_retorno_label"></h5>
+                </div>
+                <div class="modal-body" id="mensagem_retorno_conteudo">
+
+                </div>
+                <div class="modal-footer" id="mensagem_retorno_rodape">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+
+    <button type="button" class="btn btn-info" id="sub" onclick="gravarOperacao('Create', 'Compra')">Gravar</button>
+    <a class="btn btn-secondary" asp-controller="Compra" asp-action="Index">Cancelar</a>
+
+    <div class="displey_validacao">
+        <div class="row">
+            <div class="col-12">
+                <div class="msg_valid" id="msg_valid">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+

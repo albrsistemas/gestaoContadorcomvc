@@ -1,0 +1,214 @@
+﻿@model gestaoContadorcomvc.Models.ViewModel.Vm_ccm
+@{
+    Layout = null;
+}
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!--Alert retorno ajax-->
+            @*<div class="alert alert-danger alert-dismissible fade show box_modal" role="alert" id="Esconder" style="display:none;z-index: 2000;">
+                    <p id="msg_retorno"></p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="alert alert-success alert-dismissible fade show box_modal" role="alert" id="Esconder_success" style="display:none;z-index: 2000;">
+                    <p id="msg_retorno_success"></p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>*@
+            <div class="modal-header">
+                <h4 class="modal-title">Lançamento</h4>
+            </div>
+            <form asp-controller="ContaCorrenteMov" asp-action="Create">
+                <div class="modal-body" id="modal_c">
+                    <div class="row">
+                        <div class="col-12">
+                            <p>Novo lançamento</p>
+                        </div>
+                    </div>
+                    <hr class="hrLine" />
+                    <div class="row">
+                        @{
+                            DateTime today = DateTime.Today;
+
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="ccm_data" class="control-label">Data Pgto</label>
+                                    <input type="text" name="ccm_data" id="ccm_data" autocomplete="off" class="form-control datepicker" value="@today.ToShortDateString()" />
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="ccm_data_competencia" class="control-label">Competência</label>
+                                    <input type="text" name="ccm_data_competencia" id="ccm_data_competencia" autocomplete="off" class="form-control datepicker" value="@today.ToShortDateString()" />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="ccm_valor" class="control-label">Valor</label>
+                                <input type="text" autofocus asp-for="ccm_valor" id="ccm_valor" value="" class="form-control" onchange="decimal(this.id, this.value, '2')" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="ccm_memorando" class="control-label">Memorando</label>
+                                <textarea asp-for="ccm_memorando" id="ccm_memorando" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '150','memorando')"></textarea>
+                                <span class="text-info" id="memorando"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="control-label">Participante</label>
+                                <input type="text" id="participante" class="form-control" autocomplete="off" onkeyup="consultaParticipanteCCM(this.id)" />
+                                <input type="hidden" asp-for="ccm_participante_id" /> <!--ID do participante-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="categoria_id" class="control-label">Categoria</label>
+                                <select asp-items="@ViewBag.categoria" value="@TempData["categoria_id"]" id="categoria_id" name="categoria_id" class="form-control js_example_basic_single" style="width:100%"></select>
+                            </div>
+                        </div>
+                    </div>
+                    @{
+                        if (Model.nf.ccm_nf)
+                        {
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" id="nf_ccm" class="custom-control-input" onchange="ccm_nf(this.id,'box_nf')" checked="checked">
+                                <label class="custom-control-label" for="nf_ccm">Informar nota fiscal</label>
+                            </div>
+                            <script>
+                                document.getElementById('box_nf').style.display = 'block';
+                            </script>
+                        }
+                        else
+                        {
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" id="nf_ccm" class="custom-control-input" onchange="ccm_nf(this.id,'box_nf')">
+                                <label class="custom-control-label" for="nf_ccm">Informar nota fiscal</label>
+                            </div>
+                            <script>
+                                document.getElementById('box_nf').style.display = 'none';
+                            </script>
+                        }
+                    }
+                    <div style="display:none" id="box_nf">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="nf.ccm_nf_data_emissao" class="control-label">Data</label>
+                                    <input type="text" name="ccm_nf_data_emissao" id="ccm_nf_data_emissao" autocomplete="off" class="form-control datepicker" value="@today.ToShortDateString()" />
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="nf.ccm_nf_valor" class="control-label">Valor</label>
+                                    <input type="text" asp-for="nf.ccm_nf_valor" id="ccm_nf_valor" class="form-control" onchange="decimal(this.id, this.value, '2')" />
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="control-label">Série</label>
+                                    <input type="text" asp-for="nf.ccm_nf_serie" id="ccm_nf_serie" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="control-label">Número</label>
+                                    <input type="text" asp-for="nf.ccm_nf_numero" id="ccm_nf_numero" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="control-label">Chave de Acesso</label>
+                                    <input type="text" asp-for="nf.ccm_nf_chave" id="ccm_nf_chave" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="ccorrente_id" id="ccorrente_id" value="@Model.filtro.contacorrente_id" />
+                </div>
+                <div id="validaForm" style="display:none;margin-left: 15px;margin-right: 15px;">
+
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" asp-controller="ContaCorrenteMov" asp-action="Index" asp-route-contacorrente_id="@Model.filtro.contacorrente_id" asp-route-dataInicio="@Model.filtro.dataInicio.ToString("yyyy-M-d")" asp-route-dataFim="@Model.filtro.dataFim.ToString("yyyy-M-d")">Fechar</a>
+                    <button type="button" onclick="gravarLancamentoCCM('Create')" class="btn btn-info">Gravar</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!--Gravação com sucesso-->
+<div class="modal fade" id="ccm_gravado_sucesso" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Lançamento</h5>
+            </div>
+            <div class="modal-body">
+                <p>Lançamento gravado com sucesso!</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-secondary" asp-controller="ContaCorrenteMov" asp-action="Index" asp-route-contacorrente_id="@Model.filtro.contacorrente_id" asp-route-dataInicio="@Model.filtro.dataInicio.ToString("yyyy-M-d")" asp-route-dataFim="@Model.filtro.dataFim.ToString("yyyy-M-d")">Voltar</a>
+                <button type="button" class="btn btn-success" onclick="close_ccm_gravado_sucesso()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Gravação com Erro-->
+<div class="modal fade" id="ccm_gravado_erro" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Lançamento</h5>
+            </div>
+            <div class="modal-body">
+                <p id="msg_retorno"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" onclick="close_ccm_gravado_erro()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    execDatapicker();
+    modal_modal();
+    function close_ccm_gravado_sucesso() {
+        document.getElementById('ccm_valor').value = "";
+        document.getElementById('ccm_memorando').value = "";
+        document.getElementById('ccm_nf_data_emissao').value = "";
+        document.getElementById('ccm_nf_valor').value = "";
+        document.getElementById('ccm_nf_serie').value = "";
+        document.getElementById('ccm_nf_numero').value = "";
+        document.getElementById('ccm_nf_chave').value = "";
+        document.getElementById('nf_ccm').checked = false;
+        document.getElementById('box_nf').style.display = 'none';
+        $('#ccm_gravado_sucesso').modal('hide');
+        $('#modal').on('shown.bs.modal', function () {
+            $('#ccm_valor').focus();
+        });
+    }
+    function close_ccm_gravado_erro() {
+        $('#ccm_gravado_erro').modal('hide');
+    }
+</script>
+
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

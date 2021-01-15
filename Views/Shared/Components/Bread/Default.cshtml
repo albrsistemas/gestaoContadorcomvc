@@ -7,35 +7,34 @@
     {
         <div class="bread_page" id="bread_page">
             <a class="SelectClient" style="cursor:pointer">@ViewData["bread"].ToString()</a>
-        </div>        
+        </div>
     }
 
     if (ViewData["area"] != null && ViewData["area"].ToString().Equals("Empresa"))
     {
         if (ViewData["openNav"] != null && ViewData["openNav"].ToString().Equals("aberto"))
         {
-            <div class="bread_page" id="bread_page">
+            <div class="bread_page" id="bread_page" style="width:100%;">
                 <p onclick="openNav('fechado')">@ViewData["bread"].ToString()</p>
             </div>
 
             if (ViewData["bread"].ToString().Contains("Configurações"))
-            {
-                <div id="mySidenav" class="sidenav">
-                    @{ 
-                        if(user.Role == "adm" || user._permissoes.configContabilidade)
+                    {
+                        if (user.Role == "adm" || user._permissoes.configContabilidade)
                         {
-                            <a asp-controller="Configuracoes" asp-action="Contabilidade">Contabildiade</a>
+                            <div id="mySidenav" class="sidenav">
+                                <a asp-controller="Configuracoes" asp-action="Contabilidade">Contabildiade</a>
+                                <a asp-controller="Log" asp-action="Index">Log</a>
+                            </div>
+                            
                         }
-                    }                    
-                </div>
-            }
-
+                    }
             <script>
-                document.getElementById("bread").style.cursor = "pointer";
-                document.getElementById("bread").addEventListener('click', function () {
+                document.getElementById("bread_page").style.cursor = "pointer";
+                document.getElementById("bread_page").addEventListener('click', function () {
                     openNav('aberto');
                 });
-            </script>
+            </script>            
         }
         else
         {

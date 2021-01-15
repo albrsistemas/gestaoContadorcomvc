@@ -196,5 +196,13 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             }
         }
 
+        public IActionResult emailExiste(string usuario_email)
+        {
+            Registro registro = new Registro();
+            bool existe = registro.emailExiste(usuario_email);
+
+            return Json(!existe);
+        }
+
     }
 }
