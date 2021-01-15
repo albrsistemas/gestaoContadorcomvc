@@ -175,7 +175,7 @@
     <div class="col-12">
         <label class="control-label">Retenções</label>
         <div class="input-group mb-3">
-            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="itens" id="itens" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="retencoes" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
             <div class="input-group-append">
                 <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="modal_sobre_modal_open('m_retencoes')">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -208,7 +208,7 @@
     <div class="col-12 col-md-6">
         <label class="control-label">Parcelas</label>
         <div class="input-group mb-3">
-            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="itens" id="itens" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="parcelas" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
             <div class="input-group-append">
                 <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="modal_sobre_modal_open('lista_parcelas')">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -221,7 +221,7 @@
     <div class="col-12 col-md-6">
         <label class="control-label">Documento Fiscal</label>
         <div class="input-group mb-3">
-            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="itens" id="itens" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="documento" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
             <div class="input-group-append">
                 <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="modal_sobre_modal_open('lista_dctos_fiscais')">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -627,7 +627,7 @@
                     <div class="col-6 col-md-4">
                         <div class="form-group">
                             <label class="control-label linha_itens">Data Fim</label>
-                            <input type="text" id="parcela_data_inicio" class="form-control form-control-sm linha_itens datepicker" />
+                            <input type="text" id="parcela_data_fim" class="form-control form-control-sm linha_itens datepicker" />
                         </div>
                     </div>
                     <div class="col-12 col-md-4">

@@ -243,7 +243,36 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Relatório por Categorias";
                 }
-
+                //Operação
+                if (pagina.Contains("Operacao/Index"))
+                {
+                    retorno = "Operação";
+                }
+                if (pagina.Contains("Operacao/Create"))
+                {
+                    retorno = "Incluir Operação";
+                }
+                if (pagina.Contains("Operacao/Edit"))
+                {
+                    retorno = "Alterar Operacao";
+                }
+                if (pagina.Contains("Operacao/Details"))
+                {
+                    retorno = "Detelhes Operacao";
+                }
+                //E-mail suporte
+                if (pagina.Contains("Email/EnviaEmail"))
+                {
+                    retorno = "E-mail Suporte";
+                }
+                if (pagina.Contains("Email/EmailEnviado"))
+                {
+                    retorno = "E-mail Suporte - Sucesso";
+                }
+                if (pagina.Contains("Email/EmailFalhou"))
+                {
+                    retorno = "E-mail Suporte - Falha";
+                }                
             }
 
             ViewData["openNav"] = openNav;
