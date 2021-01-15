@@ -276,7 +276,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT ccm.ccm_id, if(ccm.ccm_movimento = 'S', ccm.ccm_ccorrente_id, (SELECT conta_corrente_mov.ccm_ccorrente_id from conta_corrente_mov WHERE conta_corrente_mov.ccm_id = ccm.ccm_contra_partida_id)) as de, if(ccm.ccm_movimento = 'S', (SELECT conta_corrente_mov.ccm_ccorrente_id from conta_corrente_mov WHERE conta_corrente_mov.ccm_id = ccm.ccm_contra_partida_id) ,ccm.ccm_ccorrente_id) as para, ccm.ccm_data as data, ccm.ccm_valor as valor, ccm.ccm_memorando as memorando from conta_corrente_mov as ccm WHERE ccm.ccm_id = @ccm_id and ccm.ccm_conta_id = @conta_id;";
+                comando.CommandText = "SELECT ccm.ccm_id, if(ccm.ccm_movimento = 'S', ccm.ccm_ccorrente_id, (SELECT conta_corrente_mov.ccm_ccorrente_id from conta_corrente_mov WHERE conta_corrente_mov.ccm_id = ccm.ccm_origem_id)) as de, if(ccm.ccm_movimento = 'S', (SELECT conta_corrente_mov.ccm_ccorrente_id from conta_corrente_mov WHERE conta_corrente_mov.ccm_id = ccm.ccm_origem_id) ,ccm.ccm_ccorrente_id) as para, ccm.ccm_data as data, ccm.ccm_valor as valor, ccm.ccm_memorando as memorando from conta_corrente_mov as ccm WHERE ccm.ccm_id = @ccm_id and ccm.ccm_conta_id = @conta_id;";
                 comando.Parameters.AddWithValue("@ccm_id", ccm_id);
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.ExecuteNonQuery();

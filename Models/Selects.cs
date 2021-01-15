@@ -498,6 +498,11 @@ namespace gestaoContadorcomvc.Models
             List<Selects> regimes = new List<Selects>();
             regimes.Add(new Selects
             {
+                value = "0",
+                text = "Sem informação"
+            });
+            regimes.Add(new Selects
+            {
                 value = "1",
                 text = "Simples Nacional"
             });

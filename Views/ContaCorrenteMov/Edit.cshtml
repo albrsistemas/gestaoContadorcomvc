@@ -63,17 +63,17 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
-                                <label asp-for="categoria_id" class="control-label">Categoria</label>
-                                <select asp-items="@ViewBag.categoria" value="@TempData["categoria_id"]" id="categoria_id" name="categoria_id" class="form-control js_example_basic_single" style="width:100%"></select>
+                                <label class="control-label">Participante</label>
+                                <input type="text" asp-for="participante_nome" id="participante" class="form-control" autocomplete="off" onkeyup="consultaParticipanteCCM(this.id)" />
+                                <input type="hidden" asp-for="ccm_participante_id" /> <!--ID do participante-->
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
-                                <label class="control-label">Participante</label>
-                                <input type="text" asp-for="participante_nome" id="participante" class="form-control" autocomplete="off" onkeyup="consultaParticipanteCCM(this.id)" />
-                                <input type="hidden" asp-for="ccm_participante_id" /> <!--ID do participante-->
+                                <label asp-for="categoria_id" class="control-label">Categoria</label>
+                                <select asp-items="@ViewBag.categoria" value="@TempData["categoria_id"]" id="categoria_id" name="categoria_id" class="form-control js_example_basic_single" style="width:100%"></select>
                             </div>
                         </div>
                     </div>

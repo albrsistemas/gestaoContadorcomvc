@@ -1298,7 +1298,8 @@ function consultaParticipante(id) {
             if (document.getElementById('op_part_participante_id')) {
                 document.getElementById('op_part_participante_id').value = ui.item.id;
             }
-                        
+
+            //Atribuindo a categoria no select2
             if (document.getElementById('cf_categoria_id')) {
                 $('#cf_categoria_id').val(ui.item.categoria_id.toString()); 
                 $('#cf_categoria_id').trigger('change');
@@ -3641,6 +3642,7 @@ function consultaParticipanteCCM(id) {
                             value: results[i].participante_nome,
                             label: results[i].participante_nome + " - " + results[i].participante_cnpj_cpf,
                             id: results[i].participante_id,
+                            categoria_id: results[i].participante_categoria,
                         };
                         autocompleteObjects.push(object);
                     }
@@ -3658,6 +3660,13 @@ function consultaParticipanteCCM(id) {
             if (document.getElementById('participante_id')) {
                 document.getElementById('participante_id').value = ui.item.id;
             }
+
+            //Atribuindo a categoria no select2
+            if (document.getElementById('categoria_id')) {
+                $('#categoria_id').val(ui.item.categoria_id.toString());
+                $('#categoria_id').trigger('change');
+            }
+
         }
     });
 }
