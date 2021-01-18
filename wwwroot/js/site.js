@@ -1304,6 +1304,11 @@ function consultaParticipante(id) {
                 $('#cf_categoria_id').val(ui.item.categoria_id.toString()); 
                 $('#cf_categoria_id').trigger('change');
             }
+            //Atribuindo a categoria no select2 quando id = op_categoria_id
+            if (document.getElementById('op_categoria_id')) {
+                $('#op_categoria_id').val(ui.item.categoria_id.toString());
+                $('#op_categoria_id').trigger('change');
+            }
 
             //Carregando dados do parcitipante no opjeto operação.
             dadorParticipante('insert',ui.item.id);
@@ -1349,7 +1354,9 @@ function consultaProdutos(id, contexto) {
                 type: 'POST',
                 dataType: 'json',
                 beforeSend: function (XMLHttpRequest) {
-
+                    if (document.getElementById('msg_pesquisa_item')) {
+                        document.getElementById('msg_pesquisa_item').innerHTML = 'pesquisando...';
+                    }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     alert("erro");
@@ -1369,9 +1376,12 @@ function consultaProdutos(id, contexto) {
                         };
                         autocompleteObjects.push(object);
                     }
-
                     // Invoke the response callback.
                     response(autocompleteObjects);
+
+                    if (document.getElementById('msg_pesquisa_item')) {
+                        document.getElementById('msg_pesquisa_item').innerHTML = '';
+                    }
                 }
             });
         },
@@ -1497,7 +1507,7 @@ function incluir_item() {
 function ajusta_item(id, vlr) {
     let qtd = document.getElementById('prod_quantidade').value;
     let vlrProd = document.getElementById('prod_valor').value;
-    let total = qtd.toString().replace(",", ".") * vlrProd.toString().replace(",", ".");
+    let total = qtd.toString().replace(".", "").replace(",", ".") * vlrProd.toString().replace(".", "").replace(",", ".");
 
     decimal('prod_valorTotal', total.toString().replace(".", ","), '6', true);
     decimal(id, vlr, '6', true);    

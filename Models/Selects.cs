@@ -435,7 +435,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT u.uf_ibge_codigo, u.uf_ibge_sigla from uf_ibge as u WHERE u.uf_ibge_data_fim IS NULL;";                
+                comando.CommandText = "SELECT u.uf_ibge_codigo, u.uf_ibge_sigla from uf_ibge as u WHERE u.uf_ibge_data_fim IS NULL ORDER by u.uf_ibge_sigla ASC;";                
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -1660,6 +1660,38 @@ namespace gestaoContadorcomvc.Models
             {
                 value = "Contabilidade",
                 text = "Contabilidade"
+            });
+
+            return selects;
+        }
+
+        public List<Selects> getOperacoes()
+        {
+            List<Selects> selects = new List<Selects>();
+            selects.Add(new Selects
+            {
+                value = "Compra",
+                text = "Compra Produtos"
+            });
+            selects.Add(new Selects
+            {
+                value = "Venda",
+                text = "Venda Produtos"
+            });
+            selects.Add(new Selects
+            {
+                value = "ServicoPrestado",
+                text = "Serviço Prestado"
+            });
+            selects.Add(new Selects
+            {
+                value = "ServicoTomado",
+                text = "Serviço Tomado"
+            });
+            selects.Add(new Selects
+            {
+                value = "Outras",
+                text = "Outras"
             });
 
             return selects;

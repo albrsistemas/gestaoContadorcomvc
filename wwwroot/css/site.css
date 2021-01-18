@@ -1,4 +1,7 @@
-﻿/*CSS criado no desenvolvimento*/
+﻿.ui-autocomplete {
+    z-index: 1050 !important;
+}
+/*CSS criado no desenvolvimento*/
 .select2-container .select2-selection--single {
     box-sizing: border-box;
     cursor: pointer;

@@ -65,32 +65,32 @@
     };
 
     //Funcções
-    function change_especie(id, vlr) {
-        if (vlr == 1) { //Compra/Venda Produtos
+    function change_op_tipo(id, vlr) {
+        if (vlr == 'Compra' || vlr == 'Venda') { //Compra/Venda Produtos
             document.getElementById('itens_operacao').style.display = 'block';
             document.getElementById('servico_operacao').style.display = 'none';
             document.getElementById('outros_operacao').style.display = 'none';
 
             //Retorna serviços a defoult
-            retornaServicoDefault();
+            //retornaServicoDefault(); ==>Colocar na função de gravarOperacao de forma que limpa a situação que não se aplica.
         }
-        if (vlr == 2) { //Serviços
+        if (vlr == 'ServicoPrestado' || vlr == 'ServicoTomado') { //Serviços
             document.getElementById('itens_operacao').style.display = 'none';
             document.getElementById('servico_operacao').style.display = 'block';
             document.getElementById('outros_operacao').style.display = 'none';
 
             //Remove os itens da operação
-            excluirTodosItensOperacao();
+            //excluirTodosItensOperacao(); ==>Colocar na função de gravarOperacao de forma que limpa a situação que não se aplica.
         }
-        if (vlr == 3) {//Outros
+        if (vlr == 'Outras') {//Outros
             document.getElementById('itens_operacao').style.display = 'none';
             document.getElementById('servico_operacao').style.display = 'none';
             document.getElementById('outros_operacao').style.display = 'block';
 
             //Remove os itens da operação
-            excluirTodosItensOperacao();
+            //excluirTodosItensOperacao();==>Colocar na função de gravarOperacao de forma que limpa a situação que não se aplica.
             //Retorna serviços a defoult
-            retornaServicoDefault();
+            //retornaServicoDefault();==>Colocar na função de gravarOperacao de forma que limpa a situação que não se aplica.
         }
     }
 
@@ -112,27 +112,6 @@
         document.getElementById('servicos').value = 'LC 116/2003: ' + operacao.servico.op_servico_lc116 + ' | Valor: ' + operacao.servico.op_servico_valor;
     }
 
-    function retornaParticipanteDefault() {
-        operacao.participante = participante_default;
-        document.getElementById('participante').value = 'Não informado';
-        //Limpa campos do modal
-        document.getElementById('nome').value = '';
-        document.getElementById('participante_tipoPessoa').value = 1;
-        document.getElementById('op_part_cnpj_cpf').value = '';
-        document.getElementById('cep').value = '';
-        document.getElementById('rua').value = '';
-        document.getElementById('numero').value = '';
-        document.getElementById('complemento').value = '';
-        document.getElementById('bairro').value = '';
-        document.getElementById('cidade').value = '';
-        document.getElementById('uf').value = 35;
-        document.getElementById('op_paisesIBGE_codigo').value = 1058;
-        //Fechando modal
-        if (document.getElementById('modal_participante')) {
-            $('#modal_participante').modal('hide');
-        }
-    }
-
     function gravarDadosParticipante(contexto, op_part_participante_id) {
         dadorParticipante(contexto, op_part_participante_id)
 
@@ -144,6 +123,330 @@
             $('#modal_participante').modal('hide');
         }
     }
+
+    function operacao_participante(contexto) {
+        if (contexto == 'open') {
+            if (document.getElementById('nome')) {
+                document.getElementById('nome').value = operacao.participante.op_part_nome;
+            }
+            if (document.getElementById('participante_tipoPessoa')) {
+                document.getElementById('participante_tipoPessoa').value = operacao.participante.op_part_tipo;
+            }
+            if (document.getElementById('op_part_cnpj_cpf')) {
+                document.getElementById('op_part_cnpj_cpf').value = operacao.participante.op_part_cnpj_cpf;
+            }
+            if (document.getElementById('cep')) {
+                document.getElementById('cep').value = operacao.participante.op_part_cep;
+            }
+            if (document.getElementById('rua')) {
+                document.getElementById('rua').value = operacao.participante.op_part_logradouro;
+            }
+            if (document.getElementById('numero')) {
+                document.getElementById('numero').value = operacao.participante.op_part_numero;
+            }
+            if (document.getElementById('complemento')) {
+                document.getElementById('complemento').value = operacao.participante.op_part_complemento;
+            }
+            if (document.getElementById('bairro')) {
+                document.getElementById('bairro').value = operacao.participante.op_part_bairro;
+            }
+            if (document.getElementById('cidade')) {
+                document.getElementById('cidade').value = operacao.participante.op_part_cidade;
+            }
+            if (document.getElementById('uf')) {
+                document.getElementById('uf').value = operacao.participante.op_uf_ibge_codigo;
+            }
+            if (document.getElementById('op_paisesIBGE_codigo')) {
+                document.getElementById('op_paisesIBGE_codigo').value = operacao.participante.op_paisesIBGE_codigo;
+            }
+
+            //Abre modal
+            modal_sobre_modal_open('modal_participante');            
+        }
+
+        if (contexto == 'save') {
+
+            if (operacao.op_part_participante_id != 0) {
+                if (document.getElementById('nome')) {
+                    operacao.participante.op_part_nome = document.getElementById('nome').value;
+                }
+                if (document.getElementById('participante_tipoPessoa')) {
+                    operacao.participante.op_part_tipo = document.getElementById('participante_tipoPessoa').value;
+                }
+                if (document.getElementById('op_part_cnpj_cpf')) {
+                    operacao.participante.op_part_cnpj_cpf = document.getElementById('op_part_cnpj_cpf').value;
+                }
+                if (document.getElementById('cep')) {
+                    operacao.participante.op_part_cep = document.getElementById('cep').value;
+                }
+                if (document.getElementById('rua')) {
+                    operacao.participante.op_part_logradouro = document.getElementById('rua').value;
+                }
+                if (document.getElementById('numero')) {
+                    operacao.participante.op_part_numero = document.getElementById('numero').value;
+                }
+                if (document.getElementById('complemento')) {
+                    operacao.participante.op_part_complemento = document.getElementById('complemento').value;
+                }
+                if (document.getElementById('bairro')) {
+                    operacao.participante.op_part_bairro = document.getElementById('bairro').value;
+                }
+                if (document.getElementById('cidade')) {
+                    operacao.participante.op_part_cidade = document.getElementById('cidade').value;
+                }
+                if (document.getElementById('uf')) {
+                    operacao.participante.op_uf_ibge_codigo = document.getElementById('uf').value;
+                }
+                if (document.getElementById('op_paisesIBGE_codigo')) {
+                    operacao.participante.op_paisesIBGE_codigo = document.getElementById('op_paisesIBGE_codigo').value;
+                }
+
+                document.getElementById('participante').value = operacao.participante.op_part_nome;
+                if (document.getElementById('modal_participante')) {
+                    $('#modal_participante').modal('hide');
+                }
+            }
+        }
+
+        if (contexto == 'delete') {
+            operacao.participante = participante_default;
+            document.getElementById('participante').value = 'Não informado';
+            //Limpa campos do modal
+            document.getElementById('nome').value = '';
+            document.getElementById('participante_tipoPessoa').value = 1;
+            document.getElementById('op_part_cnpj_cpf').value = '';
+            document.getElementById('cep').value = '';
+            document.getElementById('rua').value = '';
+            document.getElementById('numero').value = '';
+            document.getElementById('complemento').value = '';
+            document.getElementById('bairro').value = '';
+            document.getElementById('cidade').value = '';
+            document.getElementById('uf').value = 35;
+            document.getElementById('op_paisesIBGE_codigo').value = 1058;
+            //Fechando modal
+            if (document.getElementById('modal_participante')) {
+                $('#modal_participante').modal('hide');
+            }
+        }
+    }
+
+    function changeUFParticipante(id, vlr, contexto) {
+        if (contexto == 'uf') {
+            if (vlr == 0) {                          
+                document.getElementById('op_paisesIBGE_codigo').removeAttribute("readonly");
+            } else {                
+                document.getElementById('op_paisesIBGE_codigo').setAttribute("readonly", "readonly");
+                document.getElementById('op_paisesIBGE_codigo').value = '1058';
+            }
+        }
+        if (contexto == 'pais') {
+            let uf = document.getElementById('uf').value;
+            if (uf != 0) {
+                document.getElementById('op_paisesIBGE_codigo').value = '1058';
+            }
+        }
+    }
+
+    
+    function operacao_itens(contexto) {
+        if (contexto == 'open') {            
+            //Atualiza tabela de itens
+            atualizaViewItens();            
+            //Abrir modal
+            modal_sobre_modal_open('lista_itens');
+        }
+
+        if (contexto == 'close') {
+            if (operacao.itens.length > 0) {
+                document.getElementById('itens').value = 'Quantidade de Itens Informado: ' + operacao.itens.length;
+            } else {
+                document.getElementById('itens').value = 'Não informado';
+            }
+            
+        }
+
+        if (contexto == 'save') {
+            let id = document.getElementById('produto_id').value;
+            let prod_descricao = document.getElementById('prod_descricao').value;
+            let prod_codigo = document.getElementById('prod_codigo').value;
+            let prod_valor = document.getElementById('prod_valor').value;
+            let prod_quantidade = document.getElementById('prod_quantidade').value;
+            let prod_valorTotal = document.getElementById('prod_valorTotal').value;
+            let prod_unidade = document.getElementById('unidade').value;
+
+            if (id > 0) {
+                document.getElementById('produto_id').value = 0;
+                document.getElementById('prod_descricao').value = "";
+                document.getElementById('prod_codigo').value = "";
+                document.getElementById('prod_valor').value = "";
+                document.getElementById('prod_quantidade').value = "";
+                document.getElementById('prod_valorTotal').value = "";
+
+                let numero_controle = id + Math.floor(Math.random() * 100000) + 1;
+
+                if (isNaN((prod_valor.toString().replace('.', '').replace(',', '.') * 1)) || isNaN((prod_quantidade.toString().replace('.', '').replace(',', '.') * 1)) || isNaN((prod_valorTotal.toString().replace('.', '').replace(',', '.') * 1))) {
+                    alert('Valor incorreto no valor unitário, quantidade ou total do item');
+                    document.getElementById('prod_descricao').focus();
+                } else {
+                    let item_produto = {
+                        op_item_numero_controle: numero_controle, //id é o produto_id selecionado. Adicionaod ao objeto para fins de controle (localiza-lo no momento da edição dos dados);
+                        op_item_produto_id: id,
+                        op_item_id: numero_controle,
+                        op_item_codigo: prod_codigo,
+                        op_item_nome: prod_descricao,
+                        op_item_unidade: prod_unidade,
+                        op_item_preco: prod_valor,
+                        op_item_gtin_ean: '',
+                        op_item_gtin_ean_trib: '',
+                        op_item_obs: '',
+                        op_item_qtd: prod_quantidade,
+                        op_item_frete: '0,00',
+                        op_item_seguros: '0,00',
+                        op_item_desp_aces: '0,00',
+                        op_item_desconto: '0,00',
+                        op_item_vlr_ipi: '0,00',
+                        op_item_vlr_icms_st: '0,00',
+                        op_item_cod_fornecedor: '',
+                        op_item_valor_total: prod_valorTotal,
+                        controleEdit: 'insert',
+                        op_item_id_banco: 0,
+                    };
+                    operacao.itens.push(item_produto);
+                                        
+                    //Atualiza tabela de itens
+                    atualizaViewItens();                    
+
+                    //Inserindo em totais total de itens
+                    operacao.totais.op_totais_itens += 1;
+
+                    //Inserindo em totais a soma das quantidades totais
+                    let qtd_total = (operacao.totais.op_totais_qtd_itens.toString().replace('.', '').replace(',', '.') * 1) + (prod_quantidade.toString().replace('.', '').replace(',', '.') * 1);
+                    operacao.totais.op_totais_qtd_itens = qtd_total.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+
+                    document.getElementById('prod_descricao').focus();
+
+                    //totaisOperacao();
+                }
+
+            } else {
+                document.getElementById('prod_descricao').focus();
+            }
+
+
+
+        }
+    }
+
+    function operacao_item(contexto, op_item_numero_controle) {
+
+        let item = operacao.itens.find(item => item.op_item_numero_controle == op_item_numero_controle);       
+
+        if (contexto == 'edit') {   
+            document.getElementById('op_item_numero_controle_edicao_item').value = item.op_item_numero_controle;
+            document.getElementById('op_item_nome').value = item.op_item_nome;
+            document.getElementById('op_item_codigo').value = item.op_item_codigo;
+            document.getElementById('op_item_cod_fornecedor').value = item.op_item_cod_fornecedor;
+            document.getElementById('op_item_unidade').value = item.op_item_unidade;
+            decimal('op_item_preco', item.op_item_preco.toString().replace('.', ''), '6', true);
+            decimal('op_item_qtd', item.op_item_qtd.toString().replace('.', ''), '6', true);
+            decimal('item_valor_total', item.op_item_valor_total.toString().replace('.', ''), '6', true);
+            decimal('op_item_frete', item.op_item_frete.toString().replace('.', ''), '6', true);
+            decimal('op_item_seguros', item.op_item_seguros.toString().replace('.', ''), '6', true);
+            decimal('op_item_desp_aces', item.op_item_desp_aces.toString().replace('.', ''), '6', true);
+            decimal('op_item_desconto', item.op_item_desconto.toString().replace('.', ''), '6', true);
+            decimal('op_item_vlr_ipi', item.op_item_vlr_ipi.toString().replace('.', ''), '6', true);
+            decimal('op_item_vlr_icms_st', item.op_item_vlr_icms_st.toString().replace('.', ''), '6', true);
+
+            //Abrir modal
+            modal_sobre_modal_open('modal_item');
+        }
+
+        if (contexto == 'delete_confirmar') {
+            document.getElementById('item_excluir').innerHTML = 'Confirma a exclusão do item: ' + item.op_item_nome + '?';
+            document.getElementById('item_delete').value = item.op_item_numero_controle;
+            //Abrir modal
+            modal_sobre_modal_open('modal_item_delete');
+        }
+
+        if (contexto == 'delete_confirmado') {
+            let codigo = document.getElementById('item_delete').value;            
+
+            for (let i = 0; i < operacao.itens.length; i++) {
+                if (operacao.itens[i].op_item_numero_controle == codigo) {
+                    if (operacao.itens[i].controleEdit == 'update') {
+                        //altera o status de controleEdit para enviar ao servidor para excluir no banco;
+                        operacao.itens[i].controleEdit = 'delete';
+                    } else {
+                        //remove item do objeto operacao da matriz itens
+                        operacao.itens.splice(i, 1);
+                    }
+                }
+            }
+
+            //Atualiza tabela de itens
+            atualizaViewItens();
+
+            //Fecha modal de confirmação
+            $('#modal_item_delete').modal('hide');
+        }
+
+        if (contexto == 'save') {
+            let op_item_numero_controle = document.getElementById('op_item_numero_controle_edicao_item').value * 1;
+
+            for (let i = 0; i < operacao.itens.length; i++) {
+                if (operacao.itens[i].op_item_numero_controle == op_item_numero_controle) {
+                    //atualiza objeto
+                    operacao.itens[i].op_item_codigo = document.getElementById('op_item_codigo').value;
+                    operacao.itens[i].op_item_nome = document.getElementById('op_item_nome').value;
+                    operacao.itens[i].op_item_unidade = document.getElementById('op_item_unidade').value;
+                    operacao.itens[i].op_item_preco = document.getElementById('op_item_preco').value;
+                    operacao.itens[i].op_item_qtd = document.getElementById('op_item_qtd').value;
+                    operacao.itens[i].op_item_frete = document.getElementById('op_item_frete').value;
+                    operacao.itens[i].op_item_seguros = document.getElementById('op_item_seguros').value;
+                    operacao.itens[i].op_item_desp_aces = document.getElementById('op_item_desp_aces').value;
+                    operacao.itens[i].op_item_desconto = document.getElementById('op_item_desconto').value;
+                    operacao.itens[i].op_item_vlr_ipi = document.getElementById('op_item_vlr_ipi').value;
+                    operacao.itens[i].op_item_vlr_icms_st = document.getElementById('op_item_vlr_icms_st').value;
+                    operacao.itens[i].op_item_cod_fornecedor = document.getElementById('op_item_cod_fornecedor').value;
+                    operacao.itens[i].op_item_valor_total = document.getElementById('item_valor_total').value;
+                    //Atualiza tabela de itens
+                    atualizaViewItens();
+                    //calcula os totais
+                    //totaisOperacao();
+                    break;
+                }
+            }
+            $('#modal_item').modal('hide');
+        }
+    }
+
+    function atualizaViewItens() {
+        document.getElementById('tbody_itens').innerHTML = '';
+        for (let i = 0; i < operacao.itens.length; i++) {
+            item = '';
+            item += '<tr>';
+            item += '<td>';
+            item += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="cursor:pointer;" onclick="operacao_item(\'edit\',\'' + operacao.itens[i].op_item_numero_controle + '\')">';
+            item += '<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />';
+            item += '<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />';
+            item += '</svg>';
+            item += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" style="cursor:pointer;" onclick="operacao_item(\'delete_confirmar\',\'' + operacao.itens[i].op_item_numero_controle + '\')">';
+            item += '<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />';
+            item += '<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />';
+            item += '</svg>';
+            item += '</td>';
+            item += '<td>' + operacao.itens[i].op_item_nome + '</td>';
+            item += '<td>' + operacao.itens[i].op_item_codigo + '</td>';
+            item += '<td>' + operacao.itens[i].op_item_qtd + '</td>';
+            item += '<td>' + operacao.itens[i].op_item_preco + '</td>';
+            item += '<td>' + operacao.itens[i].op_item_valor_total + '</td>';
+            item += '<td>' + 'NCM' + '</td>';
+            item += '<td>' + 'CEST' + '</td>';
+            item += '</tr>';
+            $('#tbody_itens').append(item);
+        }
+    }
+
 
 
     
