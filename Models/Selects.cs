@@ -1690,8 +1690,13 @@ namespace gestaoContadorcomvc.Models
             });
             selects.Add(new Selects
             {
-                value = "Outras",
-                text = "Outras"
+                value = "OutrosGastos",
+                text = "Outros Gastos"
+            });
+            selects.Add(new Selects
+            {
+                value = "OutrasReceitas",
+                text = "Outras Receitas"
             });
 
             return selects;

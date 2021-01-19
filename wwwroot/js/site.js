@@ -936,7 +936,7 @@ function decimal(id, vlr, limit, alerta) {
         return;
     }
 
-    let matriz = vlr.replace('.','').split(","); 
+    let matriz = vlr.toString().replace('.','').split(","); 
     //console.log(vlr);
     //console.log(matriz);
 
@@ -1636,12 +1636,21 @@ function totaisOperacao() {
     let op_totais_ipi = 0;  
     let op_totais_preco_servicos = 0;
 
-    if (operacao.operacao.op_tipo == 'ServicoPrestado' || operacao.operacao.op_tipo == 'ServicoTomado') {
+    /*if (operacao.operacao.op_tipo == 'ServicoPrestado' || operacao.operacao.op_tipo == 'ServicoTomado') {
+        
+    }*/
+
+    if (document.getElementById('op_totais_preco_servicos')) {        
         op_totais_preco_servicos = document.getElementById('op_servico_valor').value.replace('.', '').replace(',', '.') * 1;
-        if (document.getElementById('op_totais_preco_servicos')) {
-            decimal('op_totais_preco_servicos', operacao.totais.op_totais_preco_servicos, '2', false);
-        }
+
+        operacao.totais.op_totais_preco_servicos = op_totais_preco_servicos.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+    }   
+
+    if (document.getElementById('op_totais_preco_servicos')) {        
+        decimal('op_totais_preco_servicos', operacao.totais.op_totais_preco_servicos.toString().replace('.', ''), '2', false);
     }
+
+    
 
     for (let i = 0; i < operacao.itens.length; i++) {
         if (operacao.itens[i].controleEdit == 'update' || operacao.itens[i].controleEdit == 'insert') {
@@ -1701,7 +1710,7 @@ function totaisOperacao() {
     }
 
     if (document.getElementById('totais')) {
-        decimal('totais', operacao.totais.op_totais_total_op.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }), '2', false);
+        decimal('totais', operacao.totais.op_totais_total_op.toString().replace('.', ''), '2', false);
     }
 
 }

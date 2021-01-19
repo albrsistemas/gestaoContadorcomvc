@@ -59,51 +59,100 @@
         op_servico_problema: '',
         op_servico_obsReceb: '',
         op_servico_servico_executado: '',
-        op_servico_valor: 0,
+        op_servico_valor: '',
         op_servico_status: '',
         op_servico_lc116: '',
     };
 
     //Funcções
-    function change_op_tipo(id, vlr) {
-        if (vlr == 'Compra' || vlr == 'Venda') { //Compra/Venda Produtos
-            document.getElementById('itens_operacao').style.display = 'block';
-            document.getElementById('servico_operacao').style.display = 'none';
-            document.getElementById('outros_operacao').style.display = 'none';
+    function change_op_tipo(id, vlr, contexto) {
+        let s = convertStringDouble(operacao.servico.op_servico_valor);
+        let p = operacao.itens.length;
 
-            document.getElementById('totais_servico').style.display = 'none';
-            document.getElementById('totais_itens').style.display = 'block';
+        if (s > 0 || p > 0) {
+            let up = '<button type="button" class="btn btn-danger" onclick="change_op_tipo(\'' + id + '\', \'' + vlr + '\',\'confirmado\')">Alterar</button>';
+            let del = '<button type="button" class="btn btn-secondary" onclick="change_op_tipo(\'' + id + '\', \'' + vlr + '\',\'nao_confirmado\')">Cancelar</button>';
 
-            //Retorna serviços a defoult
-            //retornaServicoDefault(); ==>Colocar na função de gravarOperacao de forma que limpa a situação que não se aplica.
-        }
-        if (vlr == 'ServicoPrestado' || vlr == 'ServicoTomado') { //Serviços
-            document.getElementById('itens_operacao').style.display = 'none';
-            document.getElementById('servico_operacao').style.display = 'block';
-            document.getElementById('outros_operacao').style.display = 'none';
+            if (contexto == 'confirmar') {
+                if (document.getElementById('footer_update_especie')) {
+                    document.getElementById('footer_update_especie').innerHTML = '';
+                    $('#footer_update_especie').append(up);
+                    $('#footer_update_especie').append(del);
+                }
+                //Abre modal
+                modal_sobre_modal_open('modal_update_especie');
+            }
 
-            document.getElementById('totais_servico').style.display = 'block';
-            document.getElementById('totais_itens').style.display = 'none';
+            if (contexto == 'nao_confirmado') {
+                if (document.getElementById('footer_update_especie')) {
+                    document.getElementById('footer_update_especie').innerHTML = '';
+                    $('#footer_update_especie').append(up);
+                    $('#footer_update_especie').append(del);
+                }
 
-            //Remove os itens da operação
-            //excluirTodosItensOperacao(); ==>Colocar na função de gravarOperacao de forma que limpa a situação que não se aplica.
-        }
-        if (vlr == 'Outras') {//Outros
-            document.getElementById('itens_operacao').style.display = 'none';
-            document.getElementById('servico_operacao').style.display = 'none';
-            document.getElementById('outros_operacao').style.display = 'block';
+                document.getElementById('op_tipo').value = operacao.operacao.op_tipo;
 
-            document.getElementById('totais_servico').style.display = 'none';
-            document.getElementById('totais_itens').style.display = 'none';
-
-            //Remove os itens da operação
-            //excluirTodosItensOperacao();==>Colocar na função de gravarOperacao de forma que limpa a situação que não se aplica.
-            //Retorna serviços a defoult
-            //retornaServicoDefault();==>Colocar na função de gravarOperacao de forma que limpa a situação que não se aplica.
+                $('#modal_update_especie').modal('hide');
+            }
+        } else {
+            contexto = 'confirmado';
         }
 
-        operacao.operacao.op_tipo = vlr;
+        if (contexto == 'confirmado') {
 
+            $('#modal_update_especie').modal('hide');
+
+            if (vlr == 'Compra' || vlr == 'Venda') { //Compra/Venda Produtos
+                document.getElementById('itens_operacao').style.display = 'block';
+                document.getElementById('servico_operacao').style.display = 'none';
+                document.getElementById('outros_operacao').style.display = 'none';
+
+                document.getElementById('totais_servico').style.display = 'none';
+                document.getElementById('totais_itens').style.display = 'block';
+
+                //Retorna serviços a defoult
+                retornaServicoDefault();
+                totaisOperacao();
+            }
+            if (vlr == 'ServicoPrestado' || vlr == 'ServicoTomado') { //Serviços
+                document.getElementById('itens_operacao').style.display = 'none';
+                document.getElementById('servico_operacao').style.display = 'block';
+                document.getElementById('outros_operacao').style.display = 'none';
+
+                document.getElementById('totais_servico').style.display = 'block';
+                document.getElementById('totais_itens').style.display = 'none';
+
+                //Remove os itens da operação
+                excluirTodosItensOperacao();                
+            }
+            if (vlr == 'Outras') {//Outros
+                document.getElementById('itens_operacao').style.display = 'none';
+                document.getElementById('servico_operacao').style.display = 'none';
+                document.getElementById('outros_operacao').style.display = 'block';
+
+                document.getElementById('totais_servico').style.display = 'none';
+                document.getElementById('totais_itens').style.display = 'none';
+
+                //Remove os itens da operação
+                excluirTodosItensOperacao();
+                //Retorna serviços a defoult
+                retornaServicoDefault();                
+            }
+            operacao.operacao.op_tipo = vlr;
+
+            //Produzindo selects categoria e forma de pagamento contextualizada ao tipo op.
+            GerarFormaPgto(vlr, 'op_parcela_fp_id');
+            $("#op_parcela_fp_id").select2({
+                placeholder: "Selecione...",
+                allowClear: true
+            });
+
+            GerarCategorias(vlr, 'op_categoria_id');
+            $("#op_categoria_id").select2({
+                placeholder: "Selecione uma categoria...",
+                allowClear: true
+            });
+        }
     }
 
     function excluirTodosItensOperacao() { //Exclui todos os itens da matriz de itens de operação.itens.
@@ -114,7 +163,13 @@
     }
 
     function retornaServicoDefault() {
-        operacao.servico = servico_default;
+        operacao.servico.op_servico_valor = 0;
+        operacao.servico.op_servico_servico_executado = '';
+        operacao.servico.op_servico_lc116 = '';
+        document.getElementById('op_servico_valor').value = 0,00;
+        document.getElementById('op_servico_servico_executado').value = '';
+        document.getElementById('op_servico_lc116').value = '';
+        
         document.getElementById('servicos').value = 'Não informado';
 
         totaisOperacao();
@@ -502,7 +557,7 @@
         }
 
         if (contexto == 'delete') {
-            operacao.servico = servico_default;
+            retornaServicoDefault();
             document.getElementById('servicos').value = 'Não informado';
             //Fecha modal
             $('#m_servico').modal('hide');
@@ -579,6 +634,74 @@
             //Abrir modal
             modal_sobre_modal_open('m_totais');
         }
+    }
+
+    function GerarFormaPgto(op_tipo, select_id) {
+        $.ajax({
+            url: "/Operacao/GerarFormaPgto",
+            data: { __RequestVerificationToken: gettoken(), op_tipo: op_tipo },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                if (document.getElementById('text_formaPgto')) {
+                    document.getElementById('text_formaPgto').innerHTML = "Gerando lista de formas de pagamento";
+                    if (document.getElementById('sub')) {
+                        document.getElementById('sub').setAttribute("disabled", "disabled");
+                    }
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("erro");
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                var results = JSON.parse(data);
+                $('#' + select_id).children('option').remove(); //Remove todos os itens do select
+
+                for (i = 0; i < results.length; i++) { //Adiciona os item recebidos no results no select
+                    $('#' + select_id).append($("<option></option>").attr("value", results[i].value).text(results[i].text));
+                }
+                if (document.getElementById('text_formaPgto')) {
+                    document.getElementById('text_formaPgto').innerHTML = "";
+                    if (document.getElementById('sub')) {
+                        document.getElementById('sub').removeAttribute("disabled");
+                    }
+                }
+            }
+        });
+    }
+
+    function GerarCategorias(op_tipo, select_id) {
+        $.ajax({
+            url: "/Operacao/GerarCategorias",
+            data: { __RequestVerificationToken: gettoken(), op_tipo: op_tipo },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                if (document.getElementById('text_categorias')) {
+                    document.getElementById('text_categorias').innerHTML = "Gerando categorias...";
+                    if (document.getElementById('sub')) {
+                        document.getElementById('sub').setAttribute("disabled", "disabled");
+                    }
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("erro");
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                var results = JSON.parse(data);
+                $('#' + select_id).children('option').remove(); //Remove todos os itens do select
+
+                for (i = 0; i < results.length; i++) { //Adiciona os item recebidos no results no select
+                    $('#' + select_id).append($("<option></option>").attr("value", results[i].value).text(results[i].text));
+                }
+                if (document.getElementById('text_categorias')) {
+                    document.getElementById('text_categorias').innerHTML = "";
+                    if (document.getElementById('sub')) {
+                        document.getElementById('sub').removeAttribute("disabled");
+                    }
+                }
+            }
+        });
     }
 
 

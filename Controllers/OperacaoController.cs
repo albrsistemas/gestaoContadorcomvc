@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
 {
@@ -37,11 +38,11 @@ namespace gestaoContadorcomvc.Controllers
 
             Selects select = new Selects();
             //ViewBag.status = select.getStatus().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Ativo" });            
-            ViewBag.categoria = select.getCategoriasCliente(user.usuario_conta_id, false).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.categoria = select.getCategoriasClienteComEscopo(user.usuario_conta_id,true,false,true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             ViewBag.tipoPessoa = select.getTipoPessoa().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1" });
             ViewBag.ufIbge = select.getUF_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "35" });
             ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1058" });
-            ViewBag.operacoes = select.getOperacoes().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Outras" });
+            ViewBag.operacoes = select.getOperacoes().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "OutrosGastos" });
 
             return View();
         }
@@ -101,6 +102,57 @@ namespace gestaoContadorcomvc.Controllers
             {
                 return View();
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GerarFormaPgto(string op_tipo)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            string identificacao = "";
+            if(op_tipo == "Compra" || op_tipo == "ServicoTomado" || op_tipo == "OutrosGastos")
+            {
+                identificacao = "Pagamento";
+            }
+            if (op_tipo == "Venda" || op_tipo == "ServicoPrestado" || op_tipo == "OutrasReceitas")
+            {
+                identificacao = "Recebimento";
+            }
+
+            Selects select = new Selects();
+            List<Selects> lista = new List<Selects>();
+            lista = select.getFormaPgto(user.usuario_conta_id, identificacao);
+
+            return Json(JsonConvert.SerializeObject(lista));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GerarCategorias(string op_tipo)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            bool entradas = false;
+            bool saidas = false;
+            if (op_tipo == "Compra" || op_tipo == "ServicoTomado" || op_tipo == "OutrosGastos")
+            {
+                saidas = true;
+            }
+            if (op_tipo == "Venda" || op_tipo == "ServicoPrestado" || op_tipo == "OutrasReceitas")
+            {
+                entradas = true;
+            }
+
+            Selects select = new Selects();
+            List<Selects> lista = new List<Selects>();
+            lista = select.getCategoriasClienteComEscopo(user.usuario_conta_id, true, entradas, saidas);
+
+            return Json(JsonConvert.SerializeObject(lista));
         }
     }
 }
