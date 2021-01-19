@@ -71,6 +71,9 @@
             document.getElementById('servico_operacao').style.display = 'none';
             document.getElementById('outros_operacao').style.display = 'none';
 
+            document.getElementById('totais_servico').style.display = 'none';
+            document.getElementById('totais_itens').style.display = 'block';
+
             //Retorna serviços a defoult
             //retornaServicoDefault(); ==>Colocar na função de gravarOperacao de forma que limpa a situação que não se aplica.
         }
@@ -78,6 +81,9 @@
             document.getElementById('itens_operacao').style.display = 'none';
             document.getElementById('servico_operacao').style.display = 'block';
             document.getElementById('outros_operacao').style.display = 'none';
+
+            document.getElementById('totais_servico').style.display = 'block';
+            document.getElementById('totais_itens').style.display = 'none';
 
             //Remove os itens da operação
             //excluirTodosItensOperacao(); ==>Colocar na função de gravarOperacao de forma que limpa a situação que não se aplica.
@@ -87,21 +93,31 @@
             document.getElementById('servico_operacao').style.display = 'none';
             document.getElementById('outros_operacao').style.display = 'block';
 
+            document.getElementById('totais_servico').style.display = 'none';
+            document.getElementById('totais_itens').style.display = 'none';
+
             //Remove os itens da operação
             //excluirTodosItensOperacao();==>Colocar na função de gravarOperacao de forma que limpa a situação que não se aplica.
             //Retorna serviços a defoult
             //retornaServicoDefault();==>Colocar na função de gravarOperacao de forma que limpa a situação que não se aplica.
         }
+
+        operacao.operacao.op_tipo = vlr;
+
     }
 
     function excluirTodosItensOperacao() { //Exclui todos os itens da matriz de itens de operação.itens.
         operacao.itens.splice(0, operacao.itens.length);
         document.getElementById('itens').value = 'Não informado';
+
+        totaisOperacao();
     }
 
     function retornaServicoDefault() {
         operacao.servico = servico_default;
         document.getElementById('servicos').value = 'Não informado';
+
+        totaisOperacao();
     }
 
     function gravar_servico_operacao() {
@@ -110,6 +126,10 @@
         operacao.servico.op_servico_valor = document.getElementById('op_servico_valor').value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
 
         document.getElementById('servicos').value = 'LC 116/2003: ' + operacao.servico.op_servico_lc116 + ' | Valor: ' + operacao.servico.op_servico_valor;
+
+        totaisOperacao();
+
+        $('#m_servico').modal('hide');
     }
 
     function gravarDadosParticipante(contexto, op_part_participante_id) {
@@ -331,10 +351,9 @@
             } else {
                 document.getElementById('prod_descricao').focus();
             }
-
-
-
         }
+
+        totaisOperacao();
     }
 
     function operacao_item(contexto, op_item_numero_controle) {
@@ -418,6 +437,8 @@
             }
             $('#modal_item').modal('hide');
         }
+
+        totaisOperacao();
     }
 
     function atualizaViewItens() {
@@ -444,6 +465,119 @@
             item += '<td>' + 'CEST' + '</td>';
             item += '</tr>';
             $('#tbody_itens').append(item);
+        }
+    }
+
+    function operacao_servico(contexto) {
+        if (contexto == 'open') {
+            document.getElementById('op_servico_servico_executado').value = operacao.servico.op_servico_servico_executado;
+            document.getElementById('op_servico_valor').value = operacao.servico.op_servico_valor.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+            document.getElementById('op_servico_lc116').value = operacao.servico.op_servico_lc116;
+
+            //Abrir modal
+            modal_sobre_modal_open('m_servico');
+        }
+
+        if (contexto == 'save') {
+
+            let vlr = document.getElementById('op_servico_valor').value.toString().replace('.', '').replace(',', '.') * 1;
+
+            if (vlr == 0) {
+                document.getElementById('servicos').value = 'Não informado';
+                document.getElementById('servico_val').innerHTML = 'Informe um valor para o serviço!';
+            }
+
+            if (vlr > 0) {
+                document.getElementById('servico_val').innerHTML = '';
+
+                operacao.servico.op_servico_servico_executado = document.getElementById('op_servico_servico_executado').value;
+                operacao.servico.op_servico_valor = document.getElementById('op_servico_valor').value.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+                operacao.servico.op_servico_lc116 = document.getElementById('op_servico_lc116').value;
+
+                document.getElementById('servicos').value = 'Valor do Serviço Informado: ' + operacao.servico.op_servico_valor.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+
+                //Fecha modal
+                $('#m_servico').modal('hide');
+            }            
+        }
+
+        if (contexto == 'delete') {
+            operacao.servico = servico_default;
+            document.getElementById('servicos').value = 'Não informado';
+            //Fecha modal
+            $('#m_servico').modal('hide');
+        }
+
+        totaisOperacao();
+    }
+
+    function operacao_retencoes(contexto) {
+        if (contexto == 'open') {
+            decimal('op_ret_inss', operacao.retencoes.op_ret_inss, '2', false);
+            decimal('op_ret_irrf', operacao.retencoes.op_ret_irrf, '2', false);
+            decimal('op_ret_issqn', operacao.retencoes.op_ret_issqn, '2', false);
+            decimal('op_ret_pis', operacao.retencoes.op_ret_pis, '2', false);
+            decimal('op_ret_cofins', operacao.retencoes.op_ret_cofins, '2', false);
+            decimal('op_ret_csll', operacao.retencoes.op_ret_csll, '2', false);
+
+            //Abrir modal
+            modal_sobre_modal_open('m_retencoes');
+        }
+        if (contexto == 'save') {
+            operacao.retencoes.op_ret_inss = document.getElementById('op_ret_inss').value;
+            operacao.retencoes.op_ret_issqn = document.getElementById('op_ret_issqn').value;
+            operacao.retencoes.op_ret_irrf = document.getElementById('op_ret_irrf').value;
+
+            let txt = '';
+            let soma = 0;
+
+            if (convertStringDouble(operacao.retencoes.op_ret_inss) > 0) {
+                txt += 'INSS: ' + operacao.retencoes.op_ret_inss + ' ';
+                soma += convertStringDouble(operacao.retencoes.op_ret_inss);
+            }
+            if (convertStringDouble(operacao.retencoes.op_ret_issqn) > 0) {
+                txt += 'ISSQN: ' + operacao.retencoes.op_ret_issqn + ' ';
+                soma += convertStringDouble(operacao.retencoes.op_ret_issqn);
+            }
+            if (convertStringDouble(operacao.retencoes.op_ret_irrf) > 0) {
+                txt += 'IRRF: ' + operacao.retencoes.op_ret_irrf + ' ';
+                soma += convertStringDouble(operacao.retencoes.op_ret_irrf);
+            }
+            if (convertStringDouble(operacao.retencoes.op_ret_pis) > 0) {
+                txt += 'PIS: ' + operacao.retencoes.op_ret_pis + ' ';
+                soma += convertStringDouble(operacao.retencoes.op_ret_pis);
+            }
+            if (convertStringDouble(operacao.retencoes.op_ret_cofins) > 0) {
+                txt += 'COFINS: ' + operacao.retencoes.op_ret_cofins + ' ';
+                soma += convertStringDouble(operacao.retencoes.op_ret_cofins);
+            }
+            if (convertStringDouble(operacao.retencoes.op_ret_csll) > 0) {
+                txt += 'CSLL: ' + operacao.retencoes.op_ret_csll + ' ';
+                soma += convertStringDouble(operacao.retencoes.op_ret_csll);
+            }
+
+            if (soma > 0) {
+                document.getElementById('retencoes').value = txt;
+            } else {
+                document.getElementById('retencoes').value = 'Não informado';
+            }
+
+            //Fecha modal
+            $('#m_retencoes').modal('hide');
+        }
+    }
+
+    function convertStringDouble(vlr) {
+        let valor = vlr.toString().replace('.', '').replace(',', '.') * 1;
+
+        return valor;
+    }
+
+    function operacao_totais(contexto) {
+        if (contexto == 'open') {
+
+            //Abrir modal
+            modal_sobre_modal_open('m_totais');
         }
     }
 

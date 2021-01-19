@@ -25,7 +25,7 @@ let fechamento_cartao = {
 var operacao = {
     operacao: {
         op_id: 0,
-        op_tipo: '',
+        op_tipo: 'Outras',
         op_data: '',
         op_previsao_entrega: '',
         op_data_saida: '',
@@ -114,6 +114,7 @@ var operacao = {
         op_servico_servico_executado: '',
         op_servico_valor: 0,
         op_servico_status: '',
+        op_servico_lc116: '',
     },
 };
 
@@ -1637,6 +1638,9 @@ function totaisOperacao() {
 
     if (operacao.operacao.op_tipo == 'ServicoPrestado' || operacao.operacao.op_tipo == 'ServicoTomado') {
         op_totais_preco_servicos = document.getElementById('op_servico_valor').value.replace('.', '').replace(',', '.') * 1;
+        if (document.getElementById('op_totais_preco_servicos')) {
+            decimal('op_totais_preco_servicos', operacao.totais.op_totais_preco_servicos, '2', false);
+        }
     }
 
     for (let i = 0; i < operacao.itens.length; i++) {
@@ -1694,7 +1698,12 @@ function totaisOperacao() {
     }
     if (document.getElementById('op_servico_valor')) {
         operacao.totais.op_totais_preco_servicos = document.getElementById('op_servico_valor').value;
-    }    
+    }
+
+    if (document.getElementById('totais')) {
+        decimal('totais', operacao.totais.op_totais_total_op.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" }), '2', false);
+    }
+
 }
 
 function gerarParcela() {    
@@ -3145,23 +3154,23 @@ function vlr_servico(id, vlr) {
 function updateRetençõesTotais(id, vlr, contexto) {    
     $('#modal_mensagem_retorno').modal('hide'); //Fechar modal se estiver aberto
    
-    if (operacao.parcelas.length > 0) {   
-        if (contexto == 'confirmar') {   
+    if (operacao.parcelas.length > 0) {
+        if (contexto == 'confirmar') {
             document.getElementById('mensagem_retorno_label').innerHTML = "";
             document.getElementById('mensagem_retorno_label').innerHTML = "Alteração de Retenção";
             document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
             document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + 'A operação possui parcelas informadas. Como deseja proceder com o valor informado?' + "</p>";
             document.getElementById('mensagem_retorno_conteudo').innerHTML += '<div class="row"><div class="col-12"><button type="button" class="btn btn-info" style="width: 100%;margin-bottom: 10px;" onclick="updateRetençõesTotais(\'' + id + '\',\'' + vlr + '\',\'confirmadoDiluir\')">Distribuir o valor em todas as parcelas</button></div><div class="col-12"><button type="button" class="btn btn-info" style="width: 100%;margin-bottom: 10px;" onclick="updateRetençõesTotais(\'' + id + '\',\'' + vlr + '\',\'confirmadoPrimeira\')">Descontar na primeira parcela</button></div></div>';
-            document.getElementById('mensagem_retorno_rodape').innerHTML = "";          
+            document.getElementById('mensagem_retorno_rodape').innerHTML = "";
             $('#modal_mensagem_retorno').modal('show');
-        }               
-               
-        if (contexto == 'confirmadoDiluir') {           
+        }
 
-            for (let i = 0; i < operacao.parcelas.length; i++) {               
+        if (contexto == 'confirmadoDiluir') {
+
+            for (let i = 0; i < operacao.parcelas.length; i++) {
 
                 if (id == 'op_ret_inss') {
-                    operacao.parcelas[i].op_parcela_ret_inss = (vlr / operacao.parcelas.length).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });                    
+                    operacao.parcelas[i].op_parcela_ret_inss = (vlr / operacao.parcelas.length).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
                 }
                 if (id == 'op_ret_issqn') {
                     operacao.parcelas[i].op_ret_issqn = (vlr / operacao.parcelas.length).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
@@ -3170,12 +3179,12 @@ function updateRetençõesTotais(id, vlr, contexto) {
                     operacao.parcelas[i].op_ret_irrf = (vlr / operacao.parcelas.length).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
                 }
                 operacao.parcelas[i].op_parcela_valor = ((((operacao.parcelas[i].op_parcela_valor_bruto).toString().replace('.', '').replace(',', '.')) * 1) - ((((operacao.parcelas[i].op_parcela_ret_inss).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[i].op_parcela_ret_issqn).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[i].op_parcela_ret_irrf).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[i].op_parcela_ret_pis).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[i].op_parcela_ret_cofins).toString().replace('.', '').replace(',', '.')) * 1) + (((operacao.parcelas[i].op_parcela_ret_csll).toString().replace('.', '').replace(',', '.')) * 1))).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
-                
+
                 let id_par = 'vlrParcela_' + operacao.parcelas[i].op_parcela_numero_controle;
                 decimal(id_par, (operacao.parcelas[i].op_parcela_valor), '2', false);
             }
             totalRetencoes();
-                        
+
         }
         if (contexto == 'confirmadoPrimeira') {
             if (id == 'op_ret_inss') {
@@ -3199,6 +3208,8 @@ function updateRetençõesTotais(id, vlr, contexto) {
 
         decimal(id, (vlr.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" })), '2', true);
 
+    } else {
+        decimal(id, (vlr.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" })), '2', true);
     }
 }
 
