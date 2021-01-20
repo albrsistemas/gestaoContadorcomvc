@@ -1,4 +1,5 @@
-﻿<script>
+﻿<script src="~/js/moment.min.js" type="text/javascript"></script>
+<script>
     //Variáveis
     participante_default = {
         op_part_id: 0,
@@ -64,6 +65,29 @@
         op_servico_lc116: '',
     };
 
+    parcela = {
+        op_parcela_id: 0,
+        op_parcela_dias: 0,
+        op_parcela_vencimento: '',
+        op_parcela_fp_id: 0,
+        op_parcela_op_id: 0,
+        op_parcela_valor: '',
+        op_parcela_obs: '',
+        op_parcela_saldo: '',
+        op_parcela_ret_inss: '',
+        op_parcela_ret_issqn: '',
+        op_parcela_ret_irrf: '',
+        op_parcela_ret_pis: '',
+        op_parcela_ret_cofins: '',
+        op_parcela_ret_csll: '',
+        op_parcela_valor_bruto: '',
+        op_parcela_agrupamento: 0,
+        op_parcela_vencimento_alterado: '',
+        op_parcela_numero: 0,
+        op_parcela_numero_total: 0,
+        op_parcela_label_forma_pgto: '',
+    };
+
     //Funcções
     function change_op_tipo(id, vlr, contexto) {
         let s = convertStringDouble(operacao.servico.op_servico_valor);
@@ -125,7 +149,7 @@
                 //Remove os itens da operação
                 excluirTodosItensOperacao();                
             }
-            if (vlr == 'Outras') {//Outros
+            if (vlr == 'OutrasDespesas' || vlr == 'OutrasReceitas') {//Outros
                 document.getElementById('itens_operacao').style.display = 'none';
                 document.getElementById('servico_operacao').style.display = 'none';
                 document.getElementById('outros_operacao').style.display = 'block';
@@ -141,11 +165,8 @@
             operacao.operacao.op_tipo = vlr;
 
             //Produzindo selects categoria e forma de pagamento contextualizada ao tipo op.
-            GerarFormaPgto(vlr, 'op_parcela_fp_id');
-            $("#op_parcela_fp_id").select2({
-                placeholder: "Selecione...",
-                allowClear: true
-            });
+            GerarFormaPgto(vlr, 'op_parcela_fp_id');            
+            GerarFormaPgto(vlr, 'op_parcela_fp_id_edit');            
 
             GerarCategorias(vlr, 'op_categoria_id');
             $("#op_categoria_id").select2({
@@ -643,12 +664,12 @@
             type: 'POST',
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
-                if (document.getElementById('text_formaPgto')) {
+                /*if (document.getElementById('text_formaPgto')) {
                     document.getElementById('text_formaPgto').innerHTML = "Gerando lista de formas de pagamento";
                     if (document.getElementById('sub')) {
                         document.getElementById('sub').setAttribute("disabled", "disabled");
                     }
-                }
+                }*/
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 alert("erro");
@@ -660,12 +681,13 @@
                 for (i = 0; i < results.length; i++) { //Adiciona os item recebidos no results no select
                     $('#' + select_id).append($("<option></option>").attr("value", results[i].value).text(results[i].text));
                 }
-                if (document.getElementById('text_formaPgto')) {
+
+                /*if (document.getElementById('text_formaPgto')) {
                     document.getElementById('text_formaPgto').innerHTML = "";
                     if (document.getElementById('sub')) {
                         document.getElementById('sub').removeAttribute("disabled");
                     }
-                }
+                }*/
             }
         });
     }
@@ -704,7 +726,242 @@
         });
     }
 
+    function formaGerarParcelas(id, vlr) {
+        if (vlr == 1) {
+            document.getElementById('diaVencimento').style.display = 'block';
+            document.getElementById('dataIncio_Fim').style.display = 'none';
+            document.getElementById('numeroParcelas').style.display = 'none';
+        }
 
+        if (vlr == 2) {
+            document.getElementById('diaVencimento').style.display = 'none';
+            document.getElementById('dataIncio_Fim').style.display = 'block';
+            document.getElementById('numeroParcelas').style.display = 'none';
+        }
+
+        if (vlr == 3) {
+            document.getElementById('diaVencimento').style.display = 'none';
+            document.getElementById('dataIncio_Fim').style.display = 'none';
+            document.getElementById('numeroParcelas').style.display = 'block';
+        }
+    }
+
+    function changeNumeroParcelas(id, vlr) {
+        let i = parseInt(vlr.toString(), 10);
+        i = i.toString().replace('-', '').replace('+', '').replace('.', '').replace(',', '');
+        document.getElementById(id).value = i;
+    }
+
+    function atualizaViewParcelas() {
+        document.getElementById('tbody_parcelas').innerHTML = '';
+        for (let i = 0; i < operacao.parcelas.length; i++) {
+            item = '';
+            item += '<tr>';
+            item += '<td>';
+            item += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="cursor:pointer;" onclick="operacao_parcelas(\'edit_open\',\'' + operacao.parcelas[i].op_parcela_numero + '\')">';
+            item += '<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />';
+            item += '<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />';
+            item += '</svg>';
+            item += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" style="cursor:pointer;" onclick="operacao_parcelas(\'delete_confirmar\',\'' + operacao.parcelas[i].op_parcela_numero + '\')">';
+            item += '<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />';
+            item += '<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />';
+            item += '</svg>';
+            item += '</td>';
+            item += '<td>' + operacao.parcelas[i].op_parcela_vencimento + '</td>';
+            item += '<td>' + operacao.parcelas[i].op_parcela_valor_bruto + '</td>';
+            item += '<td>' + operacao.parcelas[i].op_parcela_valor + '</td>';
+            item += '<td style="white-space:nowrap">' + operacao.parcelas[i].op_parcela_label_forma_pgto + '</td>';
+            item += '<td>' + operacao.parcelas[i].op_parcela_ret_irrf + '</td>';
+            item += '<td>' + operacao.parcelas[i].op_parcela_ret_inss + '</td>';
+            item += '<td>' + operacao.parcelas[i].op_parcela_ret_issqn + '</td>';
+            item += '<td>' + operacao.parcelas[i].op_parcela_ret_pis + '</td>';
+            item += '<td>' + operacao.parcelas[i].op_parcela_ret_cofins + '</td>';
+            item += '<td>' + operacao.parcelas[i].op_parcela_ret_csll + '</td>';
+            item += '<td style="white-space:nowrap">' + operacao.parcelas[i].op_parcela_obs + '</td>';            
+            item += '</tr>';
+            $('#tbody_parcelas').append(item);
+        }
+    }
+
+    function operacao_parcelas(contexto, op_parcela_numero) {
+        if (contexto == 'open') {
+            //Atualiza a view com as parcelas
+            atualizaViewParcelas();
+            //Abrir modal
+            modal_sobre_modal_open('lista_parcelas');
+        }
+
+        if (contexto == 'gerar') {
+            let forma_gerar_parcelas = document.getElementById('parcela_forma_gerar').value;
+
+            if (forma_gerar_parcelas == 1) {
+                gera_parcelas_dia_vencimento();
+                atualizaViewParcelas();
+            }
+        }
+
+        if (contexto == 'edit_open') {
+            for (let i = 0; i < operacao.parcelas.length; i++) {
+                if (operacao.parcelas[i].op_parcela_numero == op_parcela_numero) {
+                    document.getElementById('op_parcela_vencimento').value = operacao.parcelas[i].op_parcela_vencimento;
+                    document.getElementById('op_parcela_valor_bruto').value = operacao.parcelas[i].op_parcela_valor_bruto;
+                    document.getElementById('op_parcela_valor').value = operacao.parcelas[i].op_parcela_valor;
+                    document.getElementById('op_parcela_ret_irrf').value = operacao.parcelas[i].op_parcela_ret_irrf;
+                    document.getElementById('op_parcela_ret_inss').value = operacao.parcelas[i].op_parcela_ret_inss;
+                    document.getElementById('op_parcela_ret_issqn').value = operacao.parcelas[i].op_parcela_ret_issqn;
+                    document.getElementById('op_parcela_ret_pis').value = operacao.parcelas[i].op_parcela_ret_pis;
+                    document.getElementById('op_parcela_ret_cofins').value = operacao.parcelas[i].op_parcela_ret_cofins;
+                    document.getElementById('op_parcela_ret_csll').value = operacao.parcelas[i].op_parcela_ret_csll;
+                    document.getElementById('op_parcela_obs').value = operacao.parcelas[i].op_parcela_obs;
+                    document.getElementById('op_parcela_numero').value = operacao.parcelas[i].op_parcela_numero;
+                    //Atribuindo a categoria no select2
+                    if (document.getElementById('op_parcela_fp_id_edit')) {
+                        $('#op_parcela_fp_id_edit').val(operacao.parcelas[i].op_parcela_fp_id);
+                        $('#op_parcela_fp_id_edit').trigger('change');
+                    }
+                    document.getElementById('btn_parcela').value = 'Gravar Alteração';
+
+                    break;
+                }
+            }
+
+            //Habilita tab 2 na tela
+            $('#myTab li:nth-child(2) a').tab('show')
+        }
+
+        if (contexto == 'gravar') {
+            if (document.getElementById('btn_parcela').value == 'Gravar Alteração') {
+                let op_parcela_numero = document.getElementById('op_parcela_numero').value;
+                for (let i = 0; i < operacao.parcelas.length; i++) {
+                    if (operacao.parcelas[i].op_parcela_numero == op_parcela_numero) {
+                        operacao.parcelas[i].op_parcela_vencimento = document.getElementById('op_parcela_vencimento').value;
+                        operacao.parcelas[i].op_parcela_valor_bruto = document.getElementById('op_parcela_valor_bruto').value;
+                        operacao.parcelas[i].op_parcela_valor = document.getElementById('op_parcela_valor').value;
+                        operacao.parcelas[i].op_parcela_ret_irrf = document.getElementById('op_parcela_ret_irrf').value;
+                        operacao.parcelas[i].op_parcela_ret_inss = document.getElementById('op_parcela_ret_inss').value;
+                        operacao.parcelas[i].op_parcela_ret_issqn = document.getElementById('op_parcela_ret_issqn').value;
+                        operacao.parcelas[i].op_parcela_ret_pis = document.getElementById('op_parcela_ret_pis').value;
+                        operacao.parcelas[i].op_parcela_ret_cofins = document.getElementById('op_parcela_ret_cofins').value;
+                        operacao.parcelas[i].op_parcela_ret_csll = document.getElementById('op_parcela_ret_csll').value;
+                        operacao.parcelas[i].op_parcela_obs = document.getElementById('op_parcela_obs').value;                        
+                        operacao.parcelas[i].op_parcela_fp_id = document.getElementById('op_parcela_fp_id_edit').value;                        
+                        operacao.parcelas[i].op_parcela_label_forma_pgto = $('#op_parcela_fp_id_edit :selected').text();                        
+
+                        //altera value do btn da tela
+                        document.getElementById('btn_parcela').value = 'Gravar';
+
+                        //Limpando campos da tela
+                        document.getElementById('op_parcela_vencimento').value = '';
+                        document.getElementById('op_parcela_valor_bruto').value = '';
+                        document.getElementById('op_parcela_valor').value = '';
+                        document.getElementById('op_parcela_ret_irrf').value = '';
+                        document.getElementById('op_parcela_ret_inss').value = '';
+                        document.getElementById('op_parcela_ret_issqn').value = '';
+                        document.getElementById('op_parcela_ret_pis').value = '';
+                        document.getElementById('op_parcela_ret_cofins').value = '';
+                        document.getElementById('op_parcela_ret_csll').value = '';
+                        document.getElementById('op_parcela_obs').value = '';
+                        document.getElementById('op_parcela_numero').value = '';
+
+                        break;
+                    }
+                }
+                atualizaViewParcelas();
+            }
+        }
+
+
+    }
+
+    function gera_parcelas_dia_vencimento() {
+        //Limpar parcelas atuais para nova geração
+        operacao.parcelas.splice(0, operacao.parcelas.length);
+
+        let valor_operacao = convertStringDouble(operacao.totais.op_totais_total_op);
+        let cheque_csrf = document.getElementById('csrf').checked;
+        let forma_pagamento_label = $('#op_parcela_fp_id :selected').text();
+        let forma_pagamento = document.getElementById('op_parcela_fp_id').value;
+        let parcelas = (document.getElementById('parcela_dia_vencimento').value).toString().replace('.', ',').split(',');
+        let valor_bruto = valor_operacao / parcelas.length;
+        let op_data = document.getElementById('op_data').value;        
+        
+        for (let i = 0; i < parcelas.length; i++) {
+            let data = moment(op_data, 'DD/MM/YYYY', 'pt', true);
+            p = {
+                op_parcela_id: 0,
+                op_parcela_dias: parcelas[i],
+                op_parcela_vencimento: data.add(convertStringDouble(parcelas[i]), 'd').format('DD/MM/YYYY'),
+                op_parcela_fp_id: forma_pagamento,
+                op_parcela_op_id: 0,
+                op_parcela_valor: '',
+                op_parcela_obs: 'Parcela ' + (i + 1) + ' de ' + parcelas.length,
+                op_parcela_saldo: '',
+                op_parcela_ret_inss: '',
+                op_parcela_ret_issqn: '',
+                op_parcela_ret_irrf: '',
+                op_parcela_ret_pis: '',
+                op_parcela_ret_cofins: '',
+                op_parcela_ret_csll: '',
+                op_parcela_valor_bruto: convertDoubleString(valor_bruto),
+                op_parcela_agrupamento: 0,
+                op_parcela_vencimento_alterado: data.add(convertStringDouble(parcelas[i]), 'd').format('DD/MM/YYYY'),
+                op_parcela_numero: (i + 1),
+                op_parcela_numero_total: parcelas.length,
+                op_parcela_label_forma_pgto: forma_pagamento_label,
+            };
+
+            //inss
+            if (convertStringDouble(operacao.retencoes.op_ret_inss) > 0) {
+                if (document.getElementById('ret_inss_parcela').checked == true) {
+                    if (i == 0) {
+                        p.op_parcela_ret_inss = operacao.retencoes.op_ret_inss;
+                    }                    
+                } else {
+                    p.op_parcela_ret_inss = convertDoubleString(convertStringDouble(operacao.retencoes.op_ret_inss) / parcelas.length);
+                }
+            }
+            //issqn
+            if (convertStringDouble(operacao.retencoes.op_ret_issqn) > 0) {
+                if (document.getElementById('ret_iss_parcela').checked == true) {
+                    if (i == 0) {
+                        p.op_parcela_ret_issqn = operacao.retencoes.op_ret_issqn;
+                    }                    
+                } else {
+                    p.op_parcela_ret_issqn = convertDoubleString(convertStringDouble(operacao.retencoes.op_ret_issqn) / parcelas.length);
+                }
+            }
+            //irrf
+            if (convertStringDouble(operacao.retencoes.op_ret_irrf) > 0) {
+                if (document.getElementById('ret_irrf_parcela').checked == true) {
+                    if (i == 0) {
+                        p.op_parcela_ret_irrf = operacao.retencoes.op_ret_irrf;
+                    }                    
+                } else {
+                    p.op_parcela_ret_irrf = convertDoubleString(convertStringDouble(operacao.retencoes.op_ret_irrf) / parcelas.length);
+                }
+            }
+            //csrf
+            if (cheque_csrf == true) {
+                if (valor_bruto > 215.05) {
+                    p.op_parcela_ret_pis = convertDoubleString(valor_bruto * 0.65 / 100);
+                    p.op_parcela_ret_cofins = convertDoubleString(valor_bruto * 3 / 100);
+                    p.op_parcela_ret_csll = convertDoubleString(valor_bruto * 1 / 100);
+                }
+            }
+            //valor parcela
+            p.op_parcela_valor = convertDoubleString(valor_bruto - (convertStringDouble(p.op_parcela_ret_inss) + convertStringDouble(p.op_parcela_ret_issqn) + convertStringDouble(p.op_parcela_ret_irrf) + convertStringDouble(p.op_parcela_ret_pis) + convertStringDouble(p.op_parcela_ret_cofins) + convertStringDouble(p.op_parcela_ret_csll)));
+
+            operacao.parcelas.push(p);
+        }
+
+        console.log(operacao.parcelas);
+    }
+
+    function convertDoubleString(vlr) {        
+        vlr_str = vlr.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+
+        return vlr_str;
+    }
 
     
 </script>

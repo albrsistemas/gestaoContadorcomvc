@@ -1671,12 +1671,12 @@ namespace gestaoContadorcomvc.Models
             selects.Add(new Selects
             {
                 value = "Compra",
-                text = "Compra Produtos"
+                text = "Compra"
             });
             selects.Add(new Selects
             {
                 value = "Venda",
-                text = "Venda Produtos"
+                text = "Venda"
             });
             selects.Add(new Selects
             {
@@ -1690,8 +1690,8 @@ namespace gestaoContadorcomvc.Models
             });
             selects.Add(new Selects
             {
-                value = "OutrosGastos",
-                text = "Outros Gastos"
+                value = "OutrasDespesas",
+                text = "Outros Despesas"
             });
             selects.Add(new Selects
             {

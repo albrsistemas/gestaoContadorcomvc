@@ -43,6 +43,7 @@ namespace gestaoContadorcomvc.Controllers
             ViewBag.ufIbge = select.getUF_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "35" });
             ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1058" });
             ViewBag.operacoes = select.getOperacoes().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "OutrosGastos" });
+            ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id,"Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "OutrosGastos" });
 
             return View();
         }
@@ -113,7 +114,7 @@ namespace gestaoContadorcomvc.Controllers
             user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             string identificacao = "";
-            if(op_tipo == "Compra" || op_tipo == "ServicoTomado" || op_tipo == "OutrosGastos")
+            if(op_tipo == "Compra" || op_tipo == "ServicoTomado" || op_tipo == "OutrasDespesas")
             {
                 identificacao = "Pagamento";
             }
@@ -139,7 +140,7 @@ namespace gestaoContadorcomvc.Controllers
 
             bool entradas = false;
             bool saidas = false;
-            if (op_tipo == "Compra" || op_tipo == "ServicoTomado" || op_tipo == "OutrosGastos")
+            if (op_tipo == "Compra" || op_tipo == "ServicoTomado" || op_tipo == "OutrasDespesas")
             {
                 saidas = true;
             }
