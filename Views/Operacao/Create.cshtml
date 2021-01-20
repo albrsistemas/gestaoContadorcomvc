@@ -634,7 +634,7 @@
                                     <label class="control-label linha_itens">Forma Gerar Parcela</label>
                                     <select id="parcela_forma_gerar" class="form-control form-control-sm linha_itens" onchange="formaGerarParcelas(this.id, this.value)">
                                         <option value="1" selected>Dias Vencimento</option>
-                                        <option value="2">Data Início/Fim</option>
+                                        @*<option value="2">Data Início/Fim</option>*@
                                         <option value="3">Número Parcelas</option>
                                     </select>
                                 </div>
@@ -656,19 +656,19 @@
                                 <div class="col-6 col-md-4">
                                     <div class="form-group">
                                         <label class="control-label linha_itens">Data Início</label>
-                                        <input type="text" id="parcela_data_inicio" class="form-control form-control-sm linha_itens datepicker" />
+                                        <input type="text" id="parcela_data_inicio" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-4">
                                     <div class="form-group">
                                         <label class="control-label linha_itens">Data Fim</label>
-                                        <input type="text" id="parcela_data_fim" class="form-control form-control-sm linha_itens datepicker" />
+                                        <input type="text" id="parcela_data_fim" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-4">
                                     <div class="form-group">
                                         <label class="control-label linha_itens">Recorrência Parcelas</label>
-                                        <select class="form-control form-control-sm linha_itens" id="dif_id">
+                                        <select class="form-control form-control-sm linha_itens" id="recorencia_data_inicio_fim">
                                             <option value="Unica">Única</option>
                                             <option value="Semanal">Semanal</option>
                                             <option value="Quinzenal">Quinzenal</option>
@@ -684,10 +684,16 @@
                         </div>
                         <div id="numeroParcelas" style="display:none">
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="control-label linha_itens">Data 1º Parcela</label>
+                                        <input type="text" id="data_primeira_parcela" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
+                                    </div>
+                                </div>
+                                <div class="col-4">
                                     <div class="form-group">
                                         <label class="control-label linha_itens">Recorrência Parcelas</label>
-                                        <select class="form-control form-control-sm linha_itens" id="nParcelas_id">
+                                        <select class="form-control form-control-sm linha_itens" id="recorencia_n_parcelas">
                                             <option value="Unica">Única</option>
                                             <option value="Semanal">Semanal</option>
                                             <option value="Quinzenal">Quinzenal</option>
@@ -699,14 +705,14 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-4">
                                     <div class="form-group">
                                         <label class="control-label linha_itens">Número Parcelas</label>
                                         <input type="number" id="parcela_numero" class="form-control form-control-sm linha_itens" onblur="changeNumeroParcelas(this.id, this.value)" />
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            </div>
                         <div class="row">
                             <div class="col-4 col-md-2">
                                 <div class="custom-control custom-switch">
@@ -731,57 +737,57 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">Vencimento</label>
-                                    <input type="text" id="op_parcela_vencimento" class="form-control form-control-sm linha_itens datepicker" />
+                                    <input type="text" id="op_parcela_vencimento" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">Valor Bruto</label>
-                                    <input type="text" id="op_parcela_valor_bruto" class="form-control form-control-sm linha_itens" />
+                                    <input type="text" id="op_parcela_valor_bruto" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">Valor Líquido</label>
-                                    <input type="text" id="op_parcela_valor" class="form-control form-control-sm linha_itens" />
+                                    <input type="text" id="op_parcela_valor" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
                                 </div>
                             </div>
                             <!--Retenções da parcela-->
                             <div class="col-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">IRRF</label>
-                                    <input type="text" id="op_parcela_ret_irrf" class="form-control form-control-sm linha_itens" />
+                                    <input type="text" id="op_parcela_ret_irrf" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
                                 </div>
                             </div>
                             <div class="col-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">INSS</label>
-                                    <input type="text" id="op_parcela_ret_inss" class="form-control form-control-sm linha_itens" />
+                                    <input type="text" id="op_parcela_ret_inss" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
                                 </div>
                             </div>
                             <div class="col-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">ISSQN</label>
-                                    <input type="text" id="op_parcela_ret_issqn" class="form-control form-control-sm linha_itens" />
+                                    <input type="text" id="op_parcela_ret_issqn" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
                                 </div>
                             </div>
 
                             <div class="col-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">PIS</label>
-                                    <input type="text" id="op_parcela_ret_pis" class="form-control form-control-sm linha_itens" />
+                                    <input type="text" id="op_parcela_ret_pis" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
                                 </div>
                             </div>
                             <div class="col-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">COFINS</label>
-                                    <input type="text" id="op_parcela_ret_cofins" class="form-control form-control-sm linha_itens" />
+                                    <input type="text" id="op_parcela_ret_cofins" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
                                 </div>
                             </div>
                             <div class="col-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">CSLL</label>
-                                    <input type="text" id="op_parcela_ret_csll" class="form-control form-control-sm linha_itens" />
+                                    <input type="text" id="op_parcela_ret_csll" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
                                 </div>
                             </div>
                             <div class="col-12">
@@ -793,8 +799,8 @@
                             <input type="hidden" id="op_parcela_numero" />
                         </div>
                         <div class="row">
-                            <div class="col-12">
-                                <button type="button" id="btn_parcela" class="btn btn-sm btn-info" style="width:100%;" onclick="operacao_parcelas('gravar')">Gravar</button>
+                            <div class="col-12" id="btn_action">
+                                <button type="button" id="btn_parcela" class="btn btn-sm btn-outline-info" style="width:100%;" onclick="operacao_parcelas('incluir')">Incluir Parcela</button>
                             </div>
                         </div>
                     </div>
