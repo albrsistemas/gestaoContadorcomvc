@@ -3,7 +3,7 @@
     Layout = null;
 }
 <div class="container">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Lançamento</h4>
@@ -33,38 +33,54 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label asp-for="ccm_data" class="control-label">Data Pgto</label>
-                                <input type="text" asp-fo="ccm_data" id="ccm_data" autocomplete="off" class="form-control datepicker" value="@Model.ccm_data.ToShortDateString()" />
+                                <input type="text" asp-fo="ccm_data" id="ccm_data" autocomplete="off" class="form-control form-control-sm datepicker" value="@Model.ccm_data.ToShortDateString()" />
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label asp-for="ccm_data_competencia" class="control-label">Competência</label>
-                                <input type="text" name="ccm_data_competencia" id="ccm_data_competencia" autocomplete="off" class="form-control datepicker" value="@Model.ccm_data_competencia.ToShortDateString()" />
+                                <input type="text" name="ccm_data_competencia" id="ccm_data_competencia" autocomplete="off" class="form-control form-control-sm datepicker" value="@Model.ccm_data_competencia.ToShortDateString()" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-3">
+                            <div class="form-group">
+                                <label asp-for="ccm_valor_principal" class="control-label">Valor Principal</label>
+                                <input type="text" autofocus value="@Model.ccm_valor_principal.ToString("N")" id="ccm_valor_principal" class="form-control form-control-sm" onchange="calculaTotalCCM(this.id, this.value)" />
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="form-group">
+                                <label asp-for="ccm_multa" class="control-label">Multa</label>
+                                <input type="text" value="@Model.ccm_multa.ToString("N")" id="ccm_multa" class="form-control form-control-sm" onchange="calculaTotalCCM(this.id, this.value)" />
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="form-group">
+                                <label asp-for="ccm_juros" class="control-label">Juros</label>
+                                <input type="text" value="@Model.ccm_juros.ToString("N")" id="ccm_juros" class="form-control form-control-sm" onchange="calculaTotalCCM(this.id, this.value)" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <div class="form-group">
+                                <label asp-for="ccm_valor" class="control-label">Valor Total</label>
+                                <input type="text" value="@Model.ccm_valor.ToString("N")" id="ccm_valor" class="form-control form-control-sm" readonly />
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <div class="form-group">
-                                <label asp-for="ccm_valor" class="control-label">Valor</label>
-                                <input type="text" name="ccm_valor" id="ccm_valor" class="form-control" onchange="decimal(this.id, this.value, '2')" value="@Model.ccm_valor.ToString("N2")" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label asp-for="ccm_memorando" class="control-label">Memorando</label>
-                                <textarea asp-for="ccm_memorando" id="ccm_memorando" rows="5" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '150','memorando')"></textarea>
-                                <span class="text-info" id="memorando"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="control-label">Participante</label>
-                                <input type="text" asp-for="participante_nome" id="participante" class="form-control" autocomplete="off" onkeyup="consultaParticipanteCCM(this.id)" />
+                            <label class="control-label">Participante</label>
+                            <div class="input-group mb-3">
+                                <input type="text" asp-for="participante_nome" disabled class="form-control form-control-sm" name="participante" id="participante" autocomplete="off" onkeyup="consultaParticipanteCCM(this.id)" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="alteraParticipanteCCM()">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                        </svg>
+                                    </button>
+                                </div>
                                 <input type="hidden" asp-for="ccm_participante_id" /> <!--ID do participante-->
                             </div>
                         </div>
@@ -77,94 +93,103 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="ccm_memorando" class="control-label">Memorando</label>
+                                <textarea asp-for="ccm_memorando" id="ccm_memorando" rows="5" class="form-control form-control-sm" onkeyup="tamanhoDigitado(this.id, this.value, '150','memorando')"></textarea>
+                                <span class="text-info" id="memorando"></span>
+                            </div>
+                        </div>
+                    </div>
                     @{
                         if (Model.nf.ccm_nf)
                         {
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" id="nf_ccm" class="custom-control-input" onchange="ccm_nf(this.id,'box_nf')" checked="checked">
-                                <label class="custom-control-label" for="nf_ccm">Informar nota fiscal</label>
-                            </div>
-                            <div style="display:none" id="box_nf">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label asp-for="nf.ccm_nf_data_emissao" class="control-label">Data</label>
-                                            <input type="text" name="ccm_nf_data_emissao" id="ccm_nf_data_emissao" autocomplete="off" class="form-control datepicker" value="@Model.nf.ccm_nf_data_emissao.ToShortDateString()" />
-                                        </div>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" id="nf_ccm" class="custom-control-input" onchange="ccm_nf(this.id,'box_nf')" checked="checked">
+                            <label class="custom-control-label" for="nf_ccm">Informar nota fiscal</label>
+                        </div>
+                        <div style="display:none" id="box_nf">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label asp-for="nf.ccm_nf_data_emissao" class="control-label">Data</label>
+                                        <input type="text" name="ccm_nf_data_emissao" id="ccm_nf_data_emissao" autocomplete="off" class="form-control datepicker" value="@Model.nf.ccm_nf_data_emissao.ToShortDateString()" />
                                     </div>
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label asp-for="nf.ccm_nf_valor" class="control-label">Valor</label>
-                                            <input type="text" name="ccm_nf_valor" id="ccm_nf_valor" class="form-control" onchange="decimal(this.id, this.value, '2')" value="@Model.nf.ccm_nf_valor.ToString("N2")" />
-                                        </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label asp-for="nf.ccm_nf_valor" class="control-label">Valor</label>
+                                        <input type="text" name="ccm_nf_valor" id="ccm_nf_valor" class="form-control" onchange="decimal(this.id, this.value, '2')" value="@Model.nf.ccm_nf_valor.ToString("N2")" />
                                     </div>
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="control-label">Série</label>
-                                            <input type="text" asp-for="nf.ccm_nf_serie" id="ccm_nf_serie" class="form-control" />
-                                        </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Série</label>
+                                        <input type="text" asp-for="nf.ccm_nf_serie" id="ccm_nf_serie" class="form-control" />
                                     </div>
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="control-label">Número</label>
-                                            <input type="text" asp-for="nf.ccm_nf_numero" id="ccm_nf_numero" class="form-control" />
-                                        </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Número</label>
+                                        <input type="text" asp-for="nf.ccm_nf_numero" id="ccm_nf_numero" class="form-control" />
                                     </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="control-label">Chave de Acesso</label>
-                                            <input type="text" asp-for="nf.ccm_nf_chave" id="ccm_nf_chave" class="form-control" />
-                                        </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Chave de Acesso</label>
+                                        <input type="text" asp-for="nf.ccm_nf_chave" id="ccm_nf_chave" class="form-control" />
                                     </div>
                                 </div>
                             </div>
-                            <script>
-                                document.getElementById('box_nf').style.display = 'block';
-                            </script>
+                        </div>
+                        <script>
+                            document.getElementById('box_nf').style.display = 'block';
+                        </script>
                         }
                         else
                         {
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" id="nf_ccm" class="custom-control-input" onchange="ccm_nf(this.id,'box_nf')">
-                                <label class="custom-control-label" for="nf_ccm">Informar nota fiscal</label>
-                            </div>
-                            <div style="display:none" id="box_nf">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label asp-for="nf.ccm_nf_data_emissao" class="control-label">Data</label>
-                                            <input type="text" name="ccm_nf_data_emissao" id="ccm_nf_data_emissao" autocomplete="off" class="form-control datepicker" />
-                                        </div>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" id="nf_ccm" class="custom-control-input" onchange="ccm_nf(this.id,'box_nf')">
+                            <label class="custom-control-label" for="nf_ccm">Informar nota fiscal</label>
+                        </div>
+                        <div style="display:none" id="box_nf">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label asp-for="nf.ccm_nf_data_emissao" class="control-label">Data</label>
+                                        <input type="text" name="ccm_nf_data_emissao" id="ccm_nf_data_emissao" autocomplete="off" class="form-control datepicker" />
                                     </div>
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label asp-for="nf.ccm_nf_valor" class="control-label">Valor</label>
-                                            <input type="text" asp-for="nf.ccm_nf_valor" id="ccm_nf_valor" class="form-control" onchange="decimal(this.id, this.value, '2')" />
-                                        </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label asp-for="nf.ccm_nf_valor" class="control-label">Valor</label>
+                                        <input type="text" asp-for="nf.ccm_nf_valor" id="ccm_nf_valor" class="form-control" onchange="decimal(this.id, this.value, '2')" />
                                     </div>
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="control-label">Série</label>
-                                            <input type="text" asp-for="nf.ccm_nf_serie" id="ccm_nf_serie" class="form-control" />
-                                        </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Série</label>
+                                        <input type="text" asp-for="nf.ccm_nf_serie" id="ccm_nf_serie" class="form-control" />
                                     </div>
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="control-label">Número</label>
-                                            <input type="text" asp-for="nf.ccm_nf_numero" id="ccm_nf_numero" class="form-control" />
-                                        </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Número</label>
+                                        <input type="text" asp-for="nf.ccm_nf_numero" id="ccm_nf_numero" class="form-control" />
                                     </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="control-label">Chave de Acesso</label>
-                                            <input type="text" asp-for="nf.ccm_nf_chave" id="ccm_nf_chave" class="form-control" />
-                                        </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Chave de Acesso</label>
+                                        <input type="text" asp-for="nf.ccm_nf_chave" id="ccm_nf_chave" class="form-control" />
                                     </div>
                                 </div>
                             </div>
-                            <script>
-                                document.getElementById('box_nf').style.display = 'none';
-                            </script>
+                        </div>
+                        <script>
+                            document.getElementById('box_nf').style.display = 'none';
+                        </script>
                         }
                     }
                     <input type="hidden" name="ccorrente_id" id="ccorrente_id" value="@Model.filtro.contacorrente_id" />

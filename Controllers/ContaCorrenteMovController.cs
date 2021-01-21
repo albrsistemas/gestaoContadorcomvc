@@ -112,7 +112,7 @@ namespace gestaoContadorcomvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(string dataInicio, string dataFim, int contacorrente_id, DateTime data, DateTime ccm_data_competencia, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id, bool ccm_nf, DateTime ccm_nf_data_emissao, Decimal ccm_nf_valor, string ccm_nf_serie, string ccm_nf_numero, string ccm_nf_chave)
+        public IActionResult Create(string dataInicio, string dataFim, int contacorrente_id, DateTime data, DateTime ccm_data_competencia, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id, bool ccm_nf, DateTime ccm_nf_data_emissao, Decimal ccm_nf_valor, string ccm_nf_serie, string ccm_nf_numero, string ccm_nf_chave, Decimal ccm_valor_principal, Decimal ccm_multa, Decimal ccm_juros)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -130,7 +130,7 @@ namespace gestaoContadorcomvc.Controllers
                 f.dataFim = Convert.ToDateTime(dataFim);
                 vm_ccm.filtro = f;
 
-                retorno = ccm.cadastrarCCM(user.usuario_id, user.usuario_conta_id, data, ccm_data_competencia, valor, memorando, categoria_id, participante_id, ccorrente_id, ccm_nf, ccm_nf_data_emissao, ccm_nf_valor, ccm_nf_serie, ccm_nf_numero, ccm_nf_chave);
+                retorno = ccm.cadastrarCCM(user.usuario_id, user.usuario_conta_id, data, ccm_data_competencia, valor, memorando, categoria_id, participante_id, ccorrente_id, ccm_nf, ccm_nf_data_emissao, ccm_nf_valor, ccm_nf_serie, ccm_nf_numero, ccm_nf_chave, ccm_valor_principal, ccm_multa, ccm_juros);
 
                 return Json(JsonConvert.SerializeObject(retorno));
             }
@@ -169,7 +169,7 @@ namespace gestaoContadorcomvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(string dataInicio, string dataFim, int contacorrente_id, DateTime data, DateTime ccm_data_competencia, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id, bool ccm_nf, DateTime ccm_nf_data_emissao, Decimal ccm_nf_valor, string ccm_nf_serie, string ccm_nf_numero, string ccm_nf_chave, int ccm_id)
+        public IActionResult Edit(string dataInicio, string dataFim, int contacorrente_id, DateTime data, DateTime ccm_data_competencia, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id, bool ccm_nf, DateTime ccm_nf_data_emissao, Decimal ccm_nf_valor, string ccm_nf_serie, string ccm_nf_numero, string ccm_nf_chave, int ccm_id, Decimal ccm_valor_principal, Decimal ccm_multa, Decimal ccm_juros)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -187,7 +187,7 @@ namespace gestaoContadorcomvc.Controllers
                 f.dataFim = Convert.ToDateTime(dataFim);
                 vm_ccm.filtro = f;
 
-                retorno = ccm.alterarCCM(user.usuario_id, user.usuario_conta_id, data, ccm_data_competencia, valor, memorando, categoria_id, participante_id, ccorrente_id, ccm_nf, ccm_nf_data_emissao, ccm_nf_valor, ccm_nf_serie, ccm_nf_numero, ccm_nf_chave, ccm_id);
+                retorno = ccm.alterarCCM(user.usuario_id, user.usuario_conta_id, data, ccm_data_competencia, valor, memorando, categoria_id, participante_id, ccorrente_id, ccm_nf, ccm_nf_data_emissao, ccm_nf_valor, ccm_nf_serie, ccm_nf_numero, ccm_nf_chave, ccm_id, ccm_valor_principal, ccm_multa, ccm_juros);
 
                 return Json(JsonConvert.SerializeObject(retorno));
             }

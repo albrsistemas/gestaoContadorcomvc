@@ -3561,6 +3561,9 @@ function gravarLancamentoCCM(contexto) {
         let ccm_nf_serie = document.getElementById('ccm_nf_serie').value;
         let ccm_nf_numero = document.getElementById('ccm_nf_numero').value;
         let ccm_nf_chave = document.getElementById('ccm_nf_chave').value;
+        let ccm_valor_principal = document.getElementById('ccm_valor_principal').value;
+        let ccm_multa = document.getElementById('ccm_multa').value;
+        let ccm_juros = document.getElementById('ccm_juros').value;
         let ccm_id = 0;
         if (document.getElementById('ccm_id')) {
             ccm_id = document.getElementById('ccm_id').value;
@@ -3584,7 +3587,10 @@ function gravarLancamentoCCM(contexto) {
                 ccm_nf_serie: ccm_nf_serie,
                 ccm_nf_numero: ccm_nf_numero,
                 ccm_nf_chave: ccm_nf_chave,
-                ccm_id: ccm_id
+                ccm_id: ccm_id,
+                ccm_valor_principal: ccm_valor_principal,
+                ccm_multa: ccm_multa,
+                ccm_juros: ccm_juros,
             },
             type: 'POST',
             dataType: 'json',
@@ -3667,8 +3673,23 @@ function consultaParticipanteCCM(id) {
                 $('#categoria_id').trigger('change');
             }
 
+            //Desabilitando o campo para nova inclusão de participante;
+            if (document.getElementById('participante')) {
+                document.getElementById('participante').setAttribute("disabled", "disabled");
+            }
         }
     });
+}
+
+function alteraParticipanteCCM() {
+    if (document.getElementById('ccm_participante_id')) {
+        document.getElementById('ccm_participante_id').value = '';
+    }
+    if (document.getElementById('participante')) {
+        document.getElementById('participante').removeAttribute("disabled");
+        document.getElementById('participante').value = '';
+        document.getElementById('participante').focus();
+    }    
 }
 
 function ccm_nf(id, box) {
@@ -4217,6 +4238,17 @@ function modal_itemEspecifico() {
     modal_modal();
 
     $("#modal_item").modal('show');
+}
+
+function calculaTotalCCM(id,vlr) {    
+    let vPrincipal = document.getElementById('ccm_valor_principal').value.toString().replace('.', '').replace(',', '.') * 1;
+    let vjuros = document.getElementById('ccm_multa').value.toString().replace('.', '').replace(',', '.') * 1;
+    let vMulta = document.getElementById('ccm_juros').value.toString().replace('.', '').replace(',', '.') * 1;
+
+    console.log(vlr);
+
+    decimal('ccm_valor', ((vPrincipal + vjuros + vMulta).toFixed(2).toString().replace('.', ',')), '2', false);
+    decimal(id, (vlr.replace('.','')), '2', true);  
 }
 
 
