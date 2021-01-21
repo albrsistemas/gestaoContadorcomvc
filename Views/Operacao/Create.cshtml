@@ -743,51 +743,51 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">Valor Bruto</label>
-                                    <input type="text" id="op_parcela_valor_bruto" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
+                                    <input type="text" id="op_parcela_valor_bruto" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">Valor Líquido</label>
-                                    <input type="text" id="op_parcela_valor" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
+                                    <input type="text" id="op_parcela_valor" class="form-control form-control-sm linha_itens" readonly="readonly" />
                                 </div>
                             </div>
                             <!--Retenções da parcela-->
                             <div class="col-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">IRRF</label>
-                                    <input type="text" id="op_parcela_ret_irrf" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
+                                    <input type="text" id="op_parcela_ret_irrf" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
                                 </div>
                             </div>
                             <div class="col-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">INSS</label>
-                                    <input type="text" id="op_parcela_ret_inss" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
+                                    <input type="text" id="op_parcela_ret_inss" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
                                 </div>
                             </div>
                             <div class="col-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">ISSQN</label>
-                                    <input type="text" id="op_parcela_ret_issqn" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
+                                    <input type="text" id="op_parcela_ret_issqn" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
                                 </div>
                             </div>
 
                             <div class="col-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">PIS</label>
-                                    <input type="text" id="op_parcela_ret_pis" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
+                                    <input type="text" id="op_parcela_ret_pis" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
                                 </div>
                             </div>
                             <div class="col-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">COFINS</label>
-                                    <input type="text" id="op_parcela_ret_cofins" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
+                                    <input type="text" id="op_parcela_ret_cofins" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
                                 </div>
                             </div>
                             <div class="col-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label linha_itens">CSLL</label>
-                                    <input type="text" id="op_parcela_ret_csll" class="form-control form-control-sm linha_itens" onchange="decimal(this.id, this.value, '2', true)" />
+                                    <input type="text" id="op_parcela_ret_csll" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
                                 </div>
                             </div>
                             <div class="col-12">
@@ -831,7 +831,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-secondary" onclick="operacao_parcelas('close')">Fechar</button>
             </div>
         </div>
     </div>
@@ -891,7 +891,7 @@
                     <div class="col-12 col-md-4">
                         <div class="form-group">
                             <label asp-for="retencoes.op_ret_inss" class="control-label">INSS</label>
-                            <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control form-control-sm" onchange="updateRetençõesTotais(this.id, this.value,'confirmar')" />
+                            <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control form-control-sm" onchange="editRetencoes(this.id, this.value,'confirmar')" />
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" id="ret_inss_parcela" class="custom-control-input">
                                 <label class="custom-control-label" for="ret_inss_parcela">Descontar INSS na primeira parcela</label>
@@ -901,7 +901,7 @@
                     <div class="col-12 col-md-4">
                         <div class="form-group">
                             <label asp-for="retencoes.op_ret_issqn" class="control-label">ISSQN</label>
-                            <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control form-control-sm" onchange="updateRetençõesTotais(this.id, this.value,'confirmar')" />
+                            <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control form-control-sm" onchange="editRetencoes(this.id, this.value,'confirmar')" />
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" id="ret_iss_parcela" class="custom-control-input">
                                 <label class="custom-control-label" for="ret_iss_parcela">Descontar ISSQN na primeira parcela</label>
@@ -911,7 +911,7 @@
                     <div class="col-12 col-md-4">
                         <div class="form-group">
                             <label asp-for="retencoes.op_ret_irrf" class="control-label">IRRF</label>
-                            <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control form-control-sm" onchange="updateRetençõesTotais(this.id, this.value,'confirmar')" />
+                            <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control form-control-sm" onchange="editRetencoes(this.id, this.value,'confirmar')" />
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" id="ret_irrf_parcela" class="custom-control-input">
                                 <label class="custom-control-label" for="ret_irrf_parcela">Descontar IRRF na primeira parcela</label>
