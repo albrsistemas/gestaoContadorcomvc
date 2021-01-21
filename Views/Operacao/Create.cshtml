@@ -529,6 +529,25 @@
     </div>
 </div>
 
+<!--Remover parcela-->
+<div class="modal fade" id="modal_parcela_delete" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Parcela</h5>
+            </div>
+            <div class="modal-body">
+                <p id="parcela_excluir"></p>
+                <input type="hidden" id="parcela_delete" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="operacao_parcelas('delete_confirmado','')">Excluir</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--Modal p/ inclusão de itens-->
 <div class="modal fade" id="lista_itens" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
@@ -712,7 +731,7 @@
                                     </div>
                                 </div>
                             </div>
-                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-4 col-md-2">
                                 <div class="custom-control custom-switch">
@@ -800,7 +819,8 @@
                         </div>
                         <div class="row">
                             <div class="col-12" id="btn_action">
-                                <button type="button" id="btn_parcela" class="btn btn-sm btn-outline-info" style="width:100%;" onclick="operacao_parcelas('incluir')">Incluir Parcela</button>
+                                <button type="button" id="btn_parcela_cancelar" class="btn btn-sm btn-outline-danger" style="width:50%;float:left;" onclick="operacao_parcelas('cancelar_incluir')">Cancelar</button>
+                                <button type="button" id="btn_parcela" class="btn btn-sm btn-outline-info" style="width:50%;float:left;" onclick="operacao_parcelas('incluir')">Incluir Parcela</button>
                             </div>
                         </div>
                     </div>

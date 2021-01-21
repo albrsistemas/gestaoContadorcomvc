@@ -824,8 +824,10 @@
                         $('#op_parcela_fp_id_edit').val(operacao.parcelas[i].op_parcela_fp_id);
                         $('#op_parcela_fp_id_edit').trigger('change');
                     }
+                    let btn = '<button type="button" id="btn_parcela_cancelar" class="btn btn-sm btn-danger" style="width:50%;float:left;" onclick="operacao_parcelas(\'cancelar_edit\')">Cancelar</button>';
+                    btn += '<button type="button" id="btn_parcela" class="btn btn-sm btn-info" style="width:50%;float:left;" onclick="operacao_parcelas(\'gravar\')">Gravar Alteração</button>';
 
-                    document.getElementById('btn_action').innerHTML = '<button type="button" id="btn_parcela" class="btn btn-sm btn-info" style="width:100%;" onclick="operacao_parcelas(\'gravar\')">Gravar Alteração</button>';
+                    document.getElementById('btn_action').innerHTML = btn;
 
                     break;
                 }
@@ -867,8 +869,10 @@
                         document.getElementById('op_parcela_obs').value = '';
                         document.getElementById('op_parcela_numero').value = '';
 
-                        //altera value do btn da tela
-                        document.getElementById('btn_action').innerHTML = '<button type="button" id="btn_parcela" class="btn btn-sm btn-outline-info" style="width:100%;" onclick="operacao_parcelas(\'incluir\')">Incluir Parcela</button>';
+                        //altera btn da tela
+                        let btn_2 = '<button type="button" id="btn_parcela_cancelar" class="btn btn-sm btn-outline-danger" style="width:50%;float:left;" onclick="operacao_parcelas(\'cancelar_incluir\')">Cancelar</button>';
+                        btn_2 += '<button type="button" id="btn_parcela" class="btn btn-sm btn-outline-info" style="width:50%;float:left;" onclick="operacao_parcelas(\'incluir\')">Incluir Parcela</button>';
+                        document.getElementById('btn_action').innerHTML = btn_2;
 
                         break;
                     }
@@ -939,12 +943,84 @@
         }
 
         if (contexto == 'close') {
+            let valor_bruto_parcelas = 0;
+
             for (let i = 0; i < operacao.parcelas.length; i++) {
-                somatoriaRetencoes();
-                $('#lista_parcelas').modal('hide'); //Fechar modal se estiver aberto
+                valor_bruto_parcelas += convertStringDouble(operacao.parcelas[i].op_parcela_valor_bruto);
             }
+
+            if (valor_bruto_parcelas > convertStringDouble(operacao.totais.op_totais_total_op)) {
+                alert('Soma do valor bruto das parcelas é maior que o valor total da operação!');
+                return;
+            }
+
+            somatoriaRetencoes();
+
+            $('#lista_parcelas').modal('hide'); //Fechar modal se estiver aberto
         }
 
+        if (contexto == 'delete_confirmar') {
+            document.getElementById('parcela_excluir').innerHTML = 'Confirma a exclusão da parcela: ' + op_parcela_numero + '?';
+            document.getElementById('parcela_delete').value = op_parcela_numero;
+            //Abrir modal
+            modal_sobre_modal_open('modal_parcela_delete');
+        }
+
+        if (contexto == 'delete_confirmado') {
+            let codigo = document.getElementById('parcela_delete').value;
+
+            for (let i = 0; i < operacao.parcelas.length; i++) {
+                if (operacao.parcelas[i].op_parcela_numero == convertStringDouble(codigo)) {
+                    operacao.parcelas.splice(i, 1);
+                }
+            }
+            //Atualizando números sequencias de parcelas
+            for (let i = 0; i < operacao.parcelas.length; i++) {
+                operacao.parcelas[i].op_parcela_numero = i + 1;
+                operacao.parcelas[i].op_parcela_numero_total = operacao.parcelas.length;
+            }
+            //Atualiza as retenções
+            somatoriaRetencoes();
+            //Atualizar view
+            atualizaViewParcelas();
+            //Fecha modal de confirmação
+            $('#modal_parcela_delete').modal('hide');
+        }
+
+        if (contexto == 'cancelar_edit') {
+            //Limpando campos da tela
+            document.getElementById('op_parcela_vencimento').value = '';
+            document.getElementById('op_parcela_valor_bruto').value = '';
+            document.getElementById('op_parcela_valor').value = '';
+            document.getElementById('op_parcela_ret_irrf').value = '';
+            document.getElementById('op_parcela_ret_inss').value = '';
+            document.getElementById('op_parcela_ret_issqn').value = '';
+            document.getElementById('op_parcela_ret_pis').value = '';
+            document.getElementById('op_parcela_ret_cofins').value = '';
+            document.getElementById('op_parcela_ret_csll').value = '';
+            document.getElementById('op_parcela_obs').value = '';
+            document.getElementById('op_parcela_numero').value = '';
+
+            //altera btn da tela
+            let btn_2 = '<button type="button" id="btn_parcela_cancelar" class="btn btn-sm btn-outline-danger" style="width:50%;float:left;" onclick="operacao_parcelas(\'cancelar_incluir\')">Cancelar</button>';
+            btn_2 += '<button type="button" id="btn_parcela" class="btn btn-sm btn-outline-info" style="width:50%;float:left;" onclick="operacao_parcelas(\'incluir\')">Incluir Parcela</button>';
+            document.getElementById('btn_action').innerHTML = btn_2;
+        }
+
+        if (contexto == 'cancelar_incluir') {
+            //Limpando campos da tela
+            document.getElementById('op_parcela_vencimento').value = '';
+            document.getElementById('op_parcela_valor_bruto').value = '';
+            document.getElementById('op_parcela_valor').value = '';
+            document.getElementById('op_parcela_ret_irrf').value = '';
+            document.getElementById('op_parcela_ret_inss').value = '';
+            document.getElementById('op_parcela_ret_issqn').value = '';
+            document.getElementById('op_parcela_ret_pis').value = '';
+            document.getElementById('op_parcela_ret_cofins').value = '';
+            document.getElementById('op_parcela_ret_csll').value = '';
+            document.getElementById('op_parcela_obs').value = '';
+            document.getElementById('op_parcela_numero').value = '';
+        }
 
     }
 
