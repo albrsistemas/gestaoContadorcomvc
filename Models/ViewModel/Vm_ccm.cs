@@ -28,6 +28,9 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string participante_nome { get; set; }
         public Ccm_nf nf { get; set; }
         public filtro filtro { get; set; }
+        public Decimal ccm_multa { get; set; }
+        public Decimal ccm_juros { get; set; }
+        public Decimal ccm_valor_principal { get; set; }
 
     }
 
