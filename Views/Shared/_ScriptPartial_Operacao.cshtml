@@ -92,8 +92,9 @@
     function change_op_tipo(id, vlr, contexto) {
         let s = convertStringDouble(operacao.servico.op_servico_valor);
         let p = operacao.itens.length;
+        let o = convertStringDouble(document.getElementById('op_totais_valor_outras_operacoes').value);
 
-        if (s > 0 || p > 0) {
+        if (s > 0 || p > 0 || o > 0) {
             let up = '<button type="button" class="btn btn-danger" onclick="change_op_tipo(\'' + id + '\', \'' + vlr + '\',\'confirmado\')">Alterar</button>';
             let del = '<button type="button" class="btn btn-secondary" onclick="change_op_tipo(\'' + id + '\', \'' + vlr + '\',\'nao_confirmado\')">Cancelar</button>';
 
@@ -133,10 +134,7 @@
 
                 document.getElementById('totais_servico').style.display = 'none';
                 document.getElementById('totais_itens').style.display = 'block';
-
-                //Retorna serviços a defoult
-                retornaServicoDefault();
-                totaisOperacao();
+                document.getElementById('totais_demais').style.display = 'none';
             }
             if (vlr == 'ServicoPrestado' || vlr == 'ServicoTomado') { //Serviços
                 document.getElementById('itens_operacao').style.display = 'none';
@@ -145,9 +143,7 @@
 
                 document.getElementById('totais_servico').style.display = 'block';
                 document.getElementById('totais_itens').style.display = 'none';
-
-                //Remove os itens da operação
-                excluirTodosItensOperacao();                
+                document.getElementById('totais_demais').style.display = 'none';
             }
             if (vlr == 'OutrasDespesas' || vlr == 'OutrasReceitas') {//Outros
                 document.getElementById('itens_operacao').style.display = 'none';
@@ -156,13 +152,12 @@
 
                 document.getElementById('totais_servico').style.display = 'none';
                 document.getElementById('totais_itens').style.display = 'none';
-
-                //Remove os itens da operação
-                excluirTodosItensOperacao();
-                //Retorna serviços a defoult
-                retornaServicoDefault();                
+                document.getElementById('totais_demais').style.display = 'block';
             }
             operacao.operacao.op_tipo = vlr;
+
+            //Limpa operação
+            limparOperacao();
 
             //Produzindo selects categoria e forma de pagamento contextualizada ao tipo op.
             GerarFormaPgto(vlr, 'op_parcela_fp_id');            
@@ -176,9 +171,83 @@
         }
     }
 
+    function limparOperacao() {
+        //Outras operações
+        retornaOutrasOperacoesZero();
+        //Remove os itens da operação
+        excluirTodosItensOperacao();
+        //Retorna serviços a defoult
+        retornaServicoDefault();
+        //Limpa retenções
+        document.getElementById('op_ret_inss').value = '';
+        document.getElementById('op_ret_issqn').value = '';
+        document.getElementById('op_ret_irrf').value = '';
+        document.getElementById('op_ret_pis').value = '';
+        document.getElementById('op_ret_cofins').value = '';
+        document.getElementById('op_ret_csll').value = '';
+        document.getElementById('retencoes').value = 'Não informado';
+        operacao.retencoes.op_ret_inss = convertDoubleString(0);
+        operacao.retencoes.op_ret_issqn = convertDoubleString(0);
+        operacao.retencoes.op_ret_irrf = convertDoubleString(0);
+        operacao.retencoes.op_ret_pis = convertDoubleString(0);
+        operacao.retencoes.op_ret_cofins = convertDoubleString(0);
+        operacao.retencoes.op_ret_csll = convertDoubleString(0);
+        //Limpaa parcelas
+        operacao.parcelas.splice(0, operacao.parcelas.length);
+        document.getElementById('parcelas').value = 'Não informado';
+        //Limpando totais
+        document.getElementById('op_totais_preco_itens').value = convertDoubleString(0);
+        document.getElementById('op_totais_frete').value = convertDoubleString(0);
+        document.getElementById('op_totais_seguro').value = convertDoubleString(0);
+        document.getElementById('op_totais_desp_aces').value = convertDoubleString(0);
+        document.getElementById('op_totais_desconto').value = convertDoubleString(0);
+        document.getElementById('op_totais_icms_st').value = convertDoubleString(0);
+        document.getElementById('op_totais_ipi').value = convertDoubleString(0);
+        document.getElementById('op_totais_preco_servicos').value = convertDoubleString(0);
+        document.getElementById('op_totais_valor_outras_operacoes_totais').value = convertDoubleString(0);
+        document.getElementById('op_totais_total_op').value = convertDoubleString(0);
+        operacao.totais.op_totais_preco_itens = convertDoubleString(0);
+        operacao.totais.op_totais_frete = convertDoubleString(0);
+        operacao.totais.op_totais_seguro = convertDoubleString(0);
+        operacao.totais.op_totais_desp_aces = convertDoubleString(0);
+        operacao.totais.op_totais_desconto = convertDoubleString(0);
+        operacao.totais.op_totais_icms_st = convertDoubleString(0);
+        operacao.totais.op_totais_ipi = convertDoubleString(0);
+        operacao.totais.op_totais_preco_servicos = convertDoubleString(0);
+        operacao.totais.op_totais_valor_outras_operacoes_totais = convertDoubleString(0);
+        operacao.totais.op_totais_total_op = convertDoubleString(0);
+        //Limpando documento fiscal
+        document.getElementById('op_nf_data_emissao').value = '';
+        document.getElementById('op_nf_serie').value = '';
+        document.getElementById('op_nf_numero').value = '';
+        document.getElementById('op_nf_chave').value = '';
+        document.getElementById('documento').value = 'Não informado';
+        operacao.nf.op_nf_data_emissao = '';
+        operacao.nf.op_nf_numero = '';
+        operacao.nf.op_nf_serie = '';
+        operacao.nf.op_nf_chave = '';        
+        operacao.nf.op_comNF = 0;        
+        operacao.nf.op_nf_tipo = 0;
+        //Limpando operação.operação
+        operacao.operacao.op_comRetencoes = false;
+        operacao.operacao.possui_parcelas = false;
+    }
+
+    function retornaOutrasOperacoesZero() {
+        document.getElementById('op_totais_valor_outras_operacoes').value = convertDoubleString(0);
+        document.getElementById('op_totais_total_op').value = convertDoubleString(0);
+        document.getElementById('totais').value = convertDoubleString(0);
+        document.getElementById('op_totais_valor_outras_operacoes_totais').value = convertDoubleString(0);
+        operacao.totais.op_totais_total_op = convertDoubleString(0);
+        operacao.totais.op_totais_valor_outras_operacoes = convertDoubleString(0);
+    }
+
     function excluirTodosItensOperacao() { //Exclui todos os itens da matriz de itens de operação.itens.
         operacao.itens.splice(0, operacao.itens.length);
         document.getElementById('itens').value = 'Não informado';
+
+        operacao.totais.op_totais_itens = 0;
+        operacao.totais.op_totais_qtd_itens = '';
 
         totaisOperacao();
     }
@@ -301,6 +370,9 @@
                 if (document.getElementById('modal_participante')) {
                     $('#modal_participante').modal('hide');
                 }
+
+                //gravando informação que operação é com participante
+                operacao.operacao.op_comParticipante = true;
             }
         }
 
@@ -319,6 +391,10 @@
             document.getElementById('cidade').value = '';
             document.getElementById('uf').value = 35;
             document.getElementById('op_paisesIBGE_codigo').value = 1058;
+
+            //gravando informação que operação é sem participante
+            operacao.operacao.op_comParticipante = false;
+
             //Fechando modal
             if (document.getElementById('modal_participante')) {
                 $('#modal_participante').modal('hide');
@@ -638,6 +714,9 @@
                 document.getElementById('retencoes').value = 'Não informado';
             }
 
+            //Atualiza parcelas para refazer informações da view
+            atualizaViewParcelas();
+
             //Fecha modal
             $('#m_retencoes').modal('hide');
         }
@@ -651,7 +730,6 @@
 
     function operacao_totais(contexto) {
         if (contexto == 'open') {
-
             //Abrir modal
             modal_sobre_modal_open('m_totais');
         }
@@ -754,6 +832,9 @@
 
     function atualizaViewParcelas() {
         document.getElementById('tbody_parcelas').innerHTML = '';
+
+        let valor_liquido = 0;
+
         for (let i = 0; i < operacao.parcelas.length; i++) {
             item = '';
             item += '<tr>';
@@ -780,6 +861,14 @@
             item += '<td style="white-space:nowrap">' + operacao.parcelas[i].op_parcela_obs + '</td>';            
             item += '</tr>';
             $('#tbody_parcelas').append(item);
+
+            valor_liquido += convertStringDouble(operacao.parcelas[i].op_parcela_valor);
+        }
+
+        if (operacao.parcelas.length > 0) {
+            document.getElementById('parcelas').value = 'Número Parcelas: ' + operacao.parcelas.length + ' Valor Liquido: ' + convertDoubleString(valor_liquido);
+        } else {
+            document.getElementById('parcelas').value = 'Não informado';
         }
     }
 
@@ -792,16 +881,21 @@
         }
 
         if (contexto == 'gerar') {
-            let forma_gerar_parcelas = convertStringDouble(document.getElementById('parcela_forma_gerar').value);           
+            let forma_gerar_parcelas = convertStringDouble(document.getElementById('parcela_forma_gerar').value);
+            let valor_operacao = convertStringDouble(operacao.totais.op_totais_total_op);
 
-            if (forma_gerar_parcelas == 1) {
-                gera_parcelas_dia_vencimento();
-                atualizaViewParcelas();
-            }
+            if (valor_operacao > 0) {
+                if (forma_gerar_parcelas == 1) {
+                    gera_parcelas_dia_vencimento();
+                    atualizaViewParcelas();
+                }
 
-            if (forma_gerar_parcelas == 3) {                
-                gera_parcelas_numero_parcelas();
-                atualizaViewParcelas();
+                if (forma_gerar_parcelas == 3) {
+                    gera_parcelas_numero_parcelas();
+                    atualizaViewParcelas();
+                }
+            } else {
+                alert('Operação sem valor para geração de parcelas!');
             }
         }
 
@@ -944,9 +1038,11 @@
 
         if (contexto == 'close') {
             let valor_bruto_parcelas = 0;
+            let valor_liquido = 0;
 
             for (let i = 0; i < operacao.parcelas.length; i++) {
                 valor_bruto_parcelas += convertStringDouble(operacao.parcelas[i].op_parcela_valor_bruto);
+                valor_liquido += convertStringDouble(operacao.parcelas[i].op_parcela_valor);
             }
 
             if (valor_bruto_parcelas > convertStringDouble(operacao.totais.op_totais_total_op)) {
@@ -955,6 +1051,12 @@
             }
 
             somatoriaRetencoes();
+
+            if (operacao.parcelas.length > 0) {
+                document.getElementById('parcelas').value = 'Número Parcelas: ' + operacao.parcelas.length + ' Valor Liquido: ' + convertDoubleString(valor_liquido);
+            } else {
+                document.getElementById('parcelas').value = 'Não informado';
+            }
 
             $('#lista_parcelas').modal('hide'); //Fechar modal se estiver aberto
         }
@@ -1320,6 +1422,9 @@
                 }
             }
 
+            //Atualiza parcelas para refazer informações da view
+            atualizaViewParcelas();
+
             somatoriaRetencoes();
 
             decimal(id, convertStringDouble(vlr), '2', true);
@@ -1373,6 +1478,12 @@
         operacao.retencoes.op_ret_cofins = convertDoubleString(cofins);
         operacao.retencoes.op_ret_csll = convertDoubleString(csll);
 
+        //Atribuir informação na operação se op é com retenções
+        if (inss > 0 || iss > 0 || ir > 0 || pis > 0 || cofins > 0 || csll > 0) {
+            operacao.operacao.op_comRetencoes = true;
+        } else {
+            operacao.operacao.op_comRetencoes = false;
+        }
 
         let txt = '';
         let soma = 0;
@@ -1407,6 +1518,183 @@
         } else {
             document.getElementById('retencoes').value = 'Não informado';
         }
+    }
+
+    function operacao_documento(contexto) {
+        if (contexto == 'open') {
+            document.getElementById('op_nf_tipo').value = operacao.nf.op_nf_tipo;
+            document.getElementById('op_nf_data_emissao').value = operacao.nf.op_nf_data_emissao;
+            document.getElementById('op_nf_serie').value = operacao.nf.op_nf_serie;
+            document.getElementById('op_nf_numero').value = operacao.nf.op_nf_numero;
+            document.getElementById('op_nf_chave').value = operacao.nf.op_nf_chave;
+            //Abrir modal
+            modal_sobre_modal_open('lista_dctos_fiscais');
+        }
+
+        if (contexto == 'save') {
+            document.getElementById('box_valid').innerHTML = '';
+            let op_nf_data_emissao = moment(document.getElementById('op_nf_data_emissao').value, 'DD/MM/YYYY', 'pt', true);
+            let serie = document.getElementById('op_nf_serie').value;
+            let numero = document.getElementById('op_nf_numero').value;
+            let chave = document.getElementById('op_nf_chave').value;
+
+            let str = '';
+
+            if (!op_nf_data_emissao.isValid()) {
+                str += 'Data de emissão inválida;';
+            }
+
+            if (serie.length < 1) {
+                str += 'Série é obrigatória;';
+            }
+
+            if (numero.length < 1) {
+                str += 'Número é obrigatório;';
+            }
+
+            if (chave.length > 1 && chave.length != 44) {
+                str += 'Chave de Acesso deve ter 44 caracteres;';
+            }
+
+            if (str.length > 0) {                
+                let m = str.split(';');
+                for (let i = 0; i < m.length; i++) {
+                    let v = '<span class="text-danger">'+ m[i] +'</span></br>';
+                    $('#box_valid').append(v);
+                }
+            } else {
+                operacao.nf.op_nf_tipo = document.getElementById('op_nf_tipo').value;
+                operacao.nf.op_nf_data_emissao = op_nf_data_emissao.format('DD/MM/YYYY');
+                operacao.nf.op_nf_serie = serie;
+                operacao.nf.op_nf_numero = numero;
+                operacao.nf.op_nf_chave = chave;
+
+                document.getElementById('documento').value = 'Número: ' + numero + ' Série: ' + serie;
+
+                //gravando informação que operação é com nf
+                operacao.operacao.op_comNF = document.getElementById('op_nf_tipo').value;
+
+                $('#lista_dctos_fiscais').modal('hide');
+            }
+        }
+
+        if (contexto == 'delete_confirmar') {
+            //Abrir modal
+            modal_sobre_modal_open('modal_delete_dcto');
+        }
+
+        if (contexto == 'delete_confirmado') {
+            //Limpando objeto
+            operacao.nf.op_nf_tipo = 0;
+            operacao.nf.op_nf_data_emissao = '';
+            operacao.nf.op_nf_serie = '';
+            operacao.nf.op_nf_numero = '';
+            operacao.nf.op_nf_chave = '';
+
+            //Limpando tela            
+            document.getElementById('op_nf_data_emissao').value = '';
+            document.getElementById('op_nf_serie').value = '';
+            document.getElementById('op_nf_numero').value = '';
+            document.getElementById('op_nf_chave').value = '';
+
+            document.getElementById('documento').value = 'Não informado';
+
+            //gravando informação que operação é sem nf
+            operacao.operacao.op_comNF = 0;
+
+            $('#lista_dctos_fiscais').modal('hide');
+            $('#modal_delete_dcto').modal('hide');
+        }
+    }    
+
+    function valorOutrasOperacoes(id, vlr) {
+        operacao.totais.op_totais_valor_outras_operacoes = convertDoubleString(vlr);
+        operacao.totais.op_totais_total_op = convertDoubleString(vlr);
+        decimal(id, convertDoubleString(vlr), '2', true)
+        decimal('totais', convertDoubleString(vlr), '2', false)
+        decimal('op_totais_valor_outras_operacoes_totais', convertDoubleString(vlr), '2', false)
+        decimal('op_totais_total_op', convertDoubleString(vlr), '2', false)
+    }
+
+    function gravar_op(contexto) {
+        let t = '';
+
+        //Gerando dados da operação
+        operacao.operacao.op_categoria_id = document.getElementById('op_categoria_id').value;
+        let op_data = moment(document.getElementById('op_data').value, 'DD/MM/YYYY', 'pt', true);
+        if (op_data.isValid()) {
+            operacao.operacao.op_data = op_data.format('DD/MM/YYYY');
+        } else {
+            t += 'Data operação é inválida;';
+        }
+        operacao.operacao.op_obs = document.getElementById('op_obs').value;
+        //parcelas
+        let op_totais_total_op = convertStringDouble(operacao.totais.op_totais_total_op);
+
+        if (operacao.parcelas.length > 0) {
+            operacao.operacao.possui_parcelas = true;
+
+            //parcelas - verificando se total parcelas bate com total da operação
+            let valor_bruto = 0;
+            let total_retencoes = 0;
+            for (let i = 0; i < operacao.parcelas.length; i++) {
+                valor_bruto += convertStringDouble(operacao.parcelas[i].op_parcela_valor_bruto);
+                total_retencoes += convertStringDouble(operacao.parcelas[i].op_parcela_ret_inss);
+                total_retencoes += convertStringDouble(operacao.parcelas[i].op_parcela_ret_irrf);
+                total_retencoes += convertStringDouble(operacao.parcelas[i].op_parcela_ret_issqn);
+                total_retencoes += convertStringDouble(operacao.parcelas[i].op_parcela_ret_pis);
+                total_retencoes += convertStringDouble(operacao.parcelas[i].op_parcela_ret_cofins);
+                total_retencoes += convertStringDouble(operacao.parcelas[i].op_parcela_ret_csll);
+            }
+
+            if (op_totais_total_op != valor_bruto) {
+                t += 'Total bruto das parcelas difere do total da operação;';
+            }
+
+            //Comparando total retenções informada na parcela com as retençções em operacao.retencoers
+            if (total_retencoes != (convertStringDouble(operacao.retencoes.op_ret_inss) + convertStringDouble(operacao.retencoes.op_ret_irrf) + convertStringDouble(operacao.retencoes.op_ret_issqn) + convertStringDouble(operacao.retencoes.op_ret_pis) + convertStringDouble(operacao.retencoes.op_ret_cofins) + convertStringDouble(operacao.retencoes.op_ret_csll))) {
+                t += 'Total das retenções nas parcelas difere do todas das retenções;';
+            }
+        } else {
+            operacao.operacao.possui_parcelas = true;
+            t += 'Obrigatório informar ao menos uma parcela;';
+        }       
+        
+        //Informando sobre total
+        if (op_totais_total_op == 0) {
+            t += 'Operação sem valor;';
+        }
+        //Verificando se foi informado participante
+        if (operacao.participante.op_part_participante_id == 0) {
+            t += 'Obrigatório informar o participante;';
+        }
+        //Verificando categoria
+        let cat = document.getElementById('op_categoria_id').value;
+        if (cat == "" || cat == null || cat == '0' || cat == 0) {
+            t += 'Origatório informar uma categoria;';
+        }
+
+        //Distrinchando matriz de erros
+        let v = t.split(';');
+
+        for (let i = 0; i < v.length; i++) {
+            if (v[i] == '') {
+                v.splice(i, 1);
+            } 
+        }
+
+        if (v.length > 0) {
+            document.getElementById('op_valid').innerHTML = '';
+            for (let i = 0; i < v.length; i++) {
+                let msg = '<span class="text-danger">' + v[i] + '</span></br>';
+                $('#op_valid').append(msg);               
+            }
+            console.log(v);
+        } else {
+            alert('enviar por ajax');
+            console.log(v);
+        }
+
     }
 
 

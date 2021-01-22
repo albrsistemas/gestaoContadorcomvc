@@ -165,9 +165,9 @@
 <div class="row" id="outros_operacao" style="display:block">
     <div class="col-12">
         <div class="form-group">
-            <label asp-for="totais.op_totais_total_op" class="control-label">Valor Operação</label>
-            <input asp-for="totais.op_totais_total_op" id="op_totais_total_op_356" class="form-control form-control-sm form-control form-control-sm-sm" placeholder="Valor Operação" onchange="decimal(this.id, this.value, '2', true)" />
-            <span asp-validation-for="totais.op_totais_total_op" class="text-danger"></span>
+            <label asp-for="totais.op_totais_valor_outras_operacoes" class="control-label">Valor Operação</label>
+            <input asp-for="totais.op_totais_valor_outras_operacoes" id="op_totais_valor_outras_operacoes" class="form-control form-control-sm" onchange="valorOutrasOperacoes(this.id, this.value)"  />
+            <span asp-validation-for="totais.op_totais_valor_outras_operacoes" class="text-danger"></span>
         </div>
     </div>
 </div>
@@ -220,11 +220,11 @@
         </div>
     </div>
     <div class="col-12 col-md-6">
-        <label class="control-label">Documento Fiscal</label>
+        <label class="control-label">Documento Fiscal/Contábil</label>
         <div class="input-group mb-3">
-            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="documento" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <input disabled type="text" class="form-control form-control-sm" id="documento" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
             <div class="input-group-append">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="modal_sobre_modal_open('lista_dctos_fiscais')">
+                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="operacao_documento('open')">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                     </svg>
@@ -244,7 +244,12 @@
         </div>
     </div>
 </fieldset>
-<button type="button" class="btn btn-info" id="sub" onclick="gravarOperacao('Create', 'Compra')">Gravar</button>
+<div class="row">
+    <div class="col-12" id="op_valid">
+        
+    </div>
+</div>
+<button type="button" class="btn btn-info" id="sub" onclick="gravar_op('Create')">Gravar</button>
 <a class="btn btn-secondary" asp-controller="Operacao" asp-action="Index">Cancelar</a>
 
 <div class="displey_validacao">
@@ -983,7 +988,7 @@
                         <div class="form-group">
                             <div class="form-group">
                                 <label asp-for="nf.op_nf_tipo" class="control-label linha_itens">Tipo Documento</label>
-                                <select asp-items="@ViewBag.tipoNF" value="@TempData["op_nf_tipo"]" id="op_nf_tipo" name="op_nf_tipo" class="form-control form-control-sm linha_itens" onchange="tipoNF(this.id, this.value)"></select>
+                                <select asp-items="@ViewBag.tipoNF" value="@TempData["op_nf_tipo"]" id="op_nf_tipo" name="op_nf_tipo" class="form-control form-control-sm linha_itens"></select>
                                 <span asp-validation-for="nf.op_nf_tipo" class="text-danger"></span>
                             </div>
                         </div>
@@ -991,7 +996,7 @@
                     <div class="col-12 col-md-6">
                         <div class="form-group">
                             <label asp-for="nf.op_nf_data_emissao" class="control-label linha_itens">Data de Emissão</label>
-                            <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" disabled="disabled" />
+                            <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
                         </div>
                     </div>
                 </div>
@@ -1000,14 +1005,14 @@
                         <div class="form-group">
                             <div class="form-group">
                                 <label asp-for="nf.op_nf_serie" class="control-label linha_itens">Série</label>
-                                <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control form-control-sm linha_itens" disabled="disabled" />
+                                <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control form-control-sm linha_itens" />
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="form-group">
                             <label asp-for="nf.op_nf_numero" class="control-label linha_itens">Número</label>
-                            <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control form-control-sm linha_itens" disabled="disabled" />
+                            <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control form-control-sm linha_itens" />
                         </div>
                     </div>
                 </div>
@@ -1015,38 +1020,20 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label asp-for="nf.op_nf_chave" class="control-label linha_itens">Chave de Acesso</label>
-                            <input asp-for="nf.op_nf_chave" id="op_nf_chave" class="form-control form-control-sm linha_itens" onkeyup="tamanhoDigitado(this.id, this.value, '44','chave_acesso')" onblur="chave_acesso_nf_op(this.id, this.value)" disabled="disabled" />
-                            <span class="text-info" id="chave_acesso"></span>
+                            <input asp-for="nf.op_nf_chave" id="op_nf_chave" class="form-control form-control-sm linha_itens" />
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12">
-                        <button type="button" class="btn btn-sm btn-info" style="width:100%;">Incluir</button>
+                    <div class="col-12" id="box_valid">
+                        
                     </div>
-                </div>
-                <hr class="hrLine" />
-                <div class="table-responsive">
-                    <table class="table table-sm">
-                        <caption>Lista de Parcelas</caption>
-                        <thead>
-                            <tr>
-                                <th scope="col">Ações</th>
-                                <th scope="col">Tipo</th>
-                                <th scope="col">Data Emissão</th>
-                                <th scope="col">Série</th>
-                                <th scope="col">Número</th>
-                                <th scope="col">Chave de Acesso</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger">Excluir</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-danger" onclick="operacao_documento('delete_confirmar')">Excluir</button>
+                <button type="button" class="btn btn-info" onclick="operacao_documento('save')">Gravar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
@@ -1119,6 +1106,16 @@
                             </div>
                         </div>
                     </div>
+                    <div id="totais_demais" style="display:block;">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="totais.op_totais_valor_outras_operacoes" class="control-label">Valor Operação</label>
+                                    <input asp-for="totais.op_totais_valor_outras_operacoes" id="op_totais_valor_outras_operacoes_totais" class="form-control form-control-sm" readonly="readonly" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
@@ -1166,6 +1163,24 @@
             </div>
             <div class="modal-footer" id="footer_update_especie">
 
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--mensagem confirmação exclusão dcto-->
+<div class="modal fade" id="modal_delete_dcto" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header" style="text-align:center;">
+                <h5 class="modal-title">Confirmação Exclusão Documento</h5>
+            </div>
+            <div class="modal-body" style="text-align:center;">                
+                <p>Deseja realmente excluir o documento?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="operacao_documento('delete_confirmado')">Confirma</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>

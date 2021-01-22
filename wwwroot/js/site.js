@@ -82,6 +82,7 @@ var operacao = {
         op_totais_icms_st: 0,
         op_totais_saldoLiquidacao: 0,
         op_totais_preco_servicos: 0,
+        op_totais_valor_outras_operacoes: 0,
     },
     parcelas: [],
     transportador: {
@@ -97,6 +98,7 @@ var operacao = {
     nf: {
         op_nf_id: 0,
         op_nf_op_id: 0,
+        op_nf_tipo: 0,
         op_nf_chave: '',
         op_nf_data_emissao: '',
         op_nf_data_entrada_saida: '',

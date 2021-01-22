@@ -33,5 +33,6 @@ namespace gestaoContadorcomvc.Models
         public Decimal op_totais_icms_st { get; set; }
         public Decimal op_totais_saldoLiquidacao { get; set; }
         public Decimal op_totais_preco_servicos { get; set; }
+        public Decimal op_totais_valor_outras_operacoes { get; set; }
     }
 }
