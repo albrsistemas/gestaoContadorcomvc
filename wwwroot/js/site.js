@@ -25,7 +25,7 @@ let fechamento_cartao = {
 var operacao = {
     operacao: {
         op_id: 0,
-        op_tipo: 'Outras',
+        op_tipo: 'OutrasDespesas',
         op_data: '',
         op_previsao_entrega: '',
         op_data_saida: '',

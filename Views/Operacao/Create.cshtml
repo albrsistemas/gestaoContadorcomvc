@@ -166,7 +166,7 @@
     <div class="col-12">
         <div class="form-group">
             <label asp-for="totais.op_totais_valor_outras_operacoes" class="control-label">Valor Operação</label>
-            <input asp-for="totais.op_totais_valor_outras_operacoes" id="op_totais_valor_outras_operacoes" class="form-control form-control-sm" onchange="valorOutrasOperacoes(this.id, this.value)"  />
+            <input asp-for="totais.op_totais_valor_outras_operacoes" id="op_totais_valor_outras_operacoes" class="form-control form-control-sm" onchange="valorOutrasOperacoes(this.id, this.value)" />
             <span asp-validation-for="totais.op_totais_valor_outras_operacoes" class="text-danger"></span>
         </div>
     </div>
@@ -246,7 +246,7 @@
 </fieldset>
 <div class="row">
     <div class="col-12" id="op_valid">
-        
+
     </div>
 </div>
 <button type="button" class="btn btn-info" id="sub" onclick="gravar_op('Create')">Gravar</button>
@@ -1026,7 +1026,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12" id="box_valid">
-                        
+
                     </div>
                 </div>
             </div>
@@ -1133,6 +1133,41 @@
     </div>
 </div>
 
+<!--Aguardando gravar-->
+<div class="modal fade" id="modal_mensagem" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticLabel"></h5>
+            </div>
+            <div class="modal-body" id="conteudo">
+
+            </div>
+            <div class="modal-footer" id="rodape">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Gravação com sucesso-->
+<div class="modal fade" id="modal_mensagem_sucesso" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Operação</h5>
+            </div>
+            <div class="modal-body">
+                <p>Operação cadastrada com sucesso!</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-info" asp-controller="Operacao" asp-action="Create">Nova Operação</a>
+                <a class="btn btn-secondary" asp-controller="Operacao" asp-action="Index">Fechar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--mensagem retorno-->
 <div class="modal fade" id="modal_mensagem_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
     <div class="modal-dialog modal-sm">
@@ -1175,7 +1210,7 @@
             <div class="modal-header" style="text-align:center;">
                 <h5 class="modal-title">Confirmação Exclusão Documento</h5>
             </div>
-            <div class="modal-body" style="text-align:center;">                
+            <div class="modal-body" style="text-align:center;">
                 <p>Deseja realmente excluir o documento?</p>
             </div>
             <div class="modal-footer">

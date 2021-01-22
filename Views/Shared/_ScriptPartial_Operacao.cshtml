@@ -1691,8 +1691,71 @@
             }
             console.log(v);
         } else {
-            alert('enviar por ajax');
-            console.log(v);
+            $.ajax({
+                url: "/Operacao/" + contexto,
+                data: { __RequestVerificationToken: gettoken(), op: operacao },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    document.getElementById('staticLabel').innerHTML = "";
+                    document.getElementById('staticLabel').innerHTML = 'Nova Operação';
+                    document.getElementById('conteudo').innerHTML = "";
+                    document.getElementById('conteudo').innerHTML = "<p>Gravando operação, aguarde...</p>";
+                    document.getElementById('rodape').innerHTML = "";
+                    $('#modal_mensagem').modal('show');
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("erro");
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    var results = JSON.parse(data);
+
+                    if (XMLHttpRequest.responseJSON.includes('alterada com sucesso')) {
+                        $('#modal_mensagem').modal('hide');
+                        document.getElementById('mensagem_retorno_label').innerHTML = "";
+                        document.getElementById('mensagem_retorno_label').innerHTML = "Operação";
+                        document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
+                        document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON + "</p>";
+                        document.getElementById('mensagem_retorno_rodape').innerHTML = "";
+                        if (tipo_operacao == 'Compra') {
+                            document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/Compra/Index">Fechar</a>';
+                        }
+                        if (tipo_operacao == 'Venda') {
+                            document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/Venda/Index">Fechar</a>';
+                        }
+                        if (tipo_operacao == 'ServicoPrestado') {
+                            document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/ServicoPrestado/Index">Fechar</a>';
+                        }
+                        if (tipo_operacao == 'ServicoTomado') {
+                            document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/ServicoTomado/Index">Fechar</a>';
+                        }
+                        $('#modal_mensagem_retorno').modal('show');
+
+                        return;
+                    }
+
+
+                    if (XMLHttpRequest.responseJSON.includes('cadastrada com sucesso')) {
+                        $('#modal_mensagem').modal('hide');
+                        $('#modal_mensagem_sucesso').modal('show');
+
+                        return;
+                    }
+
+                    if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                        $('#modal_mensagem').modal('hide');
+                        document.getElementById('mensagem_retorno_label').innerHTML = "";
+                        document.getElementById('mensagem_retorno_label').innerHTML = "ERRO";
+                        document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
+                        document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON + "</p>";
+                        document.getElementById('mensagem_retorno_rodape').innerHTML = "";
+                        document.getElementById('mensagem_retorno_rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Voltar</button>';
+                        $('#modal_mensagem_retorno').modal('show');
+
+                        return;
+                    }
+                }
+            });
         }
 
     }

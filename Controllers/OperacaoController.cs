@@ -20,7 +20,16 @@ namespace gestaoContadorcomvc.Controllers
         [Autoriza(permissao = "operacaoList")]
         public ActionResult Index()
         {
-            return View();
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Operacao op = new Operacao();
+            Vm_operacao_index vm_op = new Vm_operacao_index();
+            vm_op.lista = op.index(user.usuario_conta_id);
+            vm_op.user = user;
+
+            return View(vm_op);
         }
 
         // GET: OperacaoController/Details/5
@@ -54,13 +63,27 @@ namespace gestaoContadorcomvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection, Vm_operacao op)
         {
+            string retorno = "";
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+                Operacao operacao = new Operacao();
+                retorno = operacao.create(user.usuario_id, user.usuario_conta_id, op);
+
+                return Json(JsonConvert.SerializeObject(retorno));
             }
             catch
             {
-                return View();
+                if(retorno == "")
+                {
+                    retorno = "Erro ao cadastrar a operação. Tente novamente, se persistir, entre em contato com o suporte!";
+                }
+
+                return Json(JsonConvert.SerializeObject(retorno));
             }
         }
 

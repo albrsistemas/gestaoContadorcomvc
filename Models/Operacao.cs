@@ -1762,5 +1762,337 @@ namespace gestaoContadorcomvc.Models
 
             return baixas;
         }
+
+        public string create (int usuario_id, int conta_id, Vm_operacao op)
+        {
+            string retorno = "Operação cadastrada com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+            MySqlDataReader myReader;
+
+            try
+            {
+                //operação
+                comando.CommandText = "call pr_operacao(@op_tipo, @op_data, @op_conta_id, @op_obs, @op_previsao_entrega, @op_data_saida, @op_categoria_id, @op_comParticipante, @op_comRetencoes, @op_comTransportador, @op_comNF, @op_escopo_caixa);";
+                comando.Parameters.AddWithValue("@op_tipo", op.operacao.op_tipo);
+                comando.Parameters.AddWithValue("@op_data", op.operacao.op_data);
+                comando.Parameters.AddWithValue("@op_conta_id", conta_id);
+                comando.Parameters.AddWithValue("@op_obs", op.operacao.op_obs);
+                comando.Parameters.AddWithValue("@op_previsao_entrega", op.operacao.op_previsao_entrega);
+                comando.Parameters.AddWithValue("@op_data_saida", op.operacao.op_data_saida);
+                comando.Parameters.AddWithValue("@op_categoria_id", op.operacao.op_categoria_id);
+                comando.Parameters.AddWithValue("@op_comParticipante", op.operacao.op_comParticipante);
+                comando.Parameters.AddWithValue("@op_comRetencoes", op.operacao.op_comRetencoes);
+                comando.Parameters.AddWithValue("@op_comTransportador", op.operacao.op_comTransportador);
+                comando.Parameters.AddWithValue("@op_comNF", op.operacao.op_comNF);
+                string escopo = "";
+                if (op.operacao.op_tipo == "Compra" || op.operacao.op_tipo == "ServicoTomado" || op.operacao.op_tipo == "OutrasDespesas")
+                {
+                    escopo = "S";
+                }
+
+                if (op.operacao.op_tipo == "Venda" || op.operacao.op_tipo == "ServicoPrestado" || op.operacao.op_tipo == "OutrasReceitas")
+                {
+                    escopo = "E";
+                }
+                comando.Parameters.AddWithValue("@op_escopo_caixa", escopo);
+                comando.ExecuteNonQuery();
+
+                //recuperando id da operação
+                int id = 0;
+                comando.CommandText = "SELECT LAST_INSERT_ID();";
+                myReader = comando.ExecuteReader();
+                while (myReader.Read())
+                {
+                    id = myReader.GetInt32(0);
+                }
+                myReader.Close();
+
+                //participante
+                if (op.operacao.op_comParticipante)
+                {
+                    comando.CommandText = "insert into op_participante (op_part_nome, op_part_tipo, op_part_cnpj_cpf, op_part_cep, op_part_cidade, op_part_bairro, op_part_logradouro, op_part_numero, op_part_complemento, op_paisesIBGE_codigo, op_uf_ibge_codigo, op_id, op_part_participante_id) values (@op_part_nome, @op_part_tipo, @op_part_cnpj_cpf, @op_part_cep, @op_part_cidade, @op_part_bairro, @op_part_logradouro, @op_part_numero, @op_part_complemento, @op_paisesIBGE_codigo, @op_uf_ibge_codigo, @op_id, @op_part_participante_id);";
+                    comando.Parameters.AddWithValue("@op_part_nome", op.participante.op_part_nome);
+                    comando.Parameters.AddWithValue("@op_part_tipo", op.participante.op_part_tipo);
+                    comando.Parameters.AddWithValue("@op_part_cnpj_cpf", op.participante.op_part_cnpj_cpf);
+                    comando.Parameters.AddWithValue("@op_part_cep", op.participante.op_part_cep);
+                    comando.Parameters.AddWithValue("@op_part_cidade", op.participante.op_part_cidade);
+                    comando.Parameters.AddWithValue("@op_part_bairro", op.participante.op_part_bairro);
+                    comando.Parameters.AddWithValue("@op_part_logradouro", op.participante.op_part_logradouro);
+                    comando.Parameters.AddWithValue("@op_part_numero", op.participante.op_part_numero);
+                    comando.Parameters.AddWithValue("@op_part_complemento", op.participante.op_part_complemento);
+                    comando.Parameters.AddWithValue("@op_paisesIBGE_codigo", op.participante.op_paisesIBGE_codigo);
+                    comando.Parameters.AddWithValue("@op_uf_ibge_codigo", op.participante.op_uf_ibge_codigo);
+                    comando.Parameters.AddWithValue("@op_part_participante_id", op.participante.op_part_participante_id);
+                    comando.Parameters.AddWithValue("@op_id", id);
+                    comando.ExecuteNonQuery();
+                }
+
+                //Itens
+                if (op.itens != null)
+                {
+                    if (op.itens.Count > 0)
+                    {
+                        for (int i = 0; i < op.itens.Count; i++)
+                        {
+                            MySqlCommand cmd = conn.CreateCommand();
+                            cmd.Connection = conn;
+                            cmd.Transaction = Transacao;
+
+                            cmd.CommandText = "insert into op_itens (op_item_codigo, op_item_nome, op_item_unidade, op_item_preco, op_item_gtin_ean, op_item_gtin_ean_trib, op_item_obs, op_item_qtd, op_item_frete, op_item_seguros, op_item_desp_aces, op_item_desconto, op_item_op_id, op_item_vlr_ipi, op_item_vlr_icms_st, op_item_cod_fornecedor, op_item_produto_id, op_item_valor_total) values (@op_item_codigo, @op_item_nome, @op_item_unidade, @op_item_preco, @op_item_gtin_ean, @op_item_gtin_ean_trib, @op_item_obs, @op_item_qtd, @op_item_frete, @op_item_seguros, @op_item_desp_aces, @op_item_desconto, @op_item_op_id, @op_item_vlr_ipi, @op_item_vlr_icms_st, @op_item_cod_fornecedor, @op_item_produto_id, @op_item_valor_total);";
+                            cmd.Parameters.AddWithValue("@op_item_op_id", id);
+                            cmd.Parameters.AddWithValue("@op_item_codigo", op.itens[i].op_item_codigo);
+                            cmd.Parameters.AddWithValue("@op_item_nome", op.itens[i].op_item_nome);
+                            cmd.Parameters.AddWithValue("@op_item_unidade", op.itens[i].op_item_unidade);
+                            cmd.Parameters.AddWithValue("@op_item_preco", op.itens[i].op_item_preco);
+                            cmd.Parameters.AddWithValue("@op_item_gtin_ean", op.itens[i].op_item_gtin_ean);
+                            cmd.Parameters.AddWithValue("@op_item_gtin_ean_trib", op.itens[i].op_item_gtin_ean_trib);
+                            cmd.Parameters.AddWithValue("@op_item_obs", op.itens[i].op_item_obs);
+                            cmd.Parameters.AddWithValue("@op_item_qtd", op.itens[i].op_item_qtd);
+                            cmd.Parameters.AddWithValue("@op_item_frete", op.itens[i].op_item_frete);
+                            cmd.Parameters.AddWithValue("@op_item_seguros", op.itens[i].op_item_seguros);
+                            cmd.Parameters.AddWithValue("@op_item_desp_aces", op.itens[i].op_item_desp_aces);
+                            cmd.Parameters.AddWithValue("@op_item_desconto", op.itens[i].op_item_desconto);
+                            cmd.Parameters.AddWithValue("@op_item_vlr_ipi", op.itens[i].op_item_vlr_ipi);
+                            cmd.Parameters.AddWithValue("@op_item_vlr_icms_st", op.itens[i].op_item_vlr_icms_st);
+                            cmd.Parameters.AddWithValue("@op_item_cod_fornecedor", op.itens[i].op_item_cod_fornecedor);
+                            cmd.Parameters.AddWithValue("@op_item_produto_id", op.itens[i].op_item_produto_id);
+                            cmd.Parameters.AddWithValue("@op_item_valor_total", op.itens[i].op_item_valor_total);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+
+                //totais
+                comando.CommandText = "insert into op_totais (op_totais_preco_itens, op_totais_frete, op_totais_seguro, op_totais_desp_aces, op_totais_desconto, op_totais_itens, op_totais_qtd_itens, op_totais_op_id, op_totais_retencoes, op_totais_total_op, op_totais_ipi, op_totais_icms_st, op_totais_saldoLiquidacao, op_totais_preco_servicos, op_totais_valor_outras_operacoes) values (@op_totais_preco_itens, @op_totais_frete, @op_totais_seguro, @op_totais_desp_aces, @op_totais_desconto, @op_totais_itens, @op_totais_qtd_itens, @op_totais_op_id, @op_totais_retencoes, @op_totais_total_op, @op_totais_ipi, @op_totais_icms_st, @op_totais_saldoLiquidacao, @op_totais_preco_servicos, @op_totais_valor_outras_operacoes);";
+                comando.Parameters.AddWithValue("@op_totais_op_id", id);
+                comando.Parameters.AddWithValue("@op_totais_preco_itens", op.totais.op_totais_preco_itens);
+                comando.Parameters.AddWithValue("@op_totais_frete", op.totais.op_totais_frete);
+                comando.Parameters.AddWithValue("@op_totais_seguro", op.totais.op_totais_seguro);
+                comando.Parameters.AddWithValue("@op_totais_desp_aces", op.totais.op_totais_desp_aces);
+                comando.Parameters.AddWithValue("@op_totais_desconto", op.totais.op_totais_desconto);
+                comando.Parameters.AddWithValue("@op_totais_itens", op.totais.op_totais_itens);
+                comando.Parameters.AddWithValue("@op_totais_qtd_itens", op.totais.op_totais_qtd_itens);
+                comando.Parameters.AddWithValue("@op_totais_retencoes", op.totais.op_totais_retencoes);
+                comando.Parameters.AddWithValue("@op_totais_total_op", op.totais.op_totais_total_op);
+                comando.Parameters.AddWithValue("@op_totais_ipi", op.totais.op_totais_ipi);
+                comando.Parameters.AddWithValue("@op_totais_icms_st", op.totais.op_totais_icms_st);
+                comando.Parameters.AddWithValue("@op_totais_saldoLiquidacao", op.totais.op_totais_saldoLiquidacao);
+                comando.Parameters.AddWithValue("@op_totais_preco_servicos", op.totais.op_totais_preco_servicos);
+                comando.Parameters.AddWithValue("@op_totais_valor_outras_operacoes", op.totais.op_totais_valor_outras_operacoes);
+                comando.ExecuteNonQuery();
+
+                //retenções
+                if (op.retencoes.op_ret_inss > 0 || op.retencoes.op_ret_issqn > 0 || op.retencoes.op_ret_irrf > 0 || op.retencoes.op_ret_pis > 0 || op.retencoes.op_ret_cofins > 0 || op.retencoes.op_ret_csll > 0)
+                {
+                    comando.CommandText = "insert into op_retencoes (op_ret_pis, op_ret_cofins, op_ret_csll, op_ret_irrf, op_ret_inss, op_ret_issqn, op_ret_op_id) values (@op_ret_pis, @op_ret_cofins, @op_ret_csll, @op_ret_irrf, @op_ret_inss, @op_ret_issqn, @op_ret_op_id);";
+                    comando.Parameters.AddWithValue("@op_ret_op_id", id);
+                    comando.Parameters.AddWithValue("@op_ret_pis", op.retencoes.op_ret_pis);
+                    comando.Parameters.AddWithValue("@op_ret_cofins", op.retencoes.op_ret_cofins);
+                    comando.Parameters.AddWithValue("@op_ret_csll", op.retencoes.op_ret_csll);
+                    comando.Parameters.AddWithValue("@op_ret_irrf", op.retencoes.op_ret_irrf);
+                    comando.Parameters.AddWithValue("@op_ret_inss", op.retencoes.op_ret_inss);
+                    comando.Parameters.AddWithValue("@op_ret_issqn", op.retencoes.op_ret_issqn);
+                    comando.ExecuteNonQuery();
+                }
+
+                if (op.parcelas != null)
+                {
+                    if (op.parcelas.Count > 0)
+                    {
+                        for (int i = 0; i < op.parcelas.Count; i++)
+                        {
+                            string contra_partida_tipo = "";
+                            int contra_partidade_id = 0;
+
+                            if (op.participante.op_part_participante_id != 0) //se operação possui um participante
+                            {
+                                contra_partida_tipo = "Participante";
+                                contra_partidade_id = op.participante.op_part_participante_id;
+                            }
+                            else
+                            {
+                                contra_partida_tipo = "Categoria";
+                                contra_partidade_id = op.operacao.op_categoria_id;
+                            }
+
+                            MySqlCommand cmd = conn.CreateCommand();
+                            cmd.Connection = conn;
+                            cmd.Transaction = Transacao;
+
+
+                            cmd.CommandText = "call pr_criaParcela (@op_parcela_dias, @op_parcela_vencimento, @op_parcela_fp_id, @op_parcela_op_id, @op_parcela_valor, @op_parcela_obs, @conta_id, @ccm_contra_partida_tipo, @ccm_contra_partida_id, @op_parcela_valor_bruto, @op_parcela_ret_inss, @op_parcela_ret_issqn, @op_parcela_ret_irrf, @op_parcela_ret_pis, @op_parcela_ret_cofins, @op_parcela_ret_csll);";
+                            cmd.Parameters.AddWithValue("@conta_id", conta_id);
+                            cmd.Parameters.AddWithValue("@op_parcela_dias", op.parcelas[i].op_parcela_dias);
+                            cmd.Parameters.AddWithValue("@op_parcela_vencimento", op.parcelas[i].op_parcela_vencimento);
+                            cmd.Parameters.AddWithValue("@op_parcela_fp_id", op.parcelas[i].op_parcela_fp_id);
+                            cmd.Parameters.AddWithValue("@op_parcela_op_id", id);
+                            cmd.Parameters.AddWithValue("@op_parcela_valor", op.parcelas[i].op_parcela_valor);
+                            cmd.Parameters.AddWithValue("@op_parcela_obs", op.parcelas[i].op_parcela_obs);
+                            cmd.Parameters.AddWithValue("@ccm_contra_partida_tipo", contra_partida_tipo);
+                            cmd.Parameters.AddWithValue("@ccm_contra_partida_id", contra_partidade_id);
+                            cmd.Parameters.AddWithValue("@op_parcela_valor_bruto", op.parcelas[i].op_parcela_valor_bruto);
+                            cmd.Parameters.AddWithValue("@op_parcela_ret_inss", op.parcelas[i].op_parcela_ret_inss);
+                            cmd.Parameters.AddWithValue("@op_parcela_ret_issqn", op.parcelas[i].op_parcela_ret_issqn);
+                            cmd.Parameters.AddWithValue("@op_parcela_ret_irrf", op.parcelas[i].op_parcela_ret_irrf);
+                            cmd.Parameters.AddWithValue("@op_parcela_ret_pis", op.parcelas[i].op_parcela_ret_pis);
+                            cmd.Parameters.AddWithValue("@op_parcela_ret_cofins", op.parcelas[i].op_parcela_ret_cofins);
+                            cmd.Parameters.AddWithValue("@op_parcela_ret_csll", op.parcelas[i].op_parcela_ret_csll);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+
+                if (op.operacao.op_comTransportador)
+                {
+                    //transportador
+                    comando.CommandText = "INSERT into op_transportador (op_transportador_nome, op_transportador_cnpj_cpf, op_transportador_modalidade_frete, op_transportador_volume_qtd, op_transportador_volume_peso_bruto, op_transportador_op_id, op_transportador_participante_id) VALUES (@op_transportador_nome, @op_transportador_cnpj_cpf, @op_transportador_modalidade_frete, @op_transportador_volume_qtd, @op_transportador_volume_peso_bruto, @op_transportador_op_id, @op_transportador_participante_id);";
+                    comando.Parameters.AddWithValue("@conta_id", conta_id);
+                    comando.Parameters.AddWithValue("@op_transportador_nome", op.transportador.op_transportador_nome);
+                    comando.Parameters.AddWithValue("@op_transportador_cnpj_cpf", op.transportador.op_transportador_cnpj_cpf);
+                    comando.Parameters.AddWithValue("@op_transportador_modalidade_frete", op.transportador.op_transportador_modalidade_frete);
+                    comando.Parameters.AddWithValue("@op_transportador_volume_qtd", op.transportador.op_transportador_volume_qtd);
+                    comando.Parameters.AddWithValue("@op_transportador_volume_peso_bruto", op.transportador.op_transportador_volume_peso_bruto);
+                    comando.Parameters.AddWithValue("@op_transportador_op_id", id);
+                    comando.Parameters.AddWithValue("@op_transportador_participante_id", op.transportador.op_transportador_participante_id);
+                    comando.ExecuteNonQuery();
+                }
+
+                if (op.operacao.op_comNF != 0)
+                {
+                    //nota fiscal
+                    comando.CommandText = "insert into op_nf (op_nf_op_id, op_nf_chave, op_nf_data_emissao, op_nf_data_entrada_saida, op_nf_serie, op_nf_numero) values (@op_nf_op_id, @op_nf_chave, @op_nf_data_emissao, @op_nf_data_entrada_saida, @op_nf_serie, @op_nf_numero);";
+                    comando.Parameters.AddWithValue("@op_nf_op_id", id);
+                    comando.Parameters.AddWithValue("@op_nf_chave", op.nf.op_nf_chave);
+                    comando.Parameters.AddWithValue("@op_nf_data_emissao", op.nf.op_nf_data_emissao);
+                    comando.Parameters.AddWithValue("@op_nf_data_entrada_saida", op.nf.op_nf_data_entrada_saida);
+                    comando.Parameters.AddWithValue("@op_nf_serie", op.nf.op_nf_serie);
+                    comando.Parameters.AddWithValue("@op_nf_numero", op.nf.op_nf_numero);
+                    comando.ExecuteNonQuery();
+                }
+
+                if (op.operacao.op_tipo == "ServicoPrestado" || op.operacao.op_tipo == "ServicoTomado")
+                {
+                    comando.CommandText = "INSERT into op_servico (op_servico_op_id, op_servico_equipamento, op_servico_nSerie, op_servico_problema, op_servico_obsReceb, op_servico_servico_executado, op_servico_valor, op_servico_status) values (@op_servico_op_id, @op_servico_equipamento, @op_servico_nSerie, @op_servico_problema, @op_servico_obsReceb, @op_servico_servico_executado, @op_servico_valor, @op_servico_status);";
+                    comando.Parameters.AddWithValue("@op_servico_op_id", id);
+                    comando.Parameters.AddWithValue("@op_servico_equipamento", op.servico.op_servico_equipamento);
+                    comando.Parameters.AddWithValue("@op_servico_nSerie", op.servico.op_servico_nSerie);
+                    comando.Parameters.AddWithValue("@op_servico_problema", op.servico.op_servico_problema);
+                    comando.Parameters.AddWithValue("@op_servico_obsReceb", op.servico.op_servico_obsReceb);
+                    comando.Parameters.AddWithValue("@op_servico_servico_executado", op.servico.op_servico_servico_executado);
+                    comando.Parameters.AddWithValue("@op_servico_valor", op.servico.op_servico_valor);
+                    comando.Parameters.AddWithValue("@op_servico_status", op.servico.op_servico_status);
+                    comando.ExecuteNonQuery();
+                }
+
+                Transacao.Commit();
+
+                string msg = "Cadastro de operação ID: " + id + " Cadastrado com sucesso";
+                log.log("Operacao", "create", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao cadastrar a operação. Tente novamente. Se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("Operacao", "create", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+
+        }
+
+        public List<Vm_operacao_index> index(int conta_id)
+        {
+            List<Vm_operacao_index> i = new List<Vm_operacao_index>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT operacao.op_id as id, operacao.op_tipo as tipo, operacao.op_data as 'data', COALESCE(p.op_part_nome,'Não Informado') as 'participante', COALESCE((SELECT categoria.categoria_nome from categoria WHERE categoria.categoria_id = operacao.op_categoria_id),'Não Informada') as 'categoria', operacao.op_obs as 'memorando', COALESCE(concat('Número: ', n.op_nf_numero,' Série: ', n.op_nf_serie),'Não Informado') as 'documento', t.op_totais_total_op as 'valor' from operacao LEFT JOIN op_participante as p on p.op_id = operacao.op_id LEFT JOIN op_nf as n on n.op_nf_op_id = operacao.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = operacao.op_id WHERE operacao.op_conta_id = @conta_id and operacao.op_tipo in ('Compra', 'Venda', 'ServicoPrestado', 'ServicoTomado', 'OutrasDespesas', 'OutrasReceitas') ORDER BY operacao.op_data DESC;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);                
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Vm_operacao_index op = new Vm_operacao_index();
+
+                        if (DBNull.Value != leitor["id"])
+                        {
+                            op.id = Convert.ToInt32(leitor["id"]);
+                        }
+                        else
+                        {
+                            op.id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["data"])
+                        {
+                            op.data = Convert.ToDateTime(leitor["data"]);
+                        }
+                        else
+                        {
+                            op.data = new DateTime();
+                        }
+
+                        if (DBNull.Value != leitor["valor"])
+                        {
+                            op.valor = Convert.ToInt32(leitor["valor"]);
+                        }
+                        else
+                        {
+                            op.valor = 0;
+                        }
+
+                        op.tipo = leitor["tipo"].ToString();
+                        op.participante = leitor["participante"].ToString();
+                        op.memorando = leitor["memorando"].ToString();
+                        op.documento = leitor["documento"].ToString();
+                        op.categoria = leitor["categoria"].ToString();
+
+                        i.Add(op);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return i;
+
+        }
+
     }
 }

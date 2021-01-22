@@ -66,6 +66,8 @@ namespace gestaoContadorcomvc.Controllers
             {
                 op.operacao.op_tipo = "Venda";
                 Operacao operacao = new Operacao();
+                //Gerar validação e colocar o cadastro dentro do escopo validado
+                //Caso não valide retornar string com as validações. Primeiro item da string será 'Não validado;'
                 retorno = operacao.cadastraOperacao(user.usuario_id, user.usuario_conta_id, op);
 
                 return Json(JsonConvert.SerializeObject(retorno));
