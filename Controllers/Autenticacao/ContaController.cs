@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -104,8 +105,16 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
                 var minhaIdentity = new ClaimsIdentity(userClaims, "Usuario");
                 var claimPrincipal = new ClaimsPrincipal(new[] { minhaIdentity });
+
+                var propriedadesDeAutenticacao = new AuthenticationProperties
+                {
+                    AllowRefresh = true,
+                    ExpiresUtc = DateTime.Now.ToLocalTime().AddHours(4),
+                    IsPersistent = true
+                };                
+
                 //cria o cookie
-                _ = HttpContext.SignInAsync(claimPrincipal);
+                _ = HttpContext.SignInAsync(claimPrincipal, propriedadesDeAutenticacao);
             }
 
             TempData["user"] = user.usuario_nome;

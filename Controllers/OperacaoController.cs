@@ -29,6 +29,16 @@ namespace gestaoContadorcomvc.Controllers
             vm_op.lista = op.index(user.usuario_conta_id);
             vm_op.user = user;
 
+            Selects select = new Selects();
+            //ViewBag.status = select.getStatus().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Ativo" });            
+            ViewBag.categoria = select.getCategoriasClienteComEscopo(user.usuario_conta_id, true, false, true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.tipoPessoa = select.getTipoPessoa().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1" });
+            ViewBag.ufIbge = select.getUF_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "35" });
+            ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1058" });
+            ViewBag.operacoes = select.getOperacoes().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "OutrasDespesas" });
+            ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.tipoNF = select.getTipoNF().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+
             return View(vm_op);
         }
 
@@ -90,42 +100,112 @@ namespace gestaoContadorcomvc.Controllers
         [Autoriza(permissao = "operacaoEdit")]
         public ActionResult Edit(int id)
         {
-            return View();
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Operacao op = new Operacao();
+            Vm_operacao vm_op = new Vm_operacao();
+
+            vm_op = op.buscaOperacao(user.usuario_id, user.usuario_conta_id, id);            
+
+            Selects select = new Selects();
+            //ViewBag.status = select.getStatus().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Ativo" });            
+            ViewBag.categoria = select.getCategoriasClienteComEscopo(user.usuario_conta_id, true, false, true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.operacao.op_categoria_id.ToString() });
+            ViewBag.tipoPessoa = select.getTipoPessoa().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_part_tipo });
+            ViewBag.ufIbge = select.getUF_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_uf_ibge_codigo.ToString() });
+            ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.participante.op_paisesIBGE_codigo.ToString() });
+            ViewBag.operacoes = select.getOperacoes().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.text == vm_op.operacao.op_tipo });
+            ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.tipoNF = select.getTipoNF().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.nf.op_nf_tipo.ToString() });
+
+            return Json(JsonConvert.SerializeObject(vm_op));
         }
 
         // POST: OperacaoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, IFormCollection collection, Vm_operacao op)
         {
+            string retorno = "";
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+                Operacao operacao = new Operacao();
+                retorno = operacao.alterarOperacao(user.usuario_id, user.usuario_conta_id, op);
+
+                return Json(JsonConvert.SerializeObject(retorno));
             }
             catch
             {
-                return View();
+                if (retorno == "")
+                {
+                    retorno = "Erro ao cadastrar a operação. Tente novamente, se persistir, entre em contato com o suporte!";
+                }
+
+                return Json(JsonConvert.SerializeObject(retorno));
             }
         }
 
         [Autoriza(permissao = "operacaoDelete")]
         public ActionResult Delete(int id)
         {
-            return View();
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Operacao op = new Operacao();
+
+            if (op.baixasPorOperacao(id) > 0)
+            {
+                TempData["msgOP"] = "Erro. Operação possui baixas e não pode ser excluído. Primeiro deve-se excluir as baixas no movimento de conta corrente!";
+
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {   
+                Vm_operacao vm_op = new Vm_operacao();
+                vm_op = op.buscaOperacao(user.usuario_id, user.usuario_conta_id, id);
+                
+                return View(vm_op);
+            }
         }
 
         // POST: OperacaoController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int op_id, IFormCollection collection)
         {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Operacao op = new Operacao();
+
+            string retorno = "";
+
             try
             {
+                retorno = op.delete(user.usuario_id, user.usuario_conta_id, op_id);
+
+                TempData["msgOP"] = retorno;
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                if (retorno == "")
+                {
+                    retorno = "Ocorreu um erro no processamento da solicitação de exclusão!";
+                }
+
+                TempData["msgOP"] = retorno;
+
+                return RedirectToAction(nameof(Index));
             }
         }
 

@@ -2028,7 +2028,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT operacao.op_id as id, operacao.op_tipo as tipo, operacao.op_data as 'data', COALESCE(p.op_part_nome,'Não Informado') as 'participante', COALESCE((SELECT categoria.categoria_nome from categoria WHERE categoria.categoria_id = operacao.op_categoria_id),'Não Informada') as 'categoria', operacao.op_obs as 'memorando', COALESCE(concat('Número: ', n.op_nf_numero,' Série: ', n.op_nf_serie),'Não Informado') as 'documento', t.op_totais_total_op as 'valor' from operacao LEFT JOIN op_participante as p on p.op_id = operacao.op_id LEFT JOIN op_nf as n on n.op_nf_op_id = operacao.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = operacao.op_id WHERE operacao.op_conta_id = @conta_id and operacao.op_tipo in ('Compra', 'Venda', 'ServicoPrestado', 'ServicoTomado', 'OutrasDespesas', 'OutrasReceitas') ORDER BY operacao.op_data DESC;";
+                comando.CommandText = "SELECT operacao.op_id as id, (CASE WHEN operacao.op_tipo = 'ServicoPrestado' THEN 'Serviço Prestado' WHEN operacao.op_tipo = 'ServicoTomado' THEN 'Serviço Tomado' WHEN operacao.op_tipo = 'OutrasDespesas' THEN 'Outras Despesas' WHEN operacao.op_tipo = 'OutrasReceitas' THEN 'Outras Receitas' ELSE operacao.op_tipo END) as tipo, operacao.op_data as 'data', COALESCE(p.op_part_nome, 'Não Informado') as 'participante', COALESCE((SELECT categoria.categoria_nome from categoria WHERE categoria.categoria_id = operacao.op_categoria_id),'Não Informada') as 'categoria', operacao.op_obs as 'memorando', COALESCE(concat('Número: ', n.op_nf_numero, ' Série: ', n.op_nf_serie), 'Não Informado') as 'documento', t.op_totais_total_op as 'valor', (SELECT COALESCE(sum(op_parcelas_baixa.oppb_valor), 0) from op_parcelas_baixa WHERE op_parcelas_baixa.oppb_op_id = operacao.op_id) as baixas from operacao LEFT JOIN op_participante as p on p.op_id = operacao.op_id LEFT JOIN op_nf as n on n.op_nf_op_id = operacao.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = operacao.op_id WHERE operacao.op_conta_id = @conta_id and operacao.op_tipo in ('Compra', 'Venda', 'ServicoPrestado', 'ServicoTomado', 'OutrasDespesas', 'OutrasReceitas') ORDER BY operacao.op_data DESC;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);                
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
@@ -2061,15 +2061,24 @@ namespace gestaoContadorcomvc.Models
 
                         if (DBNull.Value != leitor["valor"])
                         {
-                            op.valor = Convert.ToInt32(leitor["valor"]);
+                            op.valor = Convert.ToDecimal(leitor["valor"]);
                         }
                         else
                         {
                             op.valor = 0;
                         }
 
+                        if (DBNull.Value != leitor["baixas"])
+                        {
+                            op.baixas = Convert.ToDecimal(leitor["baixas"]);
+                        }
+                        else
+                        {
+                            op.baixas = 0;
+                        }
+
                         op.tipo = leitor["tipo"].ToString();
-                        op.participante = leitor["participante"].ToString();
+                        op.participante_index = leitor["participante"].ToString();
                         op.memorando = leitor["memorando"].ToString();
                         op.documento = leitor["documento"].ToString();
                         op.categoria = leitor["categoria"].ToString();
@@ -2093,6 +2102,96 @@ namespace gestaoContadorcomvc.Models
             return i;
 
         }
+
+        public Decimal baixasPorOperacao(int op_id)
+        {
+            Decimal baixas = 0;
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT COALESCE(sum(op_parcelas_baixa.oppb_valor),0) as baixas from op_parcelas_baixa WHERE op_parcelas_baixa.oppb_op_id = @op_id";
+                comando.Parameters.AddWithValue("@op_id", op_id);
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        if (DBNull.Value != leitor["baixas"])
+                        {
+                            baixas = Convert.ToDecimal(leitor["baixas"]);
+                        }
+                        else
+                        {
+                            baixas = 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return baixas;
+        }
+
+        public string delete(int usuario_id, int conta_id, int op_id)
+        {
+            string retorno = "Operação excluída com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "DELETE from operacao WHERE operacao.op_id = @op_id and operacao.op_conta_id = @conta_id;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@op_id", op_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                string msg = "Exclusão da operação ID: " + op_id + " excluida com sucesso";
+                log.log("Operacao", "delete", "Sucesso", msg, conta_id, usuario_id);
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao excluir a operacação. Tente novamente. Se persistir, entre em contato com o suporte!";
+
+                string msg = e.Message.Substring(0, 300);
+                log.log("Operacao", "delete", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
 
     }
 }

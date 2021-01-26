@@ -594,29 +594,36 @@
     }
 
     function atualizaViewItens() {
+        for (let item = 0; item < operacao.itens.length; item++) {
+            operacao.itens[item].op_item_numero_controle = item + 1;
+        }
+
         document.getElementById('tbody_itens').innerHTML = '';
+
         for (let i = 0; i < operacao.itens.length; i++) {
-            item = '';
-            item += '<tr>';
-            item += '<td>';
-            item += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="cursor:pointer;" onclick="operacao_item(\'edit\',\'' + operacao.itens[i].op_item_numero_controle + '\')">';
-            item += '<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />';
-            item += '<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />';
-            item += '</svg>';
-            item += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" style="cursor:pointer;" onclick="operacao_item(\'delete_confirmar\',\'' + operacao.itens[i].op_item_numero_controle + '\')">';
-            item += '<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />';
-            item += '<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />';
-            item += '</svg>';
-            item += '</td>';
-            item += '<td>' + operacao.itens[i].op_item_nome + '</td>';
-            item += '<td>' + operacao.itens[i].op_item_codigo + '</td>';
-            item += '<td>' + operacao.itens[i].op_item_qtd + '</td>';
-            item += '<td>' + operacao.itens[i].op_item_preco + '</td>';
-            item += '<td>' + operacao.itens[i].op_item_valor_total + '</td>';
-            item += '<td>' + 'NCM' + '</td>';
-            item += '<td>' + 'CEST' + '</td>';
-            item += '</tr>';
-            $('#tbody_itens').append(item);
+            if (operacao.itens[i].controleEdit != 'delete') {
+                item = '';
+                item += '<tr>';
+                item += '<td>';
+                item += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="cursor:pointer;" onclick="operacao_item(\'edit\',\'' + operacao.itens[i].op_item_numero_controle + '\')">';
+                item += '<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />';
+                item += '<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />';
+                item += '</svg>';
+                item += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" style="cursor:pointer;" onclick="operacao_item(\'delete_confirmar\',\'' + operacao.itens[i].op_item_numero_controle + '\')">';
+                item += '<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />';
+                item += '<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />';
+                item += '</svg>';
+                item += '</td>';
+                item += '<td>' + operacao.itens[i].op_item_nome + '</td>';
+                item += '<td>' + operacao.itens[i].op_item_codigo + '</td>';
+                item += '<td>' + operacao.itens[i].op_item_qtd + '</td>';
+                item += '<td>' + operacao.itens[i].op_item_preco + '</td>';
+                item += '<td>' + operacao.itens[i].op_item_valor_total + '</td>';
+                item += '<td>' + 'NCM' + '</td>';
+                item += '<td>' + 'CEST' + '</td>';
+                item += '</tr>';
+                $('#tbody_itens').append(item);
+            }
         }
     }
 
@@ -770,40 +777,6 @@
         });
     }
 
-    function GerarCategorias(op_tipo, select_id) {
-        $.ajax({
-            url: "/Operacao/GerarCategorias",
-            data: { __RequestVerificationToken: gettoken(), op_tipo: op_tipo },
-            type: 'POST',
-            dataType: 'json',
-            beforeSend: function (XMLHttpRequest) {
-                if (document.getElementById('text_categorias')) {
-                    document.getElementById('text_categorias').innerHTML = "Gerando categorias...";
-                    if (document.getElementById('sub')) {
-                        document.getElementById('sub').setAttribute("disabled", "disabled");
-                    }
-                }
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                alert("erro");
-            },
-            success: function (data, textStatus, XMLHttpRequest) {
-                var results = JSON.parse(data);
-                $('#' + select_id).children('option').remove(); //Remove todos os itens do select
-
-                for (i = 0; i < results.length; i++) { //Adiciona os item recebidos no results no select
-                    $('#' + select_id).append($("<option></option>").attr("value", results[i].value).text(results[i].text));
-                }
-                if (document.getElementById('text_categorias')) {
-                    document.getElementById('text_categorias').innerHTML = "";
-                    if (document.getElementById('sub')) {
-                        document.getElementById('sub').removeAttribute("disabled");
-                    }
-                }
-            }
-        });
-    }
-
     function formaGerarParcelas(id, vlr) {
         if (vlr == 1) {
             document.getElementById('diaVencimento').style.display = 'block';
@@ -835,7 +808,17 @@
 
         let valor_liquido = 0;
 
+        let s = document.getElementById('op_parcela_fp_id');
+
         for (let i = 0; i < operacao.parcelas.length; i++) {
+            let label_fp = '';
+            for (let x = 0; x < s.length; x++) {
+                if (s.options[x].value == operacao.parcelas[i].op_parcela_fp_id) {
+                    label_fp = s.options[x].text;
+                    break;
+                }                
+            }
+
             item = '';
             item += '<tr>';
             item += '<td>';
@@ -851,7 +834,7 @@
             item += '<td>' + operacao.parcelas[i].op_parcela_vencimento + '</td>';
             item += '<td>' + operacao.parcelas[i].op_parcela_valor_bruto + '</td>';
             item += '<td>' + operacao.parcelas[i].op_parcela_valor + '</td>';
-            item += '<td style="white-space:nowrap">' + operacao.parcelas[i].op_parcela_label_forma_pgto + '</td>';
+            item += '<td style="white-space:nowrap">' + label_fp + '</td>';
             item += '<td>' + operacao.parcelas[i].op_parcela_ret_irrf + '</td>';
             item += '<td>' + operacao.parcelas[i].op_parcela_ret_inss + '</td>';
             item += '<td>' + operacao.parcelas[i].op_parcela_ret_issqn + '</td>';
@@ -1717,18 +1700,7 @@
                         document.getElementById('mensagem_retorno_conteudo').innerHTML = "";
                         document.getElementById('mensagem_retorno_conteudo').innerHTML = "<p>" + XMLHttpRequest.responseJSON + "</p>";
                         document.getElementById('mensagem_retorno_rodape').innerHTML = "";
-                        if (tipo_operacao == 'Compra') {
-                            document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/Compra/Index">Fechar</a>';
-                        }
-                        if (tipo_operacao == 'Venda') {
-                            document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/Venda/Index">Fechar</a>';
-                        }
-                        if (tipo_operacao == 'ServicoPrestado') {
-                            document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/ServicoPrestado/Index">Fechar</a>';
-                        }
-                        if (tipo_operacao == 'ServicoTomado') {
-                            document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="https://contadorcomvc.com.br/ServicoTomado/Index">Fechar</a>';
-                        }
+                        document.getElementById('mensagem_retorno_rodape').innerHTML = '<a class="btn btn-secondary" href="' + document.location.origin + '/Operacao/Index">Fechar</a>';
                         $('#modal_mensagem_retorno').modal('show');
 
                         return;
@@ -1760,7 +1732,291 @@
 
     }
 
+    function operacao_edit(contexto, id) {
+        if (contexto == 'open') {
+            $.ajax({
+                url: "/Operacao/Edit",
+                data: { id: id },
+                type: 'GET',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    document.getElementById('staticLabel').innerHTML = "";
+                    document.getElementById('staticLabel').innerHTML = 'Alteração Operação';
+                    document.getElementById('conteudo').innerHTML = "";
+                    document.getElementById('conteudo').innerHTML = "<p>Carregando operação, aguarde...</p>";
+                    document.getElementById('rodape').innerHTML = "";
+                    $('#modal_mensagem').modal('show');
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("erro");
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    operacao = JSON.parse(data);                    
+
+                    if (textStatus != 'success') {
+                        document.getElementById('conteudo').innerHTML = "<p>Houve um erro no carregamento da operação. Tente novamente!</p>";
+                        document.getElementById('rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>';
+                        return;
+                    }
+
+                    if (textStatus == 'success') {
+                        ajustatOperacao();
+                        carregaEdit_operacao();
 
 
+                        $('#modal_mensagem').modal('hide');
+
+                        //Abre modal
+                        modal_sobre_modal_open('modal_op_edit');
+                    }
+                }
+            });
+        }
+    }    
+
+    function carregaEdit_operacao() {        
+        //operacaop
+        document.getElementById('op_data').value = operacao.operacao.op_data;
+        document.getElementById('op_obs').value = operacao.operacao.op_obs;
+        if (operacao.parcelas.length > 0) {
+            operacao.operacao.possui_parcelas = true;
+        }
+        //tipo op        
+        $('#op_tipo').val(operacao.operacao.op_tipo);        
+        $('#op_tipo').trigger('change');
+        //participante
+        if (operacao.participante.op_part_participante_id > 0) {
+            document.getElementById('participante').value = operacao.participante.op_part_nome;
+        } else {
+            document.getElementById('participante').value = 'Não Informado';
+        }
+        //Categoria
+        GerarCategorias(operacao.operacao.op_tipo, 'op_categoria_id');
+        //Contexto de valores        
+        let vlr = document.getElementById('op_tipo').value;
+        if (vlr == 'Compra' || vlr == 'Venda') { //Compra/Venda Produtos
+            document.getElementById('itens_operacao').style.display = 'block';
+            document.getElementById('servico_operacao').style.display = 'none';
+            document.getElementById('outros_operacao').style.display = 'none';
+
+            document.getElementById('totais_servico').style.display = 'none';
+            document.getElementById('totais_itens').style.display = 'block';
+            document.getElementById('totais_demais').style.display = 'none';
+
+            if (operacao.itens.length > 0) {
+                document.getElementById('itens').value = 'Quantidade de Itens Informado: ' + operacao.itens.length;
+            } else {
+                document.getElementById('itens').value = 'Não informado';
+            }
+
+        }
+        if (vlr == 'ServicoPrestado' || vlr == 'ServicoTomado') { //Serviços
+            document.getElementById('itens_operacao').style.display = 'none';
+            document.getElementById('servico_operacao').style.display = 'block';
+            document.getElementById('outros_operacao').style.display = 'none';
+
+            document.getElementById('totais_servico').style.display = 'block';
+            document.getElementById('totais_itens').style.display = 'none';
+            document.getElementById('totais_demais').style.display = 'none';
+
+            if (convertStringDouble(operacao.totais.op_totais_preco_servicos) > 0) {
+                document.getElementById('servicos').value = 'Valor do Serviço Informado: ' + operacao.servico.op_servico_valor.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
+
+            } else {
+                document.getElementById('servicos').value = 'Não informado';
+            }
+        }
+        if (vlr == 'OutrasDespesas' || vlr == 'OutrasReceitas') {//Outros
+            document.getElementById('itens_operacao').style.display = 'none';
+            document.getElementById('servico_operacao').style.display = 'none';
+            document.getElementById('outros_operacao').style.display = 'block';
+
+            document.getElementById('totais_servico').style.display = 'none';
+            document.getElementById('totais_itens').style.display = 'none';
+            document.getElementById('totais_demais').style.display = 'block';
+
+            document.getElementById('op_totais_valor_outras_operacoes').value = operacao.totais.op_totais_valor_outras_operacoes;
+        }
+
+        let txt = '';
+        let soma = 0;
+
+        if (operacao.operacao.op_comRetencoes) {
+            if (convertStringDouble(operacao.retencoes.op_ret_inss) > 0) {
+                txt += 'INSS: ' + operacao.retencoes.op_ret_inss + ' ';
+                soma += convertStringDouble(operacao.retencoes.op_ret_inss);
+            }
+            if (convertStringDouble(operacao.retencoes.op_ret_issqn) > 0) {
+                txt += 'ISSQN: ' + operacao.retencoes.op_ret_issqn + ' ';
+                soma += convertStringDouble(operacao.retencoes.op_ret_issqn);
+            }
+            if (convertStringDouble(operacao.retencoes.op_ret_irrf) > 0) {
+                txt += 'IRRF: ' + operacao.retencoes.op_ret_irrf + ' ';
+                soma += convertStringDouble(operacao.retencoes.op_ret_irrf);
+            }
+            if (convertStringDouble(operacao.retencoes.op_ret_pis) > 0) {
+                txt += 'PIS: ' + operacao.retencoes.op_ret_pis + ' ';
+                soma += convertStringDouble(operacao.retencoes.op_ret_pis);
+            }
+            if (convertStringDouble(operacao.retencoes.op_ret_cofins) > 0) {
+                txt += 'COFINS: ' + operacao.retencoes.op_ret_cofins + ' ';
+                soma += convertStringDouble(operacao.retencoes.op_ret_cofins);
+            }
+            if (convertStringDouble(operacao.retencoes.op_ret_csll) > 0) {
+                txt += 'CSLL: ' + operacao.retencoes.op_ret_csll + ' ';
+                soma += convertStringDouble(operacao.retencoes.op_ret_csll);
+            }            
+        } 
+        if (soma > 0) {
+            document.getElementById('retencoes').value = txt;
+        } else {
+            document.getElementById('retencoes').value = 'Não informado';
+        }
+
+        if (operacao.parcelas.length > 0) {
+            let soma = 0;
+            for (let i = 0; i < operacao.parcelas.length; i++) {
+                soma += convertStringDouble(operacao.parcelas[i].op_parcela_valor);
+            }
+
+            document.getElementById('parcelas').value = 'Número Parcelas: ' + operacao.parcelas.length + ' Valor Líquido: ' + convertDoubleString(soma);
+        } else {
+            document.getElementById('parcelas').value = 'Não informado';
+        }
+        //notas 
+        if (operacao.operacao.op_comNF > 0) {
+            document.getElementById('documento').value = 'Número: ' + operacao.nf.op_nf_numero + ' Série: ' + operacao.nf.op_nf_serie;
+        } else {
+            document.getElementById('documento').value = 'Não informado';
+        } 
+        //totais
+        document.getElementById('totais').value = operacao.totais.op_totais_total_op;
+        document.getElementById('op_totais_preco_itens').value = operacao.totais.op_totais_preco_itens;
+        document.getElementById('op_totais_frete').value = operacao.totais.op_totais_frete;
+        document.getElementById('op_totais_seguro').value = operacao.totais.op_totais_seguro;
+        document.getElementById('op_totais_desp_aces').value = operacao.totais.op_totais_desp_aces;
+        document.getElementById('op_totais_desconto').value = operacao.totais.op_totais_desconto;
+        document.getElementById('op_totais_icms_st').value = operacao.totais.op_totais_icms_st;
+        document.getElementById('op_totais_ipi').value = operacao.totais.op_totais_ipi;
+        document.getElementById('op_totais_total_op').value = operacao.totais.op_totais_total_op;
+        document.getElementById('op_totais_valor_outras_operacoes_totais').value = operacao.totais.op_totais_valor_outras_operacoes_totais;
+        document.getElementById('op_totais_preco_servicos').value = operacao.totais.op_totais_preco_servicos;
+
+        //Produzindo selects categoria e forma de pagamento contextualizada ao tipo op.
+        GerarFormaPgto(vlr, 'op_parcela_fp_id');
+        GerarFormaPgto(vlr, 'op_parcela_fp_id_edit');
+        
+    }
+
+    function ajustatOperacao() {
+        //operação.operação
+        operacao.operacao.op_data = convertData_DataSimples(operacao.operacao.op_data);
+        operacao.operacao.op_dataCriacao = convertData_DataSimples(operacao.operacao.op_dataCriacao);
+        operacao.operacao.op_data_saida = convertData_DataSimples(operacao.operacao.op_data_saida);
+        operacao.operacao.op_previsao_entrega = convertData_DataSimples(operacao.operacao.op_previsao_entrega);
+        //Totais
+        operacao.retencoes.op_ret_cofins = convertDoubleString(operacao.retencoes.op_ret_cofins);
+        operacao.retencoes.op_ret_csll = convertDoubleString(operacao.retencoes.op_ret_csll);
+        operacao.retencoes.op_ret_inss = convertDoubleString(operacao.retencoes.op_ret_inss);
+        operacao.retencoes.op_ret_irrf = convertDoubleString(operacao.retencoes.op_ret_irrf);
+        operacao.retencoes.op_ret_issqn = convertDoubleString(operacao.retencoes.op_ret_issqn);
+        operacao.retencoes.op_ret_pis = convertDoubleString(operacao.retencoes.op_ret_pis);
+
+        //Totais
+        operacao.totais.op_totais_desconto = convertDoubleString(operacao.totais.op_totais_desconto);
+        operacao.totais.op_totais_desp_aces = convertDoubleString(operacao.totais.op_totais_desp_aces);
+        operacao.totais.op_totais_frete = convertDoubleString(operacao.totais.op_totais_frete);
+        operacao.totais.op_totais_icms_st = convertDoubleString(operacao.totais.op_totais_icms_st);
+        operacao.totais.op_totais_ipi = convertDoubleString(operacao.totais.op_totais_ipi);
+        operacao.totais.op_totais_preco_itens = convertDoubleString(operacao.totais.op_totais_preco_itens);
+        operacao.totais.op_totais_preco_servicos = convertDoubleString(operacao.totais.op_totais_preco_servicos);
+        operacao.totais.op_totais_qtd_itens = convertDoubleString(operacao.totais.op_totais_qtd_itens);
+        operacao.totais.op_totais_retencoes = convertDoubleString(operacao.totais.op_totais_retencoes);
+        operacao.totais.op_totais_saldoLiquidacao = convertDoubleString(operacao.totais.op_totais_saldoLiquidacao);
+        operacao.totais.op_totais_seguro = convertDoubleString(operacao.totais.op_totais_seguro);
+        operacao.totais.op_totais_total_op = convertDoubleString(operacao.totais.op_totais_total_op);
+        operacao.totais.op_totais_valor_outras_operacoes = convertDoubleString(operacao.totais.op_totais_valor_outras_operacoes);
+        //Parcelas
+        for (let i = 0; i < operacao.parcelas.length; i++) {
+            operacao.parcelas[i].op_parcela_vencimento = convertData_DataSimples(operacao.parcelas[i].op_parcela_vencimento);
+            operacao.parcelas[i].op_parcela_ret_cofins = convertDoubleString(operacao.parcelas[i].op_parcela_ret_cofins);
+            operacao.parcelas[i].op_parcela_ret_csll = convertDoubleString(operacao.parcelas[i].op_parcela_ret_csll);
+            operacao.parcelas[i].op_parcela_ret_inss = convertDoubleString(operacao.parcelas[i].op_parcela_ret_inss);
+            operacao.parcelas[i].op_parcela_ret_irrf = convertDoubleString(operacao.parcelas[i].op_parcela_ret_irrf);
+            operacao.parcelas[i].op_parcela_ret_issqn = convertDoubleString(operacao.parcelas[i].op_parcela_ret_issqn);
+            operacao.parcelas[i].op_parcela_ret_pis = convertDoubleString(operacao.parcelas[i].op_parcela_ret_pis);
+            operacao.parcelas[i].op_parcela_saldo = convertDoubleString(operacao.parcelas[i].op_parcela_saldo);
+            operacao.parcelas[i].op_parcela_valor = convertDoubleString(operacao.parcelas[i].op_parcela_valor);
+            operacao.parcelas[i].op_parcela_valor_bruto = convertDoubleString(operacao.parcelas[i].op_parcela_valor_bruto);
+        }
+        //Serviços
+        operacao.servico.op_servico_valor = convertDoubleString(operacao.servico.op_servico_valor);
+        //Itens
+        for (let i = 0; i < operacao.itens.length; i++) {            
+            operacao.itens[i].op_item_desconto = convertDoubleString(operacao.itens[i].op_item_desconto);
+            operacao.itens[i].op_item_desp_aces = convertDoubleString(operacao.itens[i].op_item_desp_aces);
+            operacao.itens[i].op_item_frete = convertDoubleString(operacao.itens[i].op_item_frete);
+            operacao.itens[i].op_item_preco = convertDoubleString(operacao.itens[i].op_item_preco);
+            operacao.itens[i].op_item_seguros = convertDoubleString(operacao.itens[i].op_item_seguros);
+            operacao.itens[i].op_item_valor_total = convertDoubleString(operacao.itens[i].op_item_valor_total);
+            operacao.itens[i].op_item_vlr_icms_st = convertDoubleString(operacao.itens[i].op_item_vlr_icms_st);
+            operacao.itens[i].op_item_vlr_ipi = convertDoubleString(operacao.itens[i].op_item_vlr_ipi);
+        }
+        //documento fiscal
+        operacao.nf.op_nf_data_emissao = convertData_DataSimples(operacao.nf.op_nf_data_emissao);
+        operacao.nf.op_nf_data_entrada_saida = convertData_DataSimples(operacao.nf.op_nf_data_entrada_saida);
+    }
+
+    function convertData_DataSimples(data) {
+        let d = data.substr(8, 2) + '/' + data.substr(5, 2) + '/' + data.substr(0, 4);
+
+        return d;
+    }
+
+    async function myFunction() {
+        return "Hello";
+    }
+
+    function GerarCategorias(op_tipo, select_id) {
+        $.ajax({
+            url: "/Operacao/GerarCategorias",
+            data: { __RequestVerificationToken: gettoken(), op_tipo: op_tipo },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                if (document.getElementById('text_categorias')) {
+                    document.getElementById('text_categorias').innerHTML = "Gerando categorias...";
+                    if (document.getElementById('sub')) {
+                        document.getElementById('sub').setAttribute("disabled", "disabled");
+                    }
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("erro");
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                var results = JSON.parse(data);
+                $('#' + select_id).children('option').remove(); //Remove todos os itens do select
+
+                for (i = 0; i < results.length; i++) { //Adiciona os item recebidos no results no select
+                    $('#' + select_id).append($("<option></option>").attr("value", results[i].value).text(results[i].text));
+                }
+
+                if (document.getElementById('op_categoria_id')) {
+                    if (operacao.operacao.op_categoria_id != 0) {
+                        $('#op_categoria_id').val(operacao.operacao.op_categoria_id);
+                        $('#op_categoria_id').trigger('change');
+                    }                    
+                }
+
+                if (document.getElementById('text_categorias')) {
+                    document.getElementById('text_categorias').innerHTML = "";
+                    if (document.getElementById('sub')) {
+                        document.getElementById('sub').removeAttribute("disabled");
+                    }
+                }
+            }
+        });
+    }
     
 </script>
