@@ -682,6 +682,34 @@ namespace gestaoContadorcomvc.Models
             return participantes;
         }
 
+        public bool participanteExiste(string valor, int conta_id)
+        {
+            bool localizado = false;
+            try
+            {
+                conn.Open();
+                MySqlCommand comando = new MySqlCommand("SELECT p.participante_cnpj_cpf from participante as p WHERE p.participante_conta_id = @conta_id and p.participante_cnpj_cpf = @valor;", conn);
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@valor", valor);
+                var leitor = comando.ExecuteReader();
+                localizado = leitor.HasRows;
+                conn.Clone();
+            }
+            catch (Exception e)
+            {
+                string erro = e.ToString();
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return localizado;
+        }
+
 
     }
 }

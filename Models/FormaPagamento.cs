@@ -438,7 +438,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT fp.fp_id, fp.fp_nome as nome, mp.meio_pgto_descricao, COALESCE(cc.ccorrente_nome,0) as destino, fp.fp_identificacao as aplicavel from forma_pagamento as fp LEFT JOIN meio_pgto as mp on fp.fp_meio_pgto_nfe = mp.meio_pgto_codigo LEFT JOIN conta_corrente as cc on fp.fp_vinc_conta_corrente = cc.ccorrente_id WHERE fp.fp_conta_id = @conta_id and fp.fp_status = 'Ativo' ORDER by fp.fp_identificacao DESC;";
+                comando.CommandText = "SELECT fp.fp_id, fp.fp_nome as nome, mp.meio_pgto_descricao, COALESCE(cc.ccorrente_nome,0) as destino, fp.fp_identificacao as aplicavel, (case WHEN fp.fp_baixa_automatica = false THEN 'Não' WHEN fp.fp_baixa_automatica = true THEN cc.ccorrente_nome END) as baixa_automatica from forma_pagamento as fp LEFT JOIN meio_pgto as mp on fp.fp_meio_pgto_nfe = mp.meio_pgto_codigo LEFT JOIN conta_corrente as cc on fp.fp_vinc_conta_corrente = cc.ccorrente_id WHERE fp.fp_conta_id = @conta_id and fp.fp_status = 'Ativo' ORDER by fp.fp_identificacao DESC;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
@@ -463,6 +463,7 @@ namespace gestaoContadorcomvc.Models
                         fp.fp_nome = leitor["nome"].ToString();
                         fp.meioPgto = leitor["meio_pgto_descricao"].ToString();
                         fp.aplicavel = leitor["aplicavel"].ToString();
+                        fp.baixa_automatica = leitor["baixa_automatica"].ToString();
                         string dest = leitor["destino"].ToString();
 
                         if(dest.Equals("0"))

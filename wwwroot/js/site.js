@@ -4283,6 +4283,24 @@ function calculaTotalCCM(id,vlr) {
     decimal(id, (vlr.replace('.','')), '2', true);  
 }
 
+function ignorarZeradasRelCat(id) {
+    let cheque = document.getElementById(id).checked;
+    if (cheque) {
+        document.getElementById(id).value = 'true';
+    } else {
+        document.getElementById(id).value = 'false';
+    }
+}
+
+function change_op_data_CFR(id, vlr) {
+    document.getElementById('cf_data_inicial').value = vlr;
+    document.getElementById('cf_data_final').value = vlr;
+}
+function change_cf_valor_operacao_CFR(id, vlr) {
+    decimal('cf_valor_parcela_bruta', vlr.replaceAll('.',''), '2', false);
+    decimal('cf_valor_parcela_liquida', vlr.replaceAll('.', ''), '2', false);    
+}
+
 
 
 

@@ -43,15 +43,15 @@
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="form-group">
-                                <label asp-for="op.op_data" class="control-label">Data Opereção</label>
-                                <input type="text" asp-for="op.op_data" id="op_data" class="form-control col-form-label-sm datepicker" />
+                                <label asp-for="op.op_data" class="control-label">Data Operação</label>
+                                <input type="text" asp-for="op.op_data" id="op_data" class="form-control col-form-label-sm datepicker" onchange="change_op_data_CFR(this.id, this.value)" />
                                 <span asp-validation-for="op.op_data" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="form-group">
                                 <label asp-for="cf.cf_valor_operacao" class="control-label">Valor Operação</label>
-                                <input asp-for="cf.cf_valor_operacao" name="cf_valor_operacao" id="cf_valor_operacao" class="form-control" onchange="decimal(this.id, this.value, '2', true)" />
+                                <input asp-for="cf.cf_valor_operacao" name="cf_valor_operacao" id="cf_valor_operacao" class="form-control" onchange="decimal(this.id, this.value, '2', true)" onblur="change_cf_valor_operacao_CFR(this.id, this.value)" />
                                 <span asp-validation-for="cf.cf_valor_operacao" class="text-danger"></span>
                             </div>
                         </div>

@@ -204,5 +204,19 @@ namespace gestaoContadorcomvc.Controllers
 
             return Json(JsonConvert.SerializeObject(vm_p));
         }
+
+        //Verificar se cnpf/cnpj existe
+        public IActionResult participanteExiste(string participante_cnpj_cpf)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Participante p = new Participante();
+
+            bool existe = p.participanteExiste(participante_cnpj_cpf, user.usuario_conta_id);
+
+            return Json(!existe);
+        }
     }
 }

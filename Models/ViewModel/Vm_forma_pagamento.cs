@@ -57,5 +57,6 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string aplicavel { get; set; }
         public string meioPgto { get; set; }
         public string ccorrente_tipo { get; set; }
+        public string baixa_automatica { get; set; }
     }
 }

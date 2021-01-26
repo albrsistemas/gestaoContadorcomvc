@@ -35,7 +35,7 @@ namespace gestaoContadorcomvc.Controllers.Relatorios
         // POST: Categoria_oppController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(string ano, string visao)
+        public ActionResult Create(string ano, string visao, bool ignorarZeradas)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace gestaoContadorcomvc.Controllers.Relatorios
                 user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
                 Categoria_opp copp = new Categoria_opp();
-                copp = copp.gerarRelatorio(user.usuario_conta_id, ano, visao);
+                copp = copp.gerarRelatorio(user.usuario_conta_id, ano, visao, ignorarZeradas);
                 copp.user = user;
                 copp.visao = visao;
                 copp.ano = ano;

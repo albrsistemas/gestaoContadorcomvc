@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public int participante_id { get; set; }
 
         [Display(Name = "Nome")]
+        [Required(ErrorMessage = "Nome é obrigatório.")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Mínimo de 2 caracteres e máximo de 100")]
         public string participante_nome { get; set; }
         public DateTime participante_dataCriacao { get; set; }
 
@@ -33,6 +36,8 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string participante_inscricaoEstadual { get; set; }
 
         [Display(Name = "CPF")]
+        [Required(ErrorMessage = "CPF/CNPJ/ID de Estrangeiro é obrigatório.")]
+        [Remote("participanteExiste", "Participante", ErrorMessage = "CPF/CNPJ/ID Estrangeiro já existe")]
         public string participante_cnpj_cpf { get; set; }
 
         [Display(Name = "RG")]

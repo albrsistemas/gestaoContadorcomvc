@@ -46,7 +46,7 @@ namespace gestaoContadorcomvc.Models.Relatorios
             conn = new MySqlConnection(configuration.GetSection("ConnectionStrings").GetSection("conexaocvc").Value);
         }
 
-        public Categoria_opp gerarRelatorio(int conta_id, string ano, string visao)
+        public Categoria_opp gerarRelatorio(int conta_id, string ano, string visao, bool ignorarZeradas)
         {
             List<Categoria_opp> lista = new List<Categoria_opp>();
 
@@ -87,7 +87,18 @@ namespace gestaoContadorcomvc.Models.Relatorios
                         copp.outu = Convert.ToDecimal(leitor["outu"]);
                         copp.nov = Convert.ToDecimal(leitor["nov"]);
                         copp.dez = Convert.ToDecimal(leitor["dez"]);
-                        lista.Add(copp);
+                        copp.soma = (copp.jan + copp.fev + copp.marc + copp.abr + copp.mai + copp.jun + copp.jul + copp.ago + copp.sete + copp.outu + copp.nov + copp.dez);
+                        if (ignorarZeradas)
+                        {
+                            if(copp.soma > 0)
+                            {
+                                lista.Add(copp);
+                            }
+                        }
+                        else
+                        {
+                            lista.Add(copp);
+                        }
                     }
                 }
 

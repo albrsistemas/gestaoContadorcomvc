@@ -36,6 +36,8 @@ namespace gestaoContadorcomvc.Models
         public int cf_op_id { get; set; }
         public int cf_forma_pgto { get; set; }
         public Decimal baixas { get; set; }
+        public int numero_ordem { get; set; }
+
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -419,7 +421,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT (SELECT COALESCE(sum(op_parcelas_baixa.oppb_valor),0) from op_parcelas_baixa WHERE op_parcelas_baixa.oppb_op_id = cf.cf_op_id) as baixas, cf.* from contas_financeiras as cf WHERE cf.cf_conta_id = @conta_id ORDER by cf.cf_dataCriacao DESC";
+                comando.CommandText = "SELECT (SELECT COALESCE(sum(op_parcelas_baixa.oppb_valor),0) from op_parcelas_baixa WHERE op_parcelas_baixa.oppb_op_id = cf.cf_op_id) as baixas, operacao.op_numero_ordem as numero_ordem, cf.* from contas_financeiras as cf LEFT JOIN operacao on operacao.op_id = cf.cf_op_id WHERE cf.cf_conta_id = @conta_id ORDER by cf.cf_dataCriacao DESC;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);                
                 Transacao.Commit();
 
@@ -430,6 +432,15 @@ namespace gestaoContadorcomvc.Models
                     while (leitor.Read())
                     {
                         ContasFinanceiras cf = new ContasFinanceiras();
+                        //Número ordem
+                        if (DBNull.Value != leitor["numero_ordem"])
+                        {
+                            cf.numero_ordem = Convert.ToInt32(leitor["numero_ordem"]);
+                        }
+                        else
+                        {
+                            cf.numero_ordem = 0;
+                        }
 
                         //Baixas soma
                         if (DBNull.Value != leitor["baixas"])
