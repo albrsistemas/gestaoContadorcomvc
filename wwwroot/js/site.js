@@ -452,7 +452,7 @@ function verificaClassificacaoGrupo(id, vlr) {
 }
 
 function montaClassificacao(valor, grupo) {
-    document.getElementById("categoria_classificacao").value = grupo + "." + valor;
+    document.getElementById("categoria_classificacao").value = grupo + "." + valor.padStart(3, '0');
 }
 
 //Bread alteração de empresa selecionada pelo contador;

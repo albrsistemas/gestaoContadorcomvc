@@ -206,6 +206,35 @@ namespace gestaoContadorcomvc.Models
             return localizado;
         }
 
+        public bool classificacaoExistePorPlano(string valor, int conta_id, string plano)
+        {
+            bool localizado = false;
+            try
+            {
+                conn.Open();
+                MySqlCommand comando = new MySqlCommand("SELECT categoria.categoria_classificacao from categoria WHERE categoria.categoria_conta_id = @conta_id and categoria.categoria_status = 'Ativo' and categoria.categoria_classificacao = @valor and categoria.categoria_dePlano = @plano;", conn);
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@valor", valor);
+                comando.Parameters.AddWithValue("@plano", plano);
+                var leitor = comando.ExecuteReader();
+                localizado = leitor.HasRows;
+                conn.Clone();
+            }
+            catch (Exception e)
+            {
+                string erro = e.ToString();
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return localizado;
+        }
+
         //Verificar se classificação da categoria existe
         public bool classificacaoExistenoPlano(string valor, int conta_id, int plano_id)
         {

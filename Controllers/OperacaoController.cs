@@ -70,6 +70,7 @@ namespace gestaoContadorcomvc.Controllers
 
         // POST: OperacaoController/Create
         [HttpPost]
+        [RequestFormLimits(ValueCountLimit = int.MaxValue)]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection, Vm_operacao op)
         {

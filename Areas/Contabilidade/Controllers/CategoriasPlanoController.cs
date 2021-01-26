@@ -113,6 +113,13 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             {
                 Categoria categoria = new Categoria();
 
+                if (categoria.classificacaoExistePorPlano(collection["categoria_classificacao"], user.usuario_conta_id, "Não"))
+                {
+                    TempData["createCategoria"] = "Erro. Classifcação já existe!";
+
+                    return RedirectToAction("Index", "CategoriasPlano", new { @pc_id = collection["planoCategorias_id"], @planoContas_id = collection["planoContas_id"] });
+                }
+
                 TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id, collection["categoria_conta_contabil"], collection["planoCategorias_id"], "0");
 
                 return RedirectToAction("Index", "CategoriasPlano", new { @pc_id = collection["planoCategorias_id"], @planoContas_id = collection["planoContas_id"] });
@@ -259,6 +266,13 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             try
             {
                 Categoria categoria = new Categoria();
+
+                if (categoria.classificacaoExistePorPlano(collection["categoria_classificacao"], user.usuario_conta_id, "Não"))
+                {
+                    TempData["createCategoria"] = "Erro. Classifcação já existe!";
+
+                    return RedirectToAction("Index", "CategoriasPlano", new { @pc_id = collection["planoCategorias_id"], @planoContas_id = collection["planoContas_id"] });
+                }
 
                 TempData["createGrupo"] = categoria.cadastrarCategoriaGrupo(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id, collection["planoCategorias_id"], "0");
 

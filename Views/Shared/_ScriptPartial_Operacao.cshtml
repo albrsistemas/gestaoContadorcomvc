@@ -1028,7 +1028,7 @@
                 valor_liquido += convertStringDouble(operacao.parcelas[i].op_parcela_valor);
             }
 
-            if (valor_bruto_parcelas > convertStringDouble(operacao.totais.op_totais_total_op)) {
+            if (convertStringDouble(valor_bruto_parcelas.toFixed(2)) > convertStringDouble(convertStringDouble(operacao.totais.op_totais_total_op).toFixed(2))) {
                 alert('Soma do valor bruto das parcelas é maior que o valor total da operação!');
                 return;
             }
@@ -1119,9 +1119,12 @@
         let forma_pagamento = document.getElementById('op_parcela_fp_id').value;
         let parcelas = (document.getElementById('parcela_dia_vencimento').value).toString().replace('.', ',').split(',');
         let valor_bruto = valor_operacao / parcelas.length;
-        let op_data = document.getElementById('op_data').value;        
+        let op_data = document.getElementById('op_data').value; 
+
+        let parcelas_reducao = valor_operacao;
         
         for (let i = 0; i < parcelas.length; i++) {
+            
             let data = moment(op_data, 'DD/MM/YYYY', 'pt', true);
             p = {
                 op_parcela_id: 0,
@@ -1138,13 +1141,23 @@
                 op_parcela_ret_pis: '',
                 op_parcela_ret_cofins: '',
                 op_parcela_ret_csll: '',
-                op_parcela_valor_bruto: convertDoubleString(valor_bruto),
+                op_parcela_valor_bruto: 0,
                 op_parcela_agrupamento: 0,
                 op_parcela_vencimento_alterado: data.add(convertStringDouble(parcelas[i]), 'd').format('DD/MM/YYYY'),
                 op_parcela_numero: (i + 1),
                 op_parcela_numero_total: parcelas.length,
                 op_parcela_label_forma_pgto: forma_pagamento_label,
             };
+
+            if (i < (parcelas.length - 1)) {
+                p.op_parcela_valor_bruto = convertDoubleString(valor_bruto);
+            } else {
+                p.op_parcela_valor_bruto = convertDoubleString(parcelas_reducao);
+            }
+
+            parcelas_reducao = parcelas_reducao - convertStringDouble(p.op_parcela_valor_bruto);
+
+            
 
             //inss
             if (convertStringDouble(operacao.retencoes.op_ret_inss) > 0) {
@@ -1177,15 +1190,16 @@
                 }
             }
             //csrf
+            let vlr_parcela = convertStringDouble(p.op_parcela_valor_bruto);
             if (cheque_csrf == true) {
-                if (valor_bruto > 215.05) {
-                    p.op_parcela_ret_pis = convertDoubleString(valor_bruto * 0.65 / 100);
-                    p.op_parcela_ret_cofins = convertDoubleString(valor_bruto * 3 / 100);
-                    p.op_parcela_ret_csll = convertDoubleString(valor_bruto * 1 / 100);
+                if (vlr_parcela > 215.05) {
+                    p.op_parcela_ret_pis = convertDoubleString(vlr_parcela * 0.65 / 100);
+                    p.op_parcela_ret_cofins = convertDoubleString(vlr_parcela * 3 / 100);
+                    p.op_parcela_ret_csll = convertDoubleString(vlr_parcela * 1 / 100);
                 }
             }
             //valor parcela
-            p.op_parcela_valor = convertDoubleString(valor_bruto - (convertStringDouble(p.op_parcela_ret_inss) + convertStringDouble(p.op_parcela_ret_issqn) + convertStringDouble(p.op_parcela_ret_irrf) + convertStringDouble(p.op_parcela_ret_pis) + convertStringDouble(p.op_parcela_ret_cofins) + convertStringDouble(p.op_parcela_ret_csll)));
+            p.op_parcela_valor = convertDoubleString(vlr_parcela - (convertStringDouble(p.op_parcela_ret_inss) + convertStringDouble(p.op_parcela_ret_issqn) + convertStringDouble(p.op_parcela_ret_irrf) + convertStringDouble(p.op_parcela_ret_pis) + convertStringDouble(p.op_parcela_ret_cofins) + convertStringDouble(p.op_parcela_ret_csll)));
 
             operacao.parcelas.push(p);
         }        
@@ -1212,6 +1226,8 @@
         let recorrencia = document.getElementById('recorencia_n_parcelas').value;
         let data = moment(document.getElementById('data_primeira_parcela').value, 'DD/MM/YYYY', 'pt', true);
 
+        let parcelas_reducao = valor_operacao; 
+
         for (let i = 0; i < parcelas; i++) {            
             p = {
                 op_parcela_id: 0,
@@ -1228,13 +1244,21 @@
                 op_parcela_ret_pis: '',
                 op_parcela_ret_cofins: '',
                 op_parcela_ret_csll: '',
-                op_parcela_valor_bruto: convertDoubleString(valor_bruto),
+                op_parcela_valor_bruto: 0,
                 op_parcela_agrupamento: 0,
                 op_parcela_vencimento_alterado: '',
                 op_parcela_numero: (i + 1),
                 op_parcela_numero_total: parcelas,
                 op_parcela_label_forma_pgto: forma_pagamento_label,
-            };           
+            };         
+
+            if (i < (parcelas - 1)) {
+                p.op_parcela_valor_bruto = convertDoubleString(valor_bruto);
+            } else {
+                p.op_parcela_valor_bruto = convertDoubleString(parcelas_reducao);
+            }
+
+            parcelas_reducao = parcelas_reducao - convertStringDouble(p.op_parcela_valor_bruto);
 
             //Vencimento
             if (i == 0) {
@@ -1301,15 +1325,16 @@
                 }
             }
             //csrf
+            let vlr_parcela = convertStringDouble(p.op_parcela_valor_bruto);
             if (cheque_csrf == true) {
-                if (valor_bruto > 215.05) {
-                    p.op_parcela_ret_pis = convertDoubleString(valor_bruto * 0.65 / 100);
-                    p.op_parcela_ret_cofins = convertDoubleString(valor_bruto * 3 / 100);
-                    p.op_parcela_ret_csll = convertDoubleString(valor_bruto * 1 / 100);
+                if (vlr_parcela > 215.05) {
+                    p.op_parcela_ret_pis = convertDoubleString(vlr_parcela * 0.65 / 100);
+                    p.op_parcela_ret_cofins = convertDoubleString(vlr_parcela * 3 / 100);
+                    p.op_parcela_ret_csll = convertDoubleString(vlr_parcela * 1 / 100);
                 }
             }
             //valor parcela
-            p.op_parcela_valor = convertDoubleString(valor_bruto - (convertStringDouble(p.op_parcela_ret_inss) + convertStringDouble(p.op_parcela_ret_issqn) + convertStringDouble(p.op_parcela_ret_irrf) + convertStringDouble(p.op_parcela_ret_pis) + convertStringDouble(p.op_parcela_ret_cofins) + convertStringDouble(p.op_parcela_ret_csll)));
+            p.op_parcela_valor = convertDoubleString(vlr_parcela - (convertStringDouble(p.op_parcela_ret_inss) + convertStringDouble(p.op_parcela_ret_issqn) + convertStringDouble(p.op_parcela_ret_irrf) + convertStringDouble(p.op_parcela_ret_pis) + convertStringDouble(p.op_parcela_ret_cofins) + convertStringDouble(p.op_parcela_ret_csll)));
 
             operacao.parcelas.push(p);
         }
@@ -1338,10 +1363,7 @@
     }
 
     function editRetencoes(id, vlr, contexto) {
-        $('#modal_mensagem_retorno').modal('hide'); //Fechar modal se estiver aberto
-        console.log(vlr);
-        console.log(id);
-        console.log(contexto);
+        $('#modal_mensagem_retorno').modal('hide'); //Fechar modal se estiver aberto    
 
         if (operacao.parcelas.length > 0) {
             if (contexto == 'confirmar') {
@@ -1630,7 +1652,7 @@
                 total_retencoes += convertStringDouble(operacao.parcelas[i].op_parcela_ret_csll);
             }
 
-            if (op_totais_total_op != valor_bruto) {
+            if (convertStringDouble(op_totais_total_op.toFixed(2)) != convertStringDouble(valor_bruto.toFixed(2))) {
                 t += 'Total bruto das parcelas difere do total da operação;';
             }
 
@@ -1656,6 +1678,11 @@
         if (cat == "" || cat == null || cat == '0' || cat == 0) {
             t += 'Origatório informar uma categoria;';
         }
+        //Verificando memorando
+        let m = document.getElementById('op_obs').value;
+        if (m.length < 5) {
+            t += 'Origatório informar um memorando com mais de 4 caracteres;';
+        }
 
         //Distrinchando matriz de erros
         let v = t.split(';');
@@ -1672,7 +1699,7 @@
                 let msg = '<span class="text-danger">' + v[i] + '</span></br>';
                 $('#op_valid').append(msg);               
             }
-            console.log(v);
+            
         } else {
             $.ajax({
                 url: "/Operacao/" + contexto,
@@ -1687,7 +1714,7 @@
                     document.getElementById('rodape').innerHTML = "";
                     $('#modal_mensagem').modal('show');
                 },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                error: function (XMLHttpRequest, textStatus, errorThrown) {                   
                     alert("erro");
                 },
                 success: function (data, textStatus, XMLHttpRequest) {
@@ -1899,7 +1926,7 @@
         document.getElementById('op_totais_icms_st').value = operacao.totais.op_totais_icms_st;
         document.getElementById('op_totais_ipi').value = operacao.totais.op_totais_ipi;
         document.getElementById('op_totais_total_op').value = operacao.totais.op_totais_total_op;
-        document.getElementById('op_totais_valor_outras_operacoes_totais').value = operacao.totais.op_totais_valor_outras_operacoes_totais;
+        document.getElementById('op_totais_valor_outras_operacoes_totais').value = operacao.totais.op_totais_valor_outras_operacoes;
         document.getElementById('op_totais_preco_servicos').value = operacao.totais.op_totais_preco_servicos;
 
         //Produzindo selects categoria e forma de pagamento contextualizada ao tipo op.

@@ -83,6 +83,13 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Categoria categoria = new Categoria();
 
+                if (categoria.classificacaoExistePorPlano(collection["categoria_classificacao"], user.usuario_conta_id, "Não"))
+                {
+                    TempData["createCategoria"] = "Erro. Classifcação já existe!";
+
+                    return RedirectToAction(nameof(Index));
+                }
+
                 TempData["createGrupo"] = categoria.cadastrarCategoriaGrupo(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id, "Não", "0");
 
                 return RedirectToAction(nameof(Index));
@@ -138,6 +145,13 @@ namespace gestaoContadorcomvc.Controllers
             try
             {
                 Categoria categoria = new Categoria();
+
+                if(categoria.classificacaoExistePorPlano(collection["categoria_classificacao"], user.usuario_conta_id, "Não"))
+                {
+                    TempData["createCategoria"] = "Erro. Classifcação já existe!";
+
+                    return RedirectToAction(nameof(Index));
+                }
 
                 TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id, collection["categoria_conta_contabil"], "Não", "0");
 

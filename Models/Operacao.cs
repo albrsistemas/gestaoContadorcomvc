@@ -735,6 +735,15 @@ namespace gestaoContadorcomvc.Models
                             op.totais.op_totais_preco_servicos = 0;
                         }
 
+                        if (DBNull.Value != leitor["op_totais_valor_outras_operacoes"])
+                        {
+                            op.totais.op_totais_valor_outras_operacoes = Convert.ToDecimal(leitor["op_totais_valor_outras_operacoes"]);
+                        }
+                        else
+                        {
+                            op.totais.op_totais_valor_outras_operacoes = 0;
+                        }
+
                         if (DBNull.Value != leitor["op_totais_ipi"])
                         {
                             op.totais.op_totais_ipi = Convert.ToDecimal(leitor["op_totais_ipi"]);

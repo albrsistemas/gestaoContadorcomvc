@@ -234,7 +234,7 @@
     </div>
 </div>
 <fieldset>
-    <legend>Observações</legend>
+    <legend>Memorando</legend>
     <div class="row">
         <div class="col-12">
             <div class="form-group">
@@ -880,13 +880,13 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-6" style="display:none">
                         <div class="form-group">
                             <label asp-for="servico.op_servico_lc116" class="control-label">Cód. LC 116/03</label>
                             <input asp-for="servico.op_servico_lc116" id="op_servico_lc116" class="form-control form-control-sm" />
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-12">
                         <div class="form-group">
                             <label asp-for="servico.op_servico_valor" class="control-label">Valor do Serviço</label>
                             <input asp-for="servico.op_servico_valor" id="op_servico_valor" class="form-control form-control-sm" onchange="decimal(this.id, this.value, '2', true)" />
