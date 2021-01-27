@@ -44,7 +44,7 @@
             <div class="form-group">
                 <label asp-for="fp_status" class="control-label"></label>
                 <input asp-for="fp_status" class="form-control" value="Ativo" readonly="readonly" />
-                <span asp-validation-for="fp_status" class="text-danger"></span>                
+                <span asp-validation-for="fp_status" class="text-danger"></span>
             </div>
         </div>
     </div>
@@ -71,8 +71,8 @@
                 <span asp-validation-for="fp_vinc_conta_corrente" class="text-danger"></span>
             </div>
         </div>
-    </div>    
-    <div class="row" style="display:block" id="opc_baixa_automatica">        
+    </div>
+    <div class="row" style="display:block" id="opc_baixa_automatica">
         <div class="col-12 col-md-4">
             <div class="custom-control custom-switch">
                 <input type="checkbox" asp-for="fp_baixa_automatica" id="fp_baixa_automatica" class="custom-control-input" onchange="baixaAutomatica(this.id)">
@@ -80,7 +80,7 @@
             </div>
         </div>
     </div>
-    <br />        
+    <br />
     <fieldset>
         <legend style="display:none" id="legenda_cartoes">Informações de cartões</legend>
         <div class="row" style="display:none" id="grupo_cartoes_recebimento">
@@ -126,7 +126,8 @@
 
     <br />
 
-    <button type="submit" class="btn btn-info" id="sub">Gravar</button>
+    <button type="submit" class="btn btn-info" id="sub" onclick="blockSubmit(this.id,'formaPgto')">Gravar</button>
     <a class="btn btn-secondary" asp-controller="FormaPagamento" asp-action="Index">Cancelar</a>
+    <br /><span class="text-info" id="msg_blockSubmit"></span>
 
 </form>

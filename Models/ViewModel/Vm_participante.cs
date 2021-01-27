@@ -37,7 +37,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
 
         [Display(Name = "CPF")]
         [Required(ErrorMessage = "CPF/CNPJ/ID de Estrangeiro é obrigatório.")]
-        [Remote("participanteExiste", "Participante", ErrorMessage = "CPF/CNPJ/ID Estrangeiro já existe")]
+        [Remote("participanteExiste", "Participante", AdditionalFields = "participante_id", ErrorMessage = "CPF/CNPJ/ID Estrangeiro já existe")]
         public string participante_cnpj_cpf { get; set; }
 
         [Display(Name = "RG")]

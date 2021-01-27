@@ -8,7 +8,7 @@
             <div class="modal-header">
                 <h4 class="modal-title">Adicionar Contabilidade</h4>
             </div>
-            <form asp-controller="Configuracoes" asp-action="AddContabilidade">
+            <form asp-controller="Configuracoes" asp-action="AddContabilidade" id="form">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
@@ -51,7 +51,8 @@
                     @{
                         if (Model.cc_termo != "Erro")
                         {
-                            <button type="submit" class="btn btn-info">Concordo</button>
+                            <button type="submit" class="btn btn-info" id="sub_form" onclick="blockSubmit(this.id,'form')">Concordo</button>
+                            <br /><span class="text-info" id="msg_blockSubmit"></span>
                         }
                     }
                 </div>

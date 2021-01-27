@@ -144,18 +144,18 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             return View();
         }
 
-        public IActionResult userExiste(string usuario_user)
+        public IActionResult userExiste(string usuario_user, int usuario_id)
         {
             Registro registro = new Registro();
-            bool existe = registro.userExiste(usuario_user);
+            bool existe = registro.userExiste(usuario_user, usuario_id);
 
             return Json(!existe);
         }
 
-        public IActionResult emailExiste(string conta_email)
+        public IActionResult emailExiste(string conta_email, int usuario_id)
         {
             Registro registro = new Registro();
-            bool existe = registro.emailExiste(conta_email);
+            bool existe = registro.emailExiste(conta_email, usuario_id);
 
             return Json(!existe);
         }

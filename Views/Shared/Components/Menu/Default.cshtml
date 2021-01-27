@@ -26,7 +26,7 @@
                         {<a class="dropdown-item" asp-controller='FormaPagamento' asp-action='Index'>Formas de Pagamento</a>}
                         @if (usuario.Role == "adm" || usuario._permissoes.participanteList)
                         {<a class="dropdown-item" asp-controller='Participante' asp-action='Index'>Participante</a>}
-                        @if ((usuario.conta.conta_tipo != "Pessoa Física") && (usuario.Role == "adm" || usuario._permissoes.produtosList))
+                        @if (usuario.Role == "adm" || usuario._permissoes.produtosList)
                         {<a class="dropdown-item" asp-controller='Produtos' asp-action='Index'>Produtos</a>}
                     </div>
                 </li>

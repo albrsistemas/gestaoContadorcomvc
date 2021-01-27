@@ -206,7 +206,7 @@ namespace gestaoContadorcomvc.Controllers
         }
 
         //Verificar se cnpf/cnpj existe
-        public IActionResult participanteExiste(string participante_cnpj_cpf)
+        public IActionResult participanteExiste(string participante_cnpj_cpf, int participante_id)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -214,7 +214,7 @@ namespace gestaoContadorcomvc.Controllers
 
             Participante p = new Participante();
 
-            bool existe = p.participanteExiste(participante_cnpj_cpf, user.usuario_conta_id);
+            bool existe = p.participanteExiste(participante_cnpj_cpf, user.usuario_conta_id, participante_id);
 
             return Json(!existe);
         }

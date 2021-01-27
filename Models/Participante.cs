@@ -682,15 +682,16 @@ namespace gestaoContadorcomvc.Models
             return participantes;
         }
 
-        public bool participanteExiste(string valor, int conta_id)
+        public bool participanteExiste(string valor, int conta_id, int participante_id)
         {
             bool localizado = false;
             try
             {
                 conn.Open();
-                MySqlCommand comando = new MySqlCommand("SELECT p.participante_cnpj_cpf from participante as p WHERE p.participante_conta_id = @conta_id and p.participante_cnpj_cpf = @valor;", conn);
+                MySqlCommand comando = new MySqlCommand("SELECT p.participante_cnpj_cpf from participante as p WHERE p.participante_conta_id = @conta_id and p.participante_cnpj_cpf = @valor and p.participante_id <> @participante_id;", conn);
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@valor", valor);
+                comando.Parameters.AddWithValue("@participante_id", participante_id);
                 var leitor = comando.ExecuteReader();
                 localizado = leitor.HasRows;
                 conn.Clone();

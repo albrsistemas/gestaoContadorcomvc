@@ -4301,6 +4301,13 @@ function change_cf_valor_operacao_CFR(id, vlr) {
     decimal('cf_valor_parcela_liquida', vlr.replaceAll('.', ''), '2', false);    
 }
 
+function blockSubmit(id, form) {
+    document.getElementById(id).setAttribute("disabled", "disabled");
+    document.getElementById('msg_blockSubmit').innerHTML = 'Enviando informarções, aguarde...';
+    let f = document.getElementById(form);
+    f.submit();
+}
+
 
 
 

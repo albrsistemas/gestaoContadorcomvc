@@ -126,8 +126,9 @@
 
     <br />
 
-    <button type="submit" class="btn btn-info" id="sub">Gravar</button>
+    <button type="submit" class="btn btn-info" id="sub" onclick="blockSubmit(this.id,'formaPgto')">Gravar</button>
     <a class="btn btn-secondary" asp-controller="FormaPagamento" asp-action="Index">Cancelar</a>
+    <br /><span class="text-info" id="msg_blockSubmit"></span>
 
 </form>
 @{

@@ -293,6 +293,7 @@
         if (contexto == 'open') {
             if (document.getElementById('nome')) {
                 document.getElementById('nome').value = operacao.participante.op_part_nome;
+                document.getElementById('nome').focus();
             }
             if (document.getElementById('participante_tipoPessoa')) {
                 document.getElementById('participante_tipoPessoa').value = operacao.participante.op_part_tipo;
@@ -323,7 +324,7 @@
             }
             if (document.getElementById('op_paisesIBGE_codigo')) {
                 document.getElementById('op_paisesIBGE_codigo').value = operacao.participante.op_paisesIBGE_codigo;
-            }
+            }           
 
             //Abre modal
             modal_sobre_modal_open('modal_participante');            
@@ -366,13 +367,17 @@
                     operacao.participante.op_paisesIBGE_codigo = document.getElementById('op_paisesIBGE_codigo').value;
                 }
 
+                //gravando informação que operação é com participante
+                operacao.operacao.op_comParticipante = true;
+
+                if (document.getElementById('op_categoria_id')) {
+                    document.getElementById('op_categoria_id').focus();
+                }
+
                 document.getElementById('participante').value = operacao.participante.op_part_nome;
                 if (document.getElementById('modal_participante')) {
                     $('#modal_participante').modal('hide');
                 }
-
-                //gravando informação que operação é com participante
-                operacao.operacao.op_comParticipante = true;
             }
         }
 
@@ -423,7 +428,12 @@
     function operacao_itens(contexto) {
         if (contexto == 'open') {            
             //Atualiza tabela de itens
-            atualizaViewItens();            
+            atualizaViewItens();
+
+            if (document.getElementById('prod_descricao')) {
+                document.getElementById('prod_descricao').focus();
+            }            
+
             //Abrir modal
             modal_sobre_modal_open('lista_itens');
         }
@@ -433,6 +443,10 @@
                 document.getElementById('itens').value = 'Quantidade de Itens Informado: ' + operacao.itens.length;
             } else {
                 document.getElementById('itens').value = 'Não informado';
+            }
+
+            if (document.getElementById('btn_retencoes')) {
+                document.getElementById('btn_retencoes').focus();
             }
             
         }
@@ -633,6 +647,8 @@
             document.getElementById('op_servico_valor').value = operacao.servico.op_servico_valor.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
             document.getElementById('op_servico_lc116').value = operacao.servico.op_servico_lc116;
 
+            document.getElementById('op_servico_servico_executado').focus();
+
             //Abrir modal
             modal_sobre_modal_open('m_servico');
         }
@@ -655,6 +671,10 @@
 
                 document.getElementById('servicos').value = 'Valor do Serviço Informado: ' + operacao.servico.op_servico_valor.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "6" });
 
+                if (document.getElementById('btn_retencoes')) {
+                    document.getElementById('btn_retencoes').focus();
+                }
+
                 //Fecha modal
                 $('#m_servico').modal('hide');
             }            
@@ -663,6 +683,11 @@
         if (contexto == 'delete') {
             retornaServicoDefault();
             document.getElementById('servicos').value = 'Não informado';
+
+            if (document.getElementById('btn_retencoes')) {
+                document.getElementById('btn_retencoes').focus();
+            }
+
             //Fecha modal
             $('#m_servico').modal('hide');
         }
@@ -678,6 +703,8 @@
             decimal('op_ret_pis', operacao.retencoes.op_ret_pis, '2', false);
             decimal('op_ret_cofins', operacao.retencoes.op_ret_cofins, '2', false);
             decimal('op_ret_csll', operacao.retencoes.op_ret_csll, '2', false);
+
+            document.getElementById('op_ret_inss').focus();
 
             //Abrir modal
             modal_sobre_modal_open('m_retencoes');
@@ -724,9 +751,36 @@
             //Atualiza parcelas para refazer informações da view
             atualizaViewParcelas();
 
+            if (document.getElementById('btn_parcelas')) {
+                document.getElementById('btn_parcelas').focus();
+            }
+
             //Fecha modal
             $('#m_retencoes').modal('hide');
         }
+
+        if (contexto == 'delete') {
+            //Limpando objeto
+            operacao.retencoes.op_ret_inss = convertDoubleString(0);
+            operacao.retencoes.op_ret_issqn = convertDoubleString(0);
+            operacao.retencoes.op_ret_irrf = convertDoubleString(0);
+            operacao.retencoes.op_ret_pis = convertDoubleString(0);
+            operacao.retencoes.op_ret_cofins = convertDoubleString(0);
+            operacao.retencoes.op_ret_csll = convertDoubleString(0);
+
+            //Limpando Campos
+            decimal('op_ret_inss', 0, '2', false);
+            decimal('op_ret_irrf', 0, '2', false);
+            decimal('op_ret_issqn', 0, '2', false);
+            decimal('op_ret_pis', 0, '2', false);
+            decimal('op_ret_cofins', 0, '2', false);
+            decimal('op_ret_csll', 0, '2', false);
+
+            if (document.getElementById('btn_parcelas')) {
+                document.getElementById('btn_parcelas').focus();
+            }
+        }
+
     }
 
     function convertStringDouble(vlr) {
@@ -859,6 +913,11 @@
         if (contexto == 'open') {
             //Atualiza a view com as parcelas
             atualizaViewParcelas();
+
+            if (document.getElementById('op_parcela_fp_id')) {
+                document.getElementById('op_parcela_fp_id').focus();
+            }
+
             //Abrir modal
             modal_sobre_modal_open('lista_parcelas');
         }
@@ -1039,6 +1098,10 @@
                 document.getElementById('parcelas').value = 'Número Parcelas: ' + operacao.parcelas.length + ' Valor Liquido: ' + convertDoubleString(valor_liquido);
             } else {
                 document.getElementById('parcelas').value = 'Não informado';
+            }
+
+            if (document.getElementById('btn_documento')) {
+                document.getElementById('btn_documento').focus();
             }
 
             $('#lista_parcelas').modal('hide'); //Fechar modal se estiver aberto
@@ -1532,6 +1595,9 @@
             document.getElementById('op_nf_serie').value = operacao.nf.op_nf_serie;
             document.getElementById('op_nf_numero').value = operacao.nf.op_nf_numero;
             document.getElementById('op_nf_chave').value = operacao.nf.op_nf_chave;
+
+            document.getElementById('op_nf_tipo').focus();
+
             //Abrir modal
             modal_sobre_modal_open('lista_dctos_fiscais');
         }
@@ -1579,6 +1645,18 @@
                 //gravando informação que operação é com nf
                 operacao.operacao.op_comNF = document.getElementById('op_nf_tipo').value;
 
+                if (document.getElementById('op_obs')) {
+                    if (document.getElementById('documento').value != 'Não informado') {
+                        let t = 'Ref.: ' + $('#op_nf_tipo :selected').text() + ' Número: ' + operacao.nf.op_nf_numero + ' Série: ' + operacao.nf.op_nf_serie + ".";
+                        if (!document.getElementById('op_obs').value.includes(t)) {
+                            document.getElementById('op_obs').value += t;
+                        } 
+                    }                    
+                }
+
+                document.getElementById('op_obs').focus();
+
+
                 $('#lista_dctos_fiscais').modal('hide');
             }
         }
@@ -1606,6 +1684,17 @@
 
             //gravando informação que operação é sem nf
             operacao.operacao.op_comNF = 0;
+
+            if (document.getElementById('op_obs')) {
+                if (document.getElementById('documento').value != 'Não informado') {
+                    let t = 'Ref.: ' + $('#op_nf_tipo :selected').text() + ' Número: ' + operacao.nf.op_nf_numero + ' Série: ' + operacao.nf.op_nf_serie + ".";
+                    if (!document.getElementById('op_obs').value.includes(t)) {
+                        document.getElementById('op_obs').value = '';
+                    }
+                }
+            }
+
+            document.getElementById('op_obs').focus();
 
             $('#lista_dctos_fiscais').modal('hide');
             $('#modal_delete_dcto').modal('hide');

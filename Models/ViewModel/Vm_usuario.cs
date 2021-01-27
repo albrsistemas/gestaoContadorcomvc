@@ -32,7 +32,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         [Display(Name = "Login")]
         [Required(ErrorMessage = "É obrigatório definir um usuário.")]
         [StringLength(40, MinimumLength = 4, ErrorMessage = "Mínimo de 4 caracteres e máximo de 40")]
-        [Remote("userExiste", "Conta", ErrorMessage = "Usuário já existe")]
+        [Remote("userExiste", "Conta", AdditionalFields = "usuario_id", ErrorMessage = "Usuário já existe")]
         public string usuario_user { get; set; }
 
         [Required(ErrorMessage = "É obrigatório definir uma senha.")]
@@ -49,7 +49,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         [Display(Name = "E-mail")]
         [Required(ErrorMessage = "O e-mail é obrigatório.")]
         [DataType(DataType.EmailAddress, ErrorMessage = "E-mail em formato inválido.")]
-        [Remote("emailExiste", "Usuario", ErrorMessage = "E-mail já cadastrado")]
+        [Remote("emailExiste", "Usuario", AdditionalFields = "usuario_id", ErrorMessage = "E-mail já cadastrado")]
         public string usuario_email { get; set; }
 
         public string Role { get; set; }

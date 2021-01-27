@@ -30,7 +30,7 @@
 <h2>Alterar Conta Corrente</h2>
 <hr class="hrLine" />
 
-<form asp-controller="ContaCorrente" asp-action="Edit">
+<form asp-controller="ContaCorrente" asp-action="Edit" id="form">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <div class="col-12 col-md-8">
@@ -76,7 +76,8 @@
 
     <br />
 
-    <button type="submit" class="btn btn-info">Gravar</button>
+    <button type="submit" class="btn btn-info" id="sub_form" onclick="blockSubmit(this.id,'form')">Gravar</button>
     <a class="btn btn-secondary" asp-controller="ContaCorrente" asp-action="Index">Cancelar</a>
+    <br /><span class="text-info" id="msg_blockSubmit"></span>
 
 </form>

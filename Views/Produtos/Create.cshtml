@@ -30,7 +30,7 @@
 <h2>Novo Produto</h2>
 <hr class="hrLine" />
 
-<form asp-controller="Produtos" asp-action="Create">
+<form asp-controller="Produtos" asp-action="Create" id="form">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <fieldset>
         <legend>Dados gerais</legend>
@@ -105,14 +105,14 @@
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="produtos_estoque_min" class="control-label"></label>
-                    <input type="number" asp-for="produtos_estoque_min" class="form-control" step="0.000001" value="0.00"/>
+                    <input type="number" asp-for="produtos_estoque_min" class="form-control" step="0.000001" value="0.00" />
                     <span asp-validation-for="produtos_estoque_min" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="produtos_estoque_max" class="control-label"></label>
-                    <input type="number" asp-for="produtos_estoque_max" class="form-control" step="0.000001" value="0.00"/>
+                    <input type="number" asp-for="produtos_estoque_max" class="form-control" step="0.000001" value="0.00" />
                     <span asp-validation-for="produtos_estoque_max" class="text-danger"></span>
                 </div>
             </div>
@@ -121,21 +121,21 @@
             <div class="col-6 col-md-4">
                 <div class="form-group">
                     <label asp-for="produtos_estoque_qtd_inicial" class="control-label"></label>
-                    <input type="number" asp-for="produtos_estoque_qtd_inicial" class="form-control" step="0.000001" value="0.00"/>
+                    <input type="number" asp-for="produtos_estoque_qtd_inicial" class="form-control" step="0.000001" value="0.00" />
                     <span asp-validation-for="produtos_estoque_qtd_inicial" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-6 col-md-4">
                 <div class="form-group">
                     <label asp-for="produtos_estoque_preco_compra" class="control-label"></label>
-                    <input type="number" asp-for="produtos_estoque_preco_compra" class="form-control" step="0.000001" value="0.00"/>
+                    <input type="number" asp-for="produtos_estoque_preco_compra" class="form-control" step="0.000001" value="0.00" />
                     <span asp-validation-for="produtos_estoque_preco_compra" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-6 col-md-4">
                 <div class="form-group">
                     <label asp-for="produtos_estoque_custo_compra" class="control-label"></label>
-                    <input type="number" asp-for="produtos_estoque_custo_compra" class="form-control" step="0.000001" value="0.00"/>
+                    <input type="number" asp-for="produtos_estoque_custo_compra" class="form-control" step="0.000001" value="0.00" />
                     <span asp-validation-for="produtos_estoque_custo_compra" class="text-danger"></span>
                 </div>
             </div>
@@ -147,7 +147,7 @@
             <div class="col-6 col-md-4">
                 <div class="form-group">
                     <label asp-for="produtos_origem" class="control-label"></label>
-                    <select asp-items="@ViewBag.origem" value="@TempData["produtos_origem"]" id="produtos_origem" name="produtos_origem" class="form-control"></select>                    
+                    <select asp-items="@ViewBag.origem" value="@TempData["produtos_origem"]" id="produtos_origem" name="produtos_origem" class="form-control"></select>
                     <span asp-validation-for="produtos_origem" class="text-danger"></span>
                 </div>
             </div>
@@ -161,7 +161,7 @@
             <div class="col-6 col-md-4">
                 <div class="form-group">
                     <label asp-for="produtos_cest" class="control-label"></label>
-                    <input asp-for="produtos_cest" class="form-control" onkeyup="mascaraCEST(this.id, this.value)" placeholder="00.000.00"/>
+                    <input asp-for="produtos_cest" class="form-control" onkeyup="mascaraCEST(this.id, this.value)" placeholder="00.000.00" />
                     <span asp-validation-for="produtos_cest" class="text-danger"></span>
                 </div>
             </div>
@@ -177,7 +177,7 @@
             <div class="col-12 col-md-6">
                 <div class="form-group">
                     <label asp-for="produtos_perc_tributos" class="control-label"></label>
-                    <input type="number" asp-for="produtos_perc_tributos" class="form-control" step="0.000001" value="0.00"/>
+                    <input type="number" asp-for="produtos_perc_tributos" class="form-control" step="0.000001" value="0.00" />
                     <span asp-validation-for="produtos_perc_tributos" class="text-danger"></span>
                 </div>
             </div>
@@ -198,7 +198,8 @@
 
     <br />
 
-    <button type="submit" class="btn btn-info">Gravar</button>
+    <button type="submit" class="btn btn-info" id="sub_form" onclick="blockSubmit(this.id,'form')">Gravar</button>
     <a class="btn btn-secondary" asp-controller="Produtos" asp-action="Index">Cancelar</a>
+    <br /><span class="text-info" id="msg_blockSubmit"></span>
 
 </form>

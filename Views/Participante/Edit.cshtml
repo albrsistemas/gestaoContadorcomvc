@@ -30,7 +30,7 @@
 <h2>Novo Cliente/Fornecedor</h2>
 <hr class="hrLine" />
 
-<form asp-controller="Participante" asp-action="Edit">
+<form asp-controller="Participante" asp-action="Edit" id="form">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <fieldset>
         <legend>Dados cadastrais</legend>
@@ -235,8 +235,9 @@
 
     <br />
 
-    <button type="submit" class="btn btn-info">Gravar</button>
+    <button type="submit" class="btn btn-info" id="sub_participante_edit" onclick="blockSubmit(this.id,'form')">Gravar</button>
     <a class="btn btn-secondary" asp-controller="Participante" asp-action="Index">Cancelar</a>
+    <br /><span class="text-info" id="msg_blockSubmit"></span>
 
 </form>
 

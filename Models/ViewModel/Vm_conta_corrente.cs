@@ -11,6 +11,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public int ccorrente_id { get; set; }
 
         [Display(Name = "Nome")]
+        [StringLength(30, MinimumLength = 2, ErrorMessage = "Mínimo de 2 caracteres e máximo de 30")]
         public string ccorrente_nome { get; set; }
 
         [Display(Name = "Tipo")]
@@ -19,7 +20,8 @@ namespace gestaoContadorcomvc.Models.ViewModel
         [Display(Name = "Saldo de Abertura")]
         public Decimal ccorrente_saldo_abertura { get; set; }
 
-        [Display(Name = "Máscara Contábil")]
+        [Display(Name = "Conta Contábil")]
+        [StringLength(30, ErrorMessage = "Máximo de 30 caracteres")]
         public string ccorrente_masc_contabil { get; set; }
         public int ccorrente_conta_id { get; set; }
         public DateTime ccorrente_dataCriacao { get; set; }

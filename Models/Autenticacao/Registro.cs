@@ -109,14 +109,15 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         }
 
         //Verificar existencia de usuario para validação formulário de registro
-        public bool userExiste(string usuario_user)
+        public bool userExiste(string usuario_user, int usuario_id)
         {
             bool localizado = false;
             try
             {
                 conn.Open();
-                MySqlCommand comando = new MySqlCommand("select usuario_user from usuario where usuario_user = md5(@user)", conn);
+                MySqlCommand comando = new MySqlCommand("select usuario_user from usuario where usuario_user = md5(@user) and usuario_id <> @usuario_id", conn);
                 comando.Parameters.AddWithValue("@user", usuario_user);
+                comando.Parameters.AddWithValue("@usuario_id", usuario_id);
                 var leitor = comando.ExecuteReader();
                 localizado = leitor.HasRows;
                 conn.Clone();
@@ -137,14 +138,15 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         }
 
         //Verificar existencia de e-mail de usuario para validação formulário de registro
-        public bool emailExiste(string conta_email)
+        public bool emailExiste(string conta_email, int usuario_id)
         {
             bool localizado = false;
             try
             {
                 conn.Open();
-                MySqlCommand comando = new MySqlCommand("select usuario_email from usuario where usuario_email = @email", conn);
+                MySqlCommand comando = new MySqlCommand("select usuario_email from usuario where usuario_email = @email and usuario_id <> @usuario_id", conn);
                 comando.Parameters.AddWithValue("@email", conta_email);
+                comando.Parameters.AddWithValue("@usuario_id", usuario_id);
                 var leitor = comando.ExecuteReader();
                    localizado = leitor.HasRows;
                 conn.Clone();

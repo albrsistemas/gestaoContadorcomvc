@@ -8,7 +8,7 @@
             <div class="modal-header">
                 <h4 class="modal-title">Novo Grupo</h4>
             </div>
-            <form asp-controller="Categoria" asp-action="CreateGrupoCategoria">
+            <form asp-controller="Categoria" asp-action="CreateGrupoCategoria" id="form">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
@@ -36,7 +36,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-info">Gravar</button>
+                    <button type="submit" class="btn btn-info" id="sub_form" onclick="blockSubmit(this.id,'form')">Gravar</button>
+                    <br /><span class="text-info" id="msg_blockSubmit"></span>
                 </div>
             </form>
         </div><!-- /.modal-content -->
