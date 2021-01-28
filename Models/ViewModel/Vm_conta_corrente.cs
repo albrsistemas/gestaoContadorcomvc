@@ -11,6 +11,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public int ccorrente_id { get; set; }
 
         [Display(Name = "Nome")]
+        [Required(ErrorMessage = "O nome é obrigatório.")]
         [StringLength(30, MinimumLength = 2, ErrorMessage = "Mínimo de 2 caracteres e máximo de 30")]
         public string ccorrente_nome { get; set; }
 

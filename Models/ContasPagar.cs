@@ -27,6 +27,9 @@ namespace gestaoContadorcomvc.Models
         public int fp_id { get; set; }
         public string tipo { get; set; }
         public string tipo_op { get; set; }
+        public string memorando { get; set; }
+        public string dcto { get; set; }
+        public string serie { get; set; }
 
 
         /*--------------------------*/
@@ -134,7 +137,10 @@ namespace gestaoContadorcomvc.Models
                         conta.referencia = leitor["referencia"].ToString();                       
                         conta.formaPgto = leitor["formaPgto"].ToString();                       
                         conta.categoria_nome = leitor["categoria_nome"].ToString();                       
-                        conta.tipo_op = leitor["tipo_op"].ToString();                       
+                        conta.tipo_op = leitor["tipo_op"].ToString();
+                        conta.memorando = leitor["memorando"].ToString();
+                        conta.dcto = leitor["dcto"].ToString();
+                        conta.serie = leitor["serie"].ToString();
 
                         if (DBNull.Value != leitor["valorOriginal"])
                         {

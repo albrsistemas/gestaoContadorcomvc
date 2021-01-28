@@ -26,6 +26,7 @@ namespace gestaoContadorcomvc.Models
         public string fc_nome_cartao { get; set; }
         public string fc_matriz_parcelas_text { get; set; }
         public int fc_forma_pgto_boleto_fatura { get; set; }
+        public string fc_op_obs { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -68,7 +69,7 @@ namespace gestaoContadorcomvc.Models
             {
                 DateTime today = DateTime.Today;
 
-                comando.CommandText = "call pr_fechamentoCartao (@conta_id, @hoje, @fc_forma_pagamento, @fc_qtd_parcelas, @fc_valor_total, @fc_tarifas_bancarias, @fc_seguro_cartao, @fc_abatimentos_cartao, @fc_acrescimos_cartao, @fc_referencia, @fc_vencimento, @fc_nome_cartao, @fc_matriz_parcelas, @fc_forma_pgto_boleto_fatura, @fechamento_existe, @fechamento_existe_op, @fechamento_existe_fc_id);";
+                comando.CommandText = "call pr_fechamentoCartao (@conta_id, @hoje, @fc_forma_pagamento, @fc_qtd_parcelas, @fc_valor_total, @fc_tarifas_bancarias, @fc_seguro_cartao, @fc_abatimentos_cartao, @fc_acrescimos_cartao, @fc_referencia, @fc_vencimento, @fc_nome_cartao, @fc_matriz_parcelas, @fc_forma_pgto_boleto_fatura, @fechamento_existe, @fechamento_existe_op, @fechamento_existe_fc_id, @fc_op_obs);";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@fechamento_existe", fechamento_existe);
                 comando.Parameters.AddWithValue("@fechamento_existe_op", fechamento_existe_op);
@@ -86,6 +87,7 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@fc_nome_cartao", fc.fc_nome_cartao);
                 comando.Parameters.AddWithValue("@fc_matriz_parcelas", fc.fc_matriz_parcelas_text);                
                 comando.Parameters.AddWithValue("@fc_forma_pgto_boleto_fatura", fc.fc_forma_pgto_boleto_fatura);                
+                comando.Parameters.AddWithValue("@fc_op_obs", fc.fc_op_obs);                
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 

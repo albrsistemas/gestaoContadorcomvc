@@ -137,7 +137,15 @@ namespace gestaoContadorcomvc.Controllers
                 user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
                 Operacao operacao = new Operacao();
-                retorno = operacao.alterarOperacao(user.usuario_id, user.usuario_conta_id, op);
+
+                if (operacao.baixasPorOperacao(id) > 0)
+                {
+                    retorno = "Erro. Operação possui baixas e não pode ser alterada. Primeiro deve-se excluir as baixas no movimento de conta corrente!";
+                }
+                else
+                {
+                    retorno = operacao.alterarOperacao(user.usuario_id, user.usuario_conta_id, op);
+                }                
 
                 return Json(JsonConvert.SerializeObject(retorno));
             }

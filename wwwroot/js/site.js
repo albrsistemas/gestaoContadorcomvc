@@ -21,6 +21,7 @@ let fechamento_cartao = {
     fc_matriz_parcelas: [],
     fc_matriz_parcelas_text: '',
     fc_forma_pgto_boleto_fatura: 0,
+    fc_op_obs: '',
 };
 var operacao = {
     operacao: {
@@ -3328,7 +3329,8 @@ function gravar_fatura_cartao(contexto) {
             fechamento_cartao.fc_referencia = document.getElementById('modal_fc_referencia').value;
             fechamento_cartao.fc_vencimento = document.getElementById('modal_fc_vencimento').value;
             fechamento_cartao.fc_forma_pgto_boleto_fatura = document.getElementById('modal_fc_forma_pgto_boleto_fatura').value;
-            fechamento_cartao.fc_valor_total = fechamento_cartao.fc_valor_total.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });            
+            fechamento_cartao.fc_valor_total = fechamento_cartao.fc_valor_total.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+            fechamento_cartao.fc_op_obs = document.getElementById('op_obs').value;
 
             let matriz = "";
 
@@ -3353,6 +3355,12 @@ function gravar_fatura_cartao(contexto) {
                 valida = false;
                 alert('Referência inválida');
                 return; 
+            }
+
+            if (fechamento_cartao.fc_op_obs.length < 4) {
+                valida = false;
+                alert('Obrigatório informar uma memorando com no mínimo 4 caracteres');
+                return;
             }
 
             if (fechamento_cartao.fc_vencimento.length < 10 || fechamento_cartao.fc_vencimento == "" || fechamento_cartao.fc_vencimento == null) {
@@ -3471,9 +3479,12 @@ function monthPicker(id, contexto, vlr) {
                 if (results != null) {
                     document.getElementById("retorno_fc_existe").innerHTML = "Já existe uma fatura para este cartão nesta competência. As parcelas selecionadas serão acrescentadas a esta fatura!";
                     document.getElementById("retorno_fc_existe").style.display = 'block';
+                    document.getElementById("op_obs").innerHTML = '';
+                    document.getElementById("obs_fatura").style.display = 'none';
                 } else {
                     document.getElementById("retorno_fc_existe").innerHTML = "";
                     document.getElementById("retorno_fc_existe").style.display = 'none';
+                    document.getElementById("obs_fatura").style.display = 'block';
                 }
 
                 document.getElementById('gravar_fatura').removeAttribute("disabled");
@@ -4301,12 +4312,25 @@ function change_cf_valor_operacao_CFR(id, vlr) {
     decimal('cf_valor_parcela_liquida', vlr.replaceAll('.', ''), '2', false);    
 }
 
-function blockSubmit(id, form) {
-    document.getElementById(id).setAttribute("disabled", "disabled");
-    document.getElementById('msg_blockSubmit').innerHTML = 'Enviando informarções, aguarde...';
-    let f = document.getElementById(form);
-    f.submit();
+function blockSubmit(id, form) {        
+    if ($("form").valid()) {
+        let f = document.getElementById(form);
+        document.getElementById(id).setAttribute("disabled", "disabled");
+        document.getElementById('msg_blockSubmit').innerHTML = 'Enviando informarções, aguarde...';
+        f.submit();
+    }
 }
+
+//Input pesquisa tabela
+$(document).ready(function () {
+    $("#myInput").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#myTable tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+})
+
 
 
 

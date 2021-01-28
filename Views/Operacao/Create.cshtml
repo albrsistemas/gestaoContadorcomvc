@@ -87,1139 +87,1141 @@
 
 <h2>Operação</h2>
 <hr class="hrLine" />
-<form asp-controller="Operacao" asp-action="Create"></form> <!--Apenas para geração do token-->
-<div class="row">
-    <div class="col-6">
-        <div class="form-group">
-            <label asp-for="operacao.op_data" class="control-label">Data Operação</label>
-            <input type="text" asp-for="operacao.op_data" autofocus id="op_data" autocomplete="off" class="form-control form-control-sm form-control form-control-sm-sm datepicker" placeholder="Data Operação" />
-            <span asp-validation-for="operacao.op_data" class="text-danger"></span>
+<form asp-controller="Operacao" asp-action="Create">
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="operacao.op_data" class="control-label">Data Operação</label>
+                <input type="text" asp-for="operacao.op_data" autofocus id="op_data" autocomplete="off" class="form-control form-control-sm form-control form-control-sm-sm datepicker" placeholder="Data Operação" />
+                <span asp-validation-for="operacao.op_data" class="text-danger"></span>
+            </div>
         </div>
-    </div>
-    <div class="col-6">
-        <div class="form-group">
-            <label asp-for="operacao.op_tipo" class="control-label">Tipo Operação</label>
-            <select asp-items="@ViewBag.operacoes" value="@TempData["operacao.op_tipo"]" id="op_tipo" name="operacao.op_tipo" class="form-control form-control-sm" style="width:100%" onchange="change_op_tipo(this.id, this.value,'confirmar')"></select>
-            <span asp-validation-for="operacao.op_tipo" class="text-danger"></span>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-12">
-        <label class="control-label">Participante</label>
-        <div class="input-group mb-3">
-            <input asp-for="participante.op_part_nome" disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="participante" id="participante" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="operacao_participante('open')">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                    </svg>
-                </button>
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="operacao.op_tipo" class="control-label">Tipo Operação</label>
+                <select asp-items="@ViewBag.operacoes" value="@TempData["operacao.op_tipo"]" id="op_tipo" name="operacao.op_tipo" class="form-control form-control-sm" style="width:100%" onchange="change_op_tipo(this.id, this.value,'confirmar')"></select>
+                <span asp-validation-for="operacao.op_tipo" class="text-danger"></span>
             </div>
         </div>
     </div>
-</div>
-<input type="hidden" asp-for="participante.op_part_participante_id" id="op_part_participante_id" class="form-control form-control-sm" /> <!--ID do participante-->
-<div class="row">
-    <div class="col-12">
-        <div class="form-group">
-            <label asp-for="operacao.op_categoria_id" class="control-label">Categoria</label>
-            <select asp-items="@ViewBag.categoria" value="@TempData["operacao.op_categoria_id"]" id="op_categoria_id" name="operacao.op_categoria_id" class="form-control form-control-sm form-control form-control-sm-sm js_example_basic_single" style="width:100%"></select>
-            <span class="text-info" id="text_categorias"></span><br />
-            <span asp-validation-for="operacao.op_categoria_id" class="text-danger"></span>
-        </div>
-    </div>
-</div>
-<!--Inclusão de itens-->
-<div class="row" id="itens_operacao" style="display:none">
-    <div class="col-12">
-        <label class="control-label">Itens</label>
-        <div class="input-group mb-3">
-            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="itens" id="itens" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="operacao_itens('open')">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                    </svg>
-                </button>
+    <div class="row">
+        <div class="col-12">
+            <label class="control-label">Participante</label>
+            <div class="input-group mb-3">
+                <input asp-for="participante.op_part_nome" disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="participante" id="participante" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_participante" onclick="operacao_participante('open')">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!--Inclusão de informações sobre serviços-->
-<div class="row" id="servico_operacao" style="display:none">
-    <div class="col-12">
-        <label class="control-label">Serviços</label>
-        <div class="input-group mb-3">
-            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="servicos" id="servicos" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="operacao_servico('open')">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row" id="outros_operacao" style="display:block">
-    <div class="col-12">
-        <div class="form-group">
-            <label asp-for="totais.op_totais_valor_outras_operacoes" class="control-label">Valor Operação</label>
-            <input asp-for="totais.op_totais_valor_outras_operacoes" id="op_totais_valor_outras_operacoes" class="form-control form-control-sm" onchange="valorOutrasOperacoes(this.id, this.value)" />
-            <span asp-validation-for="totais.op_totais_valor_outras_operacoes" class="text-danger"></span>
-        </div>
-    </div>
-</div>
-<!--Outros Valores e Retenções-->
-<div class="row">
-    <div class="col-12">
-        <label class="control-label">Retenções</label>
-        <div class="input-group mb-3">
-            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="retencoes" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_retencoes" onclick="operacao_retencoes('open')">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--Total Operação-->
-<div class="row">
-    <div class="col-12">
-        <label class="control-label">Total da Operação</label>
-        <div class="input-group mb-3">
-            <input disabled type="text" class="form-control form-control-sm" id="totais" aria-label="Recipient's username" aria-describedby="button-addon2" style="font-size:25px;font-weight:bold;text-align:center;">
-            <div class="input-group-append">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="operacao_totais('open')">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calculator" viewBox="0 0 16 16">
-                        <path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z" />
-                        <path d="M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-2zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-4z" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--Parcela e Dcto Fiscal-->
-<div class="row">
-    <div class="col-12 col-md-6">
-        <label class="control-label">Parcelas</label>
-        <div class="input-group mb-3">
-            <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="parcelas" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_parcelas" onclick="operacao_parcelas('open')">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-md-6">
-        <label class="control-label">Documento Fiscal/Contábil</label>
-        <div class="input-group mb-3">
-            <input disabled type="text" class="form-control form-control-sm" id="documento" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_documento" onclick="operacao_documento('open')">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<fieldset>
-    <legend>Memorando</legend>
+    <input type="hidden" asp-for="participante.op_part_participante_id" id="op_part_participante_id" class="form-control form-control-sm" /> <!--ID do participante-->
     <div class="row">
         <div class="col-12">
             <div class="form-group">
-                <textarea asp-for="operacao.op_obs" id="op_obs" rows="3" class="form-control form-control-sm" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_obs')"></textarea>
-                <span class="text-info" id="msg_obs"></span>
+                <label asp-for="operacao.op_categoria_id" class="control-label">Categoria</label>
+                <select asp-items="@ViewBag.categoria" value="@TempData["operacao.op_categoria_id"]" id="op_categoria_id" name="operacao.op_categoria_id" class="form-control form-control-sm form-control form-control-sm-sm js_example_basic_single" style="width:100%"></select>
+                <span class="text-info" id="text_categorias"></span><br />
+                <span asp-validation-for="operacao.op_categoria_id" class="text-danger"></span>
             </div>
         </div>
     </div>
-</fieldset>
-<div class="row">
-    <div class="col-12" id="op_valid">
-
+    <!--Inclusão de itens-->
+    <div class="row" id="itens_operacao" style="display:none">
+        <div class="col-12">
+            <label class="control-label">Itens</label>
+            <div class="input-group mb-3">
+                <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="itens" id="itens" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_itens" onclick="operacao_itens('open')">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<button type="button" class="btn btn-info" id="sub" onclick="gravar_op('Create')">Gravar</button>
-<a class="btn btn-secondary" asp-controller="Operacao" asp-action="Index">Cancelar</a>
-
-<div class="displey_validacao">
+    <!--Inclusão de informações sobre serviços-->
+    <div class="row" id="servico_operacao" style="display:none">
+        <div class="col-12">
+            <label class="control-label">Serviços</label>
+            <div class="input-group mb-3">
+                <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" name="servicos" id="servicos" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_servicos" onclick="operacao_servico('open')">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="outros_operacao" style="display:block">
+        <div class="col-12">
+            <div class="form-group">
+                <label asp-for="totais.op_totais_valor_outras_operacoes" class="control-label">Valor Operação</label>
+                <input asp-for="totais.op_totais_valor_outras_operacoes" id="op_totais_valor_outras_operacoes" class="form-control form-control-sm" onchange="valorOutrasOperacoes(this.id, this.value)" />
+                <span asp-validation-for="totais.op_totais_valor_outras_operacoes" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <!--Outros Valores e Retenções-->
     <div class="row">
         <div class="col-12">
-            <div class="msg_valid" id="msg_valid">
-
+            <label class="control-label">Retenções</label>
+            <div class="input-group mb-3">
+                <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="retencoes" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_retencoes" onclick="operacao_retencoes('open')">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<!--MODAIS-->
-<div class="modal fade" id="m_itens" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Nova Operação</h5>
-            </div>
-            <div class="modal-body">
-                <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="modal_itemEspecifico()">
-                    Item Específico
-                </button>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-info">Gravar</button>
+    <!--Total Operação-->
+    <div class="row">
+        <div class="col-12">
+            <label class="control-label">Total da Operação</label>
+            <div class="input-group mb-3">
+                <input disabled type="text" class="form-control form-control-sm" id="totais" aria-label="Recipient's username" aria-describedby="button-addon2" style="font-size:25px;font-weight:bold;text-align:center;">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_totais" onclick="operacao_totais('open')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calculator" viewBox="0 0 16 16">
+                            <path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z" />
+                            <path d="M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-2zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-4z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<!--Dados do participante-->
-<div class="modal fade" id="modal_participante" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Participante</h5>
+    <!--Parcela e Dcto Fiscal-->
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <label class="control-label">Parcelas</label>
+            <div class="input-group mb-3">
+                <input disabled type="text" class="form-control form-control-sm form-control form-control-sm-sm" id="parcelas" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_parcelas" onclick="operacao_parcelas('open')">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label asp-for="participante.op_part_nome" class="control-label"></label>
-                            <input asp-for="participante.op_part_nome" id="nome" class="form-control form-control-sm" onkeyup="consultaParticipante(this.id)" />
-                            <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>
-                            <span class="text-info" id="msg_consuta_participante"></span>
-                        </div>
-                    </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <label class="control-label">Documento Fiscal/Contábil</label>
+            <div class="input-group mb-3">
+                <input disabled type="text" class="form-control form-control-sm" id="documento" value="Não informado" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_documento" onclick="operacao_documento('open')">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                        </svg>
+                    </button>
                 </div>
-                <div class="row">
-                    <div class="col-12 col-md-4">
-                        <div class="form-group">
-                            <label asp-for="participante.op_part_tipo" class="control-label"></label>
-                            <select readonly="readonly" asp-items="@ViewBag.tipoPessoa" value="@TempData["op_part_tipo"]" id="participante_tipoPessoa" name="op_part_tipo" onchange="tipoPessoa(this.value)" class="form-control form-control-sm" style="background:#eee;pointer-events: none;pointer-events:none;touch-action:none;"></select> <!--ID alterado para 'participante_tipoPessoa' em razão da função 'mascaraCNPJ_CPF' que usa a informação deste campo-->
-                            <span asp-validation-for="participante.op_part_tipo" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-8">
-                        <div class="form-group">
-                            <label asp-for="participante.op_part_cnpj_cpf" class="control-label" id="label_cnpj_cpf">CPF</label>
-                            <input asp-for="participante.op_part_cnpj_cpf" id="op_part_cnpj_cpf" class="form-control form-control-sm" onkeyup="mascaraCNPJ_cpf(this.id, this.value)" readonly="readonly" />
-                            <span asp-validation-for="participante.op_part_cnpj_cpf" class="text-danger"></span>
-                        </div>
-                    </div>
+            </div>
+        </div>
+    </div>
+    <fieldset>
+        <legend>Memorando</legend>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <textarea asp-for="operacao.op_obs" id="op_obs" rows="3" class="form-control form-control-sm" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_obs')"></textarea>
+                    <span class="text-info" id="msg_obs"></span>
                 </div>
-                <fieldset>
-                    <legend>Endereço</legend>
+            </div>
+        </div>
+    </fieldset>
+    <div class="row">
+        <div class="col-12" id="op_valid">
+
+        </div>
+    </div>
+    <button type="button" class="btn btn-info" id="sub" onclick="gravar_op('Create')">Gravar</button>
+    <a class="btn btn-secondary" asp-controller="Operacao" asp-action="Index">Cancelar</a>
+
+    <div class="displey_validacao">
+        <div class="row">
+            <div class="col-12">
+                <div class="msg_valid" id="msg_valid">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--MODAIS-->
+    <div class="modal fade" id="m_itens" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Nova Operação</h5>
+                </div>
+                <div class="modal-body">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_item_especifico" onclick="modal_itemEspecifico()">
+                        Item Específico
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-info">Gravar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Dados do participante-->
+    <div class="modal fade" id="modal_participante" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Participante</h5>
+                </div>
+                <div class="modal-body">
                     <div class="row">
-                        <div class="col-12 col-md-2">
+                        <div class="col-12">
                             <div class="form-group">
-                                <label asp-for="participante.op_part_cep" class="control-label"></label>
-                                <input asp-for="participante.op_part_cep" id="cep" class="form-control form-control-sm" />
-                                <span asp-validation-for="participante.op_part_cep" class="text-danger"></span>
+                                <label asp-for="participante.op_part_nome" class="control-label"></label>
+                                <input type="text" asp-for="participante.op_part_nome" id="nome" class="form-control form-control-sm" onkeyup="consultaParticipante(this.id)" />
+                                <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>
+                                <span class="text-info" id="msg_consuta_participante"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="participante.op_part_tipo" class="control-label"></label>
+                                <select readonly="readonly" asp-items="@ViewBag.tipoPessoa" value="@TempData["op_part_tipo"]" id="participante_tipoPessoa" name="op_part_tipo" onchange="tipoPessoa(this.value)" class="form-control form-control-sm" style="background:#eee;pointer-events: none;pointer-events:none;touch-action:none;"></select> <!--ID alterado para 'participante_tipoPessoa' em razão da função 'mascaraCNPJ_CPF' que usa a informação deste campo-->
+                                <span asp-validation-for="participante.op_part_tipo" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-12 col-md-8">
                             <div class="form-group">
-                                <label asp-for="participante.op_part_logradouro" class="control-label"></label>
-                                <input asp-for="participante.op_part_logradouro" class="form-control form-control-sm" id="rua" />
-                                <span asp-validation-for="participante.op_part_logradouro" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-2">
-                            <div class="form-group">
-                                <label asp-for="participante.op_part_numero" class="control-label"></label>
-                                <input asp-for="participante.op_part_numero" id="numero" class="form-control form-control-sm" />
-                                <span asp-validation-for="participante.op_part_numero" class="text-danger"></span>
+                                <label asp-for="participante.op_part_cnpj_cpf" class="control-label" id="label_cnpj_cpf">CPF</label>
+                                <input asp-for="participante.op_part_cnpj_cpf" id="op_part_cnpj_cpf" class="form-control form-control-sm" onkeyup="mascaraCNPJ_cpf(this.id, this.value)" readonly="readonly" />
+                                <span asp-validation-for="participante.op_part_cnpj_cpf" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="form-group">
-                                <label asp-for="participante.op_part_complemento" class="control-label"></label>
-                                <input asp-for="participante.op_part_complemento" id="complemento" class="form-control form-control-sm" />
-                                <span asp-validation-for="participante.op_part_complemento" class="text-danger"></span>
+                    <fieldset>
+                        <legend>Endereço</legend>
+                        <div class="row">
+                            <div class="col-12 col-md-2">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_part_cep" class="control-label"></label>
+                                    <input asp-for="participante.op_part_cep" id="cep" class="form-control form-control-sm" />
+                                    <span asp-validation-for="participante.op_part_cep" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_part_logradouro" class="control-label"></label>
+                                    <input asp-for="participante.op_part_logradouro" class="form-control form-control-sm" id="rua" />
+                                    <span asp-validation-for="participante.op_part_logradouro" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_part_numero" class="control-label"></label>
+                                    <input asp-for="participante.op_part_numero" id="numero" class="form-control form-control-sm" />
+                                    <span asp-validation-for="participante.op_part_numero" class="text-danger"></span>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
-                            <div class="form-group">
-                                <label asp-for="participante.op_part_bairro" class="control-label"></label>
-                                <input asp-for="participante.op_part_bairro" class="form-control form-control-sm" id="bairro" />
-                                <span asp-validation-for="participante.op_part_bairro" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-5">
-                            <div class="form-group">
-                                <label asp-for="participante.op_part_cidade" class="control-label"></label>
-                                <input asp-for="participante.op_part_cidade" class="form-control form-control-sm" id="cidade" />
-                                <span asp-validation-for="participante.op_part_cidade" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-2">
-                            <div class="form-group">
-                                <label asp-for="participante.op_uf_ibge_codigo" class="control-label"></label>
-                                <select asp-items="@ViewBag.ufIbge" value="@TempData["op_uf_ibge_codigo"]" id="uf" name="op_uf_ibge_codigo" class="form-control form-control-sm" onchange="changeUFParticipante(this.id, this.value,'uf')"></select>
-                                <span asp-validation-for="participante.op_uf_ibge_codigo" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-5">
-                            <div class="form-group">
-                                <label asp-for="participante.op_paisesIBGE_codigo" class="control-label"></label>
-                                <select asp-items="@ViewBag.paisesIbge" value="@TempData["op_paisesIBGE_codigo"]" id="op_paisesIBGE_codigo" name="op_paisesIBGE_codigo" class="form-control form-control-sm" onchange="changeUFParticipante(this.id, this.value,'pais')"></select>
-                                <span asp-validation-for="participante.op_paisesIBGE_codigo" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="operacao_participante('delete')">Excluir</button>
-                <button type="button" class="btn btn-info" onclick="operacao_participante('save')">Gravar</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--Dados do item-->
-<div class="modal fade" id="modal_item" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Item</h5>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label asp-for="item.op_item_nome" class="control-label"></label>
-                            <input asp-for="item.op_item_nome" id="op_item_nome" class="form-control form-control-sm" />
-                            <span asp-validation-for="item.op_item_nome" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label asp-for="item.op_item_codigo" class="control-label"></label>
-                            <input asp-for="item.op_item_codigo" id="op_item_codigo" class="form-control form-control-sm" />
-                            <span asp-validation-for="item.op_item_codigo" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label asp-for="item.op_item_cod_fornecedor" class="control-label"></label>
-                            <input asp-for="item.op_item_cod_fornecedor" id="op_item_cod_fornecedor" class="form-control form-control-sm" />
-                            <span asp-validation-for="item.op_item_cod_fornecedor" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 col-md-3">
-                        <div class="form-group">
-                            <label asp-for="item.op_item_unidade" class="control-label"></label>
-                            <input asp-for="item.op_item_unidade" id="op_item_unidade" class="form-control form-control-sm" />
-                            <span asp-validation-for="item.op_item_unidade" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="form-group">
-                            <label asp-for="item.op_item_preco" class="control-label"></label>
-                            <input asp-for="item.op_item_preco" id="op_item_preco" class="form-control form-control-sm" onchange="changeItens(this.id, this.value)" />
-                            <span asp-validation-for="item.op_item_preco" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="form-group">
-                            <label asp-for="item.op_item_qtd" class="control-label"></label>
-                            <input asp-for="item.op_item_qtd" id="op_item_qtd" class="form-control form-control-sm" onchange="changeItens(this.id, this.value)" />
-                            <span asp-validation-for="item.op_item_qtd" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="form-group">
-                            <label class="control-label">Valor Total</label>
-                            <input id="item_valor_total" class="form-control form-control-sm" readonly="readonly" />
-                        </div>
-                    </div>
-                </div>
-                <fieldset>
-                    <legend>Outros Valores</legend>
-                    <div class="row">
-                        <div class="col-6 col-md-3">
-                            <div class="form-group">
-                                <label asp-for="item.op_item_frete" class="control-label"></label>
-                                <input asp-for="item.op_item_frete" id="op_item_frete" class="form-control form-control-sm" onchange="changeItens(this.id, this.value)" />
-                                <span asp-validation-for="item.op_item_frete" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="form-group">
-                                <label asp-for="item.op_item_seguros" class="control-label"></label>
-                                <input asp-for="item.op_item_seguros" id="op_item_seguros" class="form-control form-control-sm" onchange="changeItens(this.id, this.value)" />
-                                <span asp-validation-for="item.op_item_seguros" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="form-group">
-                                <label asp-for="item.op_item_desp_aces" class="control-label"></label>
-                                <input asp-for="item.op_item_desp_aces" id="op_item_desp_aces" class="form-control form-control-sm" onchange="changeItens(this.id, this.value)" />
-                                <span asp-validation-for="item.op_item_desp_aces" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="form-group">
-                                <label asp-for="item.op_item_desconto" class="control-label"></label>
-                                <input asp-for="item.op_item_desconto" id="op_item_desconto" class="form-control form-control-sm" onchange="changeItens(this.id, this.value)" />
-                                <span asp-validation-for="item.op_item_desconto" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <legend>Impostos</legend>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label asp-for="item.op_item_vlr_ipi" class="control-label"></label>
-                                <input asp-for="item.op_item_vlr_ipi" id="op_item_vlr_ipi" class="form-control form-control-sm" onchange="decimal(this.id, this.value, '6')" />
-                                <span asp-validation-for="item.op_item_vlr_ipi" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label asp-for="item.op_item_vlr_icms_st" class="control-label"></label>
-                                <input asp-for="item.op_item_vlr_icms_st" id="op_item_vlr_icms_st" class="form-control form-control-sm" onchange="decimal(this.id, this.value, '6')" />
-                                <span asp-validation-for="item.op_item_vlr_icms_st" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-                <input type="hidden" id="op_item_numero_controle_edicao_item" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info" onclick="operacao_item('save','')">Gravar</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--Remover item-->
-<div class="modal fade" id="modal_item_delete" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Item</h5>
-            </div>
-            <div class="modal-body">
-                <p id="item_excluir">Confirma a exclusão do item?</p>
-                <input type="hidden" id="item_delete" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="operacao_item('delete_confirmado','')">Excluir</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--Remover parcela-->
-<div class="modal fade" id="modal_parcela_delete" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Parcela</h5>
-            </div>
-            <div class="modal-body">
-                <p id="parcela_excluir"></p>
-                <input type="hidden" id="parcela_delete" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="operacao_parcelas('delete_confirmado','')">Excluir</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--Modal p/ inclusão de itens-->
-<div class="modal fade" id="lista_itens" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Lista de Itens</h5>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12 col-md-4">
-                        <div class="form-group">
-                            <div class="form-group">
-                                <label class="control-label linha_itens">Descrição</label>
-                                <input id="prod_descricao" class="form-control form-control-sm linha_itens" onkeyup="consultaProdutos(this.id, 'compra')" />
-                                <span id="msg_pesquisa_item" class="text-info"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <div class="form-group">
-                            <label class="control-label linha_itens">Código</label>
-                            <input id="prod_codigo" class="form-control form-control-sm linha_itens" />
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <div class="form-group">
-                            <label class="control-label linha_itens">Quantidade</label>
-                            <input id="prod_quantidade" class="form-control form-control-sm linha_itens" onblur="ajusta_item(this.id, this.value)" />
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <div class="form-group">
-                            <label class="control-label linha_itens">Valor Unitário</label>
-                            <input id="prod_valor" class="form-control form-control-sm linha_itens" onblur="ajusta_item(this.id, this.value)" />
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <div class="form-group">
-                            <label class="control-label linha_itens">Valor Total</label>
-                            <input id="prod_valorTotal" class="form-control form-control-sm linha_itens" readonly />
-                        </div>
-                    </div>
-                    <input type="hidden" id="produto_id" value="0" />
-                    <input type="hidden" id="unidade" value="" />
-                    <div class="col-12">
-                        <button type="button" class="btn btn-sm btn-info" style="width:100%;" onclick="operacao_itens('save')">Incluir</button>
-                    </div>
-                </div>
-                <hr class="hrLine" />
-                <div class="table-responsive">
-                    <table class="table table-sm">
-                        <caption>Lista de itens</caption>
-                        <thead>
-                            <tr>
-                                <th scope="col">Ações</th>
-                                <th scope="col">Descrição</th>
-                                <th scope="col">Código</th>
-                                <th scope="col">Quantidade</th>
-                                <th scope="col">Valor Unitário</th>
-                                <th scope="col">Valor Total</th>
-                                <th scope="col">NCM</th>
-                                <th scope="col">CEST</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody_itens" style="font-size:13px"></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="operacao_itens('close')">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--Lista Parcelas-->
-<div class="modal fade" id="lista_parcelas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Lista de Parcelas</h5>
-            </div>
-            <div class="modal-body">
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link active" id="parcelas-tab" data-toggle="tab" href="#tab_parcelas" role="tab" aria-controls="tab_parcelas" aria-selected="true">Gerar Parcelas</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="parcela-tab" data-toggle="tab" href="#tab_parcela" role="tab" aria-controls="tab_parcela" aria-selected="false">Parcela</a>
-                    </li>
-                </ul>
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="tab_parcelas" role="tabpanel" aria-labelledby="parcelas-tab">
-                        <div class="row" style="margin-top:15px;">
+                        <div class="row">
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label class="control-label linha_itens">Forma de Pagamento</label>
-                                    <select asp-items="@ViewBag.formaPgto" value="@TempData["op_parcela_fp_id"]" id="op_parcela_fp_id" name="op_parcela_fp_id" class="form-control form-control-sm linha_itens"></select>
+                                    <label asp-for="participante.op_part_complemento" class="control-label"></label>
+                                    <input asp-for="participante.op_part_complemento" id="complemento" class="form-control form-control-sm" />
+                                    <span asp-validation-for="participante.op_part_complemento" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label class="control-label linha_itens">Forma Gerar Parcela</label>
-                                    <select id="parcela_forma_gerar" class="form-control form-control-sm linha_itens" onchange="formaGerarParcelas(this.id, this.value)">
-                                        <option value="1" selected>Dias Vencimento</option>
-                                        @*<option value="2">Data Início/Fim</option>*@
-                                        <option value="3">Número Parcelas</option>
-                                    </select>
+                                    <label asp-for="participante.op_part_bairro" class="control-label"></label>
+                                    <input asp-for="participante.op_part_bairro" class="form-control form-control-sm" id="bairro" />
+                                    <span asp-validation-for="participante.op_part_bairro" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
-                        <div id="diaVencimento" style="display:block">
+                        <div class="row">
+                            <div class="col-12 col-md-5">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_part_cidade" class="control-label"></label>
+                                    <input asp-for="participante.op_part_cidade" class="form-control form-control-sm" id="cidade" />
+                                    <span asp-validation-for="participante.op_part_cidade" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_uf_ibge_codigo" class="control-label"></label>
+                                    <select asp-items="@ViewBag.ufIbge" value="@TempData["op_uf_ibge_codigo"]" id="uf" name="op_uf_ibge_codigo" class="form-control form-control-sm" onchange="changeUFParticipante(this.id, this.value,'uf')"></select>
+                                    <span asp-validation-for="participante.op_uf_ibge_codigo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-5">
+                                <div class="form-group">
+                                    <label asp-for="participante.op_paisesIBGE_codigo" class="control-label"></label>
+                                    <select asp-items="@ViewBag.paisesIbge" value="@TempData["op_paisesIBGE_codigo"]" id="op_paisesIBGE_codigo" name="op_paisesIBGE_codigo" class="form-control form-control-sm" onchange="changeUFParticipante(this.id, this.value,'pais')"></select>
+                                    <span asp-validation-for="participante.op_paisesIBGE_codigo" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="operacao_participante('delete')">Excluir</button>
+                    <button type="button" class="btn btn-info" onclick="operacao_participante('save')">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Dados do item-->
+    <div class="modal fade" id="modal_item" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Item</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_nome" class="control-label"></label>
+                                <input asp-for="item.op_item_nome" id="op_item_nome" class="form-control form-control-sm" />
+                                <span asp-validation-for="item.op_item_nome" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_codigo" class="control-label"></label>
+                                <input asp-for="item.op_item_codigo" id="op_item_codigo" class="form-control form-control-sm" />
+                                <span asp-validation-for="item.op_item_codigo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_cod_fornecedor" class="control-label"></label>
+                                <input asp-for="item.op_item_cod_fornecedor" id="op_item_cod_fornecedor" class="form-control form-control-sm" />
+                                <span asp-validation-for="item.op_item_cod_fornecedor" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-3">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_unidade" class="control-label"></label>
+                                <input asp-for="item.op_item_unidade" id="op_item_unidade" class="form-control form-control-sm" />
+                                <span asp-validation-for="item.op_item_unidade" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_preco" class="control-label"></label>
+                                <input asp-for="item.op_item_preco" id="op_item_preco" class="form-control form-control-sm" onchange="changeItens(this.id, this.value)" />
+                                <span asp-validation-for="item.op_item_preco" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_qtd" class="control-label"></label>
+                                <input asp-for="item.op_item_qtd" id="op_item_qtd" class="form-control form-control-sm" onchange="changeItens(this.id, this.value)" />
+                                <span asp-validation-for="item.op_item_qtd" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">Valor Total</label>
+                                <input id="item_valor_total" class="form-control form-control-sm" readonly="readonly" />
+                            </div>
+                        </div>
+                    </div>
+                    <fieldset>
+                        <legend>Outros Valores</legend>
+                        <div class="row">
+                            <div class="col-6 col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="item.op_item_frete" class="control-label"></label>
+                                    <input asp-for="item.op_item_frete" id="op_item_frete" class="form-control form-control-sm" onchange="changeItens(this.id, this.value)" />
+                                    <span asp-validation-for="item.op_item_frete" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="item.op_item_seguros" class="control-label"></label>
+                                    <input asp-for="item.op_item_seguros" id="op_item_seguros" class="form-control form-control-sm" onchange="changeItens(this.id, this.value)" />
+                                    <span asp-validation-for="item.op_item_seguros" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="item.op_item_desp_aces" class="control-label"></label>
+                                    <input asp-for="item.op_item_desp_aces" id="op_item_desp_aces" class="form-control form-control-sm" onchange="changeItens(this.id, this.value)" />
+                                    <span asp-validation-for="item.op_item_desp_aces" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="item.op_item_desconto" class="control-label"></label>
+                                    <input asp-for="item.op_item_desconto" id="op_item_desconto" class="form-control form-control-sm" onchange="changeItens(this.id, this.value)" />
+                                    <span asp-validation-for="item.op_item_desconto" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Impostos</legend>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="item.op_item_vlr_ipi" class="control-label"></label>
+                                    <input asp-for="item.op_item_vlr_ipi" id="op_item_vlr_ipi" class="form-control form-control-sm" onchange="decimal(this.id, this.value, '6')" />
+                                    <span asp-validation-for="item.op_item_vlr_ipi" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="item.op_item_vlr_icms_st" class="control-label"></label>
+                                    <input asp-for="item.op_item_vlr_icms_st" id="op_item_vlr_icms_st" class="form-control form-control-sm" onchange="decimal(this.id, this.value, '6')" />
+                                    <span asp-validation-for="item.op_item_vlr_icms_st" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <input type="hidden" id="op_item_numero_controle_edicao_item" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" onclick="operacao_item('save','')">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Remover item-->
+    <div class="modal fade" id="modal_item_delete" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Item</h5>
+                </div>
+                <div class="modal-body">
+                    <p id="item_excluir">Confirma a exclusão do item?</p>
+                    <input type="hidden" id="item_delete" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="operacao_item('delete_confirmado','')">Excluir</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Remover parcela-->
+    <div class="modal fade" id="modal_parcela_delete" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Parcela</h5>
+                </div>
+                <div class="modal-body">
+                    <p id="parcela_excluir"></p>
+                    <input type="hidden" id="parcela_delete" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="operacao_parcelas('delete_confirmado','')">Excluir</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Modal p/ inclusão de itens-->
+    <div class="modal fade" id="lista_itens" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Lista de Itens</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label class="control-label linha_itens">Descrição</label>
+                                    <input id="prod_descricao" class="form-control form-control-sm linha_itens" onkeyup="consultaProdutos(this.id, 'compra')" />
+                                    <span id="msg_pesquisa_item" class="text-info"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-2">
+                            <div class="form-group">
+                                <label class="control-label linha_itens">Código</label>
+                                <input id="prod_codigo" class="form-control form-control-sm linha_itens" />
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-2">
+                            <div class="form-group">
+                                <label class="control-label linha_itens">Quantidade</label>
+                                <input id="prod_quantidade" class="form-control form-control-sm linha_itens" onblur="ajusta_item(this.id, this.value)" />
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-2">
+                            <div class="form-group">
+                                <label class="control-label linha_itens">Valor Unitário</label>
+                                <input id="prod_valor" class="form-control form-control-sm linha_itens" onblur="ajusta_item(this.id, this.value)" />
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-2">
+                            <div class="form-group">
+                                <label class="control-label linha_itens">Valor Total</label>
+                                <input id="prod_valorTotal" class="form-control form-control-sm linha_itens" readonly />
+                            </div>
+                        </div>
+                        <input type="hidden" id="produto_id" value="0" />
+                        <input type="hidden" id="unidade" value="" />
+                        <div class="col-12">
+                            <button type="button" class="btn btn-sm btn-info" style="width:100%;" onclick="operacao_itens('save')">Incluir</button>
+                        </div>
+                    </div>
+                    <hr class="hrLine" />
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <caption>Lista de itens</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Ações</th>
+                                    <th scope="col">Descrição</th>
+                                    <th scope="col">Código</th>
+                                    <th scope="col">Quantidade</th>
+                                    <th scope="col">Valor Unitário</th>
+                                    <th scope="col">Valor Total</th>
+                                    <th scope="col">NCM</th>
+                                    <th scope="col">CEST</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody_itens" style="font-size:13px"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="operacao_itens('close')">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Lista Parcelas-->
+    <div class="modal fade" id="lista_parcelas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Lista de Parcelas</h5>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="parcelas-tab" data-toggle="tab" href="#tab_parcelas" role="tab" aria-controls="tab_parcelas" aria-selected="true">Gerar Parcelas</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="parcela-tab" data-toggle="tab" href="#tab_parcela" role="tab" aria-controls="tab_parcela" aria-selected="false">Parcela</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="tab_parcelas" role="tabpanel" aria-labelledby="parcelas-tab">
+                            <div class="row" style="margin-top:15px;">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label linha_itens">Forma de Pagamento</label>
+                                        <select asp-items="@ViewBag.formaPgto" value="@TempData["op_parcela_fp_id"]" id="op_parcela_fp_id" name="op_parcela_fp_id" class="form-control form-control-sm linha_itens"></select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label linha_itens">Forma Gerar Parcela</label>
+                                        <select id="parcela_forma_gerar" class="form-control form-control-sm linha_itens" onchange="formaGerarParcelas(this.id, this.value)">
+                                            <option value="1" selected>Dias Vencimento</option>
+                                            @*<option value="2">Data Início/Fim</option>*@
+                                            <option value="3">Número Parcelas</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="diaVencimento" style="display:block">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="control-label linha_itens">Dias de Vencimento</label>
+                                            <input type="text" id="parcela_dia_vencimento" class="form-control form-control-sm linha_itens" />
+                                            <span class="text-info">Informe a quantidade de dias de vencimento de cada parcela separado por vírgula.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="dataIncio_Fim" style="display:none">
+                                <div class="row">
+                                    <div class="col-6 col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label linha_itens">Data Início</label>
+                                            <input type="text" id="parcela_data_inicio" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label linha_itens">Data Fim</label>
+                                            <input type="text" id="parcela_data_fim" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label linha_itens">Recorrência Parcelas</label>
+                                            <select class="form-control form-control-sm linha_itens" id="recorencia_data_inicio_fim">
+                                                <option value="Unica">Única</option>
+                                                <option value="Semanal">Semanal</option>
+                                                <option value="Quinzenal">Quinzenal</option>
+                                                <option value="Mensal" selected="selected">Mensal</option>
+                                                <option value="Bimestral">Bimestral</option>
+                                                <option value="Trimestral">Trimestral</option>
+                                                <option value="Semestral">Semestral</option>
+                                                <option value="Anual">Anual</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="numeroParcelas" style="display:none">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="control-label linha_itens">Data 1º Parcela</label>
+                                            <input type="text" id="data_primeira_parcela" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="control-label linha_itens">Recorrência Parcelas</label>
+                                            <select class="form-control form-control-sm linha_itens" id="recorencia_n_parcelas">
+                                                <option value="Unica">Única</option>
+                                                <option value="Semanal">Semanal</option>
+                                                <option value="Quinzenal">Quinzenal</option>
+                                                <option value="Mensal" selected="selected">Mensal</option>
+                                                <option value="Bimestral">Bimestral</option>
+                                                <option value="Trimestral">Trimestral</option>
+                                                <option value="Semestral">Semestral</option>
+                                                <option value="Anual">Anual</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="control-label linha_itens">Número Parcelas</label>
+                                            <input type="number" id="parcela_numero" class="form-control form-control-sm linha_itens" onblur="changeNumeroParcelas(this.id, this.value)" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
+                                <div class="col-4 col-md-2">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" id="csrf" class="custom-control-input">
+                                        <label class="custom-control-label" for="csrf">CSRF</label>
+                                    </div>
+                                </div>
+                                <div class="col-8 col-md-10">
+                                    <button type="button" class="btn btn-sm btn-info" style="width:100%;" onclick="operacao_parcelas('gerar')">Gerar Parcelas</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!--tab 'inclur parcela'-->
+                        <div class="tab-pane fade" id="tab_parcela" role="tabpanel" aria-labelledby="parcela-tab">
+                            <div class="row" style="margin-top:15px;">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="control-label linha_itens">Forma de Pagamento</label>
+                                        <select asp-items="@ViewBag.formaPgto" value="@TempData["op_parcela_fp_id_edit"]" id="op_parcela_fp_id_edit" name="op_parcela_fp_id_edit" class="form-control form-control-sm linha_itens"></select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="control-label linha_itens">Vencimento</label>
+                                        <input type="text" id="op_parcela_vencimento" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="control-label linha_itens">Valor Bruto</label>
+                                        <input type="text" id="op_parcela_valor_bruto" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="control-label linha_itens">Valor Líquido</label>
+                                        <input type="text" id="op_parcela_valor" class="form-control form-control-sm linha_itens" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <!--Retenções da parcela-->
+                                <div class="col-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label linha_itens">IRRF</label>
+                                        <input type="text" id="op_parcela_ret_irrf" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label linha_itens">INSS</label>
+                                        <input type="text" id="op_parcela_ret_inss" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label linha_itens">ISSQN</label>
+                                        <input type="text" id="op_parcela_ret_issqn" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label linha_itens">PIS</label>
+                                        <input type="text" id="op_parcela_ret_pis" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label linha_itens">COFINS</label>
+                                        <input type="text" id="op_parcela_ret_cofins" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label linha_itens">CSLL</label>
+                                        <input type="text" id="op_parcela_ret_csll" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
+                                    </div>
+                                </div>
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <label class="control-label linha_itens">Dias de Vencimento</label>
-                                        <input type="text" id="parcela_dia_vencimento" class="form-control form-control-sm linha_itens" />
-                                        <span class="text-info">Informe a quantidade de dias de vencimento de cada parcela separado por vírgula.</span>
+                                        <label class="control-label linha_itens">Observações</label>
+                                        <input type="text" id="op_parcela_obs" class="form-control form-control-sm linha_itens" />
                                     </div>
                                 </div>
+                                <input type="hidden" id="op_parcela_numero" />
                             </div>
-                        </div>
-                        <div id="dataIncio_Fim" style="display:none">
                             <div class="row">
-                                <div class="col-6 col-md-4">
-                                    <div class="form-group">
-                                        <label class="control-label linha_itens">Data Início</label>
-                                        <input type="text" id="parcela_data_inicio" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-4">
-                                    <div class="form-group">
-                                        <label class="control-label linha_itens">Data Fim</label>
-                                        <input type="text" id="parcela_data_fim" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <div class="form-group">
-                                        <label class="control-label linha_itens">Recorrência Parcelas</label>
-                                        <select class="form-control form-control-sm linha_itens" id="recorencia_data_inicio_fim">
-                                            <option value="Unica">Única</option>
-                                            <option value="Semanal">Semanal</option>
-                                            <option value="Quinzenal">Quinzenal</option>
-                                            <option value="Mensal" selected="selected">Mensal</option>
-                                            <option value="Bimestral">Bimestral</option>
-                                            <option value="Trimestral">Trimestral</option>
-                                            <option value="Semestral">Semestral</option>
-                                            <option value="Anual">Anual</option>
-                                        </select>
-                                    </div>
+                                <div class="col-12" id="btn_action">
+                                    <button type="button" id="btn_parcela_cancelar" class="btn btn-sm btn-outline-danger" style="width:50%;float:left;" onclick="operacao_parcelas('cancelar_incluir')">Cancelar</button>
+                                    <button type="button" id="btn_parcela" class="btn btn-sm btn-outline-info" style="width:50%;float:left;" onclick="operacao_parcelas('incluir')">Incluir Parcela</button>
                                 </div>
                             </div>
                         </div>
-                        <div id="numeroParcelas" style="display:none">
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="control-label linha_itens">Data 1º Parcela</label>
-                                        <input type="text" id="data_primeira_parcela" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="control-label linha_itens">Recorrência Parcelas</label>
-                                        <select class="form-control form-control-sm linha_itens" id="recorencia_n_parcelas">
-                                            <option value="Unica">Única</option>
-                                            <option value="Semanal">Semanal</option>
-                                            <option value="Quinzenal">Quinzenal</option>
-                                            <option value="Mensal" selected="selected">Mensal</option>
-                                            <option value="Bimestral">Bimestral</option>
-                                            <option value="Trimestral">Trimestral</option>
-                                            <option value="Semestral">Semestral</option>
-                                            <option value="Anual">Anual</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="control-label linha_itens">Número Parcelas</label>
-                                        <input type="number" id="parcela_numero" class="form-control form-control-sm linha_itens" onblur="changeNumeroParcelas(this.id, this.value)" />
-                                    </div>
-                                </div>
+                    </div>
+                    <hr class="hrLine" />
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <caption>Lista de Parcelas</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Ações</th>
+                                    <th scope="col">Vencimento</th>
+                                    <th scope="col">Valor Bruto</th>
+                                    <th scope="col">Valor Líquido</th>
+                                    <th scope="col">Forma de Pagamento</th>
+                                    <th scope="col">IRRF Retido</th>
+                                    <th scope="col">INSS Retido</th>
+                                    <th scope="col">ISSQN Retido</th>
+                                    <th scope="col">PIS Retido</th>
+                                    <th scope="col">COFINS Retido</th>
+                                    <th scope="col">CSLL Retido</th>
+                                    <th scope="col">Observações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody_parcelas">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="operacao_parcelas('close')">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Inclusão do item de serviço-->
+    <div class="modal fade" id="m_servico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Serviço Executado</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="servico.op_servico_servico_executado" class="control-label">Descrição do serviço executado</label>
+                                <textarea asp-for="servico.op_servico_servico_executado" id="op_servico_servico_executado" rows="4" class="form-control form-control-sm" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_op_servico_servico_executado')"></textarea>
+                                <span class="text-info" id="msg_op_servico_servico_executado"></span>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-4 col-md-2">
+                    </div>
+                    <div class="row">
+                        <div class="col-6" style="display:none">
+                            <div class="form-group">
+                                <label asp-for="servico.op_servico_lc116" class="control-label">Cód. LC 116/03</label>
+                                <input asp-for="servico.op_servico_lc116" id="op_servico_lc116" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="servico.op_servico_valor" class="control-label">Valor do Serviço</label>
+                                <input asp-for="servico.op_servico_valor" id="op_servico_valor" class="form-control form-control-sm" onchange="decimal(this.id, this.value, '2', true)" />
+                            </div>
+                        </div>
+                    </div>
+                    <span class="text-danger" id="servico_val"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="operacao_servico('delete')">Excluir</button>
+                    <button type="button" class="btn btn-info" onclick="operacao_servico('save')">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Retenções-->
+    <div class="modal fade" id="m_retencoes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Retenções Tributárias</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="retencoes.op_ret_inss" class="control-label">INSS</label>
+                                <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control form-control-sm" onchange="editRetencoes(this.id, this.value,'confirmar')" />
                                 <div class="custom-control custom-switch">
-                                    <input type="checkbox" id="csrf" class="custom-control-input">
-                                    <label class="custom-control-label" for="csrf">CSRF</label>
+                                    <input type="checkbox" id="ret_inss_parcela" class="custom-control-input">
+                                    <label class="custom-control-label" for="ret_inss_parcela">Descontar INSS na primeira parcela</label>
                                 </div>
                             </div>
-                            <div class="col-8 col-md-10">
-                                <button type="button" class="btn btn-sm btn-info" style="width:100%;" onclick="operacao_parcelas('gerar')">Gerar Parcelas</button>
-                            </div>
                         </div>
-                    </div>
-                    <!--tab 'inclur parcela'-->
-                    <div class="tab-pane fade" id="tab_parcela" role="tabpanel" aria-labelledby="parcela-tab">
-                        <div class="row" style="margin-top:15px;">
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="control-label linha_itens">Forma de Pagamento</label>
-                                    <select asp-items="@ViewBag.formaPgto" value="@TempData["op_parcela_fp_id_edit"]" id="op_parcela_fp_id_edit" name="op_parcela_fp_id_edit" class="form-control form-control-sm linha_itens"></select>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="control-label linha_itens">Vencimento</label>
-                                    <input type="text" id="op_parcela_vencimento" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="control-label linha_itens">Valor Bruto</label>
-                                    <input type="text" id="op_parcela_valor_bruto" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="control-label linha_itens">Valor Líquido</label>
-                                    <input type="text" id="op_parcela_valor" class="form-control form-control-sm linha_itens" readonly="readonly" />
-                                </div>
-                            </div>
-                            <!--Retenções da parcela-->
-                            <div class="col-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label linha_itens">IRRF</label>
-                                    <input type="text" id="op_parcela_ret_irrf" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label linha_itens">INSS</label>
-                                    <input type="text" id="op_parcela_ret_inss" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label linha_itens">ISSQN</label>
-                                    <input type="text" id="op_parcela_ret_issqn" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
-                                </div>
-                            </div>
-
-                            <div class="col-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label linha_itens">PIS</label>
-                                    <input type="text" id="op_parcela_ret_pis" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label linha_itens">COFINS</label>
-                                    <input type="text" id="op_parcela_ret_cofins" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label linha_itens">CSLL</label>
-                                    <input type="text" id="op_parcela_ret_csll" class="form-control form-control-sm linha_itens" onchange="edit_valores_parcela(this.id, this.value)" />
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label class="control-label linha_itens">Observações</label>
-                                    <input type="text" id="op_parcela_obs" class="form-control form-control-sm linha_itens" />
-                                </div>
-                            </div>
-                            <input type="hidden" id="op_parcela_numero" />
-                        </div>
-                        <div class="row">
-                            <div class="col-12" id="btn_action">
-                                <button type="button" id="btn_parcela_cancelar" class="btn btn-sm btn-outline-danger" style="width:50%;float:left;" onclick="operacao_parcelas('cancelar_incluir')">Cancelar</button>
-                                <button type="button" id="btn_parcela" class="btn btn-sm btn-outline-info" style="width:50%;float:left;" onclick="operacao_parcelas('incluir')">Incluir Parcela</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr class="hrLine" />
-                <div class="table-responsive">
-                    <table class="table table-sm">
-                        <caption>Lista de Parcelas</caption>
-                        <thead>
-                            <tr>
-                                <th scope="col">Ações</th>
-                                <th scope="col">Vencimento</th>
-                                <th scope="col">Valor Bruto</th>
-                                <th scope="col">Valor Líquido</th>
-                                <th scope="col">Forma de Pagamento</th>
-                                <th scope="col">IRRF Retido</th>
-                                <th scope="col">INSS Retido</th>
-                                <th scope="col">ISSQN Retido</th>
-                                <th scope="col">PIS Retido</th>
-                                <th scope="col">COFINS Retido</th>
-                                <th scope="col">CSLL Retido</th>
-                                <th scope="col">Observações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody_parcelas">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="operacao_parcelas('close')">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--Inclusão do item de serviço-->
-<div class="modal fade" id="m_servico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Serviço Executado</h5>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label asp-for="servico.op_servico_servico_executado" class="control-label">Descrição do serviço executado</label>
-                            <textarea asp-for="servico.op_servico_servico_executado" id="op_servico_servico_executado" rows="4" class="form-control form-control-sm" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_op_servico_servico_executado')"></textarea>
-                            <span class="text-info" id="msg_op_servico_servico_executado"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6" style="display:none">
-                        <div class="form-group">
-                            <label asp-for="servico.op_servico_lc116" class="control-label">Cód. LC 116/03</label>
-                            <input asp-for="servico.op_servico_lc116" id="op_servico_lc116" class="form-control form-control-sm" />
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label asp-for="servico.op_servico_valor" class="control-label">Valor do Serviço</label>
-                            <input asp-for="servico.op_servico_valor" id="op_servico_valor" class="form-control form-control-sm" onchange="decimal(this.id, this.value, '2', true)" />
-                        </div>
-                    </div>
-                </div>
-                <span class="text-danger" id="servico_val"></span>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="operacao_servico('delete')">Excluir</button>
-                <button type="button" class="btn btn-info" onclick="operacao_servico('save')">Gravar</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--Retenções-->
-<div class="modal fade" id="m_retencoes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Retenções Tributárias</h5>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12 col-md-4">
-                        <div class="form-group">
-                            <label asp-for="retencoes.op_ret_inss" class="control-label">INSS</label>
-                            <input asp-for="retencoes.op_ret_inss" id="op_ret_inss" class="form-control form-control-sm" onchange="editRetencoes(this.id, this.value,'confirmar')" />
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" id="ret_inss_parcela" class="custom-control-input">
-                                <label class="custom-control-label" for="ret_inss_parcela">Descontar INSS na primeira parcela</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="form-group">
-                            <label asp-for="retencoes.op_ret_issqn" class="control-label">ISSQN</label>
-                            <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control form-control-sm" onchange="editRetencoes(this.id, this.value,'confirmar')" />
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" id="ret_iss_parcela" class="custom-control-input">
-                                <label class="custom-control-label" for="ret_iss_parcela">Descontar ISSQN na primeira parcela</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="form-group">
-                            <label asp-for="retencoes.op_ret_irrf" class="control-label">IRRF</label>
-                            <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control form-control-sm" onchange="editRetencoes(this.id, this.value,'confirmar')" />
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" id="ret_irrf_parcela" class="custom-control-input">
-                                <label class="custom-control-label" for="ret_irrf_parcela">Descontar IRRF na primeira parcela</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-md-4">
-                        <div class="form-group">
-                            <label asp-for="retencoes.op_ret_pis" class="control-label">PIS</label>
-                            <input asp-for="retencoes.op_ret_pis" id="op_ret_pis" class="form-control form-control-sm" readonly="readonly" />
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="form-group">
-                            <label asp-for="retencoes.op_ret_cofins" class="control-label">COFINS</label>
-                            <input asp-for="retencoes.op_ret_cofins" id="op_ret_cofins" class="form-control form-control-sm" readonly="readonly" />
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="form-group">
-                            <label asp-for="retencoes.op_ret_csll" class="control-label">CSLL</label>
-                            <input asp-for="retencoes.op_ret_csll" id="op_ret_csll" class="form-control form-control-sm" readonly="readonly" />
-                        </div>
-                    </div>
-                </div>
-                <p>As retenções de PIS, COFINS e CSLL devem ser informadas diretamente na parcela.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="operacao_retencoes('delete')">Excluir</button>
-                <button type="button" class="btn btn-info" onclick="operacao_retencoes('save')">Gravar</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--Inclusão de nota fiscal-->
-<div class="modal fade" id="lista_dctos_fiscais" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Documento Fiscal/Contábil</h5>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
+                        <div class="col-12 col-md-4">
                             <div class="form-group">
-                                <label asp-for="nf.op_nf_tipo" class="control-label linha_itens">Tipo Documento</label>
-                                <select asp-items="@ViewBag.tipoNF" value="@TempData["op_nf_tipo"]" id="op_nf_tipo" name="op_nf_tipo" class="form-control form-control-sm linha_itens"></select>
-                                <span asp-validation-for="nf.op_nf_tipo" class="text-danger"></span>
+                                <label asp-for="retencoes.op_ret_issqn" class="control-label">ISSQN</label>
+                                <input asp-for="retencoes.op_ret_issqn" id="op_ret_issqn" class="form-control form-control-sm" onchange="editRetencoes(this.id, this.value,'confirmar')" />
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" id="ret_iss_parcela" class="custom-control-input">
+                                    <label class="custom-control-label" for="ret_iss_parcela">Descontar ISSQN na primeira parcela</label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label asp-for="nf.op_nf_data_emissao" class="control-label linha_itens">Data de Emissão</label>
-                            <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
+                        <div class="col-12 col-md-4">
                             <div class="form-group">
-                                <label asp-for="nf.op_nf_serie" class="control-label linha_itens">Série</label>
-                                <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control form-control-sm linha_itens" />
+                                <label asp-for="retencoes.op_ret_irrf" class="control-label">IRRF</label>
+                                <input asp-for="retencoes.op_ret_irrf" id="op_ret_irrf" class="form-control form-control-sm" onchange="editRetencoes(this.id, this.value,'confirmar')" />
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" id="ret_irrf_parcela" class="custom-control-input">
+                                    <label class="custom-control-label" for="ret_irrf_parcela">Descontar IRRF na primeira parcela</label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label asp-for="nf.op_nf_numero" class="control-label linha_itens">Número</label>
-                            <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control form-control-sm linha_itens" />
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="retencoes.op_ret_pis" class="control-label">PIS</label>
+                                <input asp-for="retencoes.op_ret_pis" id="op_ret_pis" class="form-control form-control-sm" readonly="readonly" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="retencoes.op_ret_cofins" class="control-label">COFINS</label>
+                                <input asp-for="retencoes.op_ret_cofins" id="op_ret_cofins" class="form-control form-control-sm" readonly="readonly" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="retencoes.op_ret_csll" class="control-label">CSLL</label>
+                                <input asp-for="retencoes.op_ret_csll" id="op_ret_csll" class="form-control form-control-sm" readonly="readonly" />
+                            </div>
                         </div>
                     </div>
+                    <p>As retenções de PIS, COFINS e CSLL devem ser informadas diretamente na parcela.</p>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label asp-for="nf.op_nf_chave" class="control-label linha_itens">Chave de Acesso</label>
-                            <input asp-for="nf.op_nf_chave" id="op_nf_chave" class="form-control form-control-sm linha_itens" />
-                        </div>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="operacao_retencoes('delete')">Excluir</button>
+                    <button type="button" class="btn btn-info" onclick="operacao_retencoes('save')">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 </div>
-                <div class="row">
-                    <div class="col-12" id="box_valid">
-
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="operacao_documento('delete_confirmar')">Excluir</button>
-                <button type="button" class="btn btn-info" onclick="operacao_documento('save')">Gravar</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
-</div>
 
-<!--Totais da Operação-->
-<div class="modal fade" id="m_totais" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Totais da Operação</h5>
-            </div>
-            <div class="modal-body">
-                <div class="container">
-                    <div id="totais_itens" style="display:none;">
-                        <div class="row">
-                            <div class="col-12">
+    <!--Inclusão de nota fiscal-->
+    <div class="modal fade" id="lista_dctos_fiscais" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Documento Fiscal/Contábil</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
                                 <div class="form-group">
-                                    <label asp-for="totais.op_totais_preco_itens" class="control-label">Total dos Itens</label>
-                                    <input asp-for="totais.op_totais_preco_itens" id="op_totais_preco_itens" class="form-control form-control-sm" readonly="readonly" />
+                                    <label asp-for="nf.op_nf_tipo" class="control-label linha_itens">Tipo Documento</label>
+                                    <select asp-items="@ViewBag.tipoNF" value="@TempData["op_nf_tipo"]" id="op_nf_tipo" name="op_nf_tipo" class="form-control form-control-sm linha_itens"></select>
+                                    <span asp-validation-for="nf.op_nf_tipo" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-6 col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="totais.op_totais_frete" class="control-label"></label>
-                                    <input asp-for="totais.op_totais_frete" id="op_totais_frete" class="form-control form-control-sm" readonly="readonly" />
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="totais.op_totais_seguro" class="control-label"></label>
-                                    <input asp-for="totais.op_totais_seguro" id="op_totais_seguro" class="form-control form-control-sm" readonly="readonly" />
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="totais.op_totais_desp_aces" class="control-label">Desp. Acessórias</label>
-                                    <input asp-for="totais.op_totais_desp_aces" id="op_totais_desp_aces" class="form-control form-control-sm" readonly="readonly" />
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="totais.op_totais_desconto" class="control-label"></label>
-                                    <input asp-for="totais.op_totais_desconto" id="op_totais_desconto" class="form-control form-control-sm" readonly="readonly" />
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="totais.op_totais_icms_st" class="control-label">ICMS-ST</label>
-                                    <input asp-for="totais.op_totais_icms_st" id="op_totais_icms_st" class="form-control form-control-sm" readonly="readonly" />
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="totais.op_totais_ipi" class="control-label">IPI</label>
-                                    <input asp-for="totais.op_totais_ipi" id="op_totais_ipi" class="form-control form-control-sm" readonly="readonly" />
-                                </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="nf.op_nf_data_emissao" class="control-label linha_itens">Data de Emissão</label>
+                                <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
                             </div>
                         </div>
                     </div>
-                    <div id="totais_servico" style="display:none;">
-                        <div class="row">
-                            <div class="col-12">
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
                                 <div class="form-group">
-                                    <label asp-for="totais.op_totais_preco_servicos" class="control-label">Valor do Serviço</label>
-                                    <input asp-for="totais.op_totais_preco_servicos" id="op_totais_preco_servicos" class="form-control form-control-sm" readonly="readonly" />
+                                    <label asp-for="nf.op_nf_serie" class="control-label linha_itens">Série</label>
+                                    <input asp-for="nf.op_nf_serie" id="op_nf_serie" class="form-control form-control-sm linha_itens" />
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div id="totais_demais" style="display:block;">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label asp-for="totais.op_totais_valor_outras_operacoes" class="control-label">Valor Operação</label>
-                                    <input asp-for="totais.op_totais_valor_outras_operacoes" id="op_totais_valor_outras_operacoes_totais" class="form-control form-control-sm" readonly="readonly" />
-                                </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="nf.op_nf_numero" class="control-label linha_itens">Número</label>
+                                <input asp-for="nf.op_nf_numero" id="op_nf_numero" class="form-control form-control-sm linha_itens" />
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
-                                <label asp-for="totais.op_totais_total_op" class="control-label" style="font-weight:bold">Total da Operação</label>
-                                <input asp-for="totais.op_totais_total_op" id="op_totais_total_op" class="form-control form-control-sm" readonly="readonly" />
+                                <label asp-for="nf.op_nf_chave" class="control-label linha_itens">Chave de Acesso</label>
+                                <input asp-for="nf.op_nf_chave" id="op_nf_chave" class="form-control form-control-sm linha_itens" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12" id="box_valid">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="operacao_documento('delete_confirmar')">Excluir</button>
+                    <button type="button" class="btn btn-info" onclick="operacao_documento('save')">Gravar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Totais da Operação-->
+    <div class="modal fade" id="m_totais" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Totais da Operação</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div id="totais_itens" style="display:none;">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label asp-for="totais.op_totais_preco_itens" class="control-label">Total dos Itens</label>
+                                        <input asp-for="totais.op_totais_preco_itens" id="op_totais_preco_itens" class="form-control form-control-sm" readonly="readonly" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="totais.op_totais_frete" class="control-label"></label>
+                                        <input asp-for="totais.op_totais_frete" id="op_totais_frete" class="form-control form-control-sm" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="totais.op_totais_seguro" class="control-label"></label>
+                                        <input asp-for="totais.op_totais_seguro" id="op_totais_seguro" class="form-control form-control-sm" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="totais.op_totais_desp_aces" class="control-label">Desp. Acessórias</label>
+                                        <input asp-for="totais.op_totais_desp_aces" id="op_totais_desp_aces" class="form-control form-control-sm" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="totais.op_totais_desconto" class="control-label"></label>
+                                        <input asp-for="totais.op_totais_desconto" id="op_totais_desconto" class="form-control form-control-sm" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="totais.op_totais_icms_st" class="control-label">ICMS-ST</label>
+                                        <input asp-for="totais.op_totais_icms_st" id="op_totais_icms_st" class="form-control form-control-sm" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="totais.op_totais_ipi" class="control-label">IPI</label>
+                                        <input asp-for="totais.op_totais_ipi" id="op_totais_ipi" class="form-control form-control-sm" readonly="readonly" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="totais_servico" style="display:none;">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label asp-for="totais.op_totais_preco_servicos" class="control-label">Valor do Serviço</label>
+                                        <input asp-for="totais.op_totais_preco_servicos" id="op_totais_preco_servicos" class="form-control form-control-sm" readonly="readonly" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="totais_demais" style="display:block;">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label asp-for="totais.op_totais_valor_outras_operacoes" class="control-label">Valor Operação</label>
+                                        <input asp-for="totais.op_totais_valor_outras_operacoes" id="op_totais_valor_outras_operacoes_totais" class="form-control form-control-sm" readonly="readonly" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="totais.op_totais_total_op" class="control-label" style="font-weight:bold">Total da Operação</label>
+                                    <input asp-for="totais.op_totais_total_op" id="op_totais_total_op" class="form-control form-control-sm" readonly="readonly" />
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--Aguardando gravar-->
-<div class="modal fade" id="modal_mensagem" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticLabel"></h5>
-            </div>
-            <div class="modal-body" id="conteudo">
-
-            </div>
-            <div class="modal-footer" id="rodape">
-
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!--Gravação com sucesso-->
-<div class="modal fade" id="modal_mensagem_sucesso" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Operação</h5>
-            </div>
-            <div class="modal-body">
-                <p>Operação cadastrada com sucesso!</p>
-            </div>
-            <div class="modal-footer">
-                <a class="btn btn-info" asp-controller="Operacao" asp-action="Create">Nova Operação</a>
-                <a class="btn btn-secondary" asp-controller="Operacao" asp-action="Index">Fechar</a>
+    <!--Aguardando gravar-->
+    <div class="modal fade" id="modal_mensagem" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticLabel"></h5>
+                </div>
+                <div class="modal-body" id="conteudo">
+
+                </div>
+                <div class="modal-footer" id="rodape">
+
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!--mensagem retorno-->
-<div class="modal fade" id="modal_mensagem_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="mensagem_retorno_label"></h5>
-            </div>
-            <div class="modal-body" id="mensagem_retorno_conteudo" style="text-align:center;">
-
-            </div>
-            <div class="modal-footer" id="mensagem_retorno_rodape">
-
+    <!--Gravação com sucesso-->
+    <div class="modal fade" id="modal_mensagem_sucesso" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Operação</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Operação cadastrada com sucesso!</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-info" asp-controller="Operacao" asp-action="Create">Nova Operação</a>
+                    <a class="btn btn-secondary" asp-controller="Operacao" asp-action="Index">Fechar</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!--mensagem confirmação alteração Espécie-->
-<div class="modal fade" id="modal_update_especie" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header" style="text-align:center;">
-                <h5 class="modal-title">Confirmação Alteração Espécie</h5>
-            </div>
-            <div class="modal-body" style="text-align:center;">
-                <p>A alteração da espécie poderá excluir os itens ou serviços digitados anteriormente.</p>
-                <p>Deseja realmente alterar?</p>
-            </div>
-            <div class="modal-footer" id="footer_update_especie">
+    <!--mensagem retorno-->
+    <div class="modal fade" id="modal_mensagem_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mensagem_retorno_label"></h5>
+                </div>
+                <div class="modal-body" id="mensagem_retorno_conteudo" style="text-align:center;">
 
+                </div>
+                <div class="modal-footer" id="mensagem_retorno_rodape">
+
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!--mensagem confirmação exclusão dcto-->
-<div class="modal fade" id="modal_delete_dcto" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header" style="text-align:center;">
-                <h5 class="modal-title">Confirmação Exclusão Documento</h5>
-            </div>
-            <div class="modal-body" style="text-align:center;">
-                <p>Deseja realmente excluir o documento?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="operacao_documento('delete_confirmado')">Confirma</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+    <!--mensagem confirmação alteração Espécie-->
+    <div class="modal fade" id="modal_update_especie" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header" style="text-align:center;">
+                    <h5 class="modal-title">Confirmação Alteração Espécie</h5>
+                </div>
+                <div class="modal-body" style="text-align:center;">
+                    <p>A alteração da espécie poderá excluir os itens ou serviços digitados anteriormente.</p>
+                    <p>Deseja realmente alterar?</p>
+                </div>
+                <div class="modal-footer" id="footer_update_especie">
+
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!--mensagem confirmação exclusão dcto-->
+    <div class="modal fade" id="modal_delete_dcto" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header" style="text-align:center;">
+                    <h5 class="modal-title">Confirmação Exclusão Documento</h5>
+                </div>
+                <div class="modal-body" style="text-align:center;">
+                    <p>Deseja realmente excluir o documento?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="operacao_documento('delete_confirmado')">Confirma</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form> <!--Apenas para geração do token-->
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ScriptPartial_Operacao");}

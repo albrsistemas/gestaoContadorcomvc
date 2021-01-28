@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Content Remove="Views\Shared\_ValidationScriptsPartial - Cópia.cshtml" />
+    <Content Remove="wwwroot\css\dataTables.bootstrap4.min.css.css" />
   </ItemGroup>
 
   <ItemGroup>

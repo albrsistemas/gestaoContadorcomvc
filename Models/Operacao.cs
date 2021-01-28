@@ -223,7 +223,7 @@ namespace gestaoContadorcomvc.Models
                             cmd.Transaction = Transacao;
 
 
-                            cmd.CommandText = "call pr_criaParcela (@op_parcela_dias, @op_parcela_vencimento, @op_parcela_fp_id, @op_parcela_op_id, @op_parcela_valor, @op_parcela_obs, @conta_id, @ccm_contra_partida_tipo, @ccm_contra_partida_id, @op_parcela_valor_bruto, @op_parcela_ret_inss, @op_parcela_ret_issqn, @op_parcela_ret_irrf, @op_parcela_ret_pis, @op_parcela_ret_cofins, @op_parcela_ret_csll);";
+                            cmd.CommandText = "call pr_criaParcela (@op_parcela_dias, @op_parcela_vencimento, @op_parcela_fp_id, @op_parcela_op_id, @op_parcela_valor, @op_parcela_obs, @conta_id, @ccm_contra_partida_tipo, @ccm_contra_partida_id, @op_parcela_valor_bruto, @op_parcela_ret_inss, @op_parcela_ret_issqn, @op_parcela_ret_irrf, @op_parcela_ret_pis, @op_parcela_ret_cofins, @op_parcela_ret_csll, @op_parcela_numero, @op_parcela_numero_total);";
                             cmd.Parameters.AddWithValue("@conta_id", conta_id);
                             cmd.Parameters.AddWithValue("@op_parcela_dias", op.parcelas[i].op_parcela_dias);
                             cmd.Parameters.AddWithValue("@op_parcela_vencimento", op.parcelas[i].op_parcela_vencimento);
@@ -240,6 +240,8 @@ namespace gestaoContadorcomvc.Models
                             cmd.Parameters.AddWithValue("@op_parcela_ret_pis", op.parcelas[i].op_parcela_ret_pis);
                             cmd.Parameters.AddWithValue("@op_parcela_ret_cofins", op.parcelas[i].op_parcela_ret_cofins);
                             cmd.Parameters.AddWithValue("@op_parcela_ret_csll", op.parcelas[i].op_parcela_ret_csll);                            
+                            cmd.Parameters.AddWithValue("@op_parcela_numero", op.parcelas[i].op_parcela_numero);                            
+                            cmd.Parameters.AddWithValue("@op_parcela_numero_total", op.parcelas[i].op_parcela_numero_total);                            
                             cmd.ExecuteNonQuery();
                         }
                     }
@@ -1295,6 +1297,22 @@ namespace gestaoContadorcomvc.Models
                         {
                             parcela.op_parcela_ret_csll = 0;
                         }
+                        if (DBNull.Value != leitor_3["op_parcela_numero"])
+                        {
+                            parcela.op_parcela_numero = Convert.ToInt32(leitor_3["op_parcela_numero"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_numero = 0;
+                        }
+                        if (DBNull.Value != leitor_3["op_parcela_numero_total"])
+                        {
+                            parcela.op_parcela_numero_total = Convert.ToInt32(leitor_3["op_parcela_numero_total"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_numero_total = 0;
+                        }
 
                         parcela.op_parcela_obs = leitor_3["op_parcela_obs"].ToString();
                         parcela.controleEdit = "update";
@@ -1587,7 +1605,7 @@ namespace gestaoContadorcomvc.Models
                                 cmd.Transaction = Transacao;
 
 
-                                cmd.CommandText = "call pr_criaParcela (@op_parcela_dias, @op_parcela_vencimento, @op_parcela_fp_id, @op_parcela_op_id, @op_parcela_valor, @op_parcela_obs, @conta_id, @ccm_contra_partida_tipo, @ccm_contra_partida_id, @op_parcela_valor_bruto, @op_parcela_ret_inss, @op_parcela_ret_issqn, @op_parcela_ret_irrf, @op_parcela_ret_pis, @op_parcela_ret_cofins, @op_parcela_ret_csll);";
+                                cmd.CommandText = "call pr_criaParcela (@op_parcela_dias, @op_parcela_vencimento, @op_parcela_fp_id, @op_parcela_op_id, @op_parcela_valor, @op_parcela_obs, @conta_id, @ccm_contra_partida_tipo, @ccm_contra_partida_id, @op_parcela_valor_bruto, @op_parcela_ret_inss, @op_parcela_ret_issqn, @op_parcela_ret_irrf, @op_parcela_ret_pis, @op_parcela_ret_cofins, @op_parcela_ret_csll, @op_parcela_numero, @op_parcela_numero_total);";
                                 cmd.Parameters.AddWithValue("@conta_id", conta_id);
                                 cmd.Parameters.AddWithValue("@op_parcela_dias", op.parcelas[i].op_parcela_dias);
                                 cmd.Parameters.AddWithValue("@op_parcela_vencimento", op.parcelas[i].op_parcela_vencimento);
@@ -1603,7 +1621,9 @@ namespace gestaoContadorcomvc.Models
                                 cmd.Parameters.AddWithValue("@op_parcela_ret_irrf", op.parcelas[i].op_parcela_ret_irrf);
                                 cmd.Parameters.AddWithValue("@op_parcela_ret_pis", op.parcelas[i].op_parcela_ret_pis);
                                 cmd.Parameters.AddWithValue("@op_parcela_ret_cofins", op.parcelas[i].op_parcela_ret_cofins);
-                                cmd.Parameters.AddWithValue("@op_parcela_ret_csll", op.parcelas[i].op_parcela_ret_csll);                                
+                                cmd.Parameters.AddWithValue("@op_parcela_ret_csll", op.parcelas[i].op_parcela_ret_csll);
+                                cmd.Parameters.AddWithValue("@op_parcela_numero", op.parcelas[i].op_parcela_numero);
+                                cmd.Parameters.AddWithValue("@op_parcela_numero_total", op.parcelas[i].op_parcela_numero_total);
                                 cmd.ExecuteNonQuery();
                             }
                         }
@@ -1935,7 +1955,7 @@ namespace gestaoContadorcomvc.Models
                             cmd.Transaction = Transacao;
 
 
-                            cmd.CommandText = "call pr_criaParcela (@op_parcela_dias, @op_parcela_vencimento, @op_parcela_fp_id, @op_parcela_op_id, @op_parcela_valor, @op_parcela_obs, @conta_id, @ccm_contra_partida_tipo, @ccm_contra_partida_id, @op_parcela_valor_bruto, @op_parcela_ret_inss, @op_parcela_ret_issqn, @op_parcela_ret_irrf, @op_parcela_ret_pis, @op_parcela_ret_cofins, @op_parcela_ret_csll);";
+                            cmd.CommandText = "call pr_criaParcela (@op_parcela_dias, @op_parcela_vencimento, @op_parcela_fp_id, @op_parcela_op_id, @op_parcela_valor, @op_parcela_obs, @conta_id, @ccm_contra_partida_tipo, @ccm_contra_partida_id, @op_parcela_valor_bruto, @op_parcela_ret_inss, @op_parcela_ret_issqn, @op_parcela_ret_irrf, @op_parcela_ret_pis, @op_parcela_ret_cofins, @op_parcela_ret_csll, @op_parcela_numero, @op_parcela_numero_total);";
                             cmd.Parameters.AddWithValue("@conta_id", conta_id);
                             cmd.Parameters.AddWithValue("@op_parcela_dias", op.parcelas[i].op_parcela_dias);
                             cmd.Parameters.AddWithValue("@op_parcela_vencimento", op.parcelas[i].op_parcela_vencimento);
@@ -1952,6 +1972,8 @@ namespace gestaoContadorcomvc.Models
                             cmd.Parameters.AddWithValue("@op_parcela_ret_pis", op.parcelas[i].op_parcela_ret_pis);
                             cmd.Parameters.AddWithValue("@op_parcela_ret_cofins", op.parcelas[i].op_parcela_ret_cofins);
                             cmd.Parameters.AddWithValue("@op_parcela_ret_csll", op.parcelas[i].op_parcela_ret_csll);
+                            cmd.Parameters.AddWithValue("@op_parcela_numero", op.parcelas[i].op_parcela_numero);
+                            cmd.Parameters.AddWithValue("@op_parcela_numero_total", op.parcelas[i].op_parcela_numero_total);
                             cmd.ExecuteNonQuery();
                         }
                     }

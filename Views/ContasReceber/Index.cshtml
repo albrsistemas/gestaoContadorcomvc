@@ -62,30 +62,34 @@
     .table > tbody > tr > th {
         vertical-align: middle;
     }
+
     .table > tbody > tr:hover {
         background-color: #f5f4ba;
     }
 </style>
 
+<style rel="stylesheet" href="~/lib/data-tables/jquery.dataTables.min.css"></style>
+
+
 @{
     if (TempData["msgCP"] != null && TempData["msgCP"].ToString().Contains("sucesso"))
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
-            <strong>Sucesso!</strong> @TempData["msgCP"].ToString()
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+        <strong>Sucesso!</strong> @TempData["msgCP"].ToString()
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     }
 
     if (TempData["msgCP"] != null && TempData["msgCP"].ToString().Contains("Erro"))
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
-            <strong>Erro!</strong> @TempData["msgCP"].ToString()
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+        <strong>Erro!</strong> @TempData["msgCP"].ToString()
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     }
 }
 
@@ -99,9 +103,9 @@
             @{
                 if (Model.user.Role == "adm" || Model.user._permissoes.ContasPList)
                 {
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-funnel" fill="currentColor" xmlns="http://www.w3.org/2000/svg" onclick="openNav('aberto')" style="cursor:pointer" id="filter">
-                        <path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z" />
-                    </svg>
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-funnel" fill="currentColor" xmlns="http://www.w3.org/2000/svg" onclick="openNav('aberto')" style="cursor:pointer" id="filter">
+                    <path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z" />
+                </svg>
                 }
             }
             <a onClick="window.print()">
@@ -118,24 +122,24 @@
 @{
     if (Model.filter.contexto)
     {
-        <p><span style="color:red;font-weight:bold;">As informações estão filtradas. Clique para limpar o filtro</span> <span><a asp-controller="ContasReceber" asp-action="Index">Limpar Filtros</a></span></p>
+    <p><span style="color:red;font-weight:bold;">As informações estão filtradas. Clique para limpar o filtro</span> <span><a asp-controller="ContasReceber" asp-action="Index">Limpar Filtros</a></span></p>
     }
 }
-
+<input type="text" id="myInput" value="" placeholder="Pesquisa" class="form-control form-control-sm pesquisa" style="max-width:100%;margin-bottom: 20px;" />
 <div class="table-responsive">
-    <table class="table table-sm">
-        <caption>Contas a Pagar</caption>
+    <table class="table table-sm" id="myTable" style="width:100%">        
         <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">Vencimento</th>
-                <th scope="col">Referência</th>
-                <th scope="col">Categoria</th>
-                <th scope="col">Cliente</th>
-                <th scope="col">Forma Pagamento</th>
-                <th scope="col">Valor Original</th>
-                <th scope="col">Saldo a Pagar</th>
                 <th scope="col" style="width:90px;">Ações</th>
+                <th scope="col">Vencimento</th>
+                <th scope="col" style="text-align:right;">Saldo a Receber</th>
+                <th scope="col" style="text-align:right;">Valor Original</th>
+                <th scope="col">Documento</th>
+                <th scope="col">Série</th>
+                <th scope="col" style="min-width: 300px">Categoria</th>
+                <th scope="col" style="min-width: 300px">Memorando</th>
+                <th scope="col" style="min-width: 300px">Cliente</th>
+                <th scope="col" style="min-width: 300px">Forma Pagamento</th>
             </tr>
         </thead>
         <tbody>
@@ -143,56 +147,48 @@
                 int i = 1;
                 foreach (var item in Model.contasReceber)
                 {
-                    <tr>
-                        <th scope="row">@i</th>
-                        <td onclick="editVencimento('open', this.id, '@item.vencimento.ToShortDateString()', @item.parcela_id)" style="cursor:pointer">@item.vencimento.ToShortDateString()</td>
-                        <td>@item.referencia</td>
-                        <td>@item.categoria_nome</td>
-                        <td>@item.fornecedor</td>
-                        <td>@item.formaPgto</td>
-                        <td>@item.valorOriginal.ToString("N2")</td>
-                        <td>@item.saldo.ToString("N2")</td>
-                        <td style="white-space:nowrap;text-align:left;">
-                            @{
+                        <tr>
+                            <td style="white-space:nowrap;text-align:left;">
+                                @{
                                 if (item.saldo > 0)
                                 {
                                     if (item.prazo == 1)
                                     {
-                                        <span data-toggle="tooltip" data-placement="top" title="vence hoje" class="bolinhas">
-                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="#fcd303" xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="8" cy="8" r="8" />
-                                            </svg>
-                                        </span>
+                                    <span data-toggle="tooltip" data-placement="top" title="vence hoje" class="bolinhas">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="#fcd303" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="8" cy="8" r="8" />
+                                        </svg>
+                                    </span>
                                     }
                                     if (item.prazo == 2)
                                     {
-                                        <span data-toggle="tooltip" data-placement="top" title="atrasada" class="bolinhas">
-                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="8" cy="8" r="8" />
-                                            </svg>
-                                        </span>
+                                    <span data-toggle="tooltip" data-placement="top" title="atrasada" class="bolinhas">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="8" cy="8" r="8" />
+                                        </svg>
+                                    </span>
                                     }
                                     if (item.prazo == 3)
                                     {
-                                        <span data-toggle="tooltip" data-placement="top" title="à vencer" class="bolinhas">
-                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="blue" xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="8" cy="8" r="8" />
-                                            </svg>
-                                        </span>
+                                    <span data-toggle="tooltip" data-placement="top" title="à vencer" class="bolinhas">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill" fill="blue" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="8" cy="8" r="8" />
+                                        </svg>
+                                    </span>
                                     }
 
                                     if (item.tipo_op == "Realizar")
                                     {
                                         if (Model.user.Role == "adm" || Model.user._permissoes.contasFCreate)
                                         {
-                                            <a class="CFR_realizacao" data-parcela_id="@item.parcela_id" data-contexto="receber">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bootstrap-reboot" viewBox="0 0 16 16">
-                                                    <path fill-rule="evenodd" d="M1.161 8a6.84 6.84 0 1 0 6.842-6.84.58.58 0 0 1 0-1.16 8 8 0 1 1-6.556 3.412l-.663-.577a.58.58 0 0 1 .227-.997l2.52-.69a.58.58 0 0 1 .728.633l-.332 2.592a.58.58 0 0 1-.956.364l-.643-.56A6.812 6.812 0 0 0 1.16 8zm5.48-.079V5.277h1.57c.881 0 1.416.499 1.416 1.32 0 .84-.504 1.324-1.386 1.324h-1.6zm0 3.75V8.843h1.57l1.498 2.828h1.314L9.377 8.665c.897-.3 1.427-1.106 1.427-2.1 0-1.37-.943-2.246-2.456-2.246H5.5v7.352h1.141z" />
-                                                </svg>
-                                            </a>
-                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eyeglasses" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" d="M4 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm2.625.547a3 3 0 0 0-5.584.953H.5a.5.5 0 0 0 0 1h.541A3 3 0 0 0 7 8a1 1 0 0 1 2 0 3 3 0 0 0 5.959.5h.541a.5.5 0 0 0 0-1h-.541a3 3 0 0 0-5.584-.953A1.993 1.993 0 0 0 8 6c-.532 0-1.016.208-1.375.547zM14 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0z" />
-                                            </svg>
+                                    <a class="CFR_realizacao" data-parcela_id="@item.parcela_id" data-contexto="receber">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bootstrap-reboot" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M1.161 8a6.84 6.84 0 1 0 6.842-6.84.58.58 0 0 1 0-1.16 8 8 0 1 1-6.556 3.412l-.663-.577a.58.58 0 0 1 .227-.997l2.52-.69a.58.58 0 0 1 .728.633l-.332 2.592a.58.58 0 0 1-.956.364l-.643-.56A6.812 6.812 0 0 0 1.16 8zm5.48-.079V5.277h1.57c.881 0 1.416.499 1.416 1.32 0 .84-.504 1.324-1.386 1.324h-1.6zm0 3.75V8.843h1.57l1.498 2.828h1.314L9.377 8.665c.897-.3 1.427-1.106 1.427-2.1 0-1.37-.943-2.246-2.456-2.246H5.5v7.352h1.141z" />
+                                        </svg>
+                                    </a>
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eyeglasses" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M4 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm2.625.547a3 3 0 0 0-5.584.953H.5a.5.5 0 0 0 0 1h.541A3 3 0 0 0 7 8a1 1 0 0 1 2 0 3 3 0 0 0 5.959.5h.541a.5.5 0 0 0 0-1h-.541a3 3 0 0 0-5.584-.953A1.993 1.993 0 0 0 8 6c-.532 0-1.016.208-1.375.547zM14 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0z" />
+                                    </svg>
                                         }
                                     }
                                     else
@@ -201,37 +197,37 @@
                                         {
                                             if (Model.user.Role == "adm" || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete)
                                             {
-                                                <a class="createBaixa" data-parcela_id="@item.parcela_id" data-contexto="receber">
-                                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
-                                                        <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
-                                                    </svg>
-                                                </a>
+                                    <a class="createBaixa" data-parcela_id="@item.parcela_id" data-contexto="receber">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
+                                            <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
+                                        </svg>
+                                    </a>
                                             }
 
                                             if (Model.user.Role == "adm" || (Model.user._permissoes.baixaList || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete))
                                             {
-                                                <a class="detalhesParcela" data-parcela_id="@item.parcela_id" data-contexto="receber">
-                                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eyeglasses" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" d="M4 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm2.625.547a3 3 0 0 0-5.584.953H.5a.5.5 0 0 0 0 1h.541A3 3 0 0 0 7 8a1 1 0 0 1 2 0 3 3 0 0 0 5.959.5h.541a.5.5 0 0 0 0-1h-.541a3 3 0 0 0-5.584-.953A1.993 1.993 0 0 0 8 6c-.532 0-1.016.208-1.375.547zM14 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0z" />
-                                                    </svg>
-                                                </a>
+                                    <a class="detalhesParcela" data-parcela_id="@item.parcela_id" data-contexto="receber">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eyeglasses" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm2.625.547a3 3 0 0 0-5.584.953H.5a.5.5 0 0 0 0 1h.541A3 3 0 0 0 7 8a1 1 0 0 1 2 0 3 3 0 0 0 5.959.5h.541a.5.5 0 0 0 0-1h-.541a3 3 0 0 0-5.584-.953A1.993 1.993 0 0 0 8 6c-.532 0-1.016.208-1.375.547zM14 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0z" />
+                                        </svg>
+                                    </a>
                                             }
                                         }
                                         else
                                         {
                                             if (Model.user.Role == "adm" || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete)
                                             {
-                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
-                                                    <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
-                                                </svg>
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
+                                        <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
+                                    </svg>
                                             }
 
                                             if (Model.user.Role == "adm" || (Model.user._permissoes.baixaList || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete))
                                             {
-                                                <!--Exibe combo para selecionar parcela-->
-                                                <input type="checkbox" id="cp_@item.parcela_id" onchange="fechamento_de_cartao(this.id)" style="margin-left:3px;cursor:pointer;">
+ <!--Exibe combo para selecionar parcela-->
+                                    <input type="checkbox" id="cp_@item.parcela_id" onchange="fechamento_de_cartao(this.id)" style="margin-left:3px;cursor:pointer;">
                                             }
                                         }
                                     }
@@ -246,31 +242,38 @@
 
                                     if (Model.user.Role == "adm" || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete)
                                     {
-                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
-                                            <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
-                                        </svg>
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-down" fill="#c2c2c2" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
+                                        <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
+                                    </svg>
                                     }
 
                                     if (Model.user.Role == "adm" || (Model.user._permissoes.baixaList || Model.user._permissoes.baixaEdit || Model.user._permissoes.baixaDelete))
                                     {
-                                        <a class="detalhesParcela" data-parcela_id="@item.parcela_id" data-contexto="receber">
-                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eyeglasses" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" d="M4 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm2.625.547a3 3 0 0 0-5.584.953H.5a.5.5 0 0 0 0 1h.541A3 3 0 0 0 7 8a1 1 0 0 1 2 0 3 3 0 0 0 5.959.5h.541a.5.5 0 0 0 0-1h-.541a3 3 0 0 0-5.584-.953A1.993 1.993 0 0 0 8 6c-.532 0-1.016.208-1.375.547zM14 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0z" />
-                                            </svg>
-                                        </a>
+                                    <a class="detalhesParcela" data-parcela_id="@item.parcela_id" data-contexto="receber">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eyeglasses" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm2.625.547a3 3 0 0 0-5.584.953H.5a.5.5 0 0 0 0 1h.541A3 3 0 0 0 7 8a1 1 0 0 1 2 0 3 3 0 0 0 5.959.5h.541a.5.5 0 0 0 0-1h-.541a3 3 0 0 0-5.584-.953A1.993 1.993 0 0 0 8 6c-.532 0-1.016.208-1.375.547zM14 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0z" />
+                                        </svg>
+                                    </a>
                                     }
                                 }
 
-                            }
-                        </td>
-                        <td style="display:none;">
-                            <input type="hidden" id="vlr_@item.parcela_id" value="@item.valorOriginal" />
-                            <input type="hidden" id="meioPgto_@item.parcela_id" value="@item.meio_pgto" />
-                            <input type="hidden" id="formaPgto_@item.parcela_id" value="@item.fp_id" />
-                            <input type="hidden" id="nomeCartao_@item.parcela_id" value="@item.formaPgto" />
-                        </td>
-                    </tr>
+                                }
+                                <input type="hidden" id="vlr_@item.parcela_id" value="@item.valorOriginal" />
+                                <input type="hidden" id="meioPgto_@item.parcela_id" value="@item.meio_pgto" />
+                                <input type="hidden" id="formaPgto_@item.parcela_id" value="@item.fp_id" />
+                                <input type="hidden" id="nomeCartao_@item.parcela_id" value="@item.formaPgto" />
+                            </td>                            
+                            <td onclick="editVencimento('open', this.id, '@item.vencimento.ToShortDateString()', @item.parcela_id)" style="cursor:pointer">@item.vencimento.ToShortDateString()</td>
+                            <td style="text-align:right;">@item.saldo.ToString("N2")</td>
+                            <td style="text-align:right;">@item.valorOriginal.ToString("N2")</td>
+                            <td style="white-space:nowrap;">@item.dcto</td>
+                            <td style="white-space:nowrap;">@item.serie</td>
+                            <td style="min-width: 300px">@item.categoria_nome</td>
+                            <td style="min-width: 300px">@item.memorando</td>
+                            <td style="min-width: 300px;">@item.fornecedor</td>
+                            <td style="min-width: 300px;">@item.formaPgto</td>                            
+                        </tr>
 
                     i++;
                 }
@@ -537,3 +540,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ScriptPartial_DataTable");}
+}

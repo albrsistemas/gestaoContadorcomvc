@@ -11,6 +11,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public int produtos_id { get; set; }
 
         [Display(Name = "Código")]
+        [Required(ErrorMessage = "O nome é obrigatório.")]
         public string produtos_codigo { get; set; }
 
         [Display(Name = "Nome")]

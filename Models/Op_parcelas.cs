@@ -27,6 +27,8 @@ namespace gestaoContadorcomvc.Models
         public Decimal op_parcela_ret_pis { get; set; }
         public Decimal op_parcela_ret_cofins { get; set; }
         public Decimal op_parcela_ret_csll { get; set; }
+        public int op_parcela_numero { get; set; }
+        public int op_parcela_numero_total { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
