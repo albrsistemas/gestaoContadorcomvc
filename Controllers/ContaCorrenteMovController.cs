@@ -94,8 +94,8 @@ namespace gestaoContadorcomvc.Controllers
             Vm_usuario user = new Vm_usuario();
             user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
-            Selects select = new Selects();
-            ViewBag.categoria = select.getCategoriasCliente(user.usuario_conta_id, true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
+            //Selects select = new Selects();
+            //ViewBag.categoria = select.getCategoriasCliente(user.usuario_conta_id, true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
 
             Vm_ccm ccm = new Vm_ccm();
             filtro f = new filtro();

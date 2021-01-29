@@ -624,5 +624,85 @@ namespace gestaoContadorcomvc.Models
 
             return retorno;
         }
+
+        //Listar categorias cliente
+        public List<Vm_categoria> listaCategoriasPorTermo(int conta_id, string termo)
+        {
+            List<Vm_categoria> categorias = new List<Vm_categoria>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {                
+                comando.CommandText = "SELECT * from categoria as c WHERE c.categoria_conta_id = @conta_id and c.categoria_status = 'Ativo' and (c.categoria_classificacao LIKE concat(@termo,'%') or c.categoria_nome LIKE concat(@termo,'%'));";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@termo", termo);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Vm_categoria categoria = new Vm_categoria();
+
+                        if (DBNull.Value != leitor["categoria_id"])
+                        {
+                            categoria.categoria_id = Convert.ToInt32(leitor["categoria_id"]);
+                        }
+                        else
+                        {
+                            categoria.categoria_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["categoria_conta_id"])
+                        {
+                            categoria.categoria_conta_id = Convert.ToInt32(leitor["categoria_conta_id"]);
+                        }
+                        else
+                        {
+                            categoria.categoria_conta_id = 0;
+                        }
+                        if (DBNull.Value != leitor["categoria_dataCriacao"])
+                        {
+                            categoria.categoria_dataCriacao = Convert.ToDateTime(leitor["categoria_dataCriacao"]);
+                        }
+                        else
+                        {
+                            categoria.categoria_dataCriacao = new DateTime();
+                        }
+                        categoria.categoria_classificacao = leitor["categoria_classificacao"].ToString();
+                        categoria.categoria_nome = leitor["categoria_nome"].ToString();
+                        categoria.categoria_tipo = leitor["categoria_tipo"].ToString();
+                        categoria.categoria_escopo = leitor["categoria_escopo"].ToString();
+                        categoria.categoria_status = leitor["categoria_status"].ToString();
+                        categoria.categoria_requer_provisao = leitor["categoria_requer_provisao"].ToString();
+                        categoria.categoria_conta_contabil = leitor["categoria_conta_contabil"].ToString();     
+
+                        categorias.Add(categoria);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                string t = e.ToString();               
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return categorias;
+        }
     }
 }

@@ -3595,7 +3595,7 @@ function gravarLancamentoCCM(contexto) {
         let ccm_data_competencia = document.getElementById('ccm_data_competencia').value;
         let valor = document.getElementById('ccm_valor').value;
         let memorando = document.getElementById('ccm_memorando').value;
-        let categoria_id = document.getElementById('categoria_id').value;
+        let categoria_id = document.getElementById('categoria_id_ccm').value;
         let ccm_participante_id = document.getElementById('ccm_participante_id').value;
         let ccorrente_id = document.getElementById('ccorrente_id').value;
         let ccm_nf = document.getElementById('nf_ccm').checked;
@@ -3678,7 +3678,9 @@ function consultaParticipanteCCM(id) {
                 type: 'POST',
                 dataType: 'json',
                 beforeSend: function (XMLHttpRequest) {
-
+                    if (document.getElementById('pesquisa_participante')) {
+                        document.getElementById('pesquisa_participante').innerHTML = 'pesquisando...';
+                    }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     alert("erro");
@@ -3703,6 +3705,10 @@ function consultaParticipanteCCM(id) {
         },
         minLength: 3,
         select: function (event, ui) {
+            if (document.getElementById('pesquisa_participante')) {
+                document.getElementById('pesquisa_participante').innerHTML = '';
+            }
+
             if (document.getElementById('ccm_participante_id')) {
                 document.getElementById('ccm_participante_id').value = ui.item.id;
             }
@@ -3711,10 +3717,11 @@ function consultaParticipanteCCM(id) {
             }
 
             //Atribuindo a categoria no select2
+            /*
             if (document.getElementById('categoria_id')) {
                 $('#categoria_id').val(ui.item.categoria_id.toString());
                 $('#categoria_id').trigger('change');
-            }
+            }*/
 
             //Desabilitando o campo para nova inclusão de participante;
             if (document.getElementById('participante')) {
@@ -4330,6 +4337,74 @@ $(document).ready(function () {
         });
     });
 })
+
+//Autocomplete lista de categoria
+function consultaCategoria(id) {
+    let id_campo = "#" + id;
+    $(id_campo).autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Categoria/GerarCategorias",
+                data: { __RequestVerificationToken: gettoken(), termo: request.term },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    if (document.getElementById('pesquisa_categoria')) {
+                        document.getElementById('pesquisa_categoria').innerHTML = 'pesquisando...';
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("erro");
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    if (document.getElementById('pesquisa_categoria')) {
+                        document.getElementById('pesquisa_categoria').innerHTML = '';
+                    }
+
+                    var results = JSON.parse(data);
+                    console.log(results);
+
+                    var autocompleteObjects = [];
+                    for (var i = 0; i < results.length; i++) {
+                        var object = {
+                            value: results[i].categoria_nome,
+                            label: results[i].categoria_classificacao + " - " + results[i].categoria_nome,
+                            id: results[i].categoria_id,
+                            tipo: results[i].categoria_tipo,                           
+                        };
+                        autocompleteObjects.push(object);
+                    }
+
+                    // Invoke the response callback.
+                    response(autocompleteObjects);
+                }
+            });
+        },
+        minLength: 3,
+        select: function (event, ui) {
+            if (document.getElementById('categoria_id_ccm')) {
+                document.getElementById('categoria_id_ccm').value = ui.item.id;
+            }  
+
+            //Desabilitando o campo para nova inclusão de participante;
+            if (document.getElementById('categoria')) {
+                document.getElementById('categoria').setAttribute("disabled", "disabled");
+            }
+        }
+    });
+}
+
+function alteraCategoriaCCM() {
+    if (document.getElementById('categoria_id_ccm')) {
+        document.getElementById('categoria_id_ccm').value = '';
+    }
+    if (document.getElementById('categoria')) {
+        document.getElementById('categoria').removeAttribute("disabled");
+        document.getElementById('categoria').value = '';
+        document.getElementById('categoria').focus();
+    }
+}
+
 
 
 

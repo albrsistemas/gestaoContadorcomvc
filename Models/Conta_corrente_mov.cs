@@ -25,6 +25,7 @@ namespace gestaoContadorcomvc.Models
         public string ccm_memorando { get; set; }
         public string ccm_origem { get; set; }
         public int ccm_participante_id { get; set; }
+        public int ccm_categoria_id { get; set; }
         public Decimal ccm_multa { get; set; }
         public Decimal ccm_juros { get; set; }
         public Decimal ccm_valor_principal { get; set; }

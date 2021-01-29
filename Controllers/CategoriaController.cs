@@ -11,6 +11,7 @@ using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
 {
@@ -295,7 +296,21 @@ namespace gestaoContadorcomvc.Controllers
             bool existe = categoria.classificacaoExiste(categoria_classificacao, user.usuario_conta_id);
 
             return Json(!existe);
-        }      
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GerarCategorias(string  termo)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Categoria c = new Categoria();
+            List<Vm_categoria> lista = new List<Vm_categoria>();
+            lista = c.listaCategoriasPorTermo(user.usuario_conta_id, termo);
+
+            return Json(JsonConvert.SerializeObject(lista));
+        }
     }
 }
