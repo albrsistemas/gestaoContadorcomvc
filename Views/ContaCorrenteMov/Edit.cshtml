@@ -90,7 +90,7 @@
                         <div class="col-12">
                             <label class="control-label">Categoria</label>
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control form-control-sm" name="categoria" id="categoria" autocomplete="off" onkeyup="consultaCategoria(this.id)" aria-label="categoria" aria-describedby="categoria">
+                                <input type="text" asp-for="categoria_nome" disabled class="form-control form-control-sm" name="categoria" id="categoria" autocomplete="off" onkeyup="consultaCategoria(this.id)" aria-label="categoria" aria-describedby="categoria">
                                 <div class="input-group-append">
                                     <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_categoria" onclick="alteraCategoriaCCM()">
                                         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +98,7 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <input type="hidden" name="categoria_id_ccm" id="categoria_id_ccm" /> <!--ID da categoria-->
+                                <input type="hidden" asp-for="ccm_contra_partida_id" name="categoria_id" id="categoria_id_ccm" /> <!--ID da categoria-->
                             </div>
                             <span class="text-info" id="pesquisa_categoria"></span>
                         </div>

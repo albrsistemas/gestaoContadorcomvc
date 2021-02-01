@@ -4361,8 +4361,7 @@ function consultaCategoria(id) {
                         document.getElementById('pesquisa_categoria').innerHTML = '';
                     }
 
-                    var results = JSON.parse(data);
-                    console.log(results);
+                    var results = JSON.parse(data);                    
 
                     var autocompleteObjects = [];
                     for (var i = 0; i < results.length; i++) {
@@ -4382,13 +4381,18 @@ function consultaCategoria(id) {
         },
         minLength: 3,
         select: function (event, ui) {
-            if (document.getElementById('categoria_id_ccm')) {
-                document.getElementById('categoria_id_ccm').value = ui.item.id;
-            }  
-
-            //Desabilitando o campo para nova inclusão de participante;
-            if (document.getElementById('categoria')) {
-                document.getElementById('categoria').setAttribute("disabled", "disabled");
+            if (ui.item.tipo == 'Sintetica') {
+                alert('Não é permitido informar uma categoria do tipo Grupo');
+                document.getElementById('categoria').value = '';
+                document.getElementById('categoria').focus();
+            } else {
+                if (document.getElementById('categoria_id_ccm')) {
+                    document.getElementById('categoria_id_ccm').value = ui.item.id;
+                }
+                //Desabilitando o campo para nova inclusão de participante;
+                if (document.getElementById('categoria')) {
+                    document.getElementById('categoria').setAttribute("disabled", "disabled");
+                }
             }
         }
     });

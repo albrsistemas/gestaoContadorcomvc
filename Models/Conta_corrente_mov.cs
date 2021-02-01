@@ -211,7 +211,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT ccm.*, participante.participante_nome , COALESCE(nf.ccm_nf_id, 0) as nota ,nf.* from conta_corrente_mov as ccm left JOIN ccm_nf as nf on nf.ccm_nf_ccm_id = ccm.ccm_id LEFT JOIN participante on participante.participante_id = ccm.ccm_participante_id WHERE ccm.ccm_id = @ccm_id and ccm.ccm_conta_id = @conta_id;";
+                comando.CommandText = "SELECT COALESCE(participante.participante_nome, 'Não Informado') as participante_nome, COALESCE(categoria.categoria_nome,'Não Informado') as categoria_nome, ccm.*, COALESCE(nf.ccm_nf_id, 0) as nota ,nf.* from conta_corrente_mov as ccm left JOIN ccm_nf as nf on nf.ccm_nf_ccm_id = ccm.ccm_id LEFT JOIN participante on participante.participante_id = ccm.ccm_participante_id LEFT JOIN categoria on categoria.categoria_id = ccm.ccm_contra_partida_id WHERE ccm.ccm_id = @ccm_id and ccm.ccm_conta_id = @conta_id and ccm.ccm_origem = 'CCM';";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@ccm_id", ccm_id);                
                 Transacao.Commit();
@@ -254,6 +254,7 @@ namespace gestaoContadorcomvc.Models
                         vm.ccm_memorando = leitor["ccm_memorando"].ToString();
                         vm.ccm_origem = leitor["ccm_origem"].ToString();
                         vm.participante_nome = leitor["participante_nome"].ToString();
+                        vm.categoria_nome = leitor["categoria_nome"].ToString();
 
                         if (DBNull.Value != leitor["ccm_participante_id"])
                         {
