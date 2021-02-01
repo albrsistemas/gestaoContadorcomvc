@@ -115,7 +115,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
             try
             {
                 conn.Open();
-                MySqlCommand comando = new MySqlCommand("select usuario_user from usuario where usuario_user = md5(@user) and usuario_id <> @usuario_id", conn);
+                MySqlCommand comando = new MySqlCommand("select usuario_user from usuario where usuario.usuario_status = 'Ativo' AND usuario_user = md5(@user) and usuario_id <> @usuario_id", conn);
                 comando.Parameters.AddWithValue("@user", usuario_user);
                 comando.Parameters.AddWithValue("@usuario_id", usuario_id);
                 var leitor = comando.ExecuteReader();
@@ -144,7 +144,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
             try
             {
                 conn.Open();
-                MySqlCommand comando = new MySqlCommand("select usuario_email from usuario where usuario_email = @email and usuario_id <> @usuario_id", conn);
+                MySqlCommand comando = new MySqlCommand("select usuario_email from usuario where usuario.usuario_status = 'Ativo' AND usuario_email = @email and usuario_id <> @usuario_id", conn);
                 comando.Parameters.AddWithValue("@email", conta_email);
                 comando.Parameters.AddWithValue("@usuario_id", usuario_id);
                 var leitor = comando.ExecuteReader();

@@ -1750,7 +1750,7 @@
             }
 
             //Comparando total retenções informada na parcela com as retençções em operacao.retencoers
-            if (total_retencoes != (convertStringDouble(operacao.retencoes.op_ret_inss) + convertStringDouble(operacao.retencoes.op_ret_irrf) + convertStringDouble(operacao.retencoes.op_ret_issqn) + convertStringDouble(operacao.retencoes.op_ret_pis) + convertStringDouble(operacao.retencoes.op_ret_cofins) + convertStringDouble(operacao.retencoes.op_ret_csll))) {
+            if (convertStringDouble(total_retencoes.toFixed(2)) != (convertStringDouble(operacao.retencoes.op_ret_inss) + convertStringDouble(operacao.retencoes.op_ret_irrf) + convertStringDouble(operacao.retencoes.op_ret_issqn) + convertStringDouble(operacao.retencoes.op_ret_pis) + convertStringDouble(operacao.retencoes.op_ret_cofins) + convertStringDouble(operacao.retencoes.op_ret_csll))) {
                 t += 'Total das retenções nas parcelas difere do todas das retenções;';
             }
         } else {

@@ -1,0 +1,35 @@
+﻿@model gestaoContadorcomvc.Models.Memorando
+
+@{
+    ViewData["Title"] = "Memorando";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Novo Memorando</h2>
+<hr class="hrLine" />
+
+<form asp-controller="Memorando" asp-action="Create" id="form">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-12 col-md-3">
+            <div class="form-group">
+                <label asp-for="memorando_codigo" class="control-label"></label>
+                <input asp-for="memorando_codigo" class="form-control" />
+                <span asp-validation-for="memorando_codigo" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-12 col-md-9">
+            <div class="form-group">
+                <label asp-for="memorando_descricao" class="control-label"></label>
+                <input asp-for="memorando_descricao" class="form-control" />
+                <span asp-validation-for="memorando_descricao" class="text-danger"></span>
+            </div>
+        </div>
+    </div>   
+
+    <br />
+
+    <button type="submit" class="btn btn-info" id="sub_form" onclick="blockSubmit(this.id,'form')">Gravar</button>
+    <a class="btn btn-secondary" asp-controller="Memorando" asp-action="Index">Cancelar</a>
+    <br /><span class="text-info" id="msg_blockSubmit"></span>
+</form>

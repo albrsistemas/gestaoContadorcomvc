@@ -34,7 +34,7 @@
         }
 
         @{
-            if (usuario.Role == "adm" || usuario._permissoes.compraList)
+            if (usuario.Role == "adm" || usuario._permissoes.operacaoList || usuario._permissoes.CCMList || usuario._permissoes.contasFList)
             {
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -62,7 +62,7 @@
             }
         }
         @{
-            if (usuario.Role == "adm" || usuario._permissoes.ContasPList || usuario._permissoes.CCMList)
+            if (usuario.Role == "adm" || usuario._permissoes.ContasPList || usuario._permissoes.ContasRList)
             {
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

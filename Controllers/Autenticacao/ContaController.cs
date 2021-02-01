@@ -109,8 +109,9 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
                 var propriedadesDeAutenticacao = new AuthenticationProperties
                 {
                     AllowRefresh = true,
+                    IssuedUtc = DateTime.Now,
                     ExpiresUtc = DateTime.Now.ToLocalTime().AddHours(4),
-                    IsPersistent = true
+                    IsPersistent = true,
                 };                
 
                 //cria o cookie

@@ -76,7 +76,7 @@
                 <fieldset>
                     <legend>Dados da conta</legend>
                     <div class="form-group">
-                        <select asp-for="conta_tipo" class="form-control">
+                        <select asp-for="conta_tipo" class="form-control" onchange="registro_change_tipo(this.id, this.value)">
                             <option value="Pessoa Física">Pessoa Física</option>
                             <option value="Empresa" selected>Empresas</option>
                             <option value="Entidade">Entidade</option>
@@ -84,7 +84,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <input asp-for="conta_dcto" class="form-control" placeholder="CNPJ" />
+                        <input asp-for="conta_dcto" class="form-control" placeholder="CNPJ" id="conta_dcto" />
                         <span asp-validation-for="conta_dcto" class="text-danger"></span>
                     </div>
                     <div class="form-group">

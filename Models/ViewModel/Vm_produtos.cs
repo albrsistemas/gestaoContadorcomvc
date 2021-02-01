@@ -11,10 +11,12 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public int produtos_id { get; set; }
 
         [Display(Name = "Código")]
-        [Required(ErrorMessage = "O nome é obrigatório.")]
+        [StringLength(20, ErrorMessage = "Màxio de 20 caracteres")]
         public string produtos_codigo { get; set; }
 
         [Display(Name = "Nome")]
+        [Required(ErrorMessage = "O nome é obrigatório.")]
+        [StringLength(100, ErrorMessage = "Màxio de 100 caracteres")]
         public string produtos_nome { get; set; }
 
         [Display(Name = "Data Cadastro")]
@@ -27,6 +29,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string produtos_status { get; set; }
 
         [Display(Name = "Unidade")]
+        [StringLength(10, ErrorMessage = "Màxio de 10 caracteres")]
         public string produtos_unidade { get; set; }
 
         [Display(Name = "Preço Venda")]
@@ -34,9 +37,11 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public Decimal produtos_preco_venda { get; set; }
 
         [Display(Name = "GTIN/EAN")]
+        [StringLength(20, ErrorMessage = "Màxio de 20 caracteres")]
         public string produtos_gtin_ean { get; set; }
 
         [Display(Name = "GTIN/EAN Tributário")]
+        [StringLength(20, ErrorMessage = "Màxio de 20 caracteres")]
         public string produtos_gtin_ean_trib { get; set; }
 
         [Display(Name = "Estoque Mínimo")]

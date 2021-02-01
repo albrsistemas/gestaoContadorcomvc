@@ -4409,6 +4409,14 @@ function alteraCategoriaCCM() {
     }
 }
 
+function registro_change_tipo(id, vlr) {
+    if (vlr == 'Pessoa Física') {
+        $('#conta_dcto').attr({ placeholder: "CPF" });        
+    } else {
+        $('#conta_dcto').attr({ placeholder: "CNPJ" });
+    }
+}
+
 
 
 

@@ -60,6 +60,7 @@ namespace gestaoContadorcomvc
                 config.Cookie.Name = "UserLoginCookie";
                 config.LoginPath = "/Conta/Login";
                 config.AccessDeniedPath = "/Conta/AccessDeniedPath";
+                config.ExpireTimeSpan = TimeSpan.FromHours(4);                
             });
 
 

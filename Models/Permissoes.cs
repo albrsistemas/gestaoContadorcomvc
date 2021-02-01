@@ -115,6 +115,12 @@ namespace gestaoContadorcomvc.Models
         public bool operacaoEdit { get; set; }
         public bool operacaoDelete { get; set; }
 
+        //Memorando
+        public bool memorandoList { get; set; }
+        public bool memorandoCreate { get; set; }
+        public bool memorandoEdit { get; set; }
+        public bool memorandoDelete { get; set; }
+
 
 
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -503,6 +509,11 @@ namespace gestaoContadorcomvc.Models
                         permissao.servicoTCreate = Convert.ToBoolean(leitor["servicoTCreate"]);
                         permissao.servicoTEdit = Convert.ToBoolean(leitor["servicoTEdit"]);
                         permissao.servicoTDelete = Convert.ToBoolean(leitor["servicoTDelete"]);
+                        //01/02/2021
+                        permissao.operacaoList = Convert.ToBoolean(leitor["operacaoList"]);
+                        permissao.operacaoCreate = Convert.ToBoolean(leitor["operacaoCreate"]);
+                        permissao.operacaoEdit = Convert.ToBoolean(leitor["operacaoEdit"]);
+                        permissao.operacaoDelete = Convert.ToBoolean(leitor["operacaoDelete"]);
                     }
                 }
             }

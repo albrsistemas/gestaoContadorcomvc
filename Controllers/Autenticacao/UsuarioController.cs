@@ -55,7 +55,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             Vm_usuario user = new Vm_usuario();
             user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
-            string retorno = "Erro ao cadastrar usuário, tente novamente. Se persistir entre em contato com o suporte !";
+            string retorno = "";
 
             try
             {
@@ -67,9 +67,14 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             }
             catch
             {
+                if(retorno == "")
+                {
+                    retorno = "Erro ao cadastrar usuário, tente novamente. Se persistir entre em contato com o suporte!";
+                }
+
                 TempData["novoUsuario"] = retorno;
 
-                return View();
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -102,15 +107,26 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             Vm_usuario usuarioEdit = new Vm_usuario();
             usuarioEdit = usuario.BuscaUsuario(id);
 
+            string retorno = "";
+
             try
             {
-                TempData["editUsuario"] = usuario.alteraUsuario(dados["usuario_nome"], dados["usuario_dcto"], user.usuario_conta_id, dados["usuario_email"], dados["permissoes"], id, user.usuario_id, vm_user._permissoes);
-                
+                retorno =  usuario.alteraUsuario(dados["usuario_nome"], dados["usuario_dcto"], user.usuario_conta_id, dados["usuario_email"], dados["permissoes"], id, user.usuario_id, vm_user._permissoes);
+
+                TempData["editUsuario"] = retorno;
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View(usuarioEdit);
+                if(retorno == "")
+                {
+                    retorno = "Erro ao cadastrar usuário, tente novamente. Se persistir entre em contato com o suporte!";
+                }
+
+                TempData["editUsuario"] = retorno;
+
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -152,7 +168,8 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             }
             catch
             {
-                return View(usuarioDelete);
+                TempData["deleteUsuario"] = "Erro. Ocorreu um erro ao tentar apagar o usuário. Tente novamente. Se persistir, entre em contato com o suporte!";
+                return RedirectToAction(nameof(Index));
             }
         }
 
