@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
 {
@@ -71,14 +72,14 @@ namespace gestaoContadorcomvc.Controllers
         }
 
         [Autoriza(permissao = "memorandoEdit")]
-        public ActionResult Edit(int memorando_id)
+        public ActionResult Edit(int id)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
             user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             Memorando m = new Memorando();
-            m = m.buscaMemorando(user.usuario_conta_id, user.usuario_id, memorando_id);
+            m = m.buscaMemorando(user.usuario_conta_id, user.usuario_id, id);
             m.user = user;
 
             return View(m);
@@ -118,14 +119,14 @@ namespace gestaoContadorcomvc.Controllers
         }
 
         [Autoriza(permissao = "memorandoDelete")]
-        public ActionResult Delete(int memorando_id)
+        public ActionResult Delete(int id)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
             user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
 
             Memorando m = new Memorando();
-            m = m.buscaMemorando(user.usuario_conta_id, user.usuario_id, memorando_id);
+            m = m.buscaMemorando(user.usuario_conta_id, user.usuario_id, id);
             m.user = user;
 
             return View(m);
@@ -163,5 +164,36 @@ namespace gestaoContadorcomvc.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
+        //Verificar se código do memorando existe
+        public IActionResult codigoMemorandoExiste(string memorando_codigo, int memorando_id)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Memorando m = new Memorando();
+            bool existe = m.codigoMemorandoExiste(memorando_codigo, memorando_id, user.usuario_conta_id);
+
+            return Json(!existe);
+        }
+
+        //Consulta memorando (autocomplete)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult consultaMemorando(IFormCollection d)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+
+            Memorando m = new Memorando();
+            List<Memorando> l = new List<Memorando>();
+
+            l = m.listMemorandoPorTermo(user.usuario_conta_id, d["termo"]);
+
+            return Json(JsonConvert.SerializeObject(l));
+        }
+
     }
 }

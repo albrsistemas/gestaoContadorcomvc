@@ -125,7 +125,7 @@
     <p><span style="color:red;font-weight:bold;">As informações estão filtradas. Clique para limpar o filtro</span> <span><a asp-controller="ContasReceber" asp-action="Index">Limpar Filtros</a></span></p>
     }
 }
-<input type="text" id="myInput" value="" placeholder="Pesquisa" class="form-control form-control-sm pesquisa" style="max-width:100%;margin-bottom: 20px;" />
+<input type="text" id="myInput_datatables" value="" placeholder="Pesquisa" class="form-control form-control-sm pesquisa" style="max-width:100%;margin-bottom: 20px;" />
 <div class="table-responsive">
     <table class="table table-sm" id="myTable" style="width:100%">        
         <thead>
@@ -142,7 +142,7 @@
                 <th scope="col" style="min-width: 300px">Forma Pagamento</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="myTable_body">
             @{
                 int i = 1;
                 foreach (var item in Model.contasReceber)

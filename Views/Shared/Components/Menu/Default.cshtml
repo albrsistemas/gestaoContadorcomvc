@@ -9,7 +9,7 @@
         {
     <ul class="navbar-nav">
         @{
-            if (usuario.Role == "adm" || usuario._permissoes.usuarioList || usuario._permissoes.categoriaList || usuario._permissoes.ccorrenteList || usuario._permissoes.fpList || usuario._permissoes.participanteList || usuario._permissoes.produtosList)
+            if (usuario.Role == "adm" || usuario._permissoes.usuarioList || usuario._permissoes.categoriaList || usuario._permissoes.ccorrenteList || usuario._permissoes.fpList || usuario._permissoes.participanteList || usuario._permissoes.produtosList || usuario._permissoes.memorandoList)
             {
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -24,6 +24,8 @@
                         {<a class="dropdown-item" asp-controller='ContaCorrente' asp-action='Index'>Conta Corrente</a>}
                         @if (usuario.Role == "adm" || usuario._permissoes.fpList)
                         {<a class="dropdown-item" asp-controller='FormaPagamento' asp-action='Index'>Formas de Pagamento</a>}
+                        @if (usuario.Role == "adm" || usuario._permissoes.memorandoList)
+                        {<a class="dropdown-item" asp-controller='Memorando' asp-action='Index'>Memorando</a>}
                         @if (usuario.Role == "adm" || usuario._permissoes.participanteList)
                         {<a class="dropdown-item" asp-controller='Participante' asp-action='Index'>Participante</a>}
                         @if (usuario.Role == "adm" || usuario._permissoes.produtosList)

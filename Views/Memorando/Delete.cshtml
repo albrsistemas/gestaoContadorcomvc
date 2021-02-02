@@ -14,10 +14,10 @@
                 <p><strong>Código: </strong>@Model.memorando_codigo</p>
                 <p><strong>Descrição: </strong>@Model.memorando_descricao</p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <form asp-controller="Memorando" asp-action="Delete" manifest="form">
-                    <input type="hidden" value="@Model.memorando_id" name="memorando_id" />
+            <div class="modal-footer">                
+                <form asp-controller="Memorando" asp-action="Delete" id="form">
+                    <input type="hidden" asp-for="memorando_id" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-danger" id="sub_form" onclick="blockSubmit(this.id,'form')">Apagar</button>
                     <br /><span class="text-info" id="msg_blockSubmit"></span>
                 </form>

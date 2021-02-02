@@ -1,5 +1,6 @@
 ﻿using gestaoContadorcomvc.Models.SoftwareHouse;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Asn1.Crmf;
@@ -17,7 +18,8 @@ namespace gestaoContadorcomvc.Models
 
         [Display(Name = "Código")]
         [Required(ErrorMessage = "O código é obrigatório.")]
-        [StringLength(10, MinimumLength = 1, ErrorMessage = "Mínimo de 1 caracter e máximo de 10")]
+        [StringLength(10, MinimumLength = 3, ErrorMessage = "Mínimo de 3 caracteres e máximo de 10")]
+        [Remote("codigoMemorandoExiste", "Memorando", AdditionalFields = "memorando_id", ErrorMessage = "Código do memorando já existe")]
         public string memorando_codigo { get; set; }
 
         [Display(Name = "Descrição")]
@@ -46,7 +48,7 @@ namespace gestaoContadorcomvc.Models
         //objeto de log para uso nos métodos
         Log log = new Log();
 
-        //Lista de conta corrente
+        //Lista de memorando
         public List<Memorando> listMemorando(int conta_id, int usuario_id)
         {
             List<Memorando> memorandos = new List<Memorando>();
@@ -248,7 +250,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "UPDATE conta_corrente set ccorrente_nome = @ccorrente_nome, ccorrente_tipo = @ccorrente_tipo, ccorrente_saldo_abertura = @ccorrente_saldo_abertura, ccorrente_masc_contabil = @ccorrente_masc_contabil, ccorrente_status = @ccorrente_status WHERE ccorrente_id = @ccorrente_id and ccorrente_conta_id = @ccorrente_conta_id;";
+                comando.CommandText = "UPDATE memorando set memorando.memorando_codigo = @memorando_codigo, memorando.memorando_descricao = @memorando_descricao WHERE memorando.memorando_id = @memorando_id and memorando.memorando_conta_id = @memorando_conta_id;";
                 comando.Parameters.AddWithValue("@memorando_codigo", memorando_codigo);
                 comando.Parameters.AddWithValue("@memorando_descricao", memorando_descricao);
                 comando.Parameters.AddWithValue("@memorando_id", memorando_id);
@@ -299,7 +301,7 @@ namespace gestaoContadorcomvc.Models
             {
                 comando.CommandText = "DELETE from memorando WHERE memorando.memorando_id = @memorando_id and memorando.memorando_conta_id = @conta_id;";
                 comando.Parameters.AddWithValue("@memorando_id", memorando_id);
-                comando.Parameters.AddWithValue("@memorando_conta_id", conta_id);
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -323,6 +325,104 @@ namespace gestaoContadorcomvc.Models
             }
 
             return retorno;
+        }
+
+        //Verificando se código memorando eciste
+        public bool codigoMemorandoExiste(string memorando_codigo, int memorando_id, int conta_id)
+        {
+            bool localizado = false;
+            try
+            {
+                conn.Open();
+                MySqlCommand comando = new MySqlCommand("SELECT memorando.memorando_codigo from memorando WHERE memorando.memorando_codigo = @memorando_codigo and memorando.memorando_id <> @memorando_id and memorando.memorando_conta_id = @memorando_conta_id;", conn);
+                comando.Parameters.AddWithValue("@memorando_codigo", memorando_codigo);
+                comando.Parameters.AddWithValue("@memorando_id", memorando_id);
+                comando.Parameters.AddWithValue("@memorando_conta_id", conta_id);
+                var leitor = comando.ExecuteReader();
+                localizado = leitor.HasRows;
+                conn.Clone();
+            }
+            catch (Exception e)
+            {
+                string erro = e.ToString();
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return localizado;
+        }
+
+        //Lista de memorando por termo
+        public List<Memorando> listMemorandoPorTermo(int conta_id, string termo)
+        {
+            List<Memorando> memorandos = new List<Memorando>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from memorando WHERE memorando.memorando_conta_id = @conta_id and (memorando.memorando_codigo like concat(@termo,'%') or memorando.memorando_descricao like concat(@termo,'%'));";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@termo", termo);
+                comando.ExecuteNonQuery();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Memorando memorando = new Memorando();
+
+                        if (DBNull.Value != leitor["memorando_id"])
+                        {
+                            memorando.memorando_id = Convert.ToInt32(leitor["memorando_id"]);
+                        }
+                        else
+                        {
+                            memorando.memorando_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["memorando_conta_id"])
+                        {
+                            memorando.memorando_conta_id = Convert.ToInt32(leitor["memorando_conta_id"]);
+                        }
+                        else
+                        {
+                            memorando.memorando_conta_id = 0;
+                        }
+
+                        memorando.memorando_codigo = leitor["memorando_codigo"].ToString();
+                        memorando.memorando_descricao = leitor["memorando_descricao"].ToString();
+
+                        memorandos.Add(memorando);
+                    }
+
+                }
+            }
+            catch (Exception)
+            {
+                
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return memorandos;
         }
 
     }

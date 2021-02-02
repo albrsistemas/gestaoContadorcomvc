@@ -52,8 +52,9 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label class="control-label">Memorando</label>
-                                <textarea asp-for="memorando" id="memorando" rows="3" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '150','msg_obs')"></textarea>
+                                <textarea asp-for="memorando" id="memorando" rows="3" class="form-control" onkeyup="consultaMemorando(this.id, this.value, '150','msg_obs')"></textarea>
                                 <span class="text-info" id="msg_obs"></span>
+                                <span class="text-info" id="pesquisa_memorando"></span>
                                 <span asp-validation-for="memorando" class="text-danger"></span>
                             </div>
                         </div>

@@ -4338,6 +4338,16 @@ $(document).ready(function () {
     });
 })
 
+//Input pesquisa tabela
+$(document).ready(function () {
+    $("#myInput_datatables").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#myTable_body tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+})
+
 //Autocomplete lista de categoria
 function consultaCategoria(id) {
     let id_campo = "#" + id;
@@ -4415,6 +4425,65 @@ function registro_change_tipo(id, vlr) {
     } else {
         $('#conta_dcto').attr({ placeholder: "CNPJ" });
     }
+}
+
+//Autocomplete lista memorando
+function consultaMemorando(id,vlr,tamanho, id_input_msg) {
+    if (document.getElementById('ccm_memorando')) {
+        tamanhoDigitado('ccm_memorando', vlr, tamanho, id_input_msg);
+    }
+    if (document.getElementById('op_obs')) {
+        tamanhoDigitado('op_obs', vlr, tamanho, id_input_msg);
+    } 
+
+    let id_campo = "#" + id;
+    $(id_campo).autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Memorando/consultaMemorando",
+                data: { __RequestVerificationToken: gettoken(), termo: request.term },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    if (document.getElementById('pesquisa_memorando')) {
+                        document.getElementById('pesquisa_memorando').innerHTML = 'pesquisando...';
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("erro");
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    if (document.getElementById('pesquisa_memorando')) {
+                        document.getElementById('pesquisa_memorando').innerHTML = '';
+                    }
+
+                    var results = JSON.parse(data);
+
+                    var autocompleteObjects = [];
+                    for (var i = 0; i < results.length; i++) {
+                        var object = {
+                            value: results[i].memorando_descricao,
+                            label: results[i].memorando_codigo + " - " + results[i].memorando_descricao,
+                            id: results[i].memorando_id,                            
+                        };
+                        autocompleteObjects.push(object);
+                    }
+
+                    // Invoke the response callback.
+                    response(autocompleteObjects);
+                }
+            });
+        },
+        minLength: 3,
+        select: function (event, ui) {
+            if (document.getElementById('ccm_memorando')) {
+                document.getElementById('ccm_memorando').value = ui.item.value;
+            }
+            if (document.getElementById('op_obs')) {
+                document.getElementById('op_obs').value = ui.item.value;
+            } 
+        }
+    });
 }
 
 

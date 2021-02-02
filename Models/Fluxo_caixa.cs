@@ -19,6 +19,7 @@ namespace gestaoContadorcomvc.Models
         public int baixa_id { get; set; }
         public string contra_partida_tipo { get; set; }
         public string ccm_origem { get; set; }
+        public string categoria { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -88,26 +89,10 @@ namespace gestaoContadorcomvc.Models
                         vm_fc.saldo_movimentos = Convert.ToDecimal(movimentos["movimentos"]);
                     }
                 }
-                movimentos.Close();
-
-                string filter = "xccm.ccm_conta_id = @conta_id_3 and xccm.ccm_ccorrente_id = @contaCorrente_3 and xccm.ccm_data BETWEEN @dataInicial_3 AND @dataFinal";
-                if(tipoOperacao != 0)
-                {
-                    filter += " and op.op_tipo = @tipoOperacao";                    
-                }
-                if(participante_id != 0)
-                {
-                    filter += " and (xccm.ccm_contra_partida_tipo = 'Participante' and xccm.ccm_contra_partida_id = @participante_id)";                    
-                }
-                if(nOperacao != 0)
-                {
-                    filter += " and op.op_numero_ordem = @nOperacao";                    
-                }
-
-                string cmd = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, concat(xccm.ccm_memorando, '. ', COALESCE(op.op_obs,'')) as memorando, if(xccm.ccm_movimento = 'E', xccm.ccm_valor, -xccm.ccm_valor) as valor, xccm.ccm_op_id as op_id, op.op_tipo, op.op_numero_ordem, xccm.ccm_oppb_id as baixa_id, xccm.ccm_contra_partida_tipo as contra_partida_tipo, xccm.ccm_contra_partida_id, xccm.ccm_origem from conta_corrente_mov as xccm LEFT join operacao as op on op.op_id = xccm.ccm_op_id WHERE " + filter + " ORDER by xccm.ccm_data ASC;";
-                //Fluxo de lançamentos do período
-                //comando.CommandText = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, xccm.ccm_memorando as memorando, if(xccm.ccm_movimento = 'Recebimento', xccm.ccm_valor, -xccm.ccm_valor) as valor, xccm.ccm_op_id as op_id, xccm.ccm_oppb_id as baixa_id, xccm.ccm_contra_partida_tipo as contra_partida_tipo, xccm.ccm_contra_partida_id from conta_corrente_mov as xccm WHERE xccm.ccm_conta_id = @conta_id_3 and xccm.ccm_ccorrente_id = @contaCorrente_3 and xccm.ccm_data BETWEEN @dataInicial_3 AND @dataFinal ORDER by xccm.ccm_data ASC;";
-                comando.CommandText = cmd;
+                movimentos.Close();                
+                
+                //Fluxo de caixa                
+                comando.CommandText = "SELECT xccm.ccm_id as id, xccm.ccm_data as data, concat(xccm.ccm_memorando, '. ', COALESCE(op.op_obs,'')) as memorando, if(xccm.ccm_movimento = 'E', xccm.ccm_valor, -xccm.ccm_valor) as valor, xccm.ccm_op_id as op_id, op.op_tipo, op.op_numero_ordem, xccm.ccm_oppb_id as baixa_id, xccm.ccm_contra_partida_tipo as contra_partida_tipo, xccm.ccm_contra_partida_id, xccm.ccm_origem, (case WHEN xccm.ccm_origem = 'Baixa' THEN(SELECT categoria.categoria_nome from categoria WHERE categoria.categoria_id = (SELECT operacao.op_categoria_id from operacao WHERE operacao.op_id = xccm.ccm_op_id)) WHEN xccm.ccm_origem = 'CCM' THEN(SELECT categoria.categoria_nome from categoria WHERE categoria.categoria_id = xccm.ccm_contra_partida_id) WHEN xccm.ccm_origem = 'Transferencia' THEN 'Transferência'  END) as 'categoria' from conta_corrente_mov as xccm LEFT join operacao as op on op.op_id = xccm.ccm_op_id LEFT JOIN operacao as op_baixas on op_baixas.op_id = xccm.ccm_op_id WHERE xccm.ccm_conta_id = @conta_id_3 and xccm.ccm_ccorrente_id = @contaCorrente_3 and xccm.ccm_data BETWEEN @dataInicial_3 AND @dataFinal ORDER by xccm.ccm_data ASC;";
                 comando.Parameters.AddWithValue("@contaCorrente_3", contaCorrente);
                 comando.Parameters.AddWithValue("@conta_id_3", conta_id);
                 comando.Parameters.AddWithValue("@dataInicial_3", dataInicial);
@@ -191,6 +176,7 @@ namespace gestaoContadorcomvc.Models
 
                         fluxo_cx.contra_partida_tipo = fluxo["contra_partida_tipo"].ToString();
                         fluxo_cx.ccm_origem = fluxo["ccm_origem"].ToString();
+                        fluxo_cx.categoria = fluxo["categoria"].ToString();
 
                         fc.Add(fluxo_cx);
                     }

@@ -238,8 +238,9 @@
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
-                    <textarea asp-for="operacao.op_obs" id="op_obs" rows="3" class="form-control form-control-sm" onkeyup="tamanhoDigitado(this.id, this.value, '300','msg_obs')"></textarea>
+                    <textarea asp-for="operacao.op_obs" id="op_obs" rows="3" class="form-control form-control-sm" onkeyup="consultaMemorando(this.id, this.value, '300','msg_obs')"></textarea>
                     <span class="text-info" id="msg_obs"></span>
+                    <span class="text-info" id="pesquisa_memorando"></span>
                 </div>
             </div>
         </div>

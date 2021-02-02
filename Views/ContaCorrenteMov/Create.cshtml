@@ -113,8 +113,9 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label asp-for="ccm_memorando" class="control-label">Memorando</label>
-                                <textarea asp-for="ccm_memorando" id="ccm_memorando" rows="3" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '150','memorando')"></textarea>
+                                <textarea asp-for="ccm_memorando" id="ccm_memorando" rows="3" class="form-control" onkeyup="consultaMemorando(this.id, this.value, '150','memorando')"></textarea>
                                 <span class="text-info" id="memorando"></span>
+                                <span class="text-info" id="pesquisa_memorando"></span>
                             </div>
                         </div>
                     </div>
