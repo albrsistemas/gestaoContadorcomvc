@@ -20,7 +20,7 @@ namespace gestaoContadorcomvc.Controllers.Relatorios
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Categoria_opp copp = new Categoria_opp();
             copp.lista = null;
@@ -41,7 +41,7 @@ namespace gestaoContadorcomvc.Controllers.Relatorios
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 Categoria_opp copp = new Categoria_opp();
                 copp = copp.gerarRelatorio(user.usuario_conta_id, ano, visao, ignorarZeradas);

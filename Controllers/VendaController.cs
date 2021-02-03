@@ -22,7 +22,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Operacao operacao = new Operacao();
             Vm_operacao op = new Vm_operacao();
@@ -38,7 +38,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Selects select = new Selects();
             ViewBag.tipoPessoa = select.getTipoPessoa().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1" });
@@ -58,7 +58,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             string retorno = "";
 
@@ -83,7 +83,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Operacao op = new Operacao();
             Vm_operacao vm_op = new Vm_operacao();
@@ -107,7 +107,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Operacao op = new Operacao();
             Vm_operacao vm_op = new Vm_operacao();
@@ -140,7 +140,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Operacao op = new Operacao();
             Vm_operacao vm_op = new Vm_operacao();
@@ -162,7 +162,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 op.operacao.op_tipo = "Venda";
                 Operacao operacao = new Operacao();

@@ -121,6 +121,7 @@ namespace gestaoContadorcomvc
             app.UseAuthentication();
             app.UseAuthorization();
 
+
             //app.UseSession(); //Necessário para uso de sessão            
 
             app.UseEndpoints(endpoints =>

@@ -23,7 +23,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Participante participante = new Participante();
             Vm_participante vm_part = new Vm_participante();
@@ -40,7 +40,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
 
 
@@ -66,7 +66,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 if (!ModelState.IsValid)
                 {
@@ -96,7 +96,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Participante participante = new Participante();
             Vm_participante vm_part = new Vm_participante();
@@ -125,7 +125,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 if (!ModelState.IsValid)
                 {
@@ -157,7 +157,7 @@ namespace gestaoContadorcomvc.Controllers
             
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Vm_participante vm_part = new Vm_participante();
             vm_part = participante.buscarParticipantes(user.usuario_id, user.usuario_conta_id, id);
@@ -176,7 +176,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 TempData["msgParticipante"] = participante.deletarParticipante(user.usuario_id, user.usuario_conta_id, id);
 
@@ -196,7 +196,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Participante p = new Participante();
             List<Vm_participante> vm_p = new List<Vm_participante>();
@@ -210,7 +210,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Participante p = new Participante();
 

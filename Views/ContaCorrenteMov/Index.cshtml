@@ -105,9 +105,6 @@
                             <a class="dropdown-item createCCM" data-contacorrente_id="@TempData["contacorrente_id"].ToString()" data-dataInicio="@TempData["dataInicio"].ToString()" data-dataFim="@TempData["dataFim"].ToString()">Novo Lançamento</a>
                         }
                     }
-
-                    @*<a class="dropdown-item" href="#">Antecipação a cliente</a>
-                        <a class="dropdown-item" href="#">Antecipação a fornecedor</a>*@
                 </div>
             </div>
         </div>
@@ -202,6 +199,9 @@
                                 {
                                     <td style="white-space:nowrap;color:black;">@((saldo_anterior + item.valor).ToString("N2"))</td>
                                 }
+
+                                saldo_anterior = saldo_atual;
+
                             }
                             <td>
                                 @{

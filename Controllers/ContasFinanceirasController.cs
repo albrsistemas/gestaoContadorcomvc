@@ -22,7 +22,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             ContasFinanceiras cf = new ContasFinanceiras();
             Vm_contasFinanceiras vmcf = new Vm_contasFinanceiras();
@@ -37,7 +37,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Selects select = new Selects();
             ViewBag.tipoCtaFinaceira = select.getTipoCtaFinanceira().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Parcelada" });
@@ -63,7 +63,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 Selects select = new Selects();
                 ViewBag.tipoCtaFinaceira = select.getTipoCtaFinanceira().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Parcelada" });
@@ -95,7 +95,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             ContasFinanceiras cf = new ContasFinanceiras();
             Vm_contasFinanceiras vmcf = new Vm_contasFinanceiras();
@@ -150,7 +150,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 ContasFinanceiras cf = new ContasFinanceiras();
 
@@ -178,7 +178,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             ContasFinanceiras cf = new ContasFinanceiras();
 
@@ -205,7 +205,7 @@ namespace gestaoContadorcomvc.Controllers
 
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             try
             {
@@ -236,7 +236,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Selects select = new Selects();
             List<Selects> lista = new List<Selects>();
@@ -250,7 +250,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             ContasFinanceiras cf = new ContasFinanceiras();
             Vm_contasFinanceiras vmcf = new Vm_contasFinanceiras();
@@ -282,7 +282,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 Selects select = new Selects();
                 ViewBag.tipoCtaFinaceira = select.getTipoCtaFinanceira().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Parcelada" });

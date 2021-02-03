@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace gestaoContadorcomvc.Models.Autenticacao
 {
@@ -331,9 +333,12 @@ namespace gestaoContadorcomvc.Models.Autenticacao
         }
 
         //Busca um usuário por id
-        public Vm_usuario BuscaUsuario(int usuario_id)
+        public Vm_usuario BuscaUsuario(string identificacao)
         {
             Vm_usuario usuario = new Vm_usuario();
+            string[] i = identificacao.Split(';');
+            int usuario_id = Convert.ToInt32(i[0]);
+            int conta_id = Convert.ToInt32(i[1]);
 
             try
             {
@@ -351,6 +356,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                         usuario.usuario_nome = leitor["usuario_nome"].ToString();
                         usuario.usuario_email = leitor["usuario_email"].ToString();
                         usuario.usuario_dcto = leitor["usuario_dcto"].ToString();
+                        //usuario.usuario_conta_id = 5;
                         usuario.usuario_conta_id = Convert.ToInt32(leitor["usuario_conta_id"]);
                         usuario.usuario_id = Convert.ToInt32(leitor["usuario_id"]);
                         usuario.Role = leitor["Role"].ToString();
@@ -371,14 +377,15 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                 {
                     conn.Close();
                 }
-            }
+            }            
 
             Permissoes permissoes = new Permissoes();
             permissoes = permissoes.listaPermissoes(usuario_id);
             usuario._permissoes = permissoes;
 
             Conta conta = new Conta();
-            conta = conta.buscarConta(usuario.usuario_conta_id);
+            conta = conta.buscarConta(conta_id);
+            usuario.usuario_conta_id = conta.conta_id;
             usuario.conta = conta;
 
             return usuario;
@@ -856,6 +863,62 @@ namespace gestaoContadorcomvc.Models.Autenticacao
             }
 
             return retorno;
+        }
+
+        //Busca um usuário por id
+        public Vm_usuario BuscaUsuario_id(int usuario_id)
+        {
+            Vm_usuario usuario = new Vm_usuario();
+
+            try
+            {
+                conn.Open();
+                MySqlCommand comando = new MySqlCommand("SELECT * from usuario where usuario_id = @usuario_id;", conn);
+                comando.Parameters.AddWithValue("@usuario_id", usuario_id);
+
+                var leitor = comando.ExecuteReader();
+
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        usuario.usuario_nome = leitor["usuario_nome"].ToString();
+                        usuario.usuario_email = leitor["usuario_email"].ToString();
+                        usuario.usuario_dcto = leitor["usuario_dcto"].ToString();
+                        //usuario.usuario_conta_id = 5;
+                        usuario.usuario_conta_id = Convert.ToInt32(leitor["usuario_conta_id"]);
+                        usuario.usuario_id = Convert.ToInt32(leitor["usuario_id"]);
+                        usuario.Role = leitor["Role"].ToString();
+                        usuario.permissoes = leitor["usuario_permissoes"].ToString();
+                        usuario.usuario_ultimoCliente = leitor["usuario_ultimoCliente"].ToString();
+                    }
+                }
+
+                conn.Close();
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            Permissoes permissoes = new Permissoes();
+            permissoes = permissoes.listaPermissoes(usuario_id);
+            usuario._permissoes = permissoes;
+
+            Conta conta = new Conta();
+            conta = conta.buscarConta(usuario.usuario_conta_id);
+
+            usuario.conta = conta;
+
+            return usuario;
         }
 
 

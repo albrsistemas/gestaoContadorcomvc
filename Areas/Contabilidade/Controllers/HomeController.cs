@@ -17,7 +17,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Vm_home_contabilidade home = new Vm_home_contabilidade();
             home.user = user;

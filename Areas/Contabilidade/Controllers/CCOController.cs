@@ -31,7 +31,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
             Conta contexto = new Conta();
             contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
@@ -67,7 +67,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
             Conta contexto = new Conta();
             contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 
@@ -103,7 +103,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
                 Conta contexto = new Conta();
                 contexto = contexto.contextoCliente(Convert.ToInt32(user.usuario_ultimoCliente));
 

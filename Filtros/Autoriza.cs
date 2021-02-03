@@ -23,7 +23,8 @@ namespace gestaoContadorcomvc.Filtros
 
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(context.HttpContext.User.Identity.Name));
+            //user = usuario.BuscaUsuario(Convert.ToInt32(context.HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(context.HttpContext.User.Identity.Name);
 
             if (user == null || user.usuario_id == 0)
             {

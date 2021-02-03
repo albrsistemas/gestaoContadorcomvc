@@ -25,7 +25,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             PlanoContas planoContas = new PlanoContas();
 
@@ -43,7 +43,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             if (pc_id > 0 && planoContas_id > 0)
             {
@@ -60,7 +60,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             //Verificando o plano de contas
             PlanoContas planoContas = new PlanoContas();
@@ -100,7 +100,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             if (!ModelState.IsValid)
             {
@@ -156,7 +156,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             if (!ModelState.IsValid)
             {
@@ -186,7 +186,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             TempData["planoCategorias_id"] = planoCategorias_id;
             TempData["planoContas_id"] = planoContas_id;
@@ -219,7 +219,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             try
             {
@@ -254,7 +254,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             if (!ModelState.IsValid)
             {

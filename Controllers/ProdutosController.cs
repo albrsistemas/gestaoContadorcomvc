@@ -22,7 +22,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Produtos produto = new Produtos();
             Vm_produtos vm_prod = new Vm_produtos();
@@ -39,7 +39,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Selects select = new Selects();
             ViewBag.origem = select.getOrigemMercadoria().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
@@ -64,7 +64,7 @@ namespace gestaoContadorcomvc.Controllers
 
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
                 
                 vm_prod.produtos_nome = d["produtos_nome"];
                 vm_prod.produtos_codigo = d["produtos_codigo"];
@@ -117,7 +117,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Produtos produto = new Produtos();
             Vm_produtos vm_prod = new Vm_produtos();
@@ -144,7 +144,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 vm_prod.produtos_nome = d["produtos_nome"];
                 vm_prod.produtos_codigo = d["produtos_codigo"];
@@ -198,7 +198,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Produtos produto = new Produtos();
             Vm_produtos vm_prod = new Vm_produtos();
@@ -219,7 +219,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 TempData["msgProdutos"] = prod.deletarProduto(user.usuario_id, user.usuario_conta_id, produtos_id);
 
@@ -239,7 +239,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
             
             Produtos p = new Produtos();
             List<Vm_produtos> vm_p = new List<Vm_produtos>();

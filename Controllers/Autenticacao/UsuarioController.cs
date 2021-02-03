@@ -22,7 +22,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
             user.usuarios = usuario.listaUsuarios(user.usuario_conta_id, user.usuario_id);
 
             return View(user);
@@ -34,16 +34,16 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
         {
             ViewData["bread"] = "Usuário / Novo";
 
-            Usuario user = new Usuario();
-            Vm_usuario usuario = new Vm_usuario();
-            usuario = user.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
-            usuario.usuario_id = 0;
-            usuario.usuario_nome = "";
-            usuario.usuario_dcto = "";
-            usuario.usuario_email = "";
-            usuario.usuario_user = "";
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+            user.usuario_id = 0;
+            user.usuario_nome = "";
+            user.usuario_dcto = "";
+            user.usuario_email = "";
+            user.usuario_user = "";
 
-            return View(usuario);
+            return View(user);
         }
 
         // POST: UsuarioController/Create
@@ -53,7 +53,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             string retorno = "";
 
@@ -86,11 +86,11 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Vm_usuario usuarioEdit = new Vm_usuario();
 
-            usuarioEdit = usuario.BuscaUsuario(id);
+            usuarioEdit = usuario.BuscaUsuario_id(id);
 
             return View(usuarioEdit);
         }
@@ -102,10 +102,10 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Vm_usuario usuarioEdit = new Vm_usuario();
-            usuarioEdit = usuario.BuscaUsuario(id);
+            usuarioEdit = usuario.BuscaUsuario_id(id);
 
             string retorno = "";
 
@@ -138,11 +138,11 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Vm_usuario usuarioDelete = new Vm_usuario();
 
-            usuarioDelete = usuario.BuscaUsuario(id);
+            usuarioDelete = usuario.BuscaUsuario_id(id);
 
             return View(usuarioDelete);
             
@@ -155,10 +155,10 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Vm_usuario usuarioDelete = new Vm_usuario();
-            usuarioDelete = usuario.BuscaUsuario(id);
+            usuarioDelete = usuario.BuscaUsuario_id(id);
 
             try
             {
@@ -179,11 +179,11 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Vm_usuario us = new Vm_usuario();
 
-            us = usuario.BuscaUsuario(id);
+            us = usuario.BuscaUsuario_id(id);
 
             return View(us);
 
@@ -196,10 +196,10 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Vm_usuario editpw = new Vm_usuario();
-            editpw = usuario.BuscaUsuario(id);
+            editpw = usuario.BuscaUsuario_id(id);
 
             try
             {

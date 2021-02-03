@@ -109,7 +109,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
             
             Selects select = new Selects();
 
@@ -132,7 +132,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
                 usuario.ultimoCliente(cliente_id, user.usuario_id);
 
                 return Redirect(url);

@@ -21,7 +21,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Vm_op_parcelas_baixa vm_baixa = new Vm_op_parcelas_baixa();
             Op_parcelas_baixa b = new Op_parcelas_baixa();
@@ -46,7 +46,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 Vm_op_parcelas_baixa vm_baixa = new Vm_op_parcelas_baixa();
                 Op_parcelas_baixa b = new Op_parcelas_baixa();
@@ -71,7 +71,7 @@ namespace gestaoContadorcomvc.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Vm_op_parcelas_baixa vm_baixa = new Vm_op_parcelas_baixa();
             Op_parcelas_baixa b = new Op_parcelas_baixa();
@@ -101,7 +101,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 Vm_op_parcelas_baixa vm_baixa = new Vm_op_parcelas_baixa();
                 Op_parcelas_baixa b = new Op_parcelas_baixa();
@@ -132,7 +132,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 Vm_op_parcelas_baixa vm_baixa = new Vm_op_parcelas_baixa();
                 Op_parcelas_baixa b = new Op_parcelas_baixa();

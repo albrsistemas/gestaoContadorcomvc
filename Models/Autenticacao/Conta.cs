@@ -61,7 +61,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
 
             try
             {
-                comando.CommandText = "SELECT conta.*, cc.cc_conta_id_contador from conta LEFT join contacontabilidade as cc on cc.cc_id = conta.conta_contador where conta.conta_id = @conta_id";
+                comando.CommandText = "SELECT conta.*, COALESCE(cc.cc_conta_id_contador,0) as 'cc_conta_id_contador' from conta LEFT join contacontabilidade as cc on cc.cc_id = conta.conta_contador where conta.conta_id = @conta_id";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
@@ -131,7 +131,7 @@ namespace gestaoContadorcomvc.Models.Autenticacao
 
             try
             {
-                comando.CommandText = "Select * from conta where conta.conta_dcto = @dcto";
+                comando.CommandText = "Select conta.*, COALESCE(cc.cc_conta_id_contador,0) as 'cc_conta_id_contador' from conta LEFT join contacontabilidade as cc on cc.cc_id = conta.conta_contador where conta.conta_dcto = @dcto;";
                 comando.Parameters.AddWithValue("@dcto", dcto);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
@@ -158,6 +158,14 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                         else
                         {
                             conta.conta_contador = 0;
+                        }
+                        if (DBNull.Value != leitor["cc_conta_id_contador"])
+                        {
+                            conta.contador_id = Convert.ToInt32(leitor["cc_conta_id_contador"]);
+                        }
+                        else
+                        {
+                            conta.contador_id = 0;
                         }
                         conta.conta_dcto = leitor["conta_dcto"].ToString();
                         conta.conta_tipo = leitor["conta_tipo"].ToString();

@@ -17,7 +17,7 @@ namespace gestaoContadorcomvc.Components
 
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             string retorno = "";
 
@@ -272,7 +272,20 @@ namespace gestaoContadorcomvc.Components
                 if (pagina.Contains("Email/EmailFalhou"))
                 {
                     retorno = "E-mail Suporte - Falha";
-                }                
+                }
+                //Memorando
+                if (pagina.Contains("Memorando/Index"))
+                {
+                    retorno = "Memorando";
+                }
+                if (pagina.Contains("Memorando/Create"))
+                {
+                    retorno = "Incluir Memorando";
+                }
+                if (pagina.Contains("Memorando/Edit"))
+                {
+                    retorno = "Alterar Memorando";
+                }               
             }
 
             ViewData["openNav"] = openNav;

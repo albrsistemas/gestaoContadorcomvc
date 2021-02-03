@@ -26,7 +26,7 @@ namespace gestaoContadorcomvc.Controllers.GE
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Conta conta = new Conta();
             conta = conta.buscarConta(user.usuario_conta_id);
@@ -51,7 +51,7 @@ namespace gestaoContadorcomvc.Controllers.GE
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Conta empresa = new Conta();
             empresa = empresa.buscarConta(user.usuario_conta_id);
@@ -103,7 +103,7 @@ namespace gestaoContadorcomvc.Controllers.GE
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             if (!ModelState.IsValid)
             {
@@ -129,7 +129,7 @@ namespace gestaoContadorcomvc.Controllers.GE
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Conta empresa = new Conta();
             empresa = empresa.buscarConta(user.usuario_conta_id);
@@ -148,7 +148,7 @@ namespace gestaoContadorcomvc.Controllers.GE
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(Convert.ToInt32(HttpContext.User.Identity.Name));            
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);            
 
             if (!ModelState.IsValid)
             {

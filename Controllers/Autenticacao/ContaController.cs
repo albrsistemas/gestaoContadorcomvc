@@ -97,8 +97,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
                 var userClaims = new List<Claim>()
                 {
                     //definindo o cookie
-                    new Claim(ClaimTypes.Name, user.usuario_id.ToString()),
-                    new Claim(ClaimTypes.Email, user.usuario_email),
+                    new Claim(ClaimTypes.Name, user.usuario_id.ToString() + ";" + user.usuario_conta_id.ToString()),                    
                     new Claim(ClaimTypes.Role, user.Role),
                     new Claim(ClaimTypes.Role, conta.conta_tipo),                   
                 };
