@@ -192,9 +192,12 @@
             <div class="col-list-body">
                 <div class="row">
                     <div class="col-12 col-md-2"><strong>Classificação</strong></div>
-                    <div class="col-12 col-md-6"><strong>Descrição</strong></div>
+                    <div class="col-12 col-md-5"><strong>Descrição</strong></div>
                     <div class="col-12 col-md-2" style="text-align:center"><strong>Conta Contábil</strong></div>
                     <div class="col-12 col-md-2" style="text-align:center"><strong>Conta on line</strong></div>
+                    <div class="col-12 col-md-1" style="text-align:center">
+                        <span><strong>Fiscal</strong></span>
+                    </div>
                 </div>
             </div>
             <div class="col-list-rigth" style="padding-right: 10px;">
@@ -215,7 +218,7 @@
                     <div class="col-12 col-md-2">
                         <span>@item.categoria_classificacao</span>
                     </div>
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-5">
                         @{
                             if (item.categoria_classificacao.Length == 1)
                             {
@@ -273,6 +276,18 @@
                                         </a>
                                     }
                                 }
+                            }
+                        }
+                    </div>
+                    <div class="col-12 col-md-1" style="text-align:center">
+                        @{
+                            if (item.categoria_categoria_fiscal)
+                            {
+                                <span>Sim</span>
+                            }
+                            else
+                            {
+                                <span>Não</span>
                             }
                         }
                     </div>

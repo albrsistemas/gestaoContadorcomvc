@@ -107,19 +107,19 @@ namespace gestaoContadorcomvc.Models
         public bool servicoTList { get; set; }
         public bool servicoTCreate { get; set; }
         public bool servicoTEdit { get; set; }
-        public bool servicoTDelete { get; set; }
-        
+        public bool servicoTDelete { get; set; }        
         //Serviços Operação
         public bool operacaoList { get; set; }
         public bool operacaoCreate { get; set; }
         public bool operacaoEdit { get; set; }
         public bool operacaoDelete { get; set; }
-
         //Memorando
         public bool memorandoList { get; set; }
         public bool memorandoCreate { get; set; }
         public bool memorandoEdit { get; set; }
         public bool memorandoDelete { get; set; }
+        //Relatório SCI
+        public bool SCI_ilc { get; set; }
 
 
 

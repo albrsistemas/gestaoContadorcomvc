@@ -36,7 +36,7 @@ namespace gestaoContadorcomvc.Controllers
 
             Config_contador_cliente cco = new Config_contador_cliente();
             vm_ConfigContadorCliente vm_cco = new vm_ConfigContadorCliente();
-            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id, user.conta.contador_id);
+            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id_original, user.conta.contador_id);
 
             categorias.cco = vm_cco;
 
@@ -52,7 +52,7 @@ namespace gestaoContadorcomvc.Controllers
 
             Config_contador_cliente cco = new Config_contador_cliente();
             vm_ConfigContadorCliente vm_cco = new vm_ConfigContadorCliente();
-            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id, user.conta.contador_id);
+            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id_original, user.conta.contador_id);
 
             if (vm_cco.ccc_pref_novaCategoria)
             {
@@ -113,7 +113,7 @@ namespace gestaoContadorcomvc.Controllers
 
             Config_contador_cliente cco = new Config_contador_cliente();
             vm_ConfigContadorCliente vm_cco = new vm_ConfigContadorCliente();
-            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id, user.conta.contador_id);
+            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id_original, user.conta.contador_id);
 
             if (vm_cco.ccc_pref_novaCategoria)
             {
@@ -132,7 +132,7 @@ namespace gestaoContadorcomvc.Controllers
         // POST: Categoria_v2Controller/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(IFormCollection collection, bool categoria_categoria_fiscal)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -154,7 +154,7 @@ namespace gestaoContadorcomvc.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id, collection["categoria_conta_contabil"], "Não", "0");
+                TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id, collection["categoria_conta_contabil"], "Não", "0", categoria_categoria_fiscal);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -174,7 +174,7 @@ namespace gestaoContadorcomvc.Controllers
 
             Config_contador_cliente cco = new Config_contador_cliente();
             vm_ConfigContadorCliente vm_cco = new vm_ConfigContadorCliente();
-            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id, user.conta.contador_id);
+            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id_original, user.conta.contador_id);
 
             if (vm_cco.ccc_pref_novaCategoria)
             {
@@ -197,7 +197,7 @@ namespace gestaoContadorcomvc.Controllers
         // POST: Categoria_v2Controller/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int categoria_id, IFormCollection collection)
+        public ActionResult Edit(int categoria_id, IFormCollection collection, bool categoria_categoria_fiscal)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -212,7 +212,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Categoria categoria = new Categoria();
 
-                TempData["editCategoria"] = categoria.alterarNomeCategoria(collection["categoria_nome"], collection["categoria_conta_contabil"], categoria_id, user.usuario_conta_id, user.usuario_id);
+                TempData["editCategoria"] = categoria.alterarNomeCategoria(collection["categoria_nome"], collection["categoria_conta_contabil"], categoria_id, user.usuario_conta_id, user.usuario_id, categoria_categoria_fiscal);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -231,7 +231,7 @@ namespace gestaoContadorcomvc.Controllers
 
             Config_contador_cliente cco = new Config_contador_cliente();
             vm_ConfigContadorCliente vm_cco = new vm_ConfigContadorCliente();
-            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id, user.conta.contador_id);
+            vm_cco = cco.buscaCCC(user.usuario_id, user.usuario_conta_id_original, user.conta.contador_id);
 
             if (vm_cco.ccc_pref_novaCategoria)
             {

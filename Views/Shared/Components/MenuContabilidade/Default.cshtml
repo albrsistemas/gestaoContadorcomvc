@@ -44,6 +44,21 @@
                         </li>
                     }
                 }
+
+                @{
+                    if (usuario.Role == "adm" || usuario._permissoes.SCI_ilc)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                SCI
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                @if (usuario.Role == "adm" || usuario._permissoes.SCI_ilc)
+                                {<a class="dropdown-item" asp-area="Contabilidade" asp-controller='ImportacaoLancamentosContabeis' asp-action='Create'>Importação Lançamentos Contábeis</a>}
+                            </div>
+                        </li>
+                    }
+                }
             </ul>
             <div class="dropdown-divider"></div>
             var nome = usuario.usuario_nome.Split(" ");

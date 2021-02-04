@@ -1271,14 +1271,7 @@
 
             operacao.parcelas.push(p);
         }        
-    }
-
-
-    function convertDoubleString(vlr) {        
-        vlr_str = vlr.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
-
-        return vlr_str;
-    }
+    }    
 
     function gera_parcelas_numero_parcelas() {
         //Limpar parcelas atuais para nova geração
@@ -2086,12 +2079,6 @@
         //documento fiscal
         operacao.nf.op_nf_data_emissao = convertData_DataSimples(operacao.nf.op_nf_data_emissao);
         operacao.nf.op_nf_data_entrada_saida = convertData_DataSimples(operacao.nf.op_nf_data_entrada_saida);
-    }
-
-    function convertData_DataSimples(data) {
-        let d = data.substr(8, 2) + '/' + data.substr(5, 2) + '/' + data.substr(0, 4);
-
-        return d;
     }
 
     async function myFunction() {

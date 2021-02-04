@@ -121,6 +121,41 @@ var operacao = {
     },
 };
 
+let ilcs = {
+    status: '',
+    qunatidade_erros: 0,
+    list_ilc: [],
+    filtro: {
+        cliente_id: 0,
+        data_inicial: '',
+        data_final: '',
+        gera_provisao_categoria_fiscal: false,
+    }
+};
+
+let ilc = {
+    ilc_sequencia: 0,
+    ilc_data_lancamento: '',
+    ilc_conta_debito: '',
+    ilc_conta_credito: '',
+    ilc_valor_lancamento: 0,
+    ilc_codigo_historico: '',
+    ilc_complemento_historico: '',
+    ilc_numero_documento: '',
+    ilc_lote_lancamento: '',
+    ilc_cnpj_cpf_debito: '',
+    ilc_cnpj_cpf_credito: '',
+    ilc_contabilizacao_ifrs: '',
+    ilc_transacao_sped: '',
+    ilc_indicador_conciliacao: '',
+    ilc_indicador_pendencia_concialiacao: '',
+    ilc_obs_conciliacao_debito: '',
+    ilc_obs_conciliacao_credito: '',
+    status: '',
+    mensagem: '',
+    origem: '',
+};
+
 //Onload página layout
 function Page() {
 
@@ -4486,6 +4521,67 @@ function consultaMemorando(id,vlr,tamanho, id_input_msg) {
     });
 }
 
+function convertData_DataSimples(data) {
+    let d = data.substr(8, 2) + '/' + data.substr(5, 2) + '/' + data.substr(0, 4);
+
+    return d;
+}
+
+function convertDoubleString(vlr) {
+    vlr_str = vlr.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+
+    return vlr_str;
+}
+
+function gerar_sci_ilc() {
+    let cliente_id = document.getElementById('cliente_id').value;
+    let data_inicial = document.getElementById('data_inicial').value;
+    let data_final = document.getElementById('data_final').value;
+    let gera_provisao_categoria_fiscal = document.getElementById('gera_provisao_categoria_fiscal').checked;
+
+
+    $.ajax({
+        url: "/Contabilidade/ImportacaoLancamentosContabeis/Create",
+        type: 'post',
+        data: {
+            __RequestVerificationToken: gettoken(),
+            cliente_id: cliente_id,
+            data_inicial: data_inicial,
+            data_final: data_final,
+            gera_provisao_categoria_fiscal: gera_provisao_categoria_fiscal
+        },
+        beforeSend: function () {
+            alert('before');
+        }
+    }).done(function (msg) {
+            console.log(msg);            
+    }).fail(function (jqXHR, textStatus, msg) {
+            console.log(jqXHR);            
+            console.log(textStatus);            
+            alert(msg);
+    });
+    
+}
+
+function switch_bootstrap(id, vlr) {
+    let c = document.getElementById(id).checked;
+
+    if (c) {
+        document.getElementById(id).value = true;
+    } else {
+        document.getElementById(id).value = false;
+    }
+}
+
+function ilc_inputs_filtros() {
+    let e = document.getElementById('ilc_inputs_filtros').style.display;
+
+    if (e == 'none') {
+        document.getElementById('ilc_inputs_filtros').style.display = 'block';
+    } else {
+        document.getElementById('ilc_inputs_filtros').style.display = 'none';
+    }
+}
 
 
 

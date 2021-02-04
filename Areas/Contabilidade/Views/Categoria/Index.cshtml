@@ -217,7 +217,7 @@
             <div class="col-list-body">
                 <div class="row">
                     <div class="col-12 col-md-2"><strong>Classificação</strong></div>
-                    <div class="col-12 col-md-6"><strong>Descrição</strong></div>
+                    <div class="col-12 col-md-5"><strong>Descrição</strong></div>
                     <div class="col-12 col-md-2" style="text-align:center"><strong>Conta Contábil</strong></div>
                     <div class="col-12 col-md-2" style="text-align:center">
                         @{
@@ -226,6 +226,9 @@
                             <strong>Conta on line</strong>
                                 }
                         }
+                    </div>
+                    <div class="col-12 col-md-1" style="text-align:center">
+                        <span><strong>Fiscal</strong></span>
                     </div>
                 </div>
             </div>
@@ -244,31 +247,31 @@
         </div>
         <div class="col-list-body">
             <div class="row">
-                <div class="col-12 col-md-2">                    
+                <div class="col-12 col-md-2">
                     <span>@item.categoria_classificacao</span>
                 </div>
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-5">
                     @{
-                                if (item.categoria_classificacao.Length == 1)
-                                {
-                        <span><strong>@item.categoria_nome.ToUpper()</strong></span>
-                                }
-                                if (item.categoria_classificacao.Length == 4)
-                                {
-                        <span><strong>@item.categoria_nome</strong></span>
-                                }
-                                if (item.categoria_classificacao.Length > 4)
-                                {
-                        <span>@item.categoria_nome</span>
-                                }
+                        if (item.categoria_classificacao.Length == 1)
+                        {
+                            <span><strong>@item.categoria_nome.ToUpper()</strong></span>
+                        }
+                        if (item.categoria_classificacao.Length == 4)
+                        {
+                            <span><strong>@item.categoria_nome</strong></span>
+                        }
+                        if (item.categoria_classificacao.Length > 4)
+                        {
+                            <span>@item.categoria_nome</span>
+                        }
                     }
                 </div>
                 <div class="col-12 col-md-2" style="text-align:center">
                     @{
-                                if (item.categoria_classificacao.Length > 4)
-                                {
-                        <span>@item.categoria_conta_contabil</span>
-                                }
+                        if (item.categoria_classificacao.Length > 4)
+                        {
+                            <span>@item.categoria_conta_contabil</span>
+                        }
                     }
                 </div>
                 <div class="col-12 col-md-2" style="text-align:center">
@@ -293,6 +296,18 @@
                                     </a>
                                 }
                             }
+                        }
+                    }
+                </div>
+                <div class="col-12 col-md-1" style="text-align:center">
+                    @{
+                        if (item.categoria_categoria_fiscal)
+                        {
+                            <span>Sim</span>
+                        }
+                        else
+                        {
+                            <span>Não</span>
                         }
                     }
                 </div>

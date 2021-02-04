@@ -37,7 +37,13 @@
                                             <span asp-validation-for="categoria_conta_contabil" class="text-danger"></span>
                                         </div>
                                     }
-                                }                                
+                                }     
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" id="categoria_categoria_fiscal" asp-for="categoria_categoria_fiscal" name="categoria_categoria_fiscal" class="custom-control-input" onchange="switch_bootstrap(this.id, this.value)">
+                                        <label class="custom-control-label" for="categoria_categoria_fiscal">Categoria é fiscal?</label>
+                                    </div>
+                                </div>
                                 <input type="hidden" asp-for="categoria_id" class="form-control" />
                             </div>
                         </div>                        

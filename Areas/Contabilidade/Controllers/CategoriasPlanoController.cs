@@ -96,7 +96,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         // POST: Categoria_v2Controller/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(IFormCollection collection, bool categoria_categoria_fiscal)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -120,7 +120,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                     return RedirectToAction("Index", "CategoriasPlano", new { @pc_id = collection["planoCategorias_id"], @planoContas_id = collection["planoContas_id"] });
                 }
 
-                TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id, collection["categoria_conta_contabil"], collection["planoCategorias_id"], "0");
+                TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], user.usuario_conta_id, user.usuario_id, collection["categoria_conta_contabil"], collection["planoCategorias_id"], "0", categoria_categoria_fiscal);
 
                 return RedirectToAction("Index", "CategoriasPlano", new { @pc_id = collection["planoCategorias_id"], @planoContas_id = collection["planoContas_id"] });
             }
@@ -152,7 +152,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         // POST: Categoria_v2Controller/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int categoria_id, IFormCollection collection)
+        public ActionResult Edit(int categoria_id, IFormCollection collection, bool categoria_categoria_fiscal)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -169,7 +169,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             {
                 Categoria categoria = new Categoria();
 
-                TempData["editCategoria"] = categoria.alterarNomeCategoria(collection["categoria_nome"], collection["categoria_conta_contabil"], categoria_id, user.usuario_conta_id, user.usuario_id);
+                TempData["editCategoria"] = categoria.alterarNomeCategoria(collection["categoria_nome"], collection["categoria_conta_contabil"], categoria_id, user.usuario_conta_id, user.usuario_id, categoria_categoria_fiscal);
 
                 return RedirectToAction("Index", "CategoriasPlano", new { @pc_id = collection["planoCategorias_id"], @planoContas_id = collection["planoContas_id"] });
             }

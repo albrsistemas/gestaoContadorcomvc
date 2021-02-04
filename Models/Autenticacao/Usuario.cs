@@ -355,9 +355,9 @@ namespace gestaoContadorcomvc.Models.Autenticacao
                     {
                         usuario.usuario_nome = leitor["usuario_nome"].ToString();
                         usuario.usuario_email = leitor["usuario_email"].ToString();
-                        usuario.usuario_dcto = leitor["usuario_dcto"].ToString();
-                        //usuario.usuario_conta_id = 5;
+                        usuario.usuario_dcto = leitor["usuario_dcto"].ToString();                        
                         usuario.usuario_conta_id = Convert.ToInt32(leitor["usuario_conta_id"]);
+                        usuario.usuario_conta_id_original = Convert.ToInt32(leitor["usuario_conta_id"]);
                         usuario.usuario_id = Convert.ToInt32(leitor["usuario_id"]);
                         usuario.Role = leitor["Role"].ToString();
                         usuario.permissoes = leitor["usuario_permissoes"].ToString();
