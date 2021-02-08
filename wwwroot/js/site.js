@@ -4583,6 +4583,65 @@ function ilc_inputs_filtros() {
     }
 }
 
+//Autocomplete lista de cliente
+function consultaClientesContador(id) {
+    let id_campo = "#" + id;
+    $(id_campo).autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: window.location.origin + "/Contabilidade/Clientes/GerarClientes",
+                data: { __RequestVerificationToken: gettoken(), termo: request.term },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    if (document.getElementById('pesquisa_cliente')) {
+                        document.getElementById('pesquisa_cliente').innerHTML = 'pesquisando...';
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("erro");
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    if (document.getElementById('pesquisa_cliente')) {
+                        document.getElementById('pesquisa_cliente').innerHTML = '';
+                    }
+
+                    var results = JSON.parse(data);
+
+                    var autocompleteObjects = [];
+                    for (var i = 0; i < results.length; i++) {
+                        var object = {
+                            value: results[i].cliente_nome,
+                            label: results[i].cliente_id + " - " + results[i].cliente_nome,
+                            id: results[i].cliente_id,                            
+                        };
+                        autocompleteObjects.push(object);
+                    }
+
+                    // Invoke the response callback.
+                    response(autocompleteObjects);
+                }
+            });
+        },
+        minLength: 3,
+        select: function (event, ui) {
+            document.getElementById('cliente_id').value = ui.item.id;
+        }
+    });
+}
+
+function alteraClienteContador() {
+    if (document.getElementById('cliente_id')) {
+        document.getElementById('cliente_id').value = '';
+    }
+    if (document.getElementById('cliente')) {
+        document.getElementById('cliente').removeAttribute("disabled");
+        document.getElementById('cliente').value = '';
+        document.getElementById('cliente').focus();
+    }
+}
+
+
 
 
 

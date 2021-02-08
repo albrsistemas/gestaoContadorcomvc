@@ -193,18 +193,23 @@
                     <div class="col-12 col-md-2">
                         <span>@item.categoria_conta_contabil</span>
                     </div>
-                    <div class="col-12 col-md-1" style="text-align:center">
-                        @{
-                            if (item.categoria_categoria_fiscal)
-                            {
-                                <span>Sim</span>
-                            }
-                            else
-                            {
-                                <span>Não</span>
-                            }
+                    @{
+                        if (item.categoria_tipo.Equals("Analítica"))
+                        {
+                            <div class="col-12 col-md-1" style="text-align:center">
+                                @{
+                                    if (item.categoria_categoria_fiscal)
+                                    {
+                                        <span>Sim</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Não</span>
+                                    }
+                                }
+                            </div>
                         }
-                    </div>
+                    }
                 </div>
             </div>
             <div class="col-list-rigth" style="padding-right: 10px;">

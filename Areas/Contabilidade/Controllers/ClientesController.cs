@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gestaoContadorcomvc.Areas.Contabilidade.Models;
 using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 {
@@ -141,6 +143,21 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             {
                 return View();
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GerarClientes(string termo)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            Clientes cliente = new Clientes();
+            List<Clientes> clientes = new List<Clientes>();
+            clientes = cliente.listaClientesPorTermo(user.usuario_conta_id_original, termo);
+
+            return Json(JsonConvert.SerializeObject(clientes));
         }
     }
 }

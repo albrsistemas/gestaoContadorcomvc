@@ -58,7 +58,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
         Log log = new Log();
 
         //Gerar arquivo ilc
-        public Ilcs create(int usuario_id, int conta_id, int cliente_id, DateTime data_inicial, DateTime data_final, bool gera_provisao_categoria_fiscal)
+        public Ilcs create(int usuario_id, int conta_id, int cliente_id, DateTime data_inicial, DateTime data_final, bool gera_provisao_categoria_fiscal, bool gerar_lancamentos_baixas)
         {
             Ilcs ilcs = new Ilcs();
             List<ImportacaoLancamentosContabeis> list_ilc = new List<ImportacaoLancamentosContabeis>();
@@ -185,6 +185,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                                 }
 
                                 ilc_provisao.ilc_data_lancamento = Convert.ToDateTime(reader_ccm["ccm_data_competencia"]);
+
                                 if (reader_ccm["escopo"].ToString() == "Entrada")
                                 {
                                     ilc_provisao.ilc_conta_debito = "16";
@@ -274,7 +275,150 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                         list_ilc.Add(ilc);
                     }
                 }
+                reader_ccm.Close();
                 //FIM ==> Conta corrente movimento origem CCM
+                //INIIO ==> Conta corrente movimento orgiem Transferências
+                MySqlDataReader reader_ccm_t;
+                MySqlCommand comand_ccm_t = conn.CreateCommand();
+                comand_ccm_t.Connection = conn;
+                comand_ccm_t.Transaction = Transacao;
+
+                comand_ccm_t.CommandText = "SELECT de.ccm_id, COALESCE(ccde.ccorrente_masc_contabil,'Sem Conta Contabil') as 'masc_de', COALESCE(ccpara.ccorrente_masc_contabil, 'Sem Conta Contabil') as 'masc_para', de.ccm_valor, de.ccm_data, de.ccm_memorando from conta_corrente_mov as de LEFT JOIN conta_corrente_mov as para on para.ccm_origem_id = de.ccm_id LEFT JOIN conta_corrente as ccde on ccde.ccorrente_id = de.ccm_ccorrente_id LEFT JOIN conta_corrente as ccpara on ccpara.ccorrente_id = para.ccm_ccorrente_id WHERE de.ccm_origem = 'Transferencia' and de.ccm_movimento = 'S' and de.ccm_conta_id = @cliente_id and de.ccm_data BETWEEN @data_inicial and @data_final;";
+                comand_ccm_t.Parameters.AddWithValue("@cliente_id", cliente_id);
+                comand_ccm_t.Parameters.AddWithValue("@data_inicial", data_inicial);
+                comand_ccm_t.Parameters.AddWithValue("@data_final", data_final);
+
+                reader_ccm_t = comand_ccm_t.ExecuteReader();
+
+                if (reader_ccm_t.HasRows)
+                {
+                    while (reader_ccm_t.Read())
+                    {
+                        ImportacaoLancamentosContabeis ilc = new ImportacaoLancamentosContabeis();
+
+                        //start no status como regular
+                        ilc.status = "OK";
+                        ilc.mensagem += "";
+                        ilc.origem += "CCMT";
+                        ilc.tipo = "Transferência";
+
+                        if(reader_ccm_t["masc_de"].ToString() == "Sem Conta Contabil" || reader_ccm_t["masc_para"].ToString() == "Sem Conta Contabil")
+                        {
+                            ilcs.qunatidade_erros += 1;
+                            ilc.status = "Erro";
+                            ilc.mensagem += "Conta corrente sem conta contábil; ";
+                        }
+
+                        ilc.ilc_data_lancamento = Convert.ToDateTime(reader_ccm_t["ccm_data"]);
+                        ilc.ilc_conta_debito = reader_ccm_t["masc_para"].ToString();
+                        ilc.ilc_conta_credito = reader_ccm_t["masc_de"].ToString();
+                        ilc.ilc_valor_lancamento = Convert.ToDecimal(reader_ccm_t["ccm_valor"]);
+                        ilc.ilc_codigo_historico = "";
+                        ilc.ilc_complemento_historico = reader_ccm_t["ccm_memorando"].ToString();
+                        ilc.ilc_numero_documento = "DCTO";
+                        ilc.ilc_lote_lancamento = "";
+                        ilc.ilc_contabilizacao_ifrs = "A";
+                        ilc.ilc_transacao_sped = "";
+                        ilc.ilc_indicador_conciliacao = "";
+                        ilc.ilc_indicador_pendencia_concialiacao = "";
+                        ilc.ilc_obs_conciliacao_credito = "";
+                        ilc.ilc_obs_conciliacao_debito = "";
+
+                        list_ilc.Add(ilc);
+                    }
+                }
+                reader_ccm_t.Close();
+                //FIm ==> Conta corrente movimento orgiem Transferências
+                //INIIO ==> Conta corrente movimento orgiem Baixas
+                if (gerar_lancamentos_baixas)
+                {                    
+                    MySqlDataReader reader_baixas;
+                    MySqlCommand comand_baixas = conn.CreateCommand();
+                    comand_baixas.Connection = conn;
+                    comand_baixas.Transaction = Transacao;
+
+                    comand_baixas.CommandText = "SELECT ccm.ccm_data, ccm.ccm_movimento, COALESCE(cc.ccorrente_masc_contabil, 'Conta corrente sem conta contabil') as 'masc_conta_corrente', COALESCE(c.categoria_conta_contabil, 'Categoria sem conta contábil') as 'masc_categoria', baixa.oppb_valor, baixa.oppb_juros, baixa.oppb_multa, baixa.oppb_desconto, baixa.oppb_obs, ccm.ccm_memorando, baixa.oppb_data, COALESCE(nf.op_nf_numero, 'Não Informada') as nota, (baixa.oppb_valor + baixa.oppb_juros + baixa.oppb_multa - baixa.oppb_desconto) as 'valor_pagamento' from conta_corrente_mov as ccm LEFT JOIN conta_corrente as cc on cc.ccorrente_id = ccm.ccm_ccorrente_id LEFT JOIN operacao as op on op.op_id = ccm.ccm_op_id left JOIN categoria as c on c.categoria_id = op.op_categoria_id LEFT JOIN op_parcelas_baixa as baixa on baixa.oppb_id = ccm.ccm_oppb_id LEFT JOIN op_nf as nf on nf.op_nf_op_id = op.op_id WHERE ccm.ccm_origem = 'Baixa' and ccm.ccm_conta_id = @cliente_id and ccm.ccm_data BETWEEN @data_inicial and @data_final;";
+                    comand_baixas.Parameters.AddWithValue("@cliente_id", cliente_id);
+                    comand_baixas.Parameters.AddWithValue("@data_inicial", data_inicial);
+                    comand_baixas.Parameters.AddWithValue("@data_final", data_final);
+
+                    reader_baixas = comand_baixas.ExecuteReader();
+
+                    if (reader_baixas.HasRows)
+                    {
+                        while (reader_baixas.Read())
+                        {
+                            ImportacaoLancamentosContabeis ilc = new ImportacaoLancamentosContabeis();
+
+                            //start no status como regular
+                            ilc.status = "OK";
+                            ilc.mensagem += "";
+                            ilc.origem += "Baixa";
+                            ilc.tipo = "Baixa";
+
+                            if (reader_baixas["masc_conta_corrente"].ToString() == "Conta corrente sem conta contabil")
+                            {
+                                ilcs.qunatidade_erros += 1;
+                                ilc.status = "Erro";
+                                ilc.mensagem += "Conta corrente sem conta contábil; ";
+                            }
+
+                            //A categoria nãop importar, pois está sendo importando o pagamento da baixa. A provisão provem do único ou da provisão de operações a ser feita no futuro.
+                            //if (reader_baixas["masc_categoria"].ToString() == "Categoria sem conta contábil")
+                            //{
+                            //    ilcs.qunatidade_erros += 1;
+                            //    ilc.status = "Erro";
+                            //    ilc.mensagem += "Categoria sem conta contábil; ";
+                            //}
+
+                            ilc.ilc_data_lancamento = Convert.ToDateTime(reader_baixas["oppb_data"]);
+
+                            if(reader_baixas["ccm_movimento"].ToString() == "E")
+                            {
+                                ilc.ilc_conta_debito = reader_baixas["masc_conta_corrente"].ToString();
+                                ilc.ilc_conta_credito = "16";
+                            }
+                            else
+                            {
+                                ilc.ilc_conta_debito = "148";
+                                ilc.ilc_conta_credito = reader_baixas["masc_conta_corrente"].ToString();
+                            }
+                                                    
+                            ilc.ilc_valor_lancamento = Convert.ToDecimal(reader_baixas["valor_pagamento"]);
+                            ilc.ilc_codigo_historico = "";
+                            ilc.ilc_complemento_historico = reader_baixas["ccm_memorando"].ToString();
+                            
+                            //Não está sendo computado erro se na operação não foi informada nota fiscal.                            
+                            if(reader_baixas["nota"].ToString() == "Não Informada")
+                            {
+                                ilc.ilc_numero_documento = "DCTO";
+                            }
+                            else
+                            {
+                                ilc.ilc_numero_documento = "DCTO" + reader_baixas["nota"].ToString();
+                            }                            
+                            ilc.ilc_lote_lancamento = "";
+                            ilc.ilc_contabilizacao_ifrs = "A";
+                            ilc.ilc_transacao_sped = "";
+                            ilc.ilc_indicador_conciliacao = "";
+                            ilc.ilc_indicador_pendencia_concialiacao = "";
+                            ilc.ilc_obs_conciliacao_credito = "";
+                            ilc.ilc_obs_conciliacao_debito = "";
+
+                            list_ilc.Add(ilc);
+
+                            //Lançamento dos juros da baixa
+
+                            //Lançamento da multa da baixa
+
+                            //Lançamento do desconto da baixa
+                        }
+                    }
+                    reader_baixas.Close();
+                    //FIm ==> Conta corrente movimento orgiem Baixas
+                }
+
+
 
                 ilcs.status = "Sucesso";
                 ilcs.list_ilc = list_ilc;                
@@ -310,5 +454,6 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
         public DateTime data_inicial { get; set; }
         public DateTime data_final { get; set; }
         public bool gera_provisao_categoria_fiscal { get; set; }
+        public bool gerar_lancamentos_baixas { get; set; }
     }
 }
