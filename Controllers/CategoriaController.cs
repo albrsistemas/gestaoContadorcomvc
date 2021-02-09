@@ -11,6 +11,7 @@ using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
@@ -160,7 +161,9 @@ namespace gestaoContadorcomvc.Controllers
             }
             catch
             {
-                return View();
+                TempData["createCategoria"] = "Erro ao criar a categoria. Tente novamente, se persistir, entre em contato com o suporte!";
+
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -171,6 +174,9 @@ namespace gestaoContadorcomvc.Controllers
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
             user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            Selects select = new Selects();
+            ViewBag.categoria_padrao = select.getCategoriaPadrao().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1" });
 
             Config_contador_cliente cco = new Config_contador_cliente();
             vm_ConfigContadorCliente vm_cco = new vm_ConfigContadorCliente();
@@ -218,7 +224,9 @@ namespace gestaoContadorcomvc.Controllers
             }
             catch
             {
-                return View();
+                TempData["createCategoria"] = "Erro ao alterar a categoria. Tente novamente, se persistir, entre em contato com o suporte!";
+
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -311,6 +319,20 @@ namespace gestaoContadorcomvc.Controllers
             lista = c.listaCategoriasPorTermo(user.usuario_conta_id, termo);
 
             return Json(JsonConvert.SerializeObject(lista));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DefinirPadraoCategoria(string padrao, int categoria_id)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            Categoria c = new Categoria();
+            string retorno = c.definirPadraoCategoria(user.usuario_id, user.usuario_conta_id, padrao, categoria_id);
+
+            return Json(JsonConvert.SerializeObject(retorno));
         }
     }
 }

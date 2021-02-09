@@ -212,6 +212,20 @@ function Page() {
             allowClear: true
         });
     }
+
+    //Função para desabilitar scroll
+    $.fn.disableScroll = function () {
+        window.oldScrollPos = $(window).scrollTop();
+
+        $(window).on('scroll.scrolldisabler', function (event) {
+            $(window).scrollTop(window.oldScrollPos);
+            event.preventDefault();
+        });
+    };
+    //Função para habilitar scroll
+    $.fn.enableScroll = function () {
+        $(window).off('scroll.scrolldisabler');
+    };
 }
 
 function carregarEdit(id) {   
@@ -4639,6 +4653,98 @@ function alteraClienteContador() {
         document.getElementById('cliente').value = '';
         document.getElementById('cliente').focus();
     }
+}
+
+function box_opc_dots(id, e) {      
+    let elem = document.getElementById('box_opc_dots').style.display;
+    document.getElementById('id_element').value = id;    
+    if (elem == 'none') {
+        $("#body").disableScroll();
+        document.getElementById('box_opc_dots_glass').style.display = 'block';
+        document.getElementById('box_opc_dots').style.display = 'block';
+        document.getElementById('line_' + id).style.backgroundColor = '#f5f4ba';
+
+        let altura_elem = document.getElementById('box_opc_dots').offsetHeight * 1;        
+        let altura_screen = window.innerHeight * 1;
+        let altura_clique = e.clientY * 1;        
+        if ((altura_elem + altura_clique) > altura_screen) {
+            $('#box_opc_dots').removeAttr('style');
+            document.getElementById('box_opc_dots').style.bottom = '5px';            
+        } else {
+            $('#box_opc_dots').removeAttr('style');
+            document.getElementById('box_opc_dots').style.top = (e.clientY - 10) + 'px';                    
+        }
+        document.getElementById('box_opc_dots').style.left = (e.clientX - 182) + 'px';
+    } else {
+        document.getElementById('box_opc_dots_glass').style.display = 'none';
+        document.getElementById('box_opc_dots').style.display = 'none';
+        document.getElementById('line_' + id).style.backgroundColor = '';
+    }
+}
+function box_opc_dots_glass() {
+    $("#body").enableScroll();
+    let id_element = document.getElementById('id_element').value;
+    document.getElementById('line_' + id_element).style.backgroundColor = '';
+    document.getElementById('box_opc_dots_glass').style.display = 'none';
+    document.getElementById('box_opc_dots').style.display = 'none';    
+}
+
+function categoria_define_padrao(valor, contexto) {
+    let id_element = document.getElementById('id_element').value;
+    let destino = "";
+    if (contexto == 'Cliente') {
+        destino = "/Categoria/DefinirPadraoCategoria";        
+    }
+    if (contexto == 'Contabilidade') {
+        destino = "Contabilidade/Categoria/DefinirPadraoCategoria";
+    }
+
+    $.ajax({
+        url: destino,
+        data: { __RequestVerificationToken: gettoken(), padrao: valor, categoria_id: id_element },
+        type: 'POST',
+        dataType: 'json',
+        beforeSend: function (XMLHttpRequest) {
+            document.getElementById('btn_cancel').style.display = 'none';
+            document.getElementById('btn_ok_cliente').style.display = 'none';
+            document.getElementById('btn_ok_contabilidade').style.display = 'none';
+            document.getElementById('msg_retorno').innerHTML = "Gravando informação, aguarde...";            
+            $('#modal_retorno').modal('show');
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            document.getElementById('msg_retorno').innerHTML = "Ocorreu um erro no envio da informação. Tente novamente, se persisitir entre em contato com o suporte!";
+            document.getElementById('btn_ok_cliente').style.display = 'none';
+            document.getElementById('btn_ok_contabilidade').style.display = 'none';
+            document.getElementById('btn_cancel').style.display = 'block';
+            $('#modal_retorno').modal('show');
+
+            console.log(XMLHttpRequest);
+            console.log(textStatus);
+            console.log(errorThrown);
+            console.log(destino);
+
+        },
+        success: function (data, textStatus, XMLHttpRequest) {
+            document.getElementById('btn_cancel').style.display = 'none';
+
+            if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                document.getElementById('msg_retorno').innerHTML = XMLHttpRequest.responseJSON;                
+                document.getElementById('btn_cancel').style.display = 'block';
+                $('#modal_retorno').modal('show');
+                return;
+            }
+            if (XMLHttpRequest.responseJSON.includes('sucesso!')) {
+                if (contexto == 'Cliente') {
+                    document.getElementById('btn_ok_cliente').style.display = 'block';
+                }
+                if (contexto == 'Contabilidade') {
+                    document.getElementById('btn_ok_contabilidade').style.display = 'block';
+                }
+                document.getElementById('msg_retorno').innerHTML = XMLHttpRequest.responseJSON;                
+                $('#modal_retorno').modal('show');
+            }
+        }
+    });
 }
 
 

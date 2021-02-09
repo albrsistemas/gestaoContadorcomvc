@@ -22,10 +22,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
-            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
-
-            Selects select = new Selects();
-            ViewBag.empresasContador = select.getEmpresasContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Selected = c.value == user.usuario_ultimoCliente }).ToList();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);            
 
             Ilcs ilcs = new Ilcs();
             ilc_filter f = new ilc_filter();

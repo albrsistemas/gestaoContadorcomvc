@@ -23,7 +23,8 @@ namespace gestaoContadorcomvc.Models
         public string categoria_escopo { get; set; } //entrada ou saída de recursos
         public string categoria_status { get; set; } //Ativo ou Deletado
         public string categoria_conta_contabil { get; set; }
-        public string categoria_categoria_fiscal { get; set; }
+        public bool categoria_categoria_fiscal { get; set; }
+        public string categoria_padrao { get; set; }
         public string categoria_requer_provisao { get; set; } //Campo criado, mas não está usado. Veriricar necesside e contexto.
 
         /*--------------------------*/
@@ -111,6 +112,7 @@ namespace gestaoContadorcomvc.Models
                         categoria.categoria_conta_contabil = leitor["categoria_conta_contabil"].ToString();                       
                         categoria.categoria_contaonline = leitor["ccontabil_classificacao"].ToString();                       
                         categoria.categoria_contaonline_id = leitor["cco_id"].ToString();                       
+                        categoria.categoria_padrao = leitor["categoria_padrao"].ToString();                       
 
                         categorias.Add(categoria);
                     }
@@ -131,53 +133,7 @@ namespace gestaoContadorcomvc.Models
 
             return categorias;
         }
-
-        ////Cadastrar categoria
-        //public string startCategoria(int conta_id, int usuario_id, string categoria_dePlano)
-        //{
-        //    string retorno = "Categoria cadastrada com sucesso!";
-
-        //    conn.Open();
-        //    MySqlCommand comando = conn.CreateCommand();
-        //    MySqlTransaction Transacao;
-        //    Transacao = conn.BeginTransaction();
-        //    comando.Connection = conn;
-        //    comando.Transaction = Transacao;
-
-        //    try
-        //    {
-        //        comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_dePlano) VALUES('1', 'ENTRADA DE RECURSOS', 'Sintetica' , @conta_id_comand1, 'Entrada', 'Ativo', @categoria_dePlanoE);";
-        //        comando.Parameters.AddWithValue("@conta_id_comand1", conta_id);
-        //        comando.Parameters.AddWithValue("@categoria_dePlanoE", categoria_dePlano);
-        //        comando.ExecuteNonQuery();
-        //        comando.CommandText = "INSERT into categoria (categoria_classificacao, categoria_nome, categoria_tipo, categoria_conta_id, categoria_escopo, categoria_status, categoria_dePlano) VALUES('2', 'SAIDA DE RECURSOS', 'Sintetica' , @conta_id, 'Saida', 'Ativo', @categoria_dePlanoS);";
-        //        comando.Parameters.AddWithValue("@conta_id", conta_id);
-        //        comando.Parameters.AddWithValue("@categoria_dePlanoS", categoria_dePlano);
-        //        comando.ExecuteNonQuery();
-
-        //        Transacao.Commit();
-
-        //        string msg = "Start de categorias do cliente ID: " + conta_id + " Cadastrado com sucesso";
-        //        log.log("Categoria", "startCategoria", "Sucesso", msg, conta_id, usuario_id);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        string msg = "Start de categorias do cliente ID: " + conta_id + " fracassou > " + e.Message.ToString().Substring(0, 300);
-
-        //        log.log("Categoria", "startCategoria", "Erro", msg, conta_id, usuario_id);
-
-        //        Transacao.Rollback();
-        //    }
-        //    finally
-        //    {
-        //        if (conn.State == System.Data.ConnectionState.Open)
-        //        {
-        //            conn.Close();
-        //        }
-        //    }
-
-        //    return retorno;
-        //}
+               
 
         //Verificar se classificação da categoria existe
         public bool classificacaoExiste(string valor, int conta_id)
@@ -645,7 +601,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {                
-                comando.CommandText = "SELECT * from categoria as c WHERE c.categoria_conta_id = @conta_id and c.categoria_status = 'Ativo' and (c.categoria_classificacao LIKE concat(@termo,'%') or c.categoria_nome LIKE concat(@termo,'%'));";
+                comando.CommandText = "SELECT * from categoria as c WHERE c.categoria_conta_id = @conta_id and c.categoria_status = 'Ativo' and c.categoria_dePlano = 'Não' and (c.categoria_classificacao LIKE concat(@termo,'%') or c.categoria_nome LIKE concat(@termo,'%'));";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@termo", termo);
                 comando.ExecuteNonQuery();
@@ -711,5 +667,50 @@ namespace gestaoContadorcomvc.Models
 
             return categorias;
         }
+
+        //Atribuir padrão a categoria
+        public string definirPadraoCategoria(int usuario_id, int conta_id, string padrao, int categoria_id)
+        {
+            string retorno = "Padrão cadastrado com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {   
+                comando.CommandText = "UPDATE categoria set categoria.categoria_padrao = null WHERE categoria.categoria_conta_id = @conta_id and categoria.categoria_padrao = @categoria_padrao;UPDATE categoria set categoria.categoria_padrao = @categoria_padrao WHERE categoria.categoria_conta_id = @conta_id and categoria.categoria_id = @categoria_id;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@categoria_padrao", padrao);                
+                comando.Parameters.AddWithValue("@categoria_id", categoria_id);                
+                comando.ExecuteNonQuery();
+
+
+                Transacao.Commit();
+
+                string msg = "Vínculo do padrão: " + padrao + " na categoria_id: " + categoria_id + " Cadastrado com sucesso";
+                log.log("Categoria", "definirPadraoCategoria", "Sucesso", msg, conta_id, usuario_id);
+            }
+            catch (Exception e)
+            {
+                string msg = "Erro ao Vincular o padrão: " + padrao + " na categoria_id: " + categoria_id + "" + e.Message.ToString().Substring(0, 200);               
+                log.log("Categoria", "definirPadraoCategoria", "Erro", msg, conta_id, usuario_id);
+
+                Transacao.Rollback();
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
     }
 }

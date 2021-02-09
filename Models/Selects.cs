@@ -277,7 +277,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT c.categoria_id, c.categoria_classificacao, c.categoria_nome, c.categoria_tipo from categoria as c WHERE c.categoria_conta_id = @conta_id and c.categoria_status = 'Ativo' order by c.categoria_classificacao;";
+                comando.CommandText = "SELECT c.categoria_id, c.categoria_classificacao, c.categoria_nome, c.categoria_tipo from categoria as c WHERE c.categoria_conta_id = @conta_id and c.categoria_status = 'Ativo' AND c.categoria_dePlano = 'Não' order by c.categoria_classificacao;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
@@ -366,7 +366,7 @@ namespace gestaoContadorcomvc.Models
                     escopo += ",''";
                 }
 
-                comando.CommandText = "SELECT c.categoria_id, c.categoria_classificacao, c.categoria_nome, c.categoria_tipo from categoria as c WHERE c.categoria_conta_id = @conta_id and c.categoria_status = 'Ativo' and c.categoria_escopo in (" + escopo + ") order by c.categoria_classificacao;";
+                comando.CommandText = "SELECT c.categoria_id, c.categoria_classificacao, c.categoria_nome, c.categoria_tipo from categoria as c WHERE c.categoria_conta_id = @conta_id and c.categoria_status = 'Ativo' and c.categoria_dePlano = 'Não' and c.categoria_escopo in (" + escopo + ") order by c.categoria_classificacao;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
@@ -1697,6 +1697,48 @@ namespace gestaoContadorcomvc.Models
             {
                 value = "OutrasReceitas",
                 text = "Outras Receitas"
+            });
+
+            return selects;
+        }
+
+        public List<Selects> getCategoriaPadrao()
+        {
+            List<Selects> selects = new List<Selects>();
+            //selects.Add(new Selects
+            //{
+            //    value = "0",
+            //    text = "Não se aplica"
+            //});
+            selects.Add(new Selects
+            {
+                value = "1",
+                text = "Multas Pagas"
+            });
+            selects.Add(new Selects
+            {
+                value = "2",
+                text = "Juros Pagos"
+            });
+            selects.Add(new Selects
+            {
+                value = "3",
+                text = "Descontos Obtidos"
+            });
+            selects.Add(new Selects
+            {
+                value = "4",
+                text = "Multas Recebidas"
+            });
+            selects.Add(new Selects
+            {
+                value = "5",
+                text = "Juros Recebidos"
+            });
+            selects.Add(new Selects
+            {
+                value = "6",
+                text = "Descontos Concedidos"
             });
 
             return selects;
