@@ -55,6 +55,8 @@
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 @if (usuario.Role == "adm" || usuario._permissoes.SCI_ilc)
                                 {<a class="dropdown-item" asp-area="Contabilidade" asp-controller='ImportacaoLancamentosContabeis' asp-action='Create'>Importação Lançamentos Contábeis</a>}
+                                @if (usuario.Role == "adm" || usuario._permissoes.SCI_id)
+                                {<a class="dropdown-item" asp-area="Contabilidade" asp-controller='ImportacaoDuplicatas' asp-action='Create'>Importação Duplicatas</a>}
                             </div>
                         </li>
                     }

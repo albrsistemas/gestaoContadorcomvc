@@ -41,7 +41,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(int cliente_id, DateTime data_inicial, DateTime data_final, bool gera_provisao_categoria_fiscal, bool gerar_lancamentos_baixas)
+        public ActionResult Create(int cliente_id, DateTime data_inicial, DateTime data_final, bool gera_provisao_categoria_fiscal, bool gerar_lancamentos_baixas, bool gear_lancamentos_ccm)
         {
             Ilcs ilcs = new Ilcs();
 
@@ -55,7 +55,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                 ViewBag.empresasContador = select.getEmpresasContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Selected = c.value == user.usuario_ultimoCliente }).ToList();
 
                 ImportacaoLancamentosContabeis ilc = new ImportacaoLancamentosContabeis();                
-                ilcs = ilc.create(user.usuario_id, user.usuario_conta_id, cliente_id, data_inicial, data_final, gera_provisao_categoria_fiscal, gerar_lancamentos_baixas);
+                ilcs = ilc.create(user.usuario_id, user.usuario_conta_id, cliente_id, data_inicial, data_final, gera_provisao_categoria_fiscal, gerar_lancamentos_baixas, gear_lancamentos_ccm);
 
                 ilc_filter f = new ilc_filter();
                 f.cliente_id = cliente_id;

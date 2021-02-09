@@ -120,6 +120,7 @@ namespace gestaoContadorcomvc.Models
         public bool memorandoDelete { get; set; }
         //Relatório SCI
         public bool SCI_ilc { get; set; }
+        public bool SCI_id { get; set; }
 
 
 
