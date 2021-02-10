@@ -1,4 +1,6 @@
-﻿//Variaveis globais
+﻿//import * as saveAs from "./FileSaver";
+
+//Variaveis globais
 let fechamentoCartao = {
     
     totalFatura: 0,
@@ -4745,6 +4747,21 @@ function categoria_define_padrao(valor, contexto) {
             }
         }
     });
+}
+
+function gerar_sci_id() {
+    let t = document.querySelectorAll(".sci_id_line");    
+    let texto = "";
+    
+    for (let i = 0; i < t.length; i++) {
+        texto += t[i].innerHTML + '\n';
+    }    
+
+    let blob = new Blob([texto], {
+        type: "text/plain;charset-utf-8"
+    });
+    saveAs(blob, "sci_id.txt");
+    
 }
 
 

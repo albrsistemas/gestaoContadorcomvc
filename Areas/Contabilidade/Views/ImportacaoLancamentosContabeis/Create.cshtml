@@ -49,6 +49,7 @@
     .check-list-label {
         display: none;
     }
+
     .container {
         min-width: 100%;
     }
@@ -79,8 +80,30 @@
 
     .select2-selection select2-selection--single {
         height: 25px;
-    }    
+    }
 </style>
+
+@{
+    if (TempData["ilc_retorno"] != null && TempData["ilc_retorno"].ToString().Contains("sucesso"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Sucesso!</strong> @TempData["ilc_retorno"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    if (TempData["ilc_retorno"] != null && TempData["ilc_retorno"].ToString().Contains("Erro"))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="Esconder">
+            <strong>Erro!</strong> @TempData["ilc_retorno"].ToString()
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
 
 <h4>SCI - Importação de Lançamentos Contábeis</h4>
 <div class="btn-tools">
@@ -90,7 +113,7 @@
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-funnel" fill="white" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer">
                     <path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z" />
                 </svg>
-            </button>            
+            </button>
             <a class="btn btn-sm btn-info" onClick="window.print()">
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-printer" fill="white" xmlns="http://www.w3.org/2000/svg">
                     <path d="M11 2H5a1 1 0 0 0-1 1v2H3V3a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2h-1V3a1 1 0 0 0-1-1zm3 4H2a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1v1H2a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1z" />
@@ -112,7 +135,7 @@
             <div class="col-12">
                 <label class="control-label">Cliente</label>
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control form-control-sm" name="cliente" id="cliente" autocomplete="off" onkeyup="consultaClientesContador(this.id)" aria-label="cliente" aria-describedby="cliente">
+                    <input type="text" class="form-control form-control-sm" asp-for="filtro.cliente_nome" id="cliente" autocomplete="off" onkeyup="consultaClientesContador(this.id)" aria-label="cliente" aria-describedby="cliente" disabled>
                     <div class="input-group-append">
                         <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_clientes" onclick="alteraClienteContador()">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -120,17 +143,10 @@
                             </svg>
                         </button>
                     </div>
-                    <input type="hidden" name="cliente_id" id="cliente_id" />
+                    <input type="hidden" asp-for="filtro.cliente_id" id="cliente_id" />
                 </div>
                 <span class="text-info" id="pesquisa_cliente"></span>
             </div>
-
-            @*<div class="col-12">
-                <div class="form-group">
-                    <label class="control-label">Cliente</label>
-                    <select asp-items="@ViewBag.empresasContador" value="@TempData["cliente_id"]" id="cliente_id" name="cliente_id" class="form-control form-control-sm js_example_basic_single"></select>
-                </div>
-            </div>*@
             <div class="col-6">
                 <div class="form-group">
                     <label class="control-label">Data Inicial</label>
@@ -143,16 +159,22 @@
                     <input name="data_final" id="data_final" class="form-control form-control-sm datepicker" value="@Model.filtro.data_final.ToShortDateString()" />
                 </div>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12">
                 <div class="custom-control custom-switch">
-                    <input type="checkbox" id="gera_provisao_categoria_fiscal" asp-for="filtro.gera_provisao_categoria_fiscal" name="gera_provisao_categoria_fiscal" class="custom-control-input" value="false" onchange="switch_bootstrap(this.id, this.value)">
-                    <label class="custom-control-label" for="gera_provisao_categoria_fiscal">Gerar provisão das categorias fiscais</label>
+                    <input type="checkbox" id="gerar_pgto_a_participante_categoria_fiscal_sem_nf_informada" asp-for="filtro.gerar_pgto_a_participante_categoria_fiscal_sem_nf_informada" name="gerar_pgto_a_participante_categoria_fiscal_sem_nf_informada" class="custom-control-input" onchange="switch_bootstrap(this.id, this.value)">
+                    <label class="custom-control-label" for="gerar_pgto_a_participante_categoria_fiscal_sem_nf_informada">Gerar pagamento a participante das categorias fiscais sem nota informada?</label>
                 </div>
             </div>
             <div class="col-12 col-md-6">
                 <div class="custom-control custom-switch">
-                    <input type="checkbox" id="gerar_lancamentos_baixas" asp-for="filtro.gerar_lancamentos_baixas" name="gerar_lancamentos_baixas" class="custom-control-input" value="false" onchange="switch_bootstrap(this.id, this.value)">
-                    <label class="custom-control-label" for="gerar_lancamentos_baixas">Gerar pagamento das baixas</label>
+                    <input type="checkbox" id="gerar_lancamentos_ccm" asp-for="filtro.gerar_lancamentos_ccm" name="gerar_lancamentos_ccm" class="custom-control-input" onchange="switch_bootstrap(this.id, this.value)">
+                    <label class="custom-control-label" for="gerar_lancamentos_ccm">Gerar lançamentos de origem em conta corrente movimento</label>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="gerar_lancamentos_baixas" asp-for="filtro.gerar_lancamentos_baixas" name="gerar_lancamentos_baixas" class="custom-control-input" onchange="switch_bootstrap(this.id, this.value)">
+                    <label class="custom-control-label" for="gerar_lancamentos_baixas">Gerar lançamento de origem em baixas (contas pagar/receber)</label>
                 </div>
             </div>
             <div class="col-12" style="margin-top: 10px;">
@@ -163,7 +185,7 @@
             </div>
             <!--onclick="gerar_sci_ilc"-->
         </div>
-    </div>    
+    </div>
 </form>
 <hr class="hrLine" />
 
@@ -178,7 +200,7 @@
                 <th scope="col">Origem</th>
                 <th scope="col">Tipo</th>
                 <th scope="col">Sequência</th>
-                <th scope="col" style="white-space:nowrap" >Data Lançamento</th>
+                <th scope="col" style="white-space:nowrap">Data Lançamento</th>
                 <th scope="col">Debito</th>
                 <th scope="col">Crédito</th>
                 <th scope="col" style="white-space:nowrap;text-align:right">Valor Lançamento</th>
@@ -194,7 +216,7 @@
                 {
                     int s = 1;
                     foreach (var item in Model.list_ilc)
-                    {                        
+                    {
                         <tr>
                             <td>@item.status</td>
                             <td>@item.mensagem</td>

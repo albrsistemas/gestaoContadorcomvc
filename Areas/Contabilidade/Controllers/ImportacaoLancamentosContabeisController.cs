@@ -29,7 +29,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             DateTime h = DateTime.Now;
             f.data_inicial = h.AddDays(-30);
             f.data_final = h;
-            f.gera_provisao_categoria_fiscal = false;
+            f.gerar_lancamentos_baixas = false;
+            f.gerar_lancamentos_ccm = false;
+            f.gerar_pgto_a_participante_categoria_fiscal_sem_nf_informada = false;
             ilcs.filtro = f;
 
             List<ImportacaoLancamentosContabeis> list_ilc = new List<ImportacaoLancamentosContabeis>();
@@ -41,39 +43,29 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(int cliente_id, DateTime data_inicial, DateTime data_final, bool gera_provisao_categoria_fiscal, bool gerar_lancamentos_baixas, bool gear_lancamentos_ccm)
+        //public ActionResult Create(int cliente_id, DateTime data_inicial, DateTime data_final, bool gera_provisao_categoria_fiscal, bool gerar_lancamentos_baixas, bool gear_lancamentos_ccm)
+        public ActionResult Create(Ilcs ilcs)
         {
-            Ilcs ilcs = new Ilcs();
-
             try
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);                
 
-                Selects select = new Selects();
-                ViewBag.empresasContador = select.getEmpresasContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Selected = c.value == user.usuario_ultimoCliente }).ToList();
+                ImportacaoLancamentosContabeis ilc = new ImportacaoLancamentosContabeis();
+                Ilcs new_ilcs = new Ilcs();
+                new_ilcs = ilc.create(user.usuario_id, user.usuario_conta_id,ilcs.filtro.cliente_id, ilcs.filtro.data_inicial, ilcs.filtro.data_final, ilcs.filtro.gerar_lancamentos_baixas, ilcs.filtro.gerar_lancamentos_ccm, ilcs.filtro.gerar_pgto_a_participante_categoria_fiscal_sem_nf_informada);
+                new_ilcs.filtro = ilcs.filtro;                
 
-                ImportacaoLancamentosContabeis ilc = new ImportacaoLancamentosContabeis();                
-                ilcs = ilc.create(user.usuario_id, user.usuario_conta_id, cliente_id, data_inicial, data_final, gera_provisao_categoria_fiscal, gerar_lancamentos_baixas, gear_lancamentos_ccm);
-
-                ilc_filter f = new ilc_filter();
-                f.cliente_id = cliente_id;
-                f.data_inicial = data_inicial;
-                f.data_final = data_final;
-                f.gera_provisao_categoria_fiscal = gera_provisao_categoria_fiscal;
-
-                ilcs.filtro = f;
-
-                return View(ilcs);
-
-                //return Json(JsonConvert.SerializeObject(ilcs));
+                return View(ilcs);                
             }
             catch
             {
-                ilcs.status = "Erro ao gerar informação do relatório. Tente novamente, se persistir, entre em contato com o suporte!";
+                TempData["ilc_retorno"] = "Erro ao gerar informação do relatório. Tente novamente, se persistir, entre em contato com o suporte!";
+                
+                Ilcs new_ilcs = new Ilcs();
 
-                return Json(JsonConvert.SerializeObject(ilcs));
+                return View(ilcs);
             }
         }
     }
