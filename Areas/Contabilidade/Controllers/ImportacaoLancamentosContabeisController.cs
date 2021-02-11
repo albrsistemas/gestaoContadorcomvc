@@ -57,7 +57,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                 new_ilcs = ilc.create(user.usuario_id, user.usuario_conta_id,ilcs.filtro.cliente_id, ilcs.filtro.data_inicial, ilcs.filtro.data_final, ilcs.filtro.gerar_lancamentos_baixas, ilcs.filtro.gerar_lancamentos_ccm, ilcs.filtro.gerar_pgto_a_participante_categoria_fiscal_sem_nf_informada);
                 new_ilcs.filtro = ilcs.filtro;                
 
-                return View(ilcs);                
+                return View(new_ilcs);                
             }
             catch
             {

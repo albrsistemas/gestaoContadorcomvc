@@ -64,10 +64,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
             Ilcs ilcs = new Ilcs();
             List<ImportacaoLancamentosContabeis> list_ilc = new List<ImportacaoLancamentosContabeis>();
             CategoriasPadrao cp = new CategoriasPadrao();
-            cp.categoria_padrao(conta_id);
-
-
-
+            cp = cp.categoria_padrao(cliente_id);            
 
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
@@ -119,9 +116,9 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
 
                         conta_contabil_categoria = reader_ccm["conta_contabil_categoria"].ToString();
 
-                        if (DBNull.Value != reader_ccm["valor_lancamento"])
+                        if (DBNull.Value != reader_ccm["ccm_valor"])
                         {
-                            valor_lancamento = Convert.ToDecimal(reader_ccm["valor_lancamento"]);
+                            valor_lancamento = Convert.ToDecimal(reader_ccm["ccm_valor"]);
                         }
                         else
                         {

@@ -520,6 +520,9 @@ namespace gestaoContadorcomvc.Models
                         permissao.memorandoCreate = Convert.ToBoolean(leitor["memorandoCreate"]);
                         permissao.memorandoEdit = Convert.ToBoolean(leitor["memorandoEdit"]);
                         permissao.memorandoDelete = Convert.ToBoolean(leitor["memorandoDelete"]);
+                        //11/02/2021
+                        permissao.SCI_ilc = Convert.ToBoolean(leitor["SCI_ilc"]);
+                        permissao.SCI_id = Convert.ToBoolean(leitor["SCI_id"]);
                     }
                 }
             }

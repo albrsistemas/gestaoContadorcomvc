@@ -85,7 +85,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
             {
                 MySqlDataReader reader;
 
-                comando.CommandText = "SELECT op.op_tipo, COALESCE(par.op_part_cnpj_cpf, 'Sem Participante') as 'participante', COALESCE(nf.op_nf_numero, -1) as 'nota', COALESCE(nf.op_nf_data_emissao, 'Não Informada') as 'data_nota_data_emissao', COALESCE(nf.op_nf_data_entrada_saida, 'Não Informada') as 'data_nota_data_saida_entrada', COALESCE(par.op_uf_ibge_codigo, 'Sem Participante') as 'estado_nf', COALESCE(uf_ibge.uf_ibge_sigla, 'Sem Participante') as 'estado_nf_sigla', COALESCE(nf.op_nf_serie,'Não Informada') as 'serie_nf', COALESCE(cc.ccorrente_masc_contabil, 'Conta corrente sem conta contábil') as 'conta_contabil_conta_corrente', b.oppb_obs, round(b.oppb_valor,2) as 'oppb_valor', b.oppb_juros, b.oppb_multa, b.oppb_desconto, p.op_parcela_vencimento_alterado as 'data_vencimento', b.oppb_data as 'data_pagamento', round(((b.oppb_valor / p.op_parcela_valor * p.op_parcela_ret_pis)),2) as 'ret_pis', round(((b.oppb_valor / p.op_parcela_valor * p.op_parcela_ret_cofins)),2) as 'ret_cofins', round(((b.oppb_valor / p.op_parcela_valor * p.op_parcela_ret_csll)),2) as 'ret_csll', round(((b.oppb_valor / p.op_parcela_valor * p.op_parcela_ret_irrf)),2) as 'ret_ir', round(((b.oppb_valor / p.op_parcela_valor * p.op_parcela_ret_inss)),2) as 'ret_inss', round(((b.oppb_valor / p.op_parcela_valor * p.op_parcela_ret_issqn)),2) as 'ret_iss' from op_parcelas_baixa as b LEFT JOIN op_parcelas as p on p.op_parcela_id = b.oppb_op_parcela_id LEFT JOIN operacao as op on op.op_id = b.oppb_op_id LEFT JOIN op_nf as nf on nf.op_nf_op_id = op.op_id LEFT JOIN op_participante as par on par.op_id = op.op_id LEFT JOIN conta_corrente as cc on cc.ccorrente_id = b.oppb_conta_corrente LEFT JOIN uf_ibge on uf_ibge.uf_ibge_codigo = par.op_uf_ibge_codigo WHERE op.op_conta_id = @cliente_id and b.oppb_data BETWEEN @data_inicial and @data_final;";
+                comando.CommandText = "SELECT op.op_tipo, COALESCE(p.op_parcela_numero,0) as 'numero_parcela', COALESCE(par.op_part_cnpj_cpf, 'Sem Participante') as 'participante', COALESCE(nf.op_nf_numero, -1) as 'nota', COALESCE(nf.op_nf_data_emissao, 'Não Informada') as 'data_nota_data_emissao', COALESCE(nf.op_nf_data_entrada_saida, 'Não Informada') as 'data_nota_data_saida_entrada', COALESCE(par.op_uf_ibge_codigo, 'Sem Participante') as 'estado_nf', COALESCE(uf_ibge.uf_ibge_sigla, 'Sem Participante') as 'estado_nf_sigla', COALESCE(nf.op_nf_serie,'Não Informada') as 'serie_nf', COALESCE(cc.ccorrente_masc_contabil, 'Conta corrente sem conta contábil') as 'conta_contabil_conta_corrente', b.oppb_obs, round(b.oppb_valor,2) as 'oppb_valor', b.oppb_juros, b.oppb_multa, b.oppb_desconto, p.op_parcela_vencimento_alterado as 'data_vencimento', b.oppb_data as 'data_pagamento', round(((b.oppb_valor / p.op_parcela_valor * p.op_parcela_ret_pis)),2) as 'ret_pis', round(((b.oppb_valor / p.op_parcela_valor * p.op_parcela_ret_cofins)),2) as 'ret_cofins', round(((b.oppb_valor / p.op_parcela_valor * p.op_parcela_ret_csll)),2) as 'ret_csll', round(((b.oppb_valor / p.op_parcela_valor * p.op_parcela_ret_irrf)),2) as 'ret_ir', round(((b.oppb_valor / p.op_parcela_valor * p.op_parcela_ret_inss)),2) as 'ret_inss', round(((b.oppb_valor / p.op_parcela_valor * p.op_parcela_ret_issqn)),2) as 'ret_iss' from op_parcelas_baixa as b LEFT JOIN op_parcelas as p on p.op_parcela_id = b.oppb_op_parcela_id LEFT JOIN operacao as op on op.op_id = b.oppb_op_id LEFT JOIN op_nf as nf on nf.op_nf_op_id = op.op_id LEFT JOIN op_participante as par on par.op_id = op.op_id LEFT JOIN conta_corrente as cc on cc.ccorrente_id = b.oppb_conta_corrente LEFT JOIN uf_ibge on uf_ibge.uf_ibge_codigo = par.op_uf_ibge_codigo WHERE op.op_conta_id = @cliente_id and b.oppb_data BETWEEN @data_inicial and @data_final;";
                 comando.Parameters.AddWithValue("@cliente_id", fd.cliente_id);
                 comando.Parameters.AddWithValue("@data_inicial", fd.data_inicial);
                 comando.Parameters.AddWithValue("@data_final", fd.data_final);
@@ -98,11 +98,23 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                     {
                         ImportacaoDuplicatas id = new ImportacaoDuplicatas();
                         string tipo = reader["op_tipo"].ToString();
+                        //Definição da natureza da operação (padrão)
+                        string natureza = "Sem Definição";
+                        if(tipo == "ServicoPrestado")
+                        {
+                            natureza = "5933000";
+                        }
+                        int numero_p = Convert.ToInt32(reader["numero_parcela"]);
+                        if (numero_p == 0)
+                        {
+                            numero_p = 1;
+                        }
+                        id.id_numero_parcela = numero_p;
                         id.id_tipo_movimento = tipo_movimento(reader["op_tipo"].ToString());
                         id.id_cnpj_cpf = reader["participante"].ToString();
                         id.id_numero_nf_inicial = Convert.ToInt32(reader["nota"]);
                         id.id_numero_nf_final = Convert.ToInt32(reader["nota"]);
-                        if(id.id_tipo_movimento == "E")
+                        if(tipo == "Compra")
                         {
                             if (DBNull.Value != reader["data_nota_data_saida_entrada"])
                             {
@@ -128,17 +140,17 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                         id.id_serie_nf = reader["serie_nf"].ToString();
                         id.id_especie_nf = "";
                         id.id_modelo_nf = "";
-                        id.id_natureza_operacao = "";
-                        if(id.id_tipo_movimento == "Venda" || id.id_tipo_movimento == "ServicoPrestado")
+                        id.id_natureza_operacao = natureza;
+                        if(tipo == "ServicoPrestado" || tipo == "Venda")
                         {
                             id.id_conta_debito = reader["conta_contabil_conta_corrente"].ToString();
                             id.id_conta_credito = "";
                         }
-                        if (id.id_tipo_movimento == "Compra" || id.id_tipo_movimento == "ServicoTomado")
+                        else
                         {
                             id.id_conta_debito = "";
                             id.id_conta_credito = reader["conta_contabil_conta_corrente"].ToString();
-                        }
+                        }                        
 
                         id.id_historico_operacao = reader["oppb_obs"].ToString();
 
@@ -226,8 +238,16 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                         }
                         id.id_valor_ret_funrural = 0;
                         id.id_valor_ret_sest_senat = 0;
-                        id.id_tipo_baixa = "P";
+                        id.id_tipo_baixa = "P";                        
                         id.id_ordem_baixa = 0;
+
+                        //Somando retenções
+                        ids.retencao_pis_total += id.id_valor_ret_pis;
+                        ids.retencao_cofins_total += id.id_valor_ret_cofins;
+                        ids.retencao_csll_total += id.id_valor_ret_csll;
+                        ids.retencao_irrf_total += id.id_valor_ret_ir;
+                        ids.retencao_inss_total += id.id_valor_ret_inss;
+                        ids.retencao_iss_total += id.id_valor_ret_iss;
 
                         ids.duplicatas.Add(id);
 
@@ -265,6 +285,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                         if(juros > 0)
                         {
                             ImportacaoDuplicatas juro = new ImportacaoDuplicatas();
+                            juro.id_numero_parcela = id.id_numero_parcela;
                             juro.id_tipo_movimento = id.id_tipo_movimento;
                             juro.id_cnpj_cpf = id.id_cnpj_cpf;
                             juro.id_numero_nf_inicial = id.id_numero_nf_inicial;
@@ -303,6 +324,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                         if (multa > 0)
                         {
                             ImportacaoDuplicatas multas = new ImportacaoDuplicatas();
+                            multas.id_numero_parcela = id.id_numero_parcela;
                             multas.id_tipo_movimento = id.id_tipo_movimento;
                             multas.id_cnpj_cpf = id.id_cnpj_cpf;
                             multas.id_numero_nf_inicial = id.id_numero_nf_inicial;
@@ -340,6 +362,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                         if (desconto > 0)
                         {
                             ImportacaoDuplicatas descontos = new ImportacaoDuplicatas();
+                            descontos.id_numero_parcela = id.id_numero_parcela;
                             descontos.id_tipo_movimento = id.id_tipo_movimento;
                             descontos.id_cnpj_cpf = id.id_cnpj_cpf;
                             descontos.id_numero_nf_inicial = id.id_numero_nf_inicial;
@@ -427,6 +450,12 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
         public List<ImportacaoDuplicatas> duplicatas { get; set; }
         public string status { get; set; }
         public int qunatidade_erros { get; set; }
+        public Decimal retencao_pis_total { get; set; }
+        public Decimal retencao_cofins_total { get; set; }
+        public Decimal retencao_csll_total { get; set; }
+        public Decimal retencao_irrf_total { get; set; }
+        public Decimal retencao_inss_total { get; set; }
+        public Decimal retencao_iss_total { get; set; }
     }
 
     public class Filtros_Duplicatas

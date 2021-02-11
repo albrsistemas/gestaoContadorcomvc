@@ -4764,6 +4764,21 @@ function gerar_sci_id() {
     
 }
 
+function gerar_sci_ilc() {
+    let t = document.querySelectorAll(".sci_id_line");
+    let texto = "";
+
+    for (let i = 0; i < t.length; i++) {
+        texto += t[i].innerHTML + '\n';
+    }
+
+    let blob = new Blob([texto], {
+        type: "text/plain;charset-utf-8"
+    });
+    saveAs(blob, "sci_ilc.txt");
+
+}
+
 
 
 

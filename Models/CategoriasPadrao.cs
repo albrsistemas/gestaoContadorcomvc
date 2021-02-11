@@ -155,7 +155,7 @@ namespace gestaoContadorcomvc.Models
                             categoria_padrao.descontos_impostos = categoria;
                         }
                     }
-                }
+                }                
             }
             catch (Exception e)
             {

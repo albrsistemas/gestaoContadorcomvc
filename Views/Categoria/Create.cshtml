@@ -58,16 +58,7 @@
                                 </div>
                                 <input type="hidden" name="escopo" value='@(TempData["escopo"] != null ? @TempData["escopo"] : "")' />
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label asp-for="categoria_padrao" class="control-label">Categoria Padrão</label>
-                                    <select asp-items="@ViewBag.categoria_padrao" value="@TempData["categoria_padrao"]" id="categoria_padrao" name="categoria_padrao" class="form-control" style="width:100%"></select>
-                                    <span asp-validation-for="categoria_padrao" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
+                        </div>                        
                     }
                 </div>
                 <div class="modal-footer">
