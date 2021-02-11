@@ -117,7 +117,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         // POST: Categoria_v2Controller/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection, bool categoria_categoria_fiscal)
+        public ActionResult Create(IFormCollection collection, bool categoria_categoria_fiscal, bool categoria_categoria_tributo)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -135,7 +135,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             {
                 Categoria categoria = new Categoria();
 
-                TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], contexto.conta_id, user.usuario_id, collection["categoria_conta_contabil"],"Não","0", categoria_categoria_fiscal);
+                TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], contexto.conta_id, user.usuario_id, collection["categoria_conta_contabil"],"Não","0", categoria_categoria_fiscal, categoria_categoria_tributo);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -162,7 +162,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
         // POST: CategoriaController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int categoria_id, IFormCollection collection, bool categoria_categoria_fiscal)
+        public ActionResult Edit(int categoria_id, IFormCollection collection, bool categoria_categoria_fiscal, bool categoria_categoria_tributo)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
@@ -179,7 +179,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             {
                 Categoria categoria = new Categoria();
 
-                TempData["editCategoria"] = categoria.alterarNomeCategoria(collection["categoria_nome"], collection["categoria_conta_contabil"], categoria_id, contexto.conta_id, user.usuario_id, categoria_categoria_fiscal);
+                TempData["editCategoria"] = categoria.alterarNomeCategoria(collection["categoria_nome"], collection["categoria_conta_contabil"], categoria_id, contexto.conta_id, user.usuario_id, categoria_categoria_fiscal, categoria_categoria_tributo);
 
                 return RedirectToAction(nameof(Index));
             }

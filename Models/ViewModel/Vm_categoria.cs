@@ -52,6 +52,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public vm_ConfigContadorCliente cco { get; set; }
 
         public bool categoria_categoria_fiscal { get; set; }
+        public bool categoria_categoria_tributo { get; set; }
         public string categoria_padrao { get; set; }
     }
 }

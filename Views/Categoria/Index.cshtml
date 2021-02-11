@@ -81,7 +81,10 @@
         .box_opc_dots_itens:hover {
             background-color: rgb(255,69,0);
             color: white;
-        }        
+        }
+    .container{
+        min-width: 100%;
+    }
 </style>
 
 @{
@@ -192,6 +195,7 @@
                 <th scope="col" style="text-align:left;">Nome</th>
                 <th scope="col" style="white-space:nowrap;">Conta Contábil</th>
                 <th scope="col">Fiscal</th>
+                <th scope="col">Tributo</th>
                 <th scope="col" style="white-space:nowrap;">Padrão</th>
                 <th scope="col" style="text-align:right;">Ações</th>
             </tr>
@@ -209,6 +213,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>                                
+                                <td></td>                                                                                                
                             }
                             if (item.categoria_classificacao.Length == 4)
                             {
@@ -217,6 +222,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>                                
+                                <td></td>                                                                                            
                             }
                             if (item.categoria_classificacao.Length > 4)
                             {
@@ -229,9 +235,18 @@
                                 }
                                 else
                                 {
-                                    <td style="white-space:nowrap;">Sim</td>
+                                    <td style="white-space:nowrap;">Não</td>
                                 }
-                                <td style="white-space:nowrap;">@item.categoria_padrao</td>                                
+                                
+                                if (item.categoria_categoria_tributo == true)
+                                {
+                                    <td style="white-space:nowrap;">T</td>
+                                }
+                                else
+                                {
+                                    <td style="white-space:nowrap;"></td>
+                                }
+                                <td style="white-space:nowrap;">@item.categoria_padrao</td>                                 
                             }
                         }
                         <td style="white-space:nowrap;text-align:right">                            

@@ -81,7 +81,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                 comand_ccm.Connection = conn;
                 comand_ccm.Transaction = Transacao;
 
-                comand_ccm.CommandText = "SELECT ccm.ccm_id, COALESCE(c.categoria_escopo, 'Sem Categoria') as 'escopo', COALESCE(c.categoria_categoria_fiscal, -1) as 'categoria_fiscal', ccm.ccm_data, ccm.ccm_data_competencia, COALESCE(c.categoria_conta_contabil,'Categoria sem conta contábil') as 'conta_contabil_categoria', COALESCE(cc.ccorrente_masc_contabil, 'Conta corrente sem conta contábil') as 'conta_contabil_conta_corrente', ccm.ccm_valor_principal, ccm.ccm_multa, ccm.ccm_juros, ccm.ccm_valor, ccm.ccm_memorando, COALESCE(nf.ccm_nf_numero,'Não Informada') as 'nota', COALESCE(p.participante_cnpj_cpf,'Sem Participante') as 'participante' from conta_corrente_mov as ccm LEFT JOIN categoria as c on c.categoria_id = ccm.ccm_contra_partida_id LEFT JOIN conta_corrente as cc on cc.ccorrente_id = ccm.ccm_ccorrente_id LEFT JOIN ccm_nf as nf on nf.ccm_nf_ccm_id = ccm.ccm_id LEFT JOIN participante as p on p.participante_id = ccm.ccm_participante_id WHERE ccm.ccm_origem in ('CCM') and ccm.ccm_conta_id = @cliente_id and ccm.ccm_data BETWEEN @data_inicial and @data_final;";
+                comand_ccm.CommandText = "SELECT ccm.ccm_id, COALESCE(c.categoria_escopo, 'Sem Categoria') as 'escopo', c.categoria_categoria_tributo, COALESCE(c.categoria_categoria_fiscal, -1) as 'categoria_fiscal', ccm.ccm_data, ccm.ccm_data_competencia, COALESCE(c.categoria_conta_contabil,'Categoria sem conta contábil') as 'conta_contabil_categoria', COALESCE(cc.ccorrente_masc_contabil, 'Conta corrente sem conta contábil') as 'conta_contabil_conta_corrente', ccm.ccm_valor_principal, ccm.ccm_multa, ccm.ccm_juros, ccm.ccm_valor, ccm.ccm_memorando, COALESCE(nf.ccm_nf_numero,'Não Informada') as 'nota', COALESCE(p.participante_cnpj_cpf,'Sem Participante') as 'participante' from conta_corrente_mov as ccm LEFT JOIN categoria as c on c.categoria_id = ccm.ccm_contra_partida_id LEFT JOIN conta_corrente as cc on cc.ccorrente_id = ccm.ccm_ccorrente_id LEFT JOIN ccm_nf as nf on nf.ccm_nf_ccm_id = ccm.ccm_id LEFT JOIN participante as p on p.participante_id = ccm.ccm_participante_id WHERE ccm.ccm_origem in ('CCM') and ccm.ccm_conta_id = @cliente_id and ccm.ccm_data BETWEEN @data_inicial and @data_final;";
                 comand_ccm.Parameters.AddWithValue("@cliente_id", cliente_id);
                 comand_ccm.Parameters.AddWithValue("@data_inicial", data_inicial);
                 comand_ccm.Parameters.AddWithValue("@data_final", data_final);
@@ -93,14 +93,14 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                     while (reader_ccm.Read())
                     {
                         DateTime data_lancamento = new DateTime();
-                        string conta_contabil_categoria = "";                        
-                        string conta_contabil_conta_corrente = "";                        
-                        Decimal valor_lancamento = 0;                        
+                        string conta_contabil_categoria = "";
+                        string conta_contabil_conta_corrente = "";
+                        Decimal valor_lancamento = 0;
                         Decimal valor_multa = 0;
-                        Decimal valor_juros = 0;                        
-                        Decimal valor_principal = 0;                        
+                        Decimal valor_juros = 0;
+                        Decimal valor_principal = 0;
                         string complemento_historico = "";
-                        string numero_documento = "";                                                
+                        string numero_documento = "";
                         string participante = "";
                         string escopo = "";
                         int categoria_fiscal = -1; //Pode ser 0 (false), 1 (true) ou -1 (caso não tenha categoria informada);
@@ -152,6 +152,17 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                             valor_juros = 0;
                         }
 
+                        bool categoria_tributo = Convert.ToBoolean(reader_ccm["categoria_categoria_tributo"]);
+                        string conta_juros = cp.juros_pagos.categoria_conta_contabil;
+                        string conta_multa = cp.multas_pagas.categoria_conta_contabil;
+                        string conta_desconto = cp.descontos_obtidos.categoria_conta_contabil;
+                        if (categoria_tributo)
+                        {
+                            conta_juros = cp.juros_impostos.categoria_conta_contabil;
+                            conta_multa = cp.multas_impostos.categoria_conta_contabil;
+                            conta_desconto = cp.descontos_impostos.categoria_conta_contabil;
+                        }
+
                         conta_contabil_categoria = reader_ccm["conta_contabil_categoria"].ToString();
                         conta_contabil_conta_corrente = reader_ccm["conta_contabil_conta_corrente"].ToString();
                         complemento_historico = reader_ccm["ccm_memorando"].ToString();
@@ -185,11 +196,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                                         list_ilc.Add(lancamento("CCM", "Pagamento", false, false, data_lancamento, conta_contabil_categoria, conta_contabil_conta_corrente, valor_principal, "", complemento_historico, "", "", "", "", "A", "", "", "", "", ""));
                                         if(valor_juros > 0)
                                         {
-                                            list_ilc.Add(lancamento("CCM", "Pagamento", false, false, data_lancamento, cp.juros_pagos.categoria_conta_contabil, conta_contabil_conta_corrente, valor_juros, "", ("Juros pagos ref.: " + complemento_historico), "", "", "", "", "A", "", "", "", "", ""));
+                                            list_ilc.Add(lancamento("CCM", "Pagamento", false, false, data_lancamento, conta_juros, conta_contabil_conta_corrente, valor_juros, "", ("Juros pagos ref.: " + complemento_historico), "", "", "", "", "A", "", "", "", "", ""));
                                         }
                                         if(valor_multa > 0)
                                         {
-                                            list_ilc.Add(lancamento("CCM", "Pagamento", false, false, data_lancamento, cp.multas_pagas.categoria_conta_contabil, conta_contabil_conta_corrente, valor_multa, "", ("Multa paga ref.: " + complemento_historico), "", "", "", "", "A", "", "", "", "", ""));
+                                            list_ilc.Add(lancamento("CCM", "Pagamento", false, false, data_lancamento, conta_multa, conta_contabil_conta_corrente, valor_multa, "", ("Multa paga ref.: " + complemento_historico), "", "", "", "", "A", "", "", "", "", ""));
                                         }
                                     }
                                     else
@@ -221,11 +232,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                                             list_ilc.Add(lancamento("CCM", "Pagamento", true, false, data_lancamento, "148", conta_contabil_conta_corrente, valor_lancamento, "", complemento_historico, "", "", participante, "", "A", "", "", "", "", ""));
                                             if (valor_juros > 0)
                                             {                                                
-                                                list_ilc.Add(lancamento("CCM", "Provisão Juros", true, false, data_lancamento, cp.juros_pagos.categoria_conta_contabil, "148", valor_juros, "", ("Juros pagos ref.: " + complemento_historico), "", "", "", participante, "A", "", "", "", "", ""));
+                                                list_ilc.Add(lancamento("CCM", "Provisão Juros", true, false, data_lancamento, conta_juros, "148", valor_juros, "", ("Juros pagos ref.: " + complemento_historico), "", "", "", participante, "A", "", "", "", "", ""));
                                             }
                                             if (valor_multa > 0)
                                             {
-                                                list_ilc.Add(lancamento("CCM", "Provisão Multa", true, false, data_lancamento, cp.multas_pagas.categoria_conta_contabil, "148", valor_multa, "", ("Multa paga ref.: " + complemento_historico), "", "", "", participante, "A", "", "", "", "", ""));
+                                                list_ilc.Add(lancamento("CCM", "Provisão Multa", true, false, data_lancamento, conta_multa, "148", valor_multa, "", ("Multa paga ref.: " + complemento_historico), "", "", "", participante, "A", "", "", "", "", ""));
                                             }
                                         }
                                         else
@@ -250,11 +261,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                                                 list_ilc.Add(lancamento("CCM", "Pagamento", true, true, data_lancamento, "148", conta_contabil_conta_corrente, valor_lancamento, "", complemento_historico, ("DCTO" + numero_documento), "", participante, "", "A", "", "", "", "", ""));
                                                 if (valor_juros > 0)
                                                 {
-                                                    list_ilc.Add(lancamento("CCM", "Provisão Juros", true, false, data_lancamento, cp.juros_pagos.categoria_conta_contabil, "148", valor_juros, "", ("Juros pagos ref.: " + complemento_historico), "", "", "", participante, "A", "", "", "", "", ""));
+                                                    list_ilc.Add(lancamento("CCM", "Provisão Juros", true, false, data_lancamento, conta_juros, "148", valor_juros, "", ("Juros pagos ref.: " + complemento_historico), "", "", "", participante, "A", "", "", "", "", ""));
                                                 }
                                                 if (valor_multa > 0)
                                                 {
-                                                    list_ilc.Add(lancamento("CCM", "Provisão Multa", true, false, data_lancamento, cp.multas_pagas.categoria_conta_contabil, "148", valor_multa, "", ("Multa paga ref.: " + complemento_historico), "", "", "", participante, "A", "", "", "", "", ""));
+                                                    list_ilc.Add(lancamento("CCM", "Provisão Multa", true, false, data_lancamento, conta_multa, "148", valor_multa, "", ("Multa paga ref.: " + complemento_historico), "", "", "", participante, "A", "", "", "", "", ""));
                                                 }
                                             }
                                             else
@@ -282,11 +293,11 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                                                 list_ilc.Add(lancamento("CCM", "Pagamento", true, false, data_lancamento, "148", conta_contabil_conta_corrente, valor_lancamento, "", complemento_historico, "", "", participante, "", "S", "", "", "", "", ""));
                                                 if (valor_juros > 0)
                                                 {
-                                                    list_ilc.Add(lancamento("CCM", "Provisão Juros", true, false, data_lancamento, cp.juros_pagos.categoria_conta_contabil, "148", valor_juros, "", ("Juros pagos ref.: " + complemento_historico), "", "", "", participante, "S", "", "", "", "", ""));
+                                                    list_ilc.Add(lancamento("CCM", "Provisão Juros", true, false, data_lancamento, conta_juros, "148", valor_juros, "", ("Juros pagos ref.: " + complemento_historico), "", "", "", participante, "S", "", "", "", "", ""));
                                                 }
                                                 if (valor_multa > 0)
                                                 {
-                                                    list_ilc.Add(lancamento("CCM", "Provisão Multa", true, false, data_lancamento, cp.multas_pagas.categoria_conta_contabil, "148", valor_multa, "", ("Multa paga ref.: " + complemento_historico), "", "", "", participante, "S", "", "", "", "", ""));
+                                                    list_ilc.Add(lancamento("CCM", "Provisão Multa", true, false, data_lancamento, conta_multa, "148", valor_multa, "", ("Multa paga ref.: " + complemento_historico), "", "", "", participante, "S", "", "", "", "", ""));
                                                 }
                                             }
                                             else
@@ -373,7 +384,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                     comand_baixas.Connection = conn;
                     comand_baixas.Transaction = Transacao;
 
-                    comand_baixas.CommandText = "SELECT ccm.ccm_data, ccm.ccm_movimento, COALESCE(cc.ccorrente_masc_contabil, 'Conta corrente sem conta contabil') as 'masc_conta_corrente', COALESCE(c.categoria_conta_contabil, 'Categoria sem conta contábil') as 'masc_categoria', baixa.oppb_valor, baixa.oppb_juros, baixa.oppb_multa, baixa.oppb_desconto, baixa.oppb_obs, ccm.ccm_memorando, baixa.oppb_data, COALESCE(nf.op_nf_numero, 'Não Informada') as nota, (baixa.oppb_valor + baixa.oppb_juros + baixa.oppb_multa - baixa.oppb_desconto) as 'valor_pagamento', COALESCE(part.op_part_cnpj_cpf, 'Sem Participante') as 'participante' from conta_corrente_mov as ccm LEFT JOIN conta_corrente as cc on cc.ccorrente_id = ccm.ccm_ccorrente_id LEFT JOIN operacao as op on op.op_id = ccm.ccm_op_id left JOIN categoria as c on c.categoria_id = op.op_categoria_id LEFT JOIN op_parcelas_baixa as baixa on baixa.oppb_id = ccm.ccm_oppb_id LEFT JOIN op_nf as nf on nf.op_nf_op_id = op.op_id LEFT JOIN op_participante as part on part.op_id = op.op_id WHERE ccm.ccm_origem = 'Baixa' and ccm.ccm_conta_id = @cliente_id and ccm.ccm_data BETWEEN @data_inicial and @data_final;";
+                    comand_baixas.CommandText = "SELECT c.categoria_categoria_tributo, ccm.ccm_data, ccm.ccm_movimento, COALESCE(cc.ccorrente_masc_contabil, 'Conta corrente sem conta contabil') as 'masc_conta_corrente', COALESCE(c.categoria_conta_contabil, 'Categoria sem conta contábil') as 'masc_categoria', baixa.oppb_valor, baixa.oppb_juros, baixa.oppb_multa, baixa.oppb_desconto, baixa.oppb_obs, ccm.ccm_memorando, baixa.oppb_data, COALESCE(nf.op_nf_numero, 'Não Informada') as nota, (baixa.oppb_valor + baixa.oppb_juros + baixa.oppb_multa - baixa.oppb_desconto) as 'valor_pagamento', COALESCE(part.op_part_cnpj_cpf, 'Sem Participante') as 'participante' from conta_corrente_mov as ccm LEFT JOIN conta_corrente as cc on cc.ccorrente_id = ccm.ccm_ccorrente_id LEFT JOIN operacao as op on op.op_id = ccm.ccm_op_id left JOIN categoria as c on c.categoria_id = op.op_categoria_id LEFT JOIN op_parcelas_baixa as baixa on baixa.oppb_id = ccm.ccm_oppb_id LEFT JOIN op_nf as nf on nf.op_nf_op_id = op.op_id LEFT JOIN op_participante as part on part.op_id = op.op_id WHERE ccm.ccm_origem = 'Baixa' and ccm.ccm_conta_id = @cliente_id and ccm.ccm_data BETWEEN @data_inicial and @data_final;";
                     comand_baixas.Parameters.AddWithValue("@cliente_id", cliente_id);
                     comand_baixas.Parameters.AddWithValue("@data_inicial", data_inicial);
                     comand_baixas.Parameters.AddWithValue("@data_final", data_final);
@@ -463,22 +474,32 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                             {
                                 dcto = "DCTO" + nota;
                             }
-                            
+                            bool categoria_tributo = Convert.ToBoolean(reader_baixas["categoria_categoria_tributo"]);
+                            string conta_juros = cp.juros_pagos.categoria_conta_contabil;
+                            string conta_multa = cp.multas_pagas.categoria_conta_contabil;
+                            string conta_desconto = cp.descontos_obtidos.categoria_conta_contabil;
+                            if (categoria_tributo)
+                            {
+                                conta_juros = cp.juros_impostos.categoria_conta_contabil;
+                                conta_multa = cp.multas_impostos.categoria_conta_contabil;
+                                conta_desconto = cp.descontos_impostos.categoria_conta_contabil;
+                            }
+
                             //Lançamentos
                             if (escopo == "S")
                             {
                                 list_ilc.Add(lancamento("Baixa", "Pagamento", true, nota_obrigatoria, data_baixa, "148", conta_contabil_cc, valor_pagamento, "", historico, dcto, "", participante, "", ifrs, "", "", "", "", ""));
                                 if (juros > 0)
                                 {
-                                    list_ilc.Add(lancamento("Baixa", "Provisão Juros", true, false, data_baixa, cp.juros_pagos.categoria_conta_contabil, "148", juros, "", ("Juros pagos ref.: " + historico), "", "", participante, "", ifrs, "", "", "", "", ""));
+                                    list_ilc.Add(lancamento("Baixa", "Provisão Juros", true, false, data_baixa, conta_juros, "148", juros, "", ("Juros pagos ref.: " + historico), "", "", participante, "", ifrs, "", "", "", "", ""));
                                 }
                                 if (multa > 0)
                                 {
-                                    list_ilc.Add(lancamento("Baixa", "Provisão Multa", true, false, data_baixa, cp.multas_pagas.categoria_conta_contabil, "148", multa, "", ("Multa paga ref.: " + historico), "", "", participante, "", ifrs, "", "", "", "", ""));
+                                    list_ilc.Add(lancamento("Baixa", "Provisão Multa", true, false, data_baixa, conta_multa, "148", multa, "", ("Multa paga ref.: " + historico), "", "", participante, "", ifrs, "", "", "", "", ""));
                                 }
                                 if (desconto > 0)
                                 {
-                                    list_ilc.Add(lancamento("Baixa", "Provisão Desconto", true, false, data_baixa, "148", cp.descontos_obtidos.categoria_conta_contabil, desconto, "", ("Desconto obtido ref.: " + historico), "", "", participante, "", ifrs, "", "", "", "", ""));
+                                    list_ilc.Add(lancamento("Baixa", "Provisão Desconto", true, false, data_baixa, "148", conta_desconto, desconto, "", ("Desconto obtido ref.: " + historico), "", "", participante, "", ifrs, "", "", "", "", ""));
                                 }
                             }
                             else
@@ -486,15 +507,15 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                                 list_ilc.Add(lancamento("Baixa", "Pagamento", true, nota_obrigatoria, data_baixa, conta_contabil_cc, "16", valor_pagamento, "", historico, dcto, "", participante, "", ifrs, "", "", "", "", ""));
                                 if (juros > 0)
                                 {
-                                    list_ilc.Add(lancamento("Baixa", "Provisão Juros", true, false, data_baixa, "16", cp.juros_recebidos.categoria_conta_contabil, juros, "", ("Juros recebidos ref.: " + historico), "", "", participante, "", ifrs, "", "", "", "", ""));
+                                    list_ilc.Add(lancamento("Baixa", "Provisão Juros", true, false, data_baixa, "16", conta_juros, juros, "", ("Juros recebidos ref.: " + historico), "", "", participante, "", ifrs, "", "", "", "", ""));
                                 }
                                 if (multa > 0)
                                 {
-                                    list_ilc.Add(lancamento("Baixa", "Provisão Multa", true, false, data_baixa, "16", cp.multas_recebidas.categoria_conta_contabil, multa, "", ("Multa recebida ref.: " + historico), "", "", participante, "", ifrs, "", "", "", "", ""));
+                                    list_ilc.Add(lancamento("Baixa", "Provisão Multa", true, false, data_baixa, "16", conta_multa, multa, "", ("Multa recebida ref.: " + historico), "", "", participante, "", ifrs, "", "", "", "", ""));
                                 }
                                 if (desconto > 0)
                                 {
-                                    list_ilc.Add(lancamento("Baixa", "Provisão Desconto", true, false, data_baixa, cp.descotos_concedidos.categoria_conta_contabil, "16", desconto, "", ("Desconto recebido ref.: " + historico), "", "", participante, "", ifrs, "", "", "", "", ""));
+                                    list_ilc.Add(lancamento("Baixa", "Provisão Desconto", true, false, data_baixa, conta_desconto, "16", desconto, "", ("Desconto recebido ref.: " + historico), "", "", participante, "", ifrs, "", "", "", "", ""));
                                 }
                             }
                         }
@@ -570,11 +591,10 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
             ilc.ilc_obs_conciliacao_credito = ilc_obs_conciliacao_credito;
 
             //Validações
-            if (
-                ilc_conta_credito == "Categoria sem conta contábil" || ilc_conta_credito == "" || ilc_conta_credito == null || ilc_conta_debito == "Categoria sem conta contábil" || ilc_conta_debito == "" || ilc_conta_debito == null)
+            if (ilc_conta_credito == "Categoria sem conta contábil" || ilc_conta_credito == "" || ilc_conta_credito == null || ilc_conta_debito == "Categoria sem conta contábil" || ilc_conta_debito == "" || ilc_conta_debito == null)
             {   
                 ilc.status = "Erro";
-                ilc.mensagem += "Lançamento sem categoria; ";
+                ilc.mensagem += "Lançamento sem categoria ou sem conta contábil; ";
             }
 
             if(!CheckValidDateTime(ilc_data_lancamento.Year, ilc_data_lancamento.Month, ilc.ilc_data_lancamento.Day))
@@ -595,7 +615,19 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                 ilc.mensagem += "Sem complemento do histórico; ";
             }
 
-            if(participante_obrigatorio && (ilc_cnpj_cpf_credito.Length <= 0 || ilc_cnpj_cpf_debito.Length <= 0 || ilc_cnpj_cpf_credito == null || ilc_cnpj_cpf_debito == null))
+            if(participante_obrigatorio && (ilc_cnpj_cpf_credito == "Sem Participante" || ilc_cnpj_cpf_debito == "Sem Participante"))
+            {
+                ilc.status = "Erro";
+                ilc.mensagem += "Lançamento obrigatório informar participante; ";
+            }
+
+            if(participante_obrigatorio && (ilc_cnpj_cpf_credito.Length <= 0 && ilc_cnpj_cpf_debito.Length <= 0))
+            {
+                ilc.status = "Erro";
+                ilc.mensagem += "Lançamento obrigatório informar participante; ";
+            }
+
+            if(participante_obrigatorio && (ilc_cnpj_cpf_credito == null && ilc_cnpj_cpf_debito == null))
             {
                 ilc.status = "Erro";
                 ilc.mensagem += "Lançamento obrigatório informar participante; ";
