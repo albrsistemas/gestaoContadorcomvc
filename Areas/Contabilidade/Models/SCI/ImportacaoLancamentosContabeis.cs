@@ -672,6 +672,8 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
     {
         public int cliente_id { get; set; }
         public string cliente_nome { get; set; }
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime data_inicial { get; set; }
         public DateTime data_final { get; set; }        
         public bool gerar_lancamentos_baixas { get; set; }

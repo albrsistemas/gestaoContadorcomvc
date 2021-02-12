@@ -79,7 +79,7 @@
                         <div class="col-6">
                             <div class="form-group">                                
                                 <label asp-for="data" class="control-label">Data Pagamento</label>
-                                <input value="@(Model.data.ToShortDateString())" name="data" id="data" class="form-control datepicker" />
+                                <input value="@(Model.data.ToShortDateString())" name="data" id="data" class="form-control datepicker" onfocus="execDatapicker()" />
                                 <span asp-validation-for="desconto" class="text-danger"></span>
                             </div>
                         </div>

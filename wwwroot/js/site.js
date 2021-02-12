@@ -175,7 +175,7 @@ function Page() {
         Element_data.value = data.toLocaleDateString();
     }  
 
-    //Tela balancete contábil
+    /*//Tela balancete contábil
     let Elemet_data_inicial = document.getElementById("data_inicial");
     if (Elemet_data_inicial) {
         let data = new Date();
@@ -184,6 +184,7 @@ function Page() {
         var ultimoDia = new Date(data.getFullYear(), data.getMonth() + 1, 0);
         document.getElementById('data_final').value = ultimoDia.toLocaleDateString();
     }
+    */
 
     //Tela create Participante
     let tipo_Pessoa = document.getElementById("participante_tipoPessoa");

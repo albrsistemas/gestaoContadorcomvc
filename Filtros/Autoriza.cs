@@ -34,7 +34,8 @@ namespace gestaoContadorcomvc.Filtros
             if (user.conta.conta_tipo.ToUpper().Equals("CLIENTE"))
             {
                 if(user.Role.ToUpper() != "ADM")
-                {   
+                {  
+
                     if (!(bool)user._permissoes.GetType().GetProperty(permissao).GetValue(user._permissoes))
                     {
                         context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "AcessoNegado" } });
@@ -46,9 +47,19 @@ namespace gestaoContadorcomvc.Filtros
             {
                 if (user.Role.ToUpper() != "ADM")
                 {
-                    if (!(bool)user._permissoes.GetType().GetProperty(permissao).GetValue(user._permissoes))
+                    if (!context.RouteData.Values.Keys.Contains("area"))
                     {
-                        context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "AcessoNegadoContador" } });
+                        if (user._permissoes.area_empresa_contador == false)
+                        {
+                            context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "AcessoNegado" } });
+                        }                       
+                    }
+                    else
+                    {
+                        if (!(bool)user._permissoes.GetType().GetProperty(permissao).GetValue(user._permissoes))
+                        {
+                            context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "AcessoNegadoContador" } });
+                        }
                     }
                 }
             }

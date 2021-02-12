@@ -376,7 +376,7 @@ namespace gestaoContadorcomvc.Models
                         }
 
                         categoria.categoria_categoria_fiscal = Convert.ToBoolean(leitor["categoria_categoria_fiscal"]);                        
-                        categoria.categoria_categoria_tributo = Convert.ToBoolean(leitor["categoria_categoria_fiscal"]);                        
+                        categoria.categoria_categoria_tributo = Convert.ToBoolean(leitor["categoria_categoria_tributo"]);                        
                         categoria.categoria_classificacao = leitor["categoria_classificacao"].ToString();
                         categoria.categoria_nome = leitor["categoria_nome"].ToString();
                         categoria.categoria_tipo = leitor["categoria_tipo"].ToString();

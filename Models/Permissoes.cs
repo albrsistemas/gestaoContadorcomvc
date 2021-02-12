@@ -121,6 +121,7 @@ namespace gestaoContadorcomvc.Models
         //Relatório SCI
         public bool SCI_ilc { get; set; }
         public bool SCI_id { get; set; }
+        public bool area_empresa_contador { get; set; }
 
 
 
@@ -520,9 +521,10 @@ namespace gestaoContadorcomvc.Models
                         permissao.memorandoCreate = Convert.ToBoolean(leitor["memorandoCreate"]);
                         permissao.memorandoEdit = Convert.ToBoolean(leitor["memorandoEdit"]);
                         permissao.memorandoDelete = Convert.ToBoolean(leitor["memorandoDelete"]);
-                        //11/02/2021
+                        //12/02/2021
                         permissao.SCI_ilc = Convert.ToBoolean(leitor["SCI_ilc"]);
                         permissao.SCI_id = Convert.ToBoolean(leitor["SCI_id"]);
+                        permissao.area_empresa_contador = Convert.ToBoolean(leitor["area_empresa_contador"]);
                     }
                 }
             }

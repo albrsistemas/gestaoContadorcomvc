@@ -87,6 +87,15 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
                     {
                         return View(TempData["errorLogin"] = "Usuário não pertence ao tipo de conta especificado");
                     }
+
+                    if(collection["conta_tipo"] == "Empresa" && user.Role.Equals("user"))
+                    {
+                        if (user._permissoes.area_empresa_contador == false)
+                        {
+                            return View(TempData["errorLogin"] = "Usuário sem permissão para acessar a área de empresa da contabilidade");
+                        }
+                    }
+
                 }
 
                 if (conta.conta_tipo.ToUpper() != "CONTABILIDADE" && conta.conta_tipo != collection["conta_tipo"])

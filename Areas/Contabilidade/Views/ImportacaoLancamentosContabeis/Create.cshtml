@@ -141,7 +141,6 @@
             <div class="col-12">
                 <label class="control-label">Cliente</label>
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control form-control-sm" asp-for="filtro.cliente_nome" id="cliente" autocomplete="off" onkeyup="consultaClientesContador(this.id)" aria-label="cliente" aria-describedby="cliente" disabled>
                     <div class="input-group-append">
                         <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_clientes" onclick="alteraClienteContador()">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -149,6 +148,7 @@
                             </svg>
                         </button>
                     </div>
+                    <input type="text" class="form-control form-control-sm" asp-for="filtro.cliente_nome" id="cliente" autocomplete="off" onkeyup="consultaClientesContador(this.id)" aria-label="cliente" aria-describedby="cliente" disabled>
                     <input type="hidden" asp-for="filtro.cliente_id" id="cliente_id" />
                 </div>
                 <span class="text-info" id="pesquisa_cliente"></span>

@@ -295,7 +295,7 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label asp-for="participante.op_part_nome" class="control-label"></label>
-                                <input type="text" asp-for="participante.op_part_nome" id="nome" class="form-control form-control-sm" onkeyup="consultaParticipante(this.id)" />
+                                <input type="text" asp-for="participante.op_part_nome" id="nome" class="form-control form-control-sm" autocomplete="off" onkeyup="consultaParticipante(this.id)" />
                                 <span asp-validation-for="participante.op_part_nome" class="text-danger"></span>
                                 <span class="text-info" id="msg_consuta_participante"></span>
                             </div>

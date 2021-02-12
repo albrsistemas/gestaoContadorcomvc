@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
 using System;
+using gestaoContadorcomvc.Filtros;
 
 namespace gestaoContadorcomvc.Controllers
 {
     [Authorize]
     public class HomeController : Controller
-    {      
+    {   
         public IActionResult Index()
         {
             Usuario usuario = new Usuario();
