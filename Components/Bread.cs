@@ -82,15 +82,15 @@ namespace gestaoContadorcomvc.Components
                 }
                 if (pagina.Contains("Participante/Index"))
                 {
-                    retorno = "Cliente/Fornecedor";                    
+                    retorno = "Participantes";                    
                 }
                 if (pagina.Contains("Participante/Create"))
                 {
-                    retorno = "Incluir Cliente/Fornecedor";
+                    retorno = "Incluir Participante";
                 }
                 if (pagina.Contains("Participante/Edit"))
                 {
-                    retorno = "Alterar Cliente/Fornecedor";
+                    retorno = "Alterar Participante";
                 }
                 //Produtos
                 if (pagina.Contains("Produtos/Index"))

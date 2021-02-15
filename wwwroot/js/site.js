@@ -4694,16 +4694,9 @@ function box_opc_dots_glass() {
 
 function categoria_define_padrao(valor, contexto) {
     let id_element = document.getElementById('id_element').value;
-    let destino = "";
-    if (contexto == 'Cliente') {
-        destino = "/Categoria/DefinirPadraoCategoria";        
-    }
-    if (contexto == 'Contabilidade') {
-        destino = "Contabilidade/Categoria/DefinirPadraoCategoria";
-    }
 
     $.ajax({
-        url: destino,
+        url: "/Categoria/DefinirPadraoCategoria",
         data: { __RequestVerificationToken: gettoken(), padrao: valor, categoria_id: id_element },
         type: 'POST',
         dataType: 'json',
@@ -4711,6 +4704,7 @@ function categoria_define_padrao(valor, contexto) {
             document.getElementById('btn_cancel').style.display = 'none';
             document.getElementById('btn_ok_cliente').style.display = 'none';
             document.getElementById('btn_ok_contabilidade').style.display = 'none';
+            document.getElementById('btn_ok_cliente_contador').style.display = 'none';
             document.getElementById('msg_retorno').innerHTML = "Gravando informação, aguarde...";            
             $('#modal_retorno').modal('show');
         },
@@ -4718,6 +4712,7 @@ function categoria_define_padrao(valor, contexto) {
             document.getElementById('msg_retorno').innerHTML = "Ocorreu um erro no envio da informação. Tente novamente, se persisitir entre em contato com o suporte!";
             document.getElementById('btn_ok_cliente').style.display = 'none';
             document.getElementById('btn_ok_contabilidade').style.display = 'none';
+            document.getElementById('btn_ok_cliente_contador').style.display = 'none';
             document.getElementById('btn_cancel').style.display = 'block';
             $('#modal_retorno').modal('show');
 
@@ -4740,9 +4735,14 @@ function categoria_define_padrao(valor, contexto) {
                 if (contexto == 'Cliente') {
                     document.getElementById('btn_ok_cliente').style.display = 'block';
                 }
-                if (contexto == 'Contabilidade') {
+                if (contexto == 'plano_categorias') {
                     document.getElementById('btn_ok_contabilidade').style.display = 'block';
                 }
+                if (contexto == 'categoria_cliente_contador') {
+                    document.getElementById('btn_ok_cliente_contador').style.display = 'block';
+                }
+
+
                 document.getElementById('msg_retorno').innerHTML = XMLHttpRequest.responseJSON;                
                 $('#modal_retorno').modal('show');
             }
