@@ -178,7 +178,7 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@plano", plano);
                 var leitor = comando.ExecuteReader();
                 localizado = leitor.HasRows;
-                conn.Clone();
+                conn.Close();
             }
             catch (Exception e)
             {
@@ -451,7 +451,7 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Buscar categoria por ID
-        public int quatidadeRegistroGrupo(string classificacao, int conta_id)
+        public int quatidadeRegistroGrupo(string classificacao, int conta_id, string dePlano)
         {
             int retorno = 0;
 
@@ -464,10 +464,11 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                string classific = classificacao + "%";
-                comando.CommandText = "SELECT COUNT(*) as 'quantidade_registros' from categoria WHERE categoria.categoria_conta_id = @conta_id and categoria.categoria_status = 'Ativo' AND categoria.categoria_classificacao like @classific;";
+                //string classific = classificacao + "%";
+                comando.CommandText = "SELECT COUNT(*) as 'quantidade_registros' from categoria WHERE categoria.categoria_conta_id = @conta_id and categoria.categoria_status = 'Ativo' AND categoria.categoria_classificacao like concat(@classific,'.%') and categoria.categoria_dePlano = @dePlano;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
-                comando.Parameters.AddWithValue("@classific", classific);
+                comando.Parameters.AddWithValue("@classific", classificacao);
+                comando.Parameters.AddWithValue("@dePlano", dePlano);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -716,6 +717,43 @@ namespace gestaoContadorcomvc.Models
 
             return retorno;
         }
+
+        public bool verificaCategoriaFoiUsada(int categoria_id, int conta_id)
+        {
+            bool retorno = false;
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT ((SELECT COUNT(p.participante_categoria) as p from participante as p WHERE p.participante_categoria = @categoria_id and p.participante_conta_id = @conta_id) + (SELECT COUNT(operacao.op_categoria_id) from operacao WHERE operacao.op_conta_id = @conta_id and operacao.op_categoria_id = @categoria_id) + (SELECT COUNT(conta_corrente_mov.ccm_contra_partida_id) from conta_corrente_mov WHERE conta_corrente_mov.ccm_contra_partida_id = @categoria_id and conta_corrente_mov.ccm_conta_id = @conta_id)) as 'contagem' from categoria WHERE categoria.categoria_id = @categoria_id;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);                
+                comando.Parameters.AddWithValue("@categoria_id", categoria_id);
+                var leitor = comando.ExecuteReader();
+                retorno = leitor.HasRows;
+                conn.Close();
+            }
+            catch (Exception)
+            {
+               
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
+
 
     }
 }

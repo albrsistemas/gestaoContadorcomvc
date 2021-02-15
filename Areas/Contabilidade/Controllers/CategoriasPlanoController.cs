@@ -201,13 +201,20 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 
             if (vm_categoria.categoria_tipo == "Sintetica")
             {
-                retorno = categoria.quatidadeRegistroGrupo(vm_categoria.categoria_classificacao, user.usuario_conta_id);
+                retorno = categoria.quatidadeRegistroGrupo(vm_categoria.categoria_classificacao, user.usuario_conta_id, planoCategorias_id);
             }
 
             if (retorno > 1)
             {
                 TempData["RestricaoDelete"] = "Grupo não pode ser excluído, pois há categorias ativas atreladas ao grupo!";
             }
+            else
+            {
+                if (categoria.verificaCategoriaFoiUsada(id, user.conta.contador_id))
+                {
+                    TempData["RestricaoDelete"] = "Categoria não pode ser apagada, pois está sendo utilizada nos lançamentos de operação, conta corrente movimento ou no cadastro de participante!";
+                }
+            }            
 
             return View(vm_categoria);
         }
@@ -224,8 +231,14 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             try
             {
                 Categoria categoria = new Categoria();
-
-                TempData["deleteCategoria"] = categoria.deletarCategoria(categoria_id, categoria_nome, user.usuario_conta_id, user.usuario_id);
+                if (categoria.verificaCategoriaFoiUsada(categoria_id, user.conta.contador_id))
+                {
+                    TempData["deleteCategoria"] = "Erro. A categoria " + categoria_nome + " não pode ser apagada, pois já está sendo usada no cadastro de participante ou operação ou conta corrente movimento!";
+                }
+                else
+                {
+                    TempData["deleteCategoria"] = categoria.deletarCategoria(categoria_id, categoria_nome, user.usuario_conta_id, user.usuario_id);
+                }                
 
                 return RedirectToAction("Index", "CategoriasPlano", new { @pc_id = planoCategorias_id, @planoContas_id = planoContas_id });
             }

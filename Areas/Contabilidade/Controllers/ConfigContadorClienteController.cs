@@ -51,9 +51,16 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
 
             Selects select = new Selects();
 
-            if(ccc.ccc_id == 0)
+            if(ccc.ccc_id == 0 || ccc.ccc_pref_contabilizacao == false)
             {
-                ViewBag.planosContador = select.getPlanosContador(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.text == "Selecione um plano de contas" }).ToList();
+                List<Selects> l = new List<Selects>();
+                l.Add(new Selects
+                {
+                    text = "Não definido",
+                    value = "0"
+                });
+
+                ViewBag.planosContador = l.Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" }).ToList();
             }
             else
             {

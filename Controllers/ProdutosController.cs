@@ -45,7 +45,12 @@ namespace gestaoContadorcomvc.Controllers
             ViewBag.origem = select.getOrigemMercadoria().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
             ViewBag.tipoItem = select.getTipoItem().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "00" });
 
-            return View();
+            Produtos produto = new Produtos();
+            Vm_produtos vm_prod = new Vm_produtos();
+
+            vm_prod.user = user;
+
+            return View(vm_prod);
         }
 
         // POST: ProdutosController/Create

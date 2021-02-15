@@ -43,145 +43,179 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-6 col-md-4">
-                <div class="form-group">
-                    <label asp-for="produtos_codigo" class="control-label"></label>
-                    <input asp-for="produtos_codigo" class="form-control" />
-                    <span asp-validation-for="produtos_codigo" class="text-danger"></span>
+        @{
+            if (Model.user.conta.conta_tipo == "Entidade" || Model.user.conta.conta_tipo == "Pessoa Física" || Model.user.conta.conta_tipo == "Contabilidade")
+            {
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="produtos_status" class="control-label">Status</label>
+                            <input asp-for="produtos_status" class="form-control" value="Ativo" readonly="readonly" />
+                            <span asp-validation-for="produtos_status" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="produtos_unidade" class="control-label">Unidade Medida</label>
+                            <input asp-for="produtos_unidade" class="form-control" />
+                            <span asp-validation-for="produtos_unidade" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="produtos_preco_venda" class="control-label">Valor</label>
+                            <input type="number" asp-for="produtos_preco_venda" class="form-control" step="0.000001" value="0.00" />
+                            <span asp-validation-for="produtos_preco_venda" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <input type="hidden" asp-for="produtos_formato" value="Simples" />
                 </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="form-group">
-                    <label asp-for="produtos_formato" class="control-label"></label>
-                    <input asp-for="produtos_formato" class="form-control" value="Simples" readonly="readonly" />
-                    <span asp-validation-for="produtos_formato" class="text-danger"></span>
+            }
+
+            if (Model.user.conta.conta_tipo == "Empresa")
+            {
+                <div class="row">
+                    <div class="col-6 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="produtos_codigo" class="control-label"></label>
+                            <input asp-for="produtos_codigo" class="form-control" />
+                            <span asp-validation-for="produtos_codigo" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="produtos_formato" class="control-label"></label>
+                            <input asp-for="produtos_formato" class="form-control" value="Simples" readonly="readonly" />
+                            <span asp-validation-for="produtos_formato" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="form-group">
+                            <label asp-for="produtos_status" class="control-label"></label>
+                            <input asp-for="produtos_status" class="form-control" value="Ativo" readonly="readonly" />
+                            <span asp-validation-for="produtos_status" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="form-group">
-                    <label asp-for="produtos_status" class="control-label"></label>
-                    <input asp-for="produtos_status" class="form-control" value="Ativo" readonly="readonly" />
-                    <span asp-validation-for="produtos_status" class="text-danger"></span>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="produtos_unidade" class="control-label"></label>
+                            <input asp-for="produtos_unidade" class="form-control" />
+                            <span asp-validation-for="produtos_unidade" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="produtos_preco_venda" class="control-label"></label>
+                            <input type="number" asp-for="produtos_preco_venda" class="form-control" step="0.000001" value="0.00" />
+                            <span asp-validation-for="produtos_preco_venda" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group">
-                    <label asp-for="produtos_unidade" class="control-label"></label>
-                    <input asp-for="produtos_unidade" class="form-control" />
-                    <span asp-validation-for="produtos_unidade" class="text-danger"></span>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="produtos_gtin_ean" class="control-label"></label>
+                            <input asp-for="produtos_gtin_ean" class="form-control" />
+                            <span asp-validation-for="produtos_gtin_ean" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="produtos_gtin_ean_trib" class="control-label"></label>
+                            <input asp-for="produtos_gtin_ean_trib" class="form-control" />
+                            <span asp-validation-for="produtos_gtin_ean_trib" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <label asp-for="produtos_preco_venda" class="control-label"></label>
-                    <input type="number" asp-for="produtos_preco_venda" class="form-control" step="0.000001" value="0.00" />
-                    <span asp-validation-for="produtos_preco_venda" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group">
-                    <label asp-for="produtos_gtin_ean" class="control-label"></label>
-                    <input asp-for="produtos_gtin_ean" class="form-control" />
-                    <span asp-validation-for="produtos_gtin_ean" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <label asp-for="produtos_gtin_ean_trib" class="control-label"></label>
-                    <input asp-for="produtos_gtin_ean_trib" class="form-control" />
-                    <span asp-validation-for="produtos_gtin_ean_trib" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-    </fieldset>
-    <fieldset>
-        <legend>Informações de estoque</legend>
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group">
-                    <label asp-for="produtos_estoque_min" class="control-label"></label>
-                    <input type="number" asp-for="produtos_estoque_min" class="form-control" step="0.000001" value="0.00" />
-                    <span asp-validation-for="produtos_estoque_min" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <label asp-for="produtos_estoque_max" class="control-label"></label>
-                    <input type="number" asp-for="produtos_estoque_max" class="form-control" step="0.000001" value="0.00" />
-                    <span asp-validation-for="produtos_estoque_max" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6 col-md-4">
-                <div class="form-group">
-                    <label asp-for="produtos_estoque_qtd_inicial" class="control-label"></label>
-                    <input type="number" asp-for="produtos_estoque_qtd_inicial" class="form-control" step="0.000001" value="0.00" />
-                    <span asp-validation-for="produtos_estoque_qtd_inicial" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="form-group">
-                    <label asp-for="produtos_estoque_preco_compra" class="control-label"></label>
-                    <input type="number" asp-for="produtos_estoque_preco_compra" class="form-control" step="0.000001" value="0.00" />
-                    <span asp-validation-for="produtos_estoque_preco_compra" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="form-group">
-                    <label asp-for="produtos_estoque_custo_compra" class="control-label"></label>
-                    <input type="number" asp-for="produtos_estoque_custo_compra" class="form-control" step="0.000001" value="0.00" />
-                    <span asp-validation-for="produtos_estoque_custo_compra" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-    </fieldset>
-    <fieldset>
-        <legend>Informações tributárias</legend>
-        <div class="row">
-            <div class="col-6 col-md-4">
-                <div class="form-group">
-                    <label asp-for="produtos_origem" class="control-label"></label>
-                    <select asp-items="@ViewBag.origem" value="@TempData["produtos_origem"]" id="produtos_origem" name="produtos_origem" class="form-control"></select>
-                    <span asp-validation-for="produtos_origem" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="form-group">
-                    <label asp-for="produtos_ncm" class="control-label"></label>
-                    <input asp-for="produtos_ncm" id="produtos_ncm" class="form-control" onkeyup="mascaraNCM(this.id, this.value)" placeholder="0000.00.00" />
-                    <span asp-validation-for="produtos_ncm" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-6 col-md-4">
-                <div class="form-group">
-                    <label asp-for="produtos_cest" class="control-label"></label>
-                    <input asp-for="produtos_cest" class="form-control" onkeyup="mascaraCEST(this.id, this.value)" placeholder="00.000.00" />
-                    <span asp-validation-for="produtos_cest" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <div class="form-group">
-                    <label asp-for="produtos_tipo_item" class="control-label"></label>
-                    <select asp-items="@ViewBag.tipoItem" value="@TempData["produtos_tipo_item"]" id="produtos_tipo_item" name="produtos_tipo_item" class="form-control"></select>
-                    <span asp-validation-for="produtos_tipo_item" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-12 col-md-6">
-                <div class="form-group">
-                    <label asp-for="produtos_perc_tributos" class="control-label"></label>
-                    <input type="number" asp-for="produtos_perc_tributos" class="form-control" step="0.000001" value="0.00" />
-                    <span asp-validation-for="produtos_perc_tributos" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
+                <fieldset>
+                    <legend>Informações de estoque</legend>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="produtos_estoque_min" class="control-label"></label>
+                                <input type="number" asp-for="produtos_estoque_min" class="form-control" step="0.000001" value="0.00" />
+                                <span asp-validation-for="produtos_estoque_min" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="produtos_estoque_max" class="control-label"></label>
+                                <input type="number" asp-for="produtos_estoque_max" class="form-control" step="0.000001" value="0.00" />
+                                <span asp-validation-for="produtos_estoque_max" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="produtos_estoque_qtd_inicial" class="control-label"></label>
+                                <input type="number" asp-for="produtos_estoque_qtd_inicial" class="form-control" step="0.000001" value="0.00" />
+                                <span asp-validation-for="produtos_estoque_qtd_inicial" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="produtos_estoque_preco_compra" class="control-label"></label>
+                                <input type="number" asp-for="produtos_estoque_preco_compra" class="form-control" step="0.000001" value="0.00" />
+                                <span asp-validation-for="produtos_estoque_preco_compra" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="produtos_estoque_custo_compra" class="control-label"></label>
+                                <input type="number" asp-for="produtos_estoque_custo_compra" class="form-control" step="0.000001" value="0.00" />
+                                <span asp-validation-for="produtos_estoque_custo_compra" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Informações tributárias</legend>
+                    <div class="row">
+                        <div class="col-6 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="produtos_origem" class="control-label"></label>
+                                <select asp-items="@ViewBag.origem" value="@TempData["produtos_origem"]" id="produtos_origem" name="produtos_origem" class="form-control"></select>
+                                <span asp-validation-for="produtos_origem" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="produtos_ncm" class="control-label"></label>
+                                <input asp-for="produtos_ncm" id="produtos_ncm" class="form-control" onkeyup="mascaraNCM(this.id, this.value)" placeholder="0000.00.00" />
+                                <span asp-validation-for="produtos_ncm" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="form-group">
+                                <label asp-for="produtos_cest" class="control-label"></label>
+                                <input asp-for="produtos_cest" class="form-control" onkeyup="mascaraCEST(this.id, this.value)" placeholder="00.000.00" />
+                                <span asp-validation-for="produtos_cest" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="produtos_tipo_item" class="control-label"></label>
+                                <select asp-items="@ViewBag.tipoItem" value="@TempData["produtos_tipo_item"]" id="produtos_tipo_item" name="produtos_tipo_item" class="form-control"></select>
+                                <span asp-validation-for="produtos_tipo_item" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="produtos_perc_tributos" class="control-label"></label>
+                                <input type="number" asp-for="produtos_perc_tributos" class="form-control" step="0.000001" value="0.00" />
+                                <span asp-validation-for="produtos_perc_tributos" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            }
+        }
     </fieldset>
     <fieldset>
         <legend>Observações</legend>
