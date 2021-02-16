@@ -229,6 +229,11 @@ function Page() {
     $.fn.enableScroll = function () {
         $(window).off('scroll.scrolldisabler');
     };
+
+    let dp = document.querySelectorAll('.datepicker');
+    if (dp.length > 0) {
+        execDatapicker();
+    }
 }
 
 function carregarEdit(id) {   
