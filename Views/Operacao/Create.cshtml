@@ -91,16 +91,16 @@
     <div class="row">
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="operacao.op_data" class="control-label">Data Operação</label>
-                <input type="text" asp-for="operacao.op_data" autofocus id="op_data" autocomplete="off" class="form-control form-control-sm form-control form-control-sm-sm datepicker" placeholder="Data Operação" />
-                <span asp-validation-for="operacao.op_data" class="text-danger"></span>
+                <label asp-for="operacao.op_tipo" class="control-label">Tipo Operação</label>
+                <select autofocus asp-items="@ViewBag.operacoes" value="@TempData["operacao.op_tipo"]" id="op_tipo" name="operacao.op_tipo" class="form-control form-control-sm" style="width:100%" onchange="change_op_tipo(this.id, this.value,'confirmar')"></select>
+                <span asp-validation-for="operacao.op_tipo" class="text-danger"></span>
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="operacao.op_tipo" class="control-label">Tipo Operação</label>
-                <select asp-items="@ViewBag.operacoes" value="@TempData["operacao.op_tipo"]" id="op_tipo" name="operacao.op_tipo" class="form-control form-control-sm" style="width:100%" onchange="change_op_tipo(this.id, this.value,'confirmar')"></select>
-                <span asp-validation-for="operacao.op_tipo" class="text-danger"></span>
+                <label asp-for="operacao.op_data" class="control-label">Data Operação</label>
+                <input type="text" asp-for="operacao.op_data" id="op_data" autocomplete="off" class="form-control form-control-sm form-control form-control-sm-sm datepicker" placeholder="Data Operação" />
+                <span asp-validation-for="operacao.op_data" class="text-danger"></span>
             </div>
         </div>
     </div>
