@@ -252,22 +252,15 @@ namespace gestaoContadorcomvc.Controllers
 
             Vm_categoria vm_categoria = new Vm_categoria();
 
-            vm_categoria = categoria.buscaCategoria(id);
+            vm_categoria = categoria.buscaCategoria(id);            
 
-            int retorno = 0;
-
-            if (vm_categoria.categoria_tipo == "Sintetica")
-            {
-                retorno = categoria.quatidadeRegistroGrupo(vm_categoria.categoria_classificacao, user.usuario_conta_id,"Não");
-            }
-
-            if(retorno > 1)
+            if (vm_categoria.categoria_tipo == "Sintetica" && (categoria.quatidadeRegistroGrupo(vm_categoria.categoria_classificacao, user.usuario_conta_id, "Não") > 0))
             {
                 TempData["RestricaoDelete"] = "Grupo não pode ser excluído, pois há categorias ativas atreladas ao grupo!";
-            }
+            }           
             else
             {
-                if (categoria.verificaCategoriaFoiUsada(id, user.conta.contador_id))
+                if (categoria.verificaCategoriaFoiUsada(id, user.conta.conta_id) > 0)
                 {
                     TempData["RestricaoDelete"] = "Categoria não pode ser apagada, pois está sendo utilizada nos lançamentos de operação, conta corrente movimento ou no cadastro de participante!";
                 }
@@ -288,7 +281,7 @@ namespace gestaoContadorcomvc.Controllers
             try
             {
                 Categoria categoria = new Categoria();
-                if(categoria.verificaCategoriaFoiUsada(categoria_id, user.conta.contador_id))
+                if(categoria.verificaCategoriaFoiUsada(categoria_id, user.conta.conta_id) > 0)
                 {
                     TempData["deleteCategoria"] = "Erro. A categoria " + categoria_nome + " não pode ser apagada, pois já está sendo usada no cadastro de participante ou operação ou conta corrente movimento!";
                 }

@@ -92,5 +92,6 @@ namespace gestaoContadorcomvc.Models.ViewModel
         //Campos de controle
         public Vm_usuario user { get; set; }
         public IEnumerable<Vm_participante> participantes { get; set; }
+        public string categoria_nome { get; set; }
     }
 }

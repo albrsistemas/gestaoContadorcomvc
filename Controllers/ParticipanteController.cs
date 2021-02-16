@@ -162,6 +162,11 @@ namespace gestaoContadorcomvc.Controllers
             Vm_participante vm_part = new Vm_participante();
             vm_part = participante.buscarParticipantes(user.usuario_id, user.usuario_conta_id, id);
 
+            if(participante.verificaParticipanteFoiUsado(id) > 0)
+            {
+                TempData["valida_delete"] = "Participante não pode ser excluído, pois está sendo utilizado nos lançamentos de operação ou conta corrente movimento!";
+            }
+
             return View(vm_part);
         }
 
@@ -178,7 +183,14 @@ namespace gestaoContadorcomvc.Controllers
                 Vm_usuario user = new Vm_usuario();
                 user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
-                TempData["msgParticipante"] = participante.deletarParticipante(user.usuario_id, user.usuario_conta_id, id);
+                if (participante.verificaParticipanteFoiUsado(id) > 0)
+                {
+                    TempData["msgParticipante"] = "Participante não pode ser excluído, pois está sendo utilizado nos lançamentos de operação ou conta corrente movimento!";
+                }
+                else
+                {
+                    TempData["msgParticipante"] = participante.deletarParticipante(user.usuario_id, user.usuario_conta_id, id);
+                }   
 
                 return RedirectToAction(nameof(Index));
             }

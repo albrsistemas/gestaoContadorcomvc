@@ -3746,6 +3746,7 @@ function consultaParticipanteCCM(id) {
                             label: results[i].participante_nome + " - " + results[i].participante_cnpj_cpf,
                             id: results[i].participante_id,
                             categoria_id: results[i].participante_categoria,
+                            categoria_nome: results[i].categoria_nome,
                         };
                         autocompleteObjects.push(object);
                     }
@@ -3778,6 +3779,17 @@ function consultaParticipanteCCM(id) {
             //Desabilitando o campo para nova inclusão de participante;
             if (document.getElementById('participante')) {
                 document.getElementById('participante').setAttribute("disabled", "disabled");
+            }
+
+            //Incluindo a categoria atribuida ao participante
+            if (document.getElementById('categoria')) {
+                if (ui.item.categoria_id > 0) {
+                    document.getElementById('categoria').value = ui.item.categoria_nome;
+                    if (document.getElementById('categoria_id_ccm')) {
+                        document.getElementById('categoria_id_ccm').value = ui.item.categoria_id;
+                    }
+                    document.getElementById('categoria').setAttribute("disabled", "disabled");
+                }
             }
         }
     });

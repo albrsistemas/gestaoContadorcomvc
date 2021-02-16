@@ -9,15 +9,38 @@
                 <h4 class="modal-title">Confirmação de Exclusão</h4>
             </div>
             <div class="modal-body">
-                <p>Confirme a exclusão do cliente/fornecedor: </p>
-                <p><strong>Nome: </strong>@Model.participante_nome</p>
+                @{
+                    if (TempData["valida_delete"] != null)
+                    {
+                        <div class="row">
+                            <div class="col-12">
+                                <p>@TempData["valida_delete"].ToString()</p>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Confirme a exclusão do cliente/fornecedor: </p>
+                        <p><strong>Nome: </strong>@Model.participante_nome</p>
+                    }
+                }
+
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <form asp-controller="Participante" asp-action="Delete">
-                    <input type="hidden" value="@Model.participante_id" name="id" />
-                    <button type="submit" class="btn btn-info">Apagar</button>
-                </form>
+                @{
+                    if (TempData["valida_delete"] != null)
+                    {
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>                        
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <form asp-controller="Participante" asp-action="Delete">
+                            <input type="hidden" value="@Model.participante_id" name="id" />
+                            <button type="submit" class="btn btn-info">Apagar</button>
+                        </form>
+                    }
+                }
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

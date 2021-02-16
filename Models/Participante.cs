@@ -36,7 +36,7 @@ namespace gestaoContadorcomvc.Models
         public string participante_status { get; set; }
         public string participante_insc_municipal { get; set; }
         public int participante_regime_tributario { get; set; }
-        public string participante_suframa { get; set; }
+        public string participante_suframa { get; set; }        
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -547,7 +547,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT * from participante where participante_conta_id = @conta_id and participante_status = 'Ativo' and (participante.participante_nome LIKE concat(@termo,'%') || participante.participante_cnpj_cpf LIKE concat(@termo,'%'));";
+                comando.CommandText = "SELECT participante.*, categoria.categoria_nome from participante LEFT JOIN categoria on categoria.categoria_id = participante.participante_categoria where participante_conta_id = @conta_id and participante_status = 'Ativo' and (participante.participante_nome LIKE concat(@termo,'%') || participante.participante_cnpj_cpf LIKE concat(@termo,'%'));";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@termo", termo);
                 comando.ExecuteNonQuery();
@@ -660,6 +660,7 @@ namespace gestaoContadorcomvc.Models
                         participante.participante_status = leitor["participante_status"].ToString();
                         participante.participante_insc_municipal = leitor["participante_insc_municipal"].ToString();
                         participante.participante_suframa = leitor["participante_suframa"].ToString();
+                        participante.categoria_nome = leitor["categoria_nome"].ToString();
 
 
                         participantes.Add(participante);
@@ -709,6 +710,57 @@ namespace gestaoContadorcomvc.Models
             }
 
             return localizado;
+        }
+
+        public int verificaParticipanteFoiUsado(int participante_id)
+        {
+            int retorno = 1;
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT ((SELECT COUNT(ccm.ccm_participante_id) from conta_corrente_mov as ccm WHERE ccm.ccm_participante_id = @participante_id) + (SELECT COUNT(op_participante.op_part_participante_id) from op_participante WHERE op_participante.op_part_participante_id = @participante_id)) as 'contagem' from participante as p WHERE p.participante_id = @participante_id;";
+                comando.Parameters.AddWithValue("@participante_id", participante_id);                
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        if (DBNull.Value != leitor["contagem"])
+                        {
+                            retorno = Convert.ToInt32(leitor["contagem"]);
+                        }
+                        else
+                        {
+                            retorno = 1;
+                        }
+                    }
+                }
+                conn.Close();
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
         }
 
 
