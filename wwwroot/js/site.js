@@ -3664,6 +3664,7 @@ function gravarLancamentoCCM(contexto) {
         let ccm_valor_principal = document.getElementById('ccm_valor_principal').value;
         let ccm_multa = document.getElementById('ccm_multa').value;
         let ccm_juros = document.getElementById('ccm_juros').value;
+        let ccm_desconto = document.getElementById('ccm_desconto').value;
         let ccm_id = 0;
         if (document.getElementById('ccm_id')) {
             ccm_id = document.getElementById('ccm_id').value;
@@ -3691,6 +3692,7 @@ function gravarLancamentoCCM(contexto) {
                 ccm_valor_principal: ccm_valor_principal,
                 ccm_multa: ccm_multa,
                 ccm_juros: ccm_juros,
+                ccm_desconto: ccm_desconto,
             },
             type: 'POST',
             dataType: 'json',
@@ -4363,10 +4365,9 @@ function calculaTotalCCM(id,vlr) {
     let vPrincipal = document.getElementById('ccm_valor_principal').value.toString().replace('.', '').replace(',', '.') * 1;
     let vjuros = document.getElementById('ccm_multa').value.toString().replace('.', '').replace(',', '.') * 1;
     let vMulta = document.getElementById('ccm_juros').value.toString().replace('.', '').replace(',', '.') * 1;
+    let vDesconto = document.getElementById('ccm_desconto').value.toString().replace('.', '').replace(',', '.') * 1;
 
-    console.log(vlr);
-
-    decimal('ccm_valor', ((vPrincipal + vjuros + vMulta).toFixed(2).toString().replace('.', ',')), '2', false);
+    decimal('ccm_valor', ((vPrincipal + vjuros + vMulta - vDesconto).toFixed(2).toString().replace('.', ',')), '2', false);
     decimal(id, (vlr.replace('.','')), '2', true);  
 }
 
@@ -4795,6 +4796,257 @@ function gerar_sci_ilc() {
     });
     saveAs(blob, "sci_ilc.txt");
 
+}
+
+function search_m(tipo, contexto) {
+    if (contexto == 'close') {
+        $("#search_modal").modal('hide');
+
+        return
+    }
+
+    if (contexto == 'open') {
+        //Categorias
+        if (tipo == 'categoria') {
+            //Gravando titulo
+            document.getElementById('search_modal_label').innerHTML = 'Lista de Categorias';
+            //Gerando cabeçalho da tabela
+            document.getElementById('search_modal_table_thead').innerHTML = ''; //Limpa thead
+            //Gerando cabeçalho
+            let c = '';
+            c += '<tr>';
+            c += '<th style="white-space:nowrap;text-align:left;">Classificação</th>';
+            c += '<th style="white-space:nowrap;text-align:left;">Nome</th>';            
+            c += '</tr>';
+            $('#search_modal_table_thead').append(c);
+
+            //Listando catgorias. Gerando as linhas da tabela
+            $.ajax({
+                url: "/Categoria/ListaCategorias_ajax",
+                data: { __RequestVerificationToken: gettoken()},
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {                    
+                    document.getElementById('search_modal_table_tbody').innerHTML = "Gerando categorias, aguarde...";                    
+                    modal_sobre_modal_open('search_modal');
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    document.getElementById('search_modal_table_tbody').innerHTML = "Erro ao gerar a lista de categorias";
+                    modal_sobre_modal_open('search_modal');
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    var r = JSON.parse(data);                    
+                    document.getElementById('search_modal_table_tbody').innerHTML = "";
+
+                    if (textStatus == 'error') {
+                        document.getElementById('search_modal_table_tbody').innerHTML = "Erro ao gerar a lista de categorias";
+                        modal_sobre_modal_open('search_modal');
+                    }
+
+                    if (textStatus == 'success') {
+
+                        for (let i = 0; i < r.length; i++) {
+                            let item = '';
+                            if (r[i].categoria_tipo == 'Analítica') {
+                                item += '<tr style="cursor:pointer" onclick="search_m_categoria_select(\''+ r[i].categoria_id +'\',\''+ r[i].categoria_nome +'\')">';
+                            } else {
+                                item += '<tr style="cursor:no-drop">';
+                            }
+                            item += '<td style="white-space:nowrap;text-align:left;">' + r[i].categoria_classificacao + '</td>';
+                            item += '<td style="white-space:nowrap;text-align:left;">' + r[i].categoria_nome + '</td>';
+                            item += '</tr>';
+                            $('#search_modal_table_tbody').append(item);
+                        }
+
+                        $("#search_modal_input_search").on("keyup", function () {
+                            var value = $(this).val().toLowerCase();
+                            $("#search_modal_table_tbody tr").filter(function () {
+                                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                            });
+                        }); 
+                    }
+                }
+            });
+        }
+
+        //Participante
+        if (tipo == 'participante') {
+            //Gravando titulo
+            document.getElementById('search_modal_label').innerHTML = 'Lista de Participantes';
+            //Gerando cabeçalho da tabela
+            document.getElementById('search_modal_table_thead').innerHTML = ''; //Limpa thead
+            //Gerando cabeçalho
+            let c = '';
+            c += '<tr>';
+            c += '<th style="white-space:nowrap;text-align:left;">CNPJ/CPF</th>';
+            c += '<th style="white-space:nowrap;text-align:left;">Nome</th>';
+            c += '<th style="white-space:nowrap;text-align:left;">Nome Fantasia</th>';
+            c += '</tr>';
+            $('#search_modal_table_thead').append(c);
+
+            //Listando catgorias. Gerando as linhas da tabela
+            $.ajax({
+                url: "/Participante/listaParticipante_ajax",
+                data: { __RequestVerificationToken: gettoken() },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    document.getElementById('search_modal_table_tbody').innerHTML = "Gerando participantes, aguarde...";
+                    modal_sobre_modal_open('search_modal');
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    document.getElementById('search_modal_table_tbody').innerHTML = "Erro ao gerar a lista de participantes";
+                    modal_sobre_modal_open('search_modal');
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    var r = JSON.parse(data);
+                    document.getElementById('search_modal_table_tbody').innerHTML = "";
+
+                    if (textStatus == 'error') {
+                        document.getElementById('search_modal_table_tbody').innerHTML = "Erro ao gerar a lista de participantes";
+                        modal_sobre_modal_open('search_modal');
+                    }
+
+                    if (textStatus == 'success') {
+
+                        for (let i = 0; i < r.length; i++) {
+                            let item = '';
+                            item += '<tr style="cursor:pointer" onclick="search_m_participante_select(\'' + r[i].participante_id + '\',\'' + r[i].participante_nome + '\',\''+ r[i].participante_categoria +'\',\''+ r[i].categoria_nome +'\')">';
+                            item += '<td style="white-space:nowrap;text-align:left;">' + r[i].participante_cnpj_cpf + '</td>';
+                            item += '<td style="white-space:nowrap;text-align:left;">' + r[i].participante_nome + '</td>';
+                            item += '<td style="white-space:nowrap;text-align:left;">' + r[i].participante_fantasia + '</td>';
+                            item += '</tr>';
+                            $('#search_modal_table_tbody').append(item);
+                        }
+
+                        $("#search_modal_input_search").on("keyup", function () {
+                            var value = $(this).val().toLowerCase();
+                            $("#search_modal_table_tbody tr").filter(function () {
+                                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                            });
+                        });
+                    }
+                }
+            });
+        }
+
+        //Memorando
+        if (tipo == 'memorando') {
+            //Gravando titulo
+            document.getElementById('search_modal_label').innerHTML = 'Lista de Memorandos';
+            //Gerando cabeçalho da tabela
+            document.getElementById('search_modal_table_thead').innerHTML = ''; //Limpa thead
+            //Gerando cabeçalho
+            let c = '';
+            c += '<tr>';
+            c += '<th style="white-space:nowrap;text-align:left;">Código</th>';
+            c += '<th style="white-space:nowrap;text-align:left;">Descrição</th>';
+            c += '</tr>';
+            $('#search_modal_table_thead').append(c);
+
+            //Listando catgorias. Gerando as linhas da tabela
+            $.ajax({
+                url: "/Memorando/listaMemorando_ajax",
+                data: { __RequestVerificationToken: gettoken() },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    document.getElementById('search_modal_table_tbody').innerHTML = "Gerando memorandos, aguarde...";
+                    modal_sobre_modal_open('search_modal');
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    document.getElementById('search_modal_table_tbody').innerHTML = "Erro ao gerar a lista de memorandos";
+                    modal_sobre_modal_open('search_modal');
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    var r = JSON.parse(data);
+                    document.getElementById('search_modal_table_tbody').innerHTML = "";
+
+                    if (textStatus == 'error') {
+                        document.getElementById('search_modal_table_tbody').innerHTML = "Erro ao gerar a lista de memorandos";
+                        modal_sobre_modal_open('search_modal');
+                    }
+
+                    if (textStatus == 'success') {
+
+                        for (let i = 0; i < r.length; i++) {
+                            let item = '';
+                            item += '<tr style="cursor:pointer" onclick="search_m_memorando_select(\''+ r[i].memorando_descricao +'\')">';
+                            item += '<td style="white-space:nowrap;text-align:left;">' + r[i].memorando_codigo + '</td>';
+                            item += '<td style="white-space:nowrap;text-align:left;">' + r[i].memorando_descricao + '</td>';
+                            item += '</tr>';
+                            $('#search_modal_table_tbody').append(item);
+                        }
+
+                        $("#search_modal_input_search").on("keyup", function () {
+                            var value = $(this).val().toLowerCase();
+                            $("#search_modal_table_tbody tr").filter(function () {
+                                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                            });
+                        });
+                    }
+                }
+            });
+        }
+
+
+    }
+
+    
+   
+}
+
+function search_m_categoria_select(id, nome) {
+    //Incluindo a categoria
+    if (document.getElementById('categoria')) {
+        document.getElementById('categoria').value = nome;
+        if (document.getElementById('categoria_id_ccm')) {
+            document.getElementById('categoria_id_ccm').value = id;
+        }
+        document.getElementById('categoria').setAttribute("disabled", "disabled");
+        $("#search_modal").modal('hide');
+    }
+}
+
+function search_m_participante_select(id, nome, categoria_id, categoria_nome) {
+    //Incluindo o participante
+    if (document.getElementById('participante')) {
+        document.getElementById('participante').value = nome;
+        if (document.getElementById('ccm_participante_id')) {
+            document.getElementById('ccm_participante_id').value = id;
+        }
+        if (document.getElementById('op_part_participante_id')) {
+            document.getElementById('op_part_participante_id').value = id;
+        }
+        document.getElementById('participante').setAttribute("disabled", "disabled");
+
+        //Inserindo a categoria
+        if (categoria_id > 0) {
+            if (document.getElementById('categoria')) {
+                document.getElementById('categoria').value = categoria_nome;
+                if (document.getElementById('categoria_id_ccm')) {
+                    document.getElementById('categoria_id_ccm').value = categoria_id;
+                }
+                document.getElementById('categoria').setAttribute("disabled", "disabled");                
+            }
+        }
+
+        $("#search_modal").modal('hide');
+    }
+}
+
+
+function search_m_memorando_select(nome) {
+    //Incluindo o memorando
+    if (document.getElementById('ccm_memorando')) {
+        document.getElementById('ccm_memorando').value = nome;
+        $("#search_modal").modal('hide');
+    }
+
+    if (document.getElementById('op_obs')) {
+        document.getElementById('op_obs').value = nome;
+        $("#search_modal").modal('hide');
+    }
 }
 
 

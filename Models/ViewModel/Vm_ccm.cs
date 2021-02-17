@@ -31,6 +31,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public filtro filtro { get; set; }
         public Decimal ccm_multa { get; set; }
         public Decimal ccm_juros { get; set; }
+        public Decimal ccm_desconto { get; set; }
         public Decimal ccm_valor_principal { get; set; }
 
     }

@@ -763,6 +763,74 @@ namespace gestaoContadorcomvc.Models
             return retorno;
         }
 
+        //listaCategorias_dados_basicos
+        public List<Vm_participante> listaParticipante_dados_basicos(int conta_id)
+        {
+            List<Vm_participante> participantes = new List<Vm_participante>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT p.participante_id, p.participante_nome, p.participante_fantasia, p.participante_cnpj_cpf, COALESCE(c.categoria_id,0) as 'categoria_id', c.categoria_nome from participante as p LEFT JOIN categoria as c on c.categoria_id = p.participante_categoria WHERE p.participante_status = 'Ativo' and p.participante_conta_id = @conta_id order by p.participante_nome asc;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Vm_participante participante = new Vm_participante();
+
+                        if (DBNull.Value != leitor["participante_id"])
+                        {
+                            participante.participante_id = Convert.ToInt32(leitor["participante_id"]);
+                        }
+                        else
+                        {
+                            participante.participante_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["categoria_id"])
+                        {
+                            participante.participante_categoria = Convert.ToInt32(leitor["categoria_id"]);
+                        }
+                        else
+                        {
+                            participante.participante_categoria = 0;
+                        }
+
+                        participante.participante_nome = leitor["participante_nome"].ToString();
+                        participante.participante_fantasia = leitor["participante_fantasia"].ToString();
+                        participante.participante_cnpj_cpf = leitor["participante_cnpj_cpf"].ToString();                       
+                        participante.categoria_nome = leitor["categoria_nome"].ToString();                       
+
+                        participantes.Add(participante);
+                    }
+                }
+            }
+            catch (Exception)
+            {   
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return participantes;
+        }
+
 
     }
 }

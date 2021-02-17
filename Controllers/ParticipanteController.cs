@@ -230,5 +230,20 @@ namespace gestaoContadorcomvc.Controllers
 
             return Json(!existe);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult listaParticipante_ajax(IFormCollection collection)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            Participante p = new Participante();
+            List<Vm_participante> vm = new List<Vm_participante>();
+            vm = p.listaParticipante_dados_basicos(user.conta.conta_id);
+
+            return Json(JsonConvert.SerializeObject(vm));
+        }
     }
 }

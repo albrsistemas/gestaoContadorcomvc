@@ -69,9 +69,10 @@
     .table > tbody > tr:hover {
         background-color: #f5f4ba;
     }
-    .select2-selection select2-selection--single{
+
+    .select2-selection select2-selection--single {
         height: 25px;
-    }   
+    }
 </style>
 
 @{
@@ -159,7 +160,7 @@
                                 {
                                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="#ff4400" style="cursor:pointer" xmlns="http://www.w3.org/2000/svg" onclick="operacao_edit('open', '@item.id')">
                                         <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                                    </svg>                                   
+                                    </svg>
                                 }
                                 if (Model.user.Role == "adm" || Model.user._permissoes.operacaoDelete)
                                 {
@@ -225,6 +226,11 @@
                                 <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2" onclick="operacao_participante('open')">
                                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                    </svg>
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_participante_pesquisa" onclick="search_m('participante','open')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                                     </svg>
                                 </button>
                             </div>
@@ -346,7 +352,14 @@
                     </div>
                 </div>
                 <fieldset>
-                    <legend>Memorando</legend>
+                    <legend>
+                        Memorando
+                        <span style="cursor:pointer" onclick="search_m('memorando','open')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                            </svg>
+                        </span>
+                    </legend>
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
@@ -1335,6 +1348,29 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" onclick="operacao_documento('delete_confirmado')">Confirma</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal lista participantes e categorias-->
+<div class="modal fade" id="search_modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="search_modal_label" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="search_modal_label"></h5>
+            </div>
+            <div class="modal-body" id="search_modal_body" style="text-align:left;">
+                <input type="text" id="search_modal_input_search" value="" placeholder="Pesquisa" class="form-control form-control-sm pesquisa" style="max-width:100%;margin-bottom: 20px;" />
+                <div class="table-responsive" style="max-height: 350px;">
+                    <table class="table table-sm" id="search_modal_table" style="width:100%">
+                        <thead id="search_modal_table_thead"></thead>
+                        <tbody id="search_modal_table_tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" id="search_modal_rodape">
+                <button type="button" class="btn btn-secondary" onclick="search_m('','close')">Fechar</button>
             </div>
         </div>
     </div>

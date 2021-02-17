@@ -139,7 +139,7 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Criar lançamento caixa
-        public string cadastrarCCM(int usuario_id, int conta_id, DateTime data, DateTime ccm_data_competencia, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id, bool ccm_nf, DateTime ccm_nf_data_emissao, Decimal ccm_nf_valor, string ccm_nf_serie, string ccm_nf_numero, string ccm_nf_chave, Decimal ccm_valor_principal, Decimal ccm_multa, Decimal ccm_juros)
+        public string cadastrarCCM(int usuario_id, int conta_id, DateTime data, DateTime ccm_data_competencia, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id, bool ccm_nf, DateTime ccm_nf_data_emissao, Decimal ccm_nf_valor, string ccm_nf_serie, string ccm_nf_numero, string ccm_nf_chave, Decimal ccm_valor_principal, Decimal ccm_multa, Decimal ccm_juros, Decimal ccm_desconto)
         {
             string retorno = "Lançamento cadastrado com sucesso!";
 
@@ -152,7 +152,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "call pr_cadastrarCCM(@ccm_conta_id, @ccm_ccorrente_id, @ccm_data, @ccm_valor, @ccm_memorando, @ccm_participante_id, @categoria_id, @ccm_nf, @ccm_nf_data_emissao, @ccm_nf_valor, @ccm_nf_serie, @ccm_nf_numero, @ccm_nf_chave, @ccm_data_competencia, @ccm_valor_principal, @ccm_multa, @ccm_juros)";
+                comando.CommandText = "call pr_cadastrarCCM(@ccm_conta_id, @ccm_ccorrente_id, @ccm_data, @ccm_valor, @ccm_memorando, @ccm_participante_id, @categoria_id, @ccm_nf, @ccm_nf_data_emissao, @ccm_nf_valor, @ccm_nf_serie, @ccm_nf_numero, @ccm_nf_chave, @ccm_data_competencia, @ccm_valor_principal, @ccm_multa, @ccm_juros, @ccm_desconto)";
                 comando.Parameters.AddWithValue("@ccm_conta_id", conta_id);
                 comando.Parameters.AddWithValue("@ccm_ccorrente_id", ccorrente_id);
                 comando.Parameters.AddWithValue("@ccm_data", data);
@@ -170,6 +170,7 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@ccm_valor_principal", ccm_valor_principal);
                 comando.Parameters.AddWithValue("@ccm_multa", ccm_multa);
                 comando.Parameters.AddWithValue("@ccm_juros", ccm_juros);
+                comando.Parameters.AddWithValue("@ccm_desconto", ccm_desconto);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -329,6 +330,15 @@ namespace gestaoContadorcomvc.Models
                             vm.ccm_juros = 0;
                         }
 
+                        if (DBNull.Value != leitor["ccm_desconto"])
+                        {
+                            vm.ccm_desconto = Convert.ToDecimal(leitor["ccm_desconto"]);
+                        }
+                        else
+                        {
+                            vm.ccm_desconto = 0;
+                        }
+
                         //--
 
                         if (DBNull.Value != leitor["ccm_op_id"])
@@ -433,7 +443,7 @@ namespace gestaoContadorcomvc.Models
         }
 
         //Alterar lançamento caixa
-        public string alterarCCM(int usuario_id, int conta_id, DateTime data, DateTime ccm_data_competencia, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id, bool ccm_nf, DateTime ccm_nf_data_emissao, Decimal ccm_nf_valor, string ccm_nf_serie, string ccm_nf_numero, string ccm_nf_chave, int ccm_id, Decimal ccm_valor_principal, Decimal ccm_multa, Decimal ccm_juros)
+        public string alterarCCM(int usuario_id, int conta_id, DateTime data, DateTime ccm_data_competencia, Decimal valor, string memorando, int categoria_id, int participante_id, int ccorrente_id, bool ccm_nf, DateTime ccm_nf_data_emissao, Decimal ccm_nf_valor, string ccm_nf_serie, string ccm_nf_numero, string ccm_nf_chave, int ccm_id, Decimal ccm_valor_principal, Decimal ccm_multa, Decimal ccm_juros, Decimal ccm_desconto)
         {
             string retorno = "Lançamento alterado com sucesso!";
 
@@ -446,7 +456,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "call pr_alterarCCM(@ccm_conta_id, @ccm_ccorrente_id, @ccm_data, @ccm_valor, @ccm_memorando, @ccm_participante_id, @categoria_id, @ccm_nf, @ccm_nf_data_emissao, @ccm_nf_valor, @ccm_nf_serie, @ccm_nf_numero, @ccm_nf_chave, @ccm_data_competencia, @ccm_id, @ccm_valor_principal, @ccm_multa, @ccm_juros)";
+                comando.CommandText = "call pr_alterarCCM(@ccm_conta_id, @ccm_ccorrente_id, @ccm_data, @ccm_valor, @ccm_memorando, @ccm_participante_id, @categoria_id, @ccm_nf, @ccm_nf_data_emissao, @ccm_nf_valor, @ccm_nf_serie, @ccm_nf_numero, @ccm_nf_chave, @ccm_data_competencia, @ccm_id, @ccm_valor_principal, @ccm_multa, @ccm_juros, @ccm_desconto)";
                 comando.Parameters.AddWithValue("@ccm_conta_id", conta_id);
                 comando.Parameters.AddWithValue("@ccm_ccorrente_id", ccorrente_id);
                 comando.Parameters.AddWithValue("@ccm_data", data);
@@ -465,6 +475,7 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@ccm_valor_principal", ccm_valor_principal);
                 comando.Parameters.AddWithValue("@ccm_multa", ccm_multa);
                 comando.Parameters.AddWithValue("@ccm_juros", ccm_juros);
+                comando.Parameters.AddWithValue("@ccm_desconto", ccm_desconto);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 

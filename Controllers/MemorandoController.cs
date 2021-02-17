@@ -195,5 +195,20 @@ namespace gestaoContadorcomvc.Controllers
             return Json(JsonConvert.SerializeObject(l));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult listaMemorando_ajax(IFormCollection collection)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            Memorando m = new Memorando();
+            List<Memorando> l = new List<Memorando>();
+            l = m.listMemorando(user.conta.conta_id, user.usuario_id);
+
+            return Json(JsonConvert.SerializeObject(l));
+        }
+
     }
 }

@@ -340,5 +340,20 @@ namespace gestaoContadorcomvc.Controllers
 
             return Json(JsonConvert.SerializeObject(retorno));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ListaCategorias_ajax(IFormCollection collection)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            Categoria c = new Categoria();
+            List<Vm_categoria> vm = new List<Vm_categoria>();
+            vm = c.listaCategorias_dados_basicos(user.conta.conta_id);
+
+            return Json(JsonConvert.SerializeObject(vm));
+        }
     }
 }

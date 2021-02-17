@@ -770,7 +770,63 @@ namespace gestaoContadorcomvc.Models
             return retorno;
         }
 
+        //Lista categorias dados básicos
+        public List<Vm_categoria> listaCategorias_dados_basicos(int conta_id)
+        {
+            List<Vm_categoria> categorias = new List<Vm_categoria>();
 
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
 
+            try
+            {   
+                comando.CommandText = "SELECT c.categoria_id, c.categoria_classificacao, c.categoria_nome, c.categoria_tipo, c.categoria_escopo from categoria as c WHERE c.categoria_status = 'Ativo' and c.categoria_conta_id = @conta_id order by c.categoria_classificacao ASC;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);                
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Vm_categoria categoria = new Vm_categoria();
+
+                        if (DBNull.Value != leitor["categoria_id"])
+                        {
+                            categoria.categoria_id = Convert.ToInt32(leitor["categoria_id"]);
+                        }
+                        else
+                        {
+                            categoria.categoria_id = 0;
+                        }                        
+                        //categoria.categoria_categoria_fiscal = Convert.ToBoolean(leitor["categoria_categoria_fiscal"]);
+                        //categoria.categoria_categoria_tributo = Convert.ToBoolean(leitor["categoria_categoria_tributo"]);
+                        categoria.categoria_classificacao = leitor["categoria_classificacao"].ToString();
+                        categoria.categoria_nome = leitor["categoria_nome"].ToString();
+                        categoria.categoria_tipo = leitor["categoria_tipo"].ToString();
+                        categoria.categoria_escopo = leitor["categoria_escopo"].ToString();
+                        categorias.Add(categoria);
+                    }
+                }
+            }
+            catch (Exception)
+            {                
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return categorias;
+        }
     }
 }
