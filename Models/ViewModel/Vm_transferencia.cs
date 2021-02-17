@@ -13,5 +13,10 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string memorando { get; set; }
         public int ccorrente_de { get; set; }
         public int ccorrente_para { get; set; }
+
+        //Campos controle
+        public int conta_corrente { get; set; }
+        public DateTime data_inicio { get; set; }
+        public DateTime data_fim { get; set; }
     }
 }

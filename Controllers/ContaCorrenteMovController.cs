@@ -41,13 +41,16 @@ namespace gestaoContadorcomvc.Controllers
             else
             {
                 List<Fluxo_caixa> lista = new List<Fluxo_caixa>();
-                vm_fc.fluxo = lista;
+                vm_fc.fluxo = lista;                
+                List<Selects> cc = new List<Selects>();
+                cc = select.getContasCorrenteConta_id(user.conta.conta_id);
+                ViewBag.ccorrente = cc.Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == cc[0].value });
+                ViewBag.tipoOpercao = select.getTipoOperacaoCCM().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
+
                 DateTime today = DateTime.Today;
                 TempData["dataInicio"] = today.AddDays(-30).ToShortDateString();
                 TempData["dataFim"] = today.ToShortDateString();
-                TempData["contacorrente_id"] = 0;
-                ViewBag.ccorrente = select.getContasCorrenteConta_id(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
-                ViewBag.tipoOpercao = select.getTipoOperacaoCCM().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
+                TempData["contacorrente_id"] = cc[0].value;
             }            
             vm_fc.user = user;
 

@@ -784,7 +784,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {   
-                comando.CommandText = "SELECT c.categoria_id, c.categoria_classificacao, c.categoria_nome, c.categoria_tipo, c.categoria_escopo from categoria as c WHERE c.categoria_status = 'Ativo' and c.categoria_conta_id = @conta_id order by c.categoria_classificacao ASC;";
+                comando.CommandText = "SELECT c.categoria_id, c.categoria_classificacao, c.categoria_nome, c.categoria_tipo, c.categoria_escopo from categoria as c WHERE categoria_dePlano = 'Não' and c.categoria_status = 'Ativo' and c.categoria_conta_id = @conta_id order by c.categoria_classificacao ASC;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);                
                 comando.ExecuteNonQuery();
                 Transacao.Commit();

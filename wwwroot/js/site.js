@@ -3068,7 +3068,7 @@ $(".createTransferencia").click(function () {
     })
 });
 
-$(".createCCM").click(function () {
+$(".createCCM").click(function () {    
     var contacorrente_id = $(this).attr("data-contacorrente_id");
     if (contacorrente_id == 0) {
         contacorrente_id = document.getElementById('contacorrente_id').value;
@@ -5046,6 +5046,104 @@ function search_m_memorando_select(nome) {
     if (document.getElementById('op_obs')) {
         document.getElementById('op_obs').value = nome;
         $("#search_modal").modal('hide');
+    }
+
+    if (document.getElementById('memorando')) {
+        document.getElementById('memorando').value = nome;
+        $("#search_modal").modal('hide');
+    }
+}
+
+function gravarCCM_transferencia(escopo, contexto) {
+    if (contexto == 'close') {
+        document.getElementById('valor').value = '';
+        document.getElementById('memorando').value = '';
+        $("#transferencia_sucesso").modal('hide');
+        $('#modal').on('shown.bs.modal', function () {
+            $('#valor').focus();
+        });
+
+        $('#valor').focus();
+        return
+    }
+
+    if (contexto == 'gravar') {
+        document.getElementById('validacao_transfer').innerHTML = '';
+        let de = document.getElementById('ccorrente_de').value;
+        let para = document.getElementById('ccorrente_para').value;
+        let valor = document.getElementById('valor').value;
+        let memorando = document.getElementById('memorando').value;
+        let data_digitada = document.getElementById('data').value;
+
+        let data = (document.getElementById('data').value).split('/');
+        let valida = [];
+
+        let d = new Date(data[2], data[1], data[0]);
+        if (data.length < 3 || d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1) {
+            valida.push('Data Inválida');
+        }
+        if ((de * 1) <= 0) {
+            valida.push('Conta corrente "de" inválida');
+        }
+        if ((para * 1) <= 0) {
+            valida.push('Conta corrente "para" inválida');
+        }
+        if ((valor.replaceAll('.', '').replaceAll(',','.') * 1) <= 0) {
+            valida.push('Valor inválido');
+        }
+        if (memorando.length <= 0) {
+            valida.push('Memorando deve ter no mínimo 4 caracteres');
+        }
+        if (de == para) {
+            valida.push('De e Para não podem ser iguais');
+        }
+
+        console.log(valida);
+        console.log(de);
+        console.log(para);
+        console.log(valor);
+        console.log(memorando);            
+        if (valida.length > 0) {            
+            for (let i = 0; i < valida.length; i++) {
+                $('#validacao_transfer').append('<span class="text-danger">' + valida[i] + '</span></br>');
+            }
+        } else { 
+            $.ajax({
+                url: "/Transferencia/" + escopo,
+                data: {
+                    __RequestVerificationToken: gettoken(),
+                    data: data_digitada,
+                    valor: valor,
+                    ccorrente_de: de,
+                    ccorrente_para: para,
+                    memorando: memorando
+                },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    document.getElementById('sub_form').disabled = true;
+                    document.getElementById('msg_blockSubmit').innerHTML = 'Gravando...';
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    document.getElementById('sub_form').disabled = false;
+                    document.getElementById('validacao_transfer').innerHTML = 'Erro ao tentar gravar, tente novamente. Se persistir, entre em contato com o suporte!';
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    document.getElementById('sub_form').disabled = false;
+                    document.getElementById('msg_blockSubmit').innerHTML = '';
+
+                    if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                        document.getElementById('validacao_transfer').innerHTML = XMLHttpRequest.responseJSON;                        
+                        return;
+                    }
+                    if (XMLHttpRequest.responseJSON.includes('sucesso')) {
+                        document.getElementById('modal_body_retorno').innerHTML = XMLHttpRequest.responseJSON;
+                        $('#transferencia_sucesso').modal('show');
+                    }
+                }
+            });
+            
+        }
     }
 }
 

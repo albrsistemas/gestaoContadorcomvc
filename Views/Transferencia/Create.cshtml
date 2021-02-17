@@ -51,29 +51,78 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
-                                <label class="control-label">Memorando</label>
+                                <label class="control-label">Memorando
+                                    <span style="cursor:pointer" onclick="search_m('memorando','open')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                        </svg>
+                                    </span>
+                                </label>
                                 <textarea asp-for="memorando" id="memorando" rows="3" class="form-control" onkeyup="consultaMemorando(this.id, this.value, '150','msg_obs')"></textarea>
                                 <span class="text-info" id="msg_obs"></span>
                                 <span class="text-info" id="pesquisa_memorando"></span>
                                 <span asp-validation-for="memorando" class="text-danger"></span>
                             </div>
-                        </div>                        
+                        </div>
                     </div>
-                    <input type="hidden" value="@TempData["contacorrente_id"].ToString()" name="contacorrente_id" />
+                    @*<input type="hidden" value="@TempData["contacorrente_id"].ToString()" name="contacorrente_id" />
                     <input type="hidden" value="@TempData["dataInicio"].ToString()" name="dataInicio" />
-                    <input type="hidden" value="@TempData["dataFim"].ToString()" name="dataFim" />
+                    <input type="hidden" value="@TempData["dataFim"].ToString()" name="dataFim" />*@
 
+                    <div class="row">
+                        <div class="col-12" id="validacao_transfer">
 
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-info" id="sub_form" onclick="blockSubmit(this.id,'form')">Gravar</button>
+                <div class="modal-footer">                    
+                    <a class="btn btn-secondary" asp-controller="ContaCorrenteMov" asp-action="Index" asp-route-contacorrente_id="@Model.conta_corrente" asp-route-dataInicio="@Model.data_inicio.ToString("yyyy-M-d")" asp-route-dataFim="@Model.data_fim.ToString("yyyy-M-d")">Cancelar</a>
+                    <button type="button" class="btn btn-info" id="sub_form" onclick="gravarCCM_transferencia('Create','gravar')">Gravar</button>
                     <br /><span class="text-info" id="msg_blockSubmit"></span>
                 </div>
-
             </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
+</div>
+
+<!--Gravação com sucesso-->
+<div class="modal fade" id="transferencia_sucesso" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Transferência</h5>
+            </div>
+            <div class="modal-body">
+                <p id="modal_body_retorno"></p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-secondary" asp-controller="ContaCorrenteMov" asp-action="Index" asp-route-contacorrente_id="@Model.conta_corrente" asp-route-dataInicio="@Model.data_inicio.ToString("yyyy-M-d")" asp-route-dataFim="@Model.data_fim.ToString("yyyy-M-d")">Voltar</a>
+                <button type="button" class="btn btn-success" onclick="gravarCCM_transferencia('','close')">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="search_modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="search_modal_label" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="search_modal_label"></h5>
+            </div>
+            <div class="modal-body" id="search_modal_body" style="text-align:left;">
+                <input type="text" id="search_modal_input_search" value="" placeholder="Pesquisa" class="form-control form-control-sm pesquisa" style="max-width:100%;margin-bottom: 20px;" />
+                <div class="table-responsive" style="max-height: 350px;">
+                    <table class="table table-sm" id="search_modal_table" style="width:100%">
+                        <thead id="search_modal_table_thead"></thead>
+                        <tbody id="search_modal_table_tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" id="search_modal_rodape">
+                <button type="button" class="btn btn-secondary" onclick="search_m('','close')">Fechar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
