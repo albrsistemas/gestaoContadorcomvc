@@ -94,7 +94,11 @@
                         @if (usuario.Role == "adm" || usuario._permissoes.rCategoriasList)
                         {
                             <a class="dropdown-item" asp-controller="Categoria_opp" asp-action="Create">Por Categorias</a>
-                        }                       
+                        }
+                        @if (usuario.Role == "adm" || usuario._permissoes.rfm)
+                        {
+                            <a class="dropdown-item" asp-controller="Rfm" asp-action="Create">Relatório Financeiro por Período</a>
+                        }
                     </div>
                 </li>
             }

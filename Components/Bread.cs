@@ -285,7 +285,12 @@ namespace gestaoContadorcomvc.Components
                 if (pagina.Contains("Memorando/Edit"))
                 {
                     retorno = "Alterar Memorando";
-                }               
+                }
+                //Relatório Finceiro por período
+                if (pagina.Contains("Rfm/Create"))
+                {
+                    retorno = "Relatório Financeiro por Período";
+                }
             }
 
             ViewData["openNav"] = openNav;

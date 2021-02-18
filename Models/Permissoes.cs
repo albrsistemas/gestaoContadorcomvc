@@ -122,6 +122,8 @@ namespace gestaoContadorcomvc.Models
         public bool SCI_ilc { get; set; }
         public bool SCI_id { get; set; }
         public bool area_empresa_contador { get; set; }
+        //Relatório financeiro mensal RFM
+        public bool rfm { get; set; }
 
 
 

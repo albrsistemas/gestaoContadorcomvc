@@ -1378,7 +1378,7 @@ function consultaParticipante(id) {
     });
 }
 
-function verificaParticipante(id, vlr) { //Parada 13-01
+function verificaParticipante(id, vlr) { 
     if (vlr == "" || vlr == null || operacao.participante.op_part_nome != vlr) {
         participante = {
             op_part_id: 0,
@@ -5014,10 +5014,7 @@ function search_m_participante_select(id, nome, categoria_id, categoria_nome) {
         document.getElementById('participante').value = nome;
         if (document.getElementById('ccm_participante_id')) {
             document.getElementById('ccm_participante_id').value = id;
-        }
-        if (document.getElementById('op_part_participante_id')) {
-            document.getElementById('op_part_participante_id').value = id;
-        }
+        }        
         document.getElementById('participante').setAttribute("disabled", "disabled");
 
         //Inserindo a categoria
@@ -5030,7 +5027,91 @@ function search_m_participante_select(id, nome, categoria_id, categoria_nome) {
                 document.getElementById('categoria').setAttribute("disabled", "disabled");                
             }
         }
+    }
 
+    if (document.getElementById('modal_participante')) {        
+        $.ajax({
+            url: "/Participante/buscaParticipante_ajax",
+            data: { __RequestVerificationToken: gettoken(), participante_id: id },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                document.getElementById('search_modal_msg').innerHTML = "Buscando dados do particiante...";
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                document.getElementById('search_modal_msg').innerHTML = "";
+                alert('Erro na busca dos dados do participante selecionado!');
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                var p = JSON.parse(data);
+                console.log(p);
+                if (textStatus == 'error') {
+                    document.getElementById('search_modal_msg').innerHTML = "";
+                    alert('Busca dos dados do participante retornou erro. \nTente novamente, se persistir entre em contato com o suporte!');
+                }
+
+                if (textStatus == 'success') {
+                    if (document.getElementById('nome')) {
+                        document.getElementById('nome').value = p.participante_nome;
+                    }
+                    if (document.getElementById('participante_tipoPessoa')) {
+                        document.getElementById('participante_tipoPessoa').value = p.participante_tipoPessoa;
+                    }
+                    if (document.getElementById('op_part_cnpj_cpf')) {
+                        document.getElementById('op_part_cnpj_cpf').value = p.participante_cnpj_cpf;
+                    }
+                    if (document.getElementById('cep')) {
+                        document.getElementById('cep').value = p.participante_cep;
+                    }
+                    if (document.getElementById('rua')) {
+                        document.getElementById('rua').value = p.participante_logradouro;
+                    }
+                    if (document.getElementById('numero')) {
+                        document.getElementById('numero').value = p.participante_numero;
+                    }
+                    if (document.getElementById('complemento')) {
+                        document.getElementById('complemento').value = p.participante_complemento;
+                    }
+                    if (document.getElementById('bairro')) {
+                        document.getElementById('bairro').value = p.participante_bairro;
+                    }
+                    if (document.getElementById('cidade')) {
+                        document.getElementById('cidade').value = p.participante_cidade;
+                    }
+                    if (document.getElementById('uf')) {
+                        document.getElementById('uf').value = p.participante_uf;
+                    }
+                    if (document.getElementById('op_paisesIBGE_codigo')) {
+                        document.getElementById('op_paisesIBGE_codigo').value = p.participante_pais;
+                    }                    
+                    if (document.getElementById('op_part_participante_id')) {
+                        document.getElementById('op_part_participante_id').value = p.participante_id;
+                    } 
+
+                    document.getElementById('search_modal_msg').innerHTML = "";
+
+                    //Carregando dados do parcitipante no opjeto operação.
+                    dadorParticipante('insert', p.participante_id);
+                    
+                    //Atribuindo a categoria no select2
+                    if (document.getElementById('cf_categoria_id')) {
+                        $('#cf_categoria_id').val(p.participante_categoria.toString());
+                        $('#cf_categoria_id').trigger('change');
+                    }
+                    //Atribuindo a categoria no select2 quando id = op_categoria_id
+                    if (document.getElementById('op_categoria_id')) {
+                        $('#op_categoria_id').val(p.participante_categoria.toString());
+                        $('#op_categoria_id').trigger('change');
+                    }
+
+                    $("#search_modal").modal('hide');
+                    //Abre modal
+                    modal_sobre_modal_open('modal_participante');
+                    document.getElementById('nome').focus();
+                }
+            }
+        });
+    } else {
         $("#search_modal").modal('hide');
     }
 }
@@ -5145,6 +5226,92 @@ function gravarCCM_transferencia(escopo, contexto) {
             
         }
     }
+}
+
+function rfm_gerar() {
+    let filtro = {
+        vm_rfm_filtros_visao: document.getElementById('visao').value,
+        data_inicio: document.getElementById('data_inicio').value,
+        data_fim: document.getElementById('data_fim').value,
+        vm_rfm_ignorar_categorias_zeradas: document.getElementById('ignorarZeradas').value,
+    };
+
+    $.ajax({
+        url: "/Rfm/Create",
+        data: { __RequestVerificationToken: gettoken(), filtro: filtro },
+        type: 'POST',
+        dataType: 'json',
+        beforeSend: function (XMLHttpRequest) {            
+            document.getElementById('corpo_rfm').innerHTML = '<span class="text-info">Gerando relatório, aguarde...</span>';
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            document.getElementById('corpo_rfm').innerHTML = '<span class="text-danger">Erro no processamento do relatório</span>';
+        },
+        success: function (data, textStatus, XMLHttpRequest) {
+            var rfm = JSON.parse(data);            
+            if (textStatus == 'error') {
+                document.getElementById('corpo_rfm').innerHTML = '<span class="text-primary">error</span>';
+            }
+
+            if (textStatus == 'success') {
+                let saldo_inicial_total = 0;
+                let saldo_final_total = 0;
+                let entradas = 0;
+                let saidas = 0;
+
+
+                let c = '<div class="table-responsive">';
+                c += '<table class="table table-sm">';
+                c += '<caption>Relatório financeiro por período</caption>';
+                c += '<thead>';
+                for (let i = 0; i < rfm.vm_rfm_saldo_inicial_contas.length; i++) {
+                    c += '<tr class="rfm_si"><td colspan="2" style="text-align:left">' + rfm.vm_rfm_saldo_inicial_contas[i].conta_corrente_nome + '</td><td style="text-align:right">' + fomat_numeroToStringLocal(rfm.vm_rfm_saldo_inicial_contas[i].conta_corrente_saldo) + '</td></tr>';
+                    saldo_inicial_total += rfm.vm_rfm_saldo_inicial_contas[i].conta_corrente_saldo;
+                }
+                c += '<tr class="rfm_si" style="font-weight:bold"><td colspan="2" style="text-align:left">' + 'Saldo Inicial Total' + '</td><td style="text-align:right">' + fomat_numeroToStringLocal(saldo_inicial_total) + '</td></tr>';
+                c += '<tr style="height: 30px;"><td colspan="3"></td></tr>';
+                c += '<tr class="thead_title"><th style="text-align:left">Classificação</th><th style="text-align:left">Descrição</th><th style="text-align:right">Valor</th></tr>'
+                c += '</thead>';
+                c += '<tbody>';
+                for (let i = 0; i < rfm.vm_rfm_categorias.length; i++) {
+                    if (rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao.length < 5) {
+                        c += '<tr class="rfm_bloco" style="font-weight:bold"><td style="text-align:left">' + rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao + '</td><td style="text-align:left">' + rfm.vm_rfm_categorias[i].rfmc_categoria_descricao + '</td><td style="text-align:right">' + fomat_numeroToStringLocal(rfm.vm_rfm_categorias[i].rfmc_categoria_valor) + '</td></tr>';
+                    } else {
+                        c += '<tr class="rfm_bloco"><td style="text-align:left">' + rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao + '</td><td style="text-align:left">' + rfm.vm_rfm_categorias[i].rfmc_categoria_descricao + '</td><td style="text-align:right">' + fomat_numeroToStringLocal(rfm.vm_rfm_categorias[i].rfmc_categoria_valor) + '</td></tr>';
+                    }
+
+                    if (rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao.length == 1 && rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao == "1") {
+                        entradas += rfm.vm_rfm_categorias[i].rfmc_categoria_valor;
+                    }
+                    if (rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao.length == 1 && rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao == "2") {
+                        saidas += rfm.vm_rfm_categorias[i].rfmc_categoria_valor;
+                    }
+                }
+                c += '<tr style="height: 30px;"><td colspan="3"></td></tr>';
+                if ((entradas - saidas) < 0) {
+                    c += '<tr style="background-color:tomato;font-weight:bold;color:white"><td colspan="2" style="text-align:left">Resultado do Período</td><td style="text-align:right">' + fomat_numeroToStringLocal((entradas - saidas)) + '</td></tr>';
+                } else {
+                    c += '<tr style="background-color:forestgreen;font-weight:bold;color:white"><td colspan="2" style="text-align:left">Resultado do Período</td><td style="text-align:right">' + fomat_numeroToStringLocal((entradas - saidas)) + '</td></tr>';
+                }                
+                for (let i = 0; i < rfm.vm_rfm_saldo_final_contas.length; i++) {
+                    c += '<tr class="rfm_sf"><td colspan="2" style="text-align:left">' + rfm.vm_rfm_saldo_final_contas[i].conta_corrente_nome + '</td><td style="text-align:right">' + fomat_numeroToStringLocal(rfm.vm_rfm_saldo_final_contas[i].conta_corrente_saldo) + '</td></tr>';
+                    saldo_final_total += rfm.vm_rfm_saldo_final_contas[i].conta_corrente_saldo;
+                }
+                c += '<tr class="rfm_sf" style="font-weight:bold"><td colspan="2" style="text-align:left">' + 'Saldo Final Total' + '</td><td style="text-align:right">' + fomat_numeroToStringLocal(saldo_final_total) + '</td></tr>';
+                c += '</tbody>';
+                c += '</table>';
+                c += '</div>';
+                console.log(rfm);
+                document.getElementById('corpo_rfm').innerHTML = c;
+            }
+        }
+    });
+}
+
+function fomat_numeroToStringLocal(vlr, decimais) {
+    vlr = vlr.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
+
+    return vlr;
 }
 
 

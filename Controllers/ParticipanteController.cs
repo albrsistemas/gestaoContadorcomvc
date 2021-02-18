@@ -245,5 +245,20 @@ namespace gestaoContadorcomvc.Controllers
 
             return Json(JsonConvert.SerializeObject(vm));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult buscaParticipante_ajax(IFormCollection collection, int participante_id)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            Participante p = new Participante();
+            Vm_participante vm = new Vm_participante();
+            vm = p.buscarParticipantes(user.usuario_id, user.conta.conta_id, participante_id);
+
+            return Json(JsonConvert.SerializeObject(vm));
+        }
     }
 }
