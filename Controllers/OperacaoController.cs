@@ -268,5 +268,50 @@ namespace gestaoContadorcomvc.Controllers
 
             return Json(JsonConvert.SerializeObject(lista));
         }
+
+        //Ajustes na composição dos valores das parcelas da operação
+        [Autoriza(permissao = "operacaoEdit")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult AjusteParcelasOperacao(int parcela_id, IFormCollection collection)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            Operacao op = new Operacao();
+            Vm_ajuste_parcelas_operacao vm = new Vm_ajuste_parcelas_operacao();
+            vm = op.ajuste_Parcelas_Operacao(user.usuario_id, user.conta.conta_id, parcela_id);
+
+            return Json(JsonConvert.SerializeObject(vm));
+        }
+
+        [Autoriza(permissao = "operacaoEdit")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult AjusteParcelasOperacaoGravar(Vm_ajuste_parcelas_operacao apo)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            Operacao op = new Operacao();
+            string retorno = "";
+            try
+            {
+                retorno = op.ajuste_Parcelas_Operacao_gravar(apo, user.usuario_id, user.conta.conta_id);
+            }
+            catch
+            {
+                if(retorno == "")
+                {
+                    retorno = "Erro no processamento da solicitação.";
+                }
+            }
+            
+
+            return Json(JsonConvert.SerializeObject(retorno));
+        }
+
     }
 }

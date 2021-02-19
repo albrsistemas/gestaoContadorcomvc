@@ -267,7 +267,7 @@
                             </td>
                             <td onclick="editVencimento('open', this.id, '@item.vencimento.ToShortDateString()', @item.parcela_id)" style="cursor:pointer">@item.vencimento.ToShortDateString()</td>
                             <td style="text-align:right;">@item.saldo.ToString("N2")</td>
-                            <td style="text-align:right;">@item.valorOriginal.ToString("N2")</td>
+                            <td style="text-align:right;cursor:pointer" onclick="Ajuste_parcelas_operacao('@item.parcela_id','open')" >@item.valorOriginal.ToString("N2")</td>
                             <td style="white-space:nowrap;">@item.dcto</td>
                             <td style="white-space:nowrap;">@item.serie</td>
                             <td style="min-width: 300px">@item.categoria_nome</td>
@@ -551,6 +551,65 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="ajuste_p_op" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="ajuste_p_op_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ajuste_p_op_label">Ajuste Valores Parcelas Operação</h5>
+            </div>
+            <div class="modal-body" id="ajuste_p_op_body" style="text-align:left;">
+                <input type="hidden" id="apo_parcela_id" />
+                <div class="row" style="margin-bottom: 15px;">
+                    <div class="col-12">
+                        <span>Valor Total da Operação: <strong id="apo_vlr_operacao"></strong></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <input type="hidden" id="apo_parcela_id_edit" />
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Data Vencimento</label>
+                            <input type="text" id="apo_parcela_data" autocomplete="off" class="form-control form-control-sm datepicker" />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label">Valor</label>
+                            <input type="text" id="apo_parcela_valor" autocomplete="off" class="form-control form-control-sm" onchange="decimal(this.id,this.value,'2',true)" />
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-info" onclick="Ajuste_parcelas_operacao('','edit_salvar')">Salvar</button>
+                        </div>
+                    </div>
+                </div>
+                <hr class="hrLine" />
+                <div class="table-responsive" style="max-height: 350px;">
+                    <table class="table table-sm" style="width:100%">
+                        <thead id="apo_table_thead">
+                            <tr>
+                                <th>Ações</th>
+                                <th>Data Vencimento</th>
+                                <th>Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="apo_tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" id="search_modal_rodape">
+                <button type="button" class="btn btn-secondary" id="canc_apo" onclick="Ajuste_parcelas_operacao('','close')">Cancelar</button>
+                <button type="button" class="btn btn-info" id="sub_apo" onclick="Ajuste_parcelas_operacao('','gravar')">Gravar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ScriptPartial_DataTable");}

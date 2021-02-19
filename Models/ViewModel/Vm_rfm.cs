@@ -100,7 +100,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
                 dr_3_c.Transaction = Transacao;
                 if(filtro.vm_rfm_filtros_visao == "caixa")
                 {
-                    dr_3_c.CommandText = "SELECT c.categoria_id, c.categoria_classificacao, c.categoria_nome, (SELECT COALESCE(sum(round(view_caixa.resultado,2)),0) from view_caixa WHERE view_caixa.classificacao LIKE concat(c.categoria_classificacao,'%') and view_caixa.oppb_data BETWEEN @data_inicial and @data_final AND view_caixa.conta_id = @conta_id) as 'valor' from categoria as c WHERE c.categoria_conta_id = @conta_id and c.categoria_status = 'Ativo' and c.categoria_dePlano = 'Não' ORDER by c.categoria_classificacao ASC;";
+                    dr_3_c.CommandText = "SELECT c.categoria_id, c.categoria_classificacao, c.categoria_nome, (SELECT COALESCE(sum(round(vw_caixa.valor_mov_caixa,2)),0) from vw_caixa WHERE vw_caixa.categoria_classificacao LIKE concat(c.categoria_classificacao,'%') and vw_caixa.data_mov_caixa BETWEEN @data_inicial and @data_final AND vw_caixa.conta_id = @conta_id) as 'valor' from categoria as c WHERE c.categoria_conta_id = @conta_id and c.categoria_status = 'Ativo' and c.categoria_dePlano = 'Não' ORDER by c.categoria_classificacao ASC;";
                 }
                 else
                 {

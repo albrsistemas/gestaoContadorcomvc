@@ -86,6 +86,7 @@
         op_parcela_numero: 0,
         op_parcela_numero_total: 0,
         op_parcela_label_forma_pgto: '',
+        baixas: 0,
     };
 
     //Funcções
@@ -782,12 +783,6 @@
             }
         }
 
-    }
-
-    function convertStringDouble(vlr) {
-        let valor = vlr.toString().replace('.', '').replace(',', '.') * 1;
-
-        return valor;
     }
 
     function operacao_totais(contexto) {
@@ -2062,6 +2057,7 @@
             operacao.parcelas[i].op_parcela_saldo = convertDoubleString(operacao.parcelas[i].op_parcela_saldo);
             operacao.parcelas[i].op_parcela_valor = convertDoubleString(operacao.parcelas[i].op_parcela_valor);
             operacao.parcelas[i].op_parcela_valor_bruto = convertDoubleString(operacao.parcelas[i].op_parcela_valor_bruto);
+            operacao.parcelas[i].baixas = convertDoubleString(operacao.parcelas[i].baixas);
         }
         //Serviços
         operacao.servico.op_servico_valor = convertDoubleString(operacao.servico.op_servico_valor);

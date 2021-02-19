@@ -158,6 +158,8 @@ let ilc = {
     origem: '',
 };
 
+let apo = {};
+
 //Onload página layout
 function Page() {
 
@@ -4568,6 +4570,12 @@ function convertDoubleString(vlr) {
     return vlr_str;
 }
 
+function convertStringDouble(vlr) {
+    let valor = vlr.toString().replace('.', '').replace(',', '.') * 1;
+
+    return valor;
+}
+
 function gerar_sci_ilc() {
     let cliente_id = document.getElementById('cliente_id').value;
     let data_inicial = document.getElementById('data_inicial').value;
@@ -5312,6 +5320,161 @@ function fomat_numeroToStringLocal(vlr, decimais) {
     vlr = vlr.toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
 
     return vlr;
+}
+
+function Ajuste_parcelas_operacao(parcela_id, contexto) {
+    if (contexto == 'open') {
+        $.ajax({
+            url: "/Operacao/AjusteParcelasOperacao",
+            data: { __RequestVerificationToken: gettoken(), parcela_id: parcela_id },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                document.getElementById('apo_vlr_operacao').innerHTML = '';
+                document.getElementById('apo_parcela_id').value = 0;
+                document.getElementById('apo_parcela_id_edit').value = 0;
+                document.getElementById('apo_tbody').innerHTML = '<span class="text-info">Buscando valores parcelas, aguarde...</span>';                
+                modal_sobre_modal_open('ajuste_p_op');
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                document.getElementById('apo_tbody').innerHTML = '<span class="text-danger">Erro na busca dos dados da parcela!</span>';
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                apo = JSON.parse(data);
+                console.log(apo);
+                if (textStatus == 'error') {
+                    document.getElementById('apo_tbody').innerHTML = '<span class="text-danger">Erro na busca dos dados da parcela!</span>';
+                }
+
+                if (textStatus == 'success') {
+                    document.getElementById('apo_tbody').innerHTML = '';
+                    document.getElementById('apo_vlr_operacao').innerHTML = fomat_numeroToStringLocal(apo.operacao_totais.op_totais_total_op);
+                    document.getElementById('apo_parcela_id').value = parcela_id;
+                    let retencoes = 0;
+                    for (let l = 0; l < apo.parcelas.length; l++) {
+                        retencoes += apo.parcelas[l].op_parcela_ret_inss + apo.parcelas[l].op_parcela_ret_issqn + apo.parcelas[l].op_parcela_ret_irrf + apo.parcelas[l].op_parcela_ret_pis + apo.parcelas[l].op_parcela_ret_cofins + apo.parcelas[l].op_parcela_ret_csll;
+                    }
+
+                    if (retencoes > 0) {
+                        alert('As parcelas da operação possui retenções tributárias e não podem sofrer ajustes nos valores das parcelas.');
+                    } else {
+                        for (let i = 0; i < apo.parcelas.length; i++) {
+                            apo.parcelas[i].op_parcela_valor = fomat_numeroToStringLocal(apo.parcelas[i].op_parcela_valor);
+                            apo.parcelas[i].op_parcela_vencimento_alterado = convertData_DataSimples(apo.parcelas[i].op_parcela_vencimento_alterado);
+
+                            let td = '<tr>';
+                            td += '<td>';
+                            if (apo.parcelas[i].baixas > 0) {
+                                td += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="cursor:pointer" onclick="Ajuste_parcelas_operacao(\'' + apo.parcelas[i].op_parcela_id + '\',\'edit_negado\')"><path d = "M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" /><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" /></svg >';
+                            } else {
+                                td += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="cursor:pointer" onclick="Ajuste_parcelas_operacao(\'' + apo.parcelas[i].op_parcela_id + '\',\'edit\')"><path d = "M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" /><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" /></svg >';
+                            }
+                            td += '</td>';
+                            td += '<td>' + apo.parcelas[i].op_parcela_vencimento_alterado + '</td>';
+                            td += '<td>' + apo.parcelas[i].op_parcela_valor + '</td>';
+                            td += '</tr>';
+                            $('#apo_tbody').append($(td));
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    if (contexto == 'edit') {
+        for (let i = 0; i < apo.parcelas.length; i++) {
+            if (apo.parcelas[i].op_parcela_id == parcela_id) {
+                document.getElementById('apo_parcela_data').value = apo.parcelas[i].op_parcela_vencimento_alterado;
+                document.getElementById('apo_parcela_valor').value = apo.parcelas[i].op_parcela_valor;
+                document.getElementById('apo_parcela_id_edit').value = apo.parcelas[i].op_parcela_id;
+                break;
+            }
+        }
+    }
+
+    if (contexto == 'edit_salvar') {
+        document.getElementById('apo_tbody').innerHTML = ''; 
+        let p = document.getElementById('apo_parcela_id_edit').value;
+        for (let i = 0; i < apo.parcelas.length; i++) {
+            if (apo.parcelas[i].op_parcela_id == p) {
+                apo.parcelas[i].op_parcela_vencimento_alterado = document.getElementById('apo_parcela_data').value;
+                apo.parcelas[i].op_parcela_valor = document.getElementById('apo_parcela_valor').value;  
+
+                document.getElementById('apo_parcela_data').value = '';
+                document.getElementById('apo_parcela_valor').value = '';
+            }
+
+            let td = '<tr>';
+            td += '<td>';
+            if (apo.parcelas[i].baixas > 0) {
+                td += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="cursor:pointer" onclick="Ajuste_parcelas_operacao(\'' + apo.parcelas[i].op_parcela_id + '\',\'edit_negado\')"><path d = "M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" /><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" /></svg >';
+            } else {
+                td += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="cursor:pointer" onclick="Ajuste_parcelas_operacao(\'' + apo.parcelas[i].op_parcela_id + '\',\'edit\')"><path d = "M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" /><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" /></svg >';
+            }            
+            td += '</td>';
+            td += '<td>' + apo.parcelas[i].op_parcela_vencimento_alterado + '</td>';
+            td += '<td>' + apo.parcelas[i].op_parcela_valor + '</td>';
+            td += '</tr>';
+            $('#apo_tbody').append($(td));
+        }       
+    }
+
+    if (contexto == 'close') {
+        $('#ajuste_p_op').modal('hide');
+    }
+
+    if (contexto == 'edit_negado') {
+        alert('Esta parcela possui baixas e não pode ser alterada!');
+    }
+
+    if (contexto == 'gravar') {
+        let vlr_total = 0;
+        for (let i = 0; i < apo.parcelas.length; i++) {
+            vlr_total += convertStringDouble(apo.parcelas[i].op_parcela_valor);            
+        }
+
+        vlr_total = vlr_total.toFixed(2);
+        let op = apo.operacao_totais.op_totais_total_op.toFixed(2);
+
+        if (convertStringDouble(vlr_total) != convertStringDouble(op)) {
+            alert('Valor das parcelas é diferente do valor total da operação. \nValor Total Operação: ' + fomat_numeroToStringLocal(apo.operacao_totais.op_totais_total_op) + '\nValor Total das Parcelas: ' + fomat_numeroToStringLocal(vlr_total));            
+        } else {
+            $.ajax({
+                url: "/Operacao/AjusteParcelasOperacaoGravar",
+                data: { __RequestVerificationToken: gettoken(), apo: apo },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    document.getElementById('canc_apo').disabled = true;
+                    document.getElementById('sub_apo').disabled = true;                    
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('Erro no envio dos dados');
+                    document.getElementById('canc_apo').disabled = false;
+                    document.getElementById('sub_apo').disabled = false;
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    apo = JSON.parse(data);                    
+                    if (textStatus == 'error') {
+                        alert('Erro no envio dos dados');
+                        document.getElementById('canc_apo').disabled = false;
+                        document.getElementById('sub_apo').disabled = false;
+                    }
+
+                    if (textStatus == 'success') {
+                        if (XMLHttpRequest.responseJSON.includes('sucesso')) {
+                            alert('Ajustes nas parcelas gravado com sucesso');
+                            window.location.href = window.location.origin + '/ContasPagar/Index';
+                        }
+
+                        if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                            alert(XMLHttpRequest.responseJSON);
+                        }
+                    }
+                }
+            });
+        }
+    }
 }
 
 

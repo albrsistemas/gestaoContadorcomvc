@@ -14,6 +14,7 @@ namespace gestaoContadorcomvc.Models
         public int op_parcela_id { get; set; }
         public int op_parcela_dias { get; set; }
         public DateTime op_parcela_vencimento { get; set; }
+        public DateTime op_parcela_vencimento_alterado { get; set; }
         public int op_parcela_fp_id { get; set; }
         public int op_parcela_op_id { get; set; }
         public Decimal op_parcela_valor_bruto { get; set; }
@@ -29,6 +30,7 @@ namespace gestaoContadorcomvc.Models
         public Decimal op_parcela_ret_csll { get; set; }
         public int op_parcela_numero { get; set; }
         public int op_parcela_numero_total { get; set; }
+        public Decimal baixas { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      

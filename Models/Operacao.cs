@@ -1168,7 +1168,8 @@ namespace gestaoContadorcomvc.Models
 
                 List<Op_parcelas> parcelas = new List<Op_parcelas>();
 
-                cmdp.CommandText = "SELECT * from op_parcelas WHERE op_parcelas.op_parcela_op_id = @op_id_3;";
+                //cmdp.CommandText = "SELECT * from op_parcelas WHERE op_parcelas.op_parcela_op_id = @op_id_3;";
+                cmdp.CommandText = "SELECT op_parcelas.*, (SELECT COALESCE(sum(b.oppb_valor),0) from op_parcelas_baixa as b WHERE b.oppb_op_parcela_id = op_parcelas.op_parcela_id) as 'baixas' from op_parcelas WHERE op_parcelas.op_parcela_op_id = @op_id_3;";
                 cmdp.Parameters.AddWithValue("@op_id_3", op.operacao.op_id);
 
                 leitor_3 = cmdp.ExecuteReader();
@@ -1313,6 +1314,16 @@ namespace gestaoContadorcomvc.Models
                         {
                             parcela.op_parcela_numero_total = 0;
                         }
+
+                        if (DBNull.Value != leitor_3["baixas"])
+                        {
+                            parcela.baixas = Convert.ToDecimal(leitor_3["baixas"]);
+                        }
+                        else
+                        {
+                            parcela.baixas = 0;
+                        }
+
 
                         parcela.op_parcela_obs = leitor_3["op_parcela_obs"].ToString();
                         parcela.controleEdit = "update";
@@ -2211,6 +2222,540 @@ namespace gestaoContadorcomvc.Models
 
                 string msg = e.Message.Substring(0, 300);
                 log.log("Operacao", "delete", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
+        public Vm_ajuste_parcelas_operacao ajuste_Parcelas_Operacao(int usuario_id, int conta_id, int parcela_id)
+        {
+            Vm_ajuste_parcelas_operacao vm = new Vm_ajuste_parcelas_operacao();
+            List<Op_parcelas> parcelas = new List<Op_parcelas>();
+            Operacao op = new Operacao();
+            Op_totais t = new Op_totais();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                MySqlDataReader dr_1;
+                MySqlCommand dr_1_c = conn.CreateCommand();
+                dr_1_c.Connection = conn;
+                dr_1_c.Transaction = Transacao;
+                dr_1_c.CommandText = "SELECT(SELECT COALESCE(sum(b.oppb_valor),0) from op_parcelas_baixa as b WHERE b.oppb_op_parcela_id = p.op_parcela_id) as 'baixa', p.* from op_parcelas as p WHERE p.op_parcela_op_id = (SELECT op_parcelas.op_parcela_op_id from op_parcelas WHERE op_parcelas.op_parcela_id = @op_parcela_id);";
+                dr_1_c.Parameters.AddWithValue("op_parcela_id", parcela_id);                
+                dr_1 = dr_1_c.ExecuteReader();
+
+                if (dr_1.HasRows)
+                {
+                    while (dr_1.Read())
+                    {
+                        Op_parcelas parcela = new Op_parcelas();
+
+                        if (DBNull.Value != dr_1["op_parcela_vencimento"])
+                        {
+                            parcela.op_parcela_vencimento = Convert.ToDateTime(dr_1["op_parcela_vencimento"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_vencimento = new DateTime();
+                        }
+
+                        if (DBNull.Value != dr_1["op_parcela_valor"])
+                        {
+                            parcela.op_parcela_valor = Convert.ToDecimal(dr_1["op_parcela_valor"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_valor = 0;
+                        }
+
+                        if (DBNull.Value != dr_1["op_parcela_saldo"])
+                        {
+                            parcela.op_parcela_saldo = Convert.ToDecimal(dr_1["op_parcela_saldo"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_saldo = 0;
+                        }
+
+                        if (DBNull.Value != dr_1["op_parcela_id"])
+                        {
+                            parcela.op_parcela_id = Convert.ToInt32(dr_1["op_parcela_id"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_id = 0;
+                        }
+
+                        if (DBNull.Value != dr_1["op_parcela_dias"])
+                        {
+                            parcela.op_parcela_dias = Convert.ToInt32(dr_1["op_parcela_dias"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_dias = 0;
+                        }
+
+                        if (DBNull.Value != dr_1["op_parcela_fp_id"])
+                        {
+                            parcela.op_parcela_fp_id = Convert.ToInt32(dr_1["op_parcela_fp_id"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_fp_id = 0;
+                        }
+
+                        if (DBNull.Value != dr_1["op_parcela_op_id"])
+                        {
+                            parcela.op_parcela_op_id = Convert.ToInt32(dr_1["op_parcela_op_id"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_op_id = 0;
+                        }
+                        //--
+                        if (DBNull.Value != dr_1["op_parcela_valor_bruto"])
+                        {
+                            parcela.op_parcela_valor_bruto = Convert.ToDecimal(dr_1["op_parcela_valor_bruto"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_valor_bruto = 0;
+                        }
+                        if (DBNull.Value != dr_1["op_parcela_ret_inss"])
+                        {
+                            parcela.op_parcela_ret_inss = Convert.ToDecimal(dr_1["op_parcela_ret_inss"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_ret_inss = 0;
+                        }
+                        if (DBNull.Value != dr_1["op_parcela_ret_issqn"])
+                        {
+                            parcela.op_parcela_ret_issqn = Convert.ToDecimal(dr_1["op_parcela_ret_issqn"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_ret_issqn = 0;
+                        }
+                        if (DBNull.Value != dr_1["op_parcela_ret_irrf"])
+                        {
+                            parcela.op_parcela_ret_irrf = Convert.ToDecimal(dr_1["op_parcela_ret_irrf"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_ret_irrf = 0;
+                        }
+                        if (DBNull.Value != dr_1["op_parcela_ret_pis"])
+                        {
+                            parcela.op_parcela_ret_pis = Convert.ToDecimal(dr_1["op_parcela_ret_pis"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_ret_pis = 0;
+                        }
+                        if (DBNull.Value != dr_1["op_parcela_ret_cofins"])
+                        {
+                            parcela.op_parcela_ret_cofins = Convert.ToDecimal(dr_1["op_parcela_ret_cofins"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_ret_cofins = 0;
+                        }
+                        if (DBNull.Value != dr_1["op_parcela_ret_csll"])
+                        {
+                            parcela.op_parcela_ret_csll = Convert.ToDecimal(dr_1["op_parcela_ret_csll"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_ret_csll = 0;
+                        }
+                        if (DBNull.Value != dr_1["op_parcela_numero"])
+                        {
+                            parcela.op_parcela_numero = Convert.ToInt32(dr_1["op_parcela_numero"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_numero = 0;
+                        }
+                        if (DBNull.Value != dr_1["op_parcela_numero_total"])
+                        {
+                            parcela.op_parcela_numero_total = Convert.ToInt32(dr_1["op_parcela_numero_total"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_numero_total = 0;
+                        }
+
+                        if (DBNull.Value != dr_1["baixa"])
+                        {
+                            parcela.baixas = Convert.ToDecimal(dr_1["baixa"]);
+                        }
+                        else
+                        {
+                            parcela.baixas = 0;
+                        }
+                        if (DBNull.Value != dr_1["op_parcela_vencimento_alterado"])
+                        {
+                            parcela.op_parcela_vencimento_alterado = Convert.ToDateTime(dr_1["op_parcela_vencimento_alterado"]);
+                        }
+                        else
+                        {
+                            parcela.op_parcela_vencimento_alterado = new DateTime();
+                        }
+
+                        parcela.op_parcela_obs = dr_1["op_parcela_obs"].ToString();
+                        parcela.controleEdit = "update";
+
+                        parcelas.Add(parcela);
+                    }
+                }
+                dr_1.Close();
+
+                MySqlDataReader dr_2;
+                MySqlCommand dr_2_c = conn.CreateCommand();
+                dr_2_c.Connection = conn;
+                dr_2_c.Transaction = Transacao;                
+                dr_2_c.CommandText = "SELECT * from operacao as op left JOIN op_totais as t on t.op_totais_op_id = op.op_id WHERE op.op_id = (SELECT p.op_parcela_op_id from op_parcelas as p WHERE p.op_parcela_id = @op_parcela_id_2);";
+                dr_2_c.Parameters.AddWithValue("op_parcela_id_2", parcela_id);                
+                dr_2 = dr_2_c.ExecuteReader();
+
+                if (dr_2.HasRows)
+                {
+                    while (dr_2.Read())
+                    {
+                        //Operação
+                        if (DBNull.Value != dr_2["op_id"])
+                        {
+                            op.op_id = Convert.ToInt32(dr_2["op_id"]);
+                        }
+                        else
+                        {
+                            op.op_id = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_numero_ordem"])
+                        {
+                            op.op_numero_ordem = Convert.ToInt32(dr_2["op_numero_ordem"]);
+                        }
+                        else
+                        {
+                            op.op_numero_ordem = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_data"])
+                        {
+                            op.op_data = Convert.ToDateTime(dr_2["op_data"]);
+                        }
+                        else
+                        {
+                            op.op_data = new DateTime();
+                        }
+
+                        if (DBNull.Value != dr_2["op_dataCriacao"])
+                        {
+                            op.op_dataCriacao = Convert.ToDateTime(dr_2["op_dataCriacao"]);
+                        }
+                        else
+                        {
+                            op.op_dataCriacao = new DateTime();
+                        }
+
+                        if (DBNull.Value != dr_2["op_data_saida"])
+                        {
+                            op.op_data_saida = Convert.ToDateTime(dr_2["op_data_saida"]);
+                        }
+                        else
+                        {
+                            op.op_data_saida = new DateTime();
+                        }
+
+                        if (DBNull.Value != dr_2["op_previsao_entrega"])
+                        {
+                            op.op_previsao_entrega = Convert.ToDateTime(dr_2["op_previsao_entrega"]);
+                        }
+                        else
+                        {
+                            op.op_previsao_entrega = new DateTime();
+                        }
+
+                        if (DBNull.Value != dr_2["op_conta_id"])
+                        {
+                            op.op_conta_id = Convert.ToInt32(dr_2["op_conta_id"]);
+                        }
+                        else
+                        {
+                            op.op_conta_id = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_categoria_id"])
+                        {
+                            op.op_categoria_id = Convert.ToInt32(dr_2["op_categoria_id"]);
+                        }
+                        else
+                        {
+                            op.op_categoria_id = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_categoria_id"])
+                        {
+                            op.op_categoria_id = Convert.ToInt32(dr_2["op_categoria_id"]);
+                        }
+                        else
+                        {
+                            op.op_categoria_id = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_comNF"])
+                        {
+                            op.op_comNF = Convert.ToInt32(dr_2["op_comNF"]);
+                        }
+                        else
+                        {
+                            op.op_comNF = 0;
+                        }
+
+                        op.op_comParticipante = Convert.ToBoolean(dr_2["op_comParticipante"]);
+                        op.op_comRetencoes = Convert.ToBoolean(dr_2["op_comRetencoes"]);
+                        op.op_comTransportador = Convert.ToBoolean(dr_2["op_comTransportador"]);
+
+                        op.op_tipo = dr_2["op_tipo"].ToString();
+                        op.op_obs = dr_2["op_obs"].ToString();
+                        //totais
+                        if (DBNull.Value != dr_2["op_totais_id"])
+                        {
+                            t.op_totais_id = Convert.ToInt32(dr_2["op_totais_id"]);
+                        }
+                        else
+                        {
+                            t.op_totais_id = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_itens"])
+                        {
+                            t.op_totais_itens = Convert.ToInt32(dr_2["op_totais_itens"]);
+                        }
+                        else
+                        {
+                            t.op_totais_itens = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_op_id"])
+                        {
+                            t.op_totais_op_id = Convert.ToInt32(dr_2["op_totais_op_id"]);
+                        }
+                        else
+                        {
+                            t.op_totais_op_id = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_preco_itens"])
+                        {
+                            t.op_totais_preco_itens = Convert.ToDecimal(dr_2["op_totais_preco_itens"]);
+                        }
+                        else
+                        {
+                            t.op_totais_preco_itens = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_frete"])
+                        {
+                            t.op_totais_frete = Convert.ToDecimal(dr_2["op_totais_frete"]);
+                        }
+                        else
+                        {
+                            t.op_totais_frete = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_seguro"])
+                        {
+                            t.op_totais_seguro = Convert.ToDecimal(dr_2["op_totais_seguro"]);
+                        }
+                        else
+                        {
+                            t.op_totais_seguro = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_desp_aces"])
+                        {
+                            t.op_totais_desp_aces = Convert.ToDecimal(dr_2["op_totais_desp_aces"]);
+                        }
+                        else
+                        {
+                            t.op_totais_desp_aces = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_desconto"])
+                        {
+                            t.op_totais_desconto = Convert.ToDecimal(dr_2["op_totais_desconto"]);
+                        }
+                        else
+                        {
+                            t.op_totais_desconto = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_qtd_itens"])
+                        {
+                            t.op_totais_qtd_itens = Convert.ToDecimal(dr_2["op_totais_qtd_itens"]);
+                        }
+                        else
+                        {
+                            t.op_totais_qtd_itens = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_retencoes"])
+                        {
+                            t.op_totais_retencoes = Convert.ToDecimal(dr_2["op_totais_retencoes"]);
+                        }
+                        else
+                        {
+                            t.op_totais_retencoes = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_total_op"])
+                        {
+                            t.op_totais_total_op = Convert.ToDecimal(dr_2["op_totais_total_op"]);
+                        }
+                        else
+                        {
+                            t.op_totais_total_op = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_preco_servicos"])
+                        {
+                            t.op_totais_preco_servicos = Convert.ToDecimal(dr_2["op_totais_preco_servicos"]);
+                        }
+                        else
+                        {
+                            t.op_totais_preco_servicos = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_valor_outras_operacoes"])
+                        {
+                            t.op_totais_valor_outras_operacoes = Convert.ToDecimal(dr_2["op_totais_valor_outras_operacoes"]);
+                        }
+                        else
+                        {
+                            t.op_totais_valor_outras_operacoes = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_ipi"])
+                        {
+                            t.op_totais_ipi = Convert.ToDecimal(dr_2["op_totais_ipi"]);
+                        }
+                        else
+                        {
+                            t.op_totais_ipi = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_icms_st"])
+                        {
+                            t.op_totais_icms_st = Convert.ToDecimal(dr_2["op_totais_icms_st"]);
+                        }
+                        else
+                        {
+                            t.op_totais_icms_st = 0;
+                        }
+
+                        if (DBNull.Value != dr_2["op_totais_saldoLiquidacao"])
+                        {
+                            t.op_totais_saldoLiquidacao = Convert.ToDecimal(dr_2["op_totais_saldoLiquidacao"]);
+                        }
+                        else
+                        {
+                            t.op_totais_saldoLiquidacao = 0;
+                        }
+                    }
+                }
+                dr_2.Close();
+
+                vm.parcelas = parcelas;
+                vm.operacao = op;
+                vm.operacao_totais = t;
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message.Substring(0, 250);
+                log.log("Operacao", "delete", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return vm;
+        }
+
+        public string ajuste_Parcelas_Operacao_gravar(Vm_ajuste_parcelas_operacao apo, int usuario_id, int conta_id)
+        {
+            string retorno = "Ajustes nas parcelas gravado com sucesso";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                if(apo.parcelas != null)
+                {
+                    Decimal retencoes = 0;                     
+
+                    for (int l = 0; l < apo.parcelas.Count; l++)
+                    {
+                        retencoes += apo.parcelas[l].op_parcela_ret_inss + apo.parcelas[l].op_parcela_ret_issqn + apo.parcelas[l].op_parcela_ret_irrf + apo.parcelas[l].op_parcela_ret_pis + apo.parcelas[l].op_parcela_ret_cofins + apo.parcelas[l].op_parcela_ret_csll;
+                    }
+
+                    if(retencoes == 0)
+                    {
+                        for (int i = 0; i < apo.parcelas.Count; i++)
+                        {
+                            MySqlCommand cmd = conn.CreateCommand();
+                            cmd.Connection = conn;
+                            cmd.Transaction = Transacao;
+
+                            cmd.CommandText = "UPDATE op_parcelas set op_parcelas.op_parcela_vencimento_alterado = @op_parcela_vencimento_alterado, op_parcelas.op_parcela_valor = @op_parcela_valor, op_parcelas.op_parcela_valor_bruto = @op_parcela_valor WHERE op_parcelas.op_parcela_id = @op_parcela_id;";
+                            cmd.Parameters.AddWithValue("@op_parcela_vencimento_alterado", apo.parcelas[i].op_parcela_vencimento_alterado);
+                            cmd.Parameters.AddWithValue("@op_parcela_valor", apo.parcelas[i].op_parcela_valor);
+                            cmd.Parameters.AddWithValue("@op_parcela_id", apo.parcelas[i].op_parcela_id);
+                            cmd.ExecuteNonQuery();
+                        }
+                        Transacao.Commit();
+                    }
+                    else
+                    {
+                        retorno = "Erro, as parcelas da operação possui retenções e não pode ser alterado.";
+                    }
+                }
+
+                string msg = "Ajustes na parcela da operação ID: " + apo.operacao.op_id + " realizada com sucesso";
+                log.log("Participante", "alterarParticipante", "Sucesso", msg, conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message.Substring(0, 250);
+                log.log("Operação", "ajuste_Parcelas_Operacao_gravar", "Erro", msg, conta_id, usuario_id);
+
+                retorno = "Erro ao processar os ajustes das parcelas no banco de dados.";
             }
             finally
             {
