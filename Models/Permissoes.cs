@@ -124,6 +124,10 @@ namespace gestaoContadorcomvc.Models
         public bool area_empresa_contador { get; set; }
         //Relatório financeiro mensal RFM
         public bool rfm { get; set; }
+        //Cartão Crédito
+        public bool cartaoCreditoList { get; set; }
+        public bool cartaoCreditoDetails { get; set; }
+        public bool cartaoCreditoCreate { get; set; }
 
 
 

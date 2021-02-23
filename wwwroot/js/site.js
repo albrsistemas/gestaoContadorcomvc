@@ -1,6 +1,16 @@
 ﻿//import * as saveAs from "./FileSaver";
 
 //Variaveis globais
+let fcc = {
+    fcc_id: 0,
+    fcc_forma_pagamento_id: 0,
+    fcc_nome_cartao: '',
+    fcc_situacao: '',
+    fcc_data_corte: '',
+    fcc_data_vencimento: '',
+    fcc_movimentos: [],
+}
+
 let fechamentoCartao = {
     
     totalFatura: 0,
@@ -734,7 +744,7 @@ $(function () {
         dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
         dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
         monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-        monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+        monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],        
     });
 });
 
@@ -5476,6 +5486,227 @@ function Ajuste_parcelas_operacao(parcela_id, contexto) {
         }
     }
 }
+
+function novoObjFCC(fcc_id, fcc_forma_pagamento_id, fcc_situacao, fcc_data_corte, fcc_data_vencimento, fcc_movimentos) {
+    let fcc = {
+        fcc_id: fcc_id,
+        fcc_forma_pagamento_id: fcc_forma_pagamento_id,
+        fcc_situacao: fcc_situacao,
+        fcc_data_corte: fcc_data_corte,
+        fcc_data_vencimento: fcc_data_vencimento,
+        fcc_movimentos: fcc_movimentos,
+    }
+
+    return fcc;
+}
+
+function fatura_cartao_credito(contexto, cartao_id) {
+    if (contexto == 'open') {
+        let f = novoObjFCC(0, cartao_id, '', '', '', []);       
+
+        pesquisaFatura('open', ajustesFCC(f));
+    }
+
+    if (contexto == 'close') {
+        document.getElementById('fcc_id').innerHTML = '';
+        document.getElementById('fcc_nome_cartao').innerHTML = '';
+        document.getElementById('fcc_situacao').innerHTML = '';
+        document.getElementById('fcc_data_corte').value = '';
+        document.getElementById('fcc_data_vencimento').value = '';
+        document.getElementById('table_movimentos_fatura_cartao').innerHTML = '';
+        $('#fcc_modal').modal('hide');
+    }
+
+    if (contexto == 'next') {
+        let f = novoObjFCC(fcc.fcc_id, fcc.fcc_forma_pagamento_id, fcc.fcc_situacao, fcc.fcc_data_corte, fcc.fcc_data_vencimento, []);
+        pesquisaFatura('next', ajustesFCC(f));
+    }
+
+    if (contexto == 'previous') {
+        let f = novoObjFCC(fcc.fcc_id, fcc.fcc_forma_pagamento_id, fcc.fcc_situacao, fcc.fcc_data_corte, fcc.fcc_data_vencimento, []);
+        pesquisaFatura('previous', ajustesFCC(f));
+    }
+
+}
+
+function pesquisaFatura(contexto, f) {
+    f.fcc_id = 0; //Zerando o fcc_id, pois o servidor buscar a fcc pela competência.
+    $.ajax({
+        url: "/CartaoCredito/Details",
+        data: { __RequestVerificationToken: gettoken(), contexto: contexto, fcc: f },
+        type: 'POST',
+        dataType: 'json',
+        beforeSend: function (XMLHttpRequest) {
+            //Limpando tabela
+            document.getElementById('table_movimentos_fatura_cartao').innerHTML = '';
+            document.getElementById('fcc_valor_total').innerHTML = '';
+            document.getElementById('btn_fecharCartao').style.display = 'none';
+            document.getElementById('btn_reabrirCartao').style.display = 'none';
+            document.getElementById('fcc_mensagem').innerHTML = '<span class="text-info">Carregando dados da fatura do cartão de crédito, aguarde...</span>';            
+            modal_sobre_modal_open('fcc_modal');
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            document.getElementById('fcc_mensagem').innerHTML = '<span class="text-danger">Erro ao se comunicar com o servidor!!</span>';
+        },
+        success: function (data, textStatus, XMLHttpRequest) {
+            fcc = JSON.parse(data);
+            if (textStatus == 'error') {
+                document.getElementById('fcc_mensagem').innerHTML = '<span class="text-danger">Erro ao se comunicar com o servidor!!</span>';
+            }
+
+            if (textStatus == 'success') {
+                console.log(fcc);
+                document.getElementById('fcc_id').innerHTML = fcc.fcc_id;
+                document.getElementById('fcc_nome_cartao').innerHTML = fcc.fcc_nome_cartao;
+                document.getElementById('fcc_situacao').innerHTML = fcc.fcc_situacao;
+                document.getElementById('fcc_data_corte').value = convertData_DataSimples(fcc.fcc_data_corte);
+                document.getElementById('fcc_data_vencimento').value = convertData_DataSimples(fcc.fcc_data_vencimento);
+                if (fcc.fcc_situacao == 'Fechada') {
+                    document.getElementById('btn_reabrirCartao').style.display = 'bock';
+                    document.getElementById('btn_fecharCartao').style.display = 'none';
+                } else {
+                    document.getElementById('btn_reabrirCartao').style.display = 'none';
+                    document.getElementById('btn_fecharCartao').style.display = 'block';
+                }
+
+                let valor_total = 0;
+
+                //Limpando tabela
+                document.getElementById('table_movimentos_fatura_cartao').innerHTML = '';
+                //Atribuindo novos dados a tabela
+                for (let i = 0; i < fcc.fcc_movimentos.length; i++) {
+
+                    valor_total += fcc.fcc_movimentos[i].mcc_valor;
+
+                    let t = '';
+                    t += '<tr>';
+                    t += '<td style="text-align:center">';
+                    t += '<span style="cursor:pointer;margin-right:7px;" onclick="fatura_cartao_credito_edit_competencia(\'edit_competencia\',\'' + fcc.fcc_movimentos[i].mcc_tipo + '\',\'' + fcc.fcc_movimentos[i].mcc_tipo_id + '\')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16"><path fill - rule="evenodd" d = "M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/></svg></span>';
+                    t += '<span style="cursor:pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-data" viewBox="0 0 16 16"><path d = "M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0V9z" /><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" /><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" /></svg></span>';
+                    t += '</td>';
+                    t += '<td style="text-align:center">' + convertData_DataSimples(fcc.fcc_movimentos[i].mcc_data) + '</td>';
+                    t += '<td style="text-align:center">' + fcc.fcc_movimentos[i].mcc_movimento + '</td>';
+                    t += '<td style="text-align:left">' + fcc.fcc_movimentos[i].mcc_descricao + '</td>';
+                    t += '<td style="text-align:right">' + convertDoubleString(fcc.fcc_movimentos[i].mcc_valor) + '</td>';
+                    t += '</tr>';
+
+                    $('#table_movimentos_fatura_cartao').append(t);
+                }
+                document.getElementById('fcc_mensagem').innerHTML = '';
+                document.getElementById('fcc_valor_total').innerHTML = convertDoubleString(valor_total);
+                let mes_ano = fcc.fcc_data_corte.substr(5, 2) + '/' + fcc.fcc_data_corte.substr(0, 4);
+                document.getElementById('fcc_competencia').innerHTML = ' ' + mes_ano;
+            }
+        }
+    });
+}
+
+function fatura_cartao_credito_edit_competencia(contexto, mcc_tipo, mcc_tipo_id) {
+    if (contexto == 'edit_competencia') {
+        document.getElementById('valida_comp').innerHTML = '';
+        document.getElementById('mcc_tipo_selecionado').value = mcc_tipo;
+        document.getElementById('mcc_tipo_id_selecionado').value = mcc_tipo_id;
+        document.getElementById('competencia').value = document.getElementById('fcc_data_corte').value;
+        modal_sobre_modal_open('alocacaoFcc');
+    }
+
+    if (contexto == 'next') {
+        let c = moment(document.getElementById('competencia').value, 'DD/MM/YYYY', 'pt', true);
+        let c_next = c.add(1, 'M').format('DD/MM/YYYY');
+        document.getElementById('competencia').value = c_next;
+
+        let v = moment(convertData_DataSimples(fcc.fcc_data_vencimento), 'DD/MM/YYYY', 'pt', true);
+        let v_next = v.add(1, 'M').format('DD/MM/YYYY');
+        document.getElementById('vencimento').value = v_next;
+    }
+    if (contexto == 'previous') {
+        let c = moment(document.getElementById('competencia').value, 'DD/MM/YYYY', 'pt', true);
+        let c_previous = c.add(-1, 'M').format('DD/MM/YYYY');
+        document.getElementById('competencia').value = c_previous;
+
+        let v = moment(convertData_DataSimples(fcc.fcc_data_vencimento), 'DD/MM/YYYY', 'pt', true);
+        let v_next = v.add(-1, 'M').format('DD/MM/YYYY');
+        document.getElementById('vencimento').value = v_next;
+    }
+    if (contexto == 'close') {
+        $('#alocacaoFcc').modal('hide');
+    }
+    if (contexto == 'gravar') {
+        let m_tipo = document.getElementById('mcc_tipo_selecionado').value;
+        let m_tipo_id = document.getElementById('mcc_tipo_id_selecionado').value;
+        let competencia = document.getElementById('competencia').value;
+
+        let f = $.extend(true, {}, fcc);
+        f.fcc_movimentos.splice(0, f.fcc_movimentos.length);
+        for (let i = 0; i < fcc.fcc_movimentos.length; i++) {
+            if (fcc.fcc_movimentos[i].mcc_tipo_id == m_tipo_id && fcc.fcc_movimentos[i].mcc_tipo == m_tipo) {
+                let m = $.extend(true, {}, fcc.fcc_movimentos[i]);                
+                f.fcc_movimentos.push(m);
+                break;
+            }
+        }
+
+        //Pegando datas de vencimento e competência atual
+        f.fcc_data_corte = document.getElementById('competencia').value;
+        f.fcc_data_vencimento = document.getElementById('vencimento').value;
+
+        $.ajax({
+            url: "/CartaoCredito/alocacaoCompetencia",
+            data: { __RequestVerificationToken: gettoken(), competencia: competencia, fcc: ajustesFCC(f) },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                document.getElementById('valida_comp').innerHTML = '<span class="text-info">Gravando dados, aguarde...</span>';
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                document.getElementById('valida_comp').innerHTML = '<span class="text-danger">Erro ao se comunicar com o servidor</span>';
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                fcc = JSON.parse(data);
+                if (textStatus == 'error') {
+                    document.getElementById('valida_comp').innerHTML = '<span class="text-danger">Erro ao se comunicar com o servidor</span>';
+                }
+
+                if (textStatus == 'success') {
+                    if (XMLHttpRequest.responseJSON.includes('sucesso')) {
+                        pesquisaFatura('Não se aplica', f);
+                        document.getElementById('valida_comp').innerHTML = '';
+                        $('#alocacaoFcc').modal('hide');
+                    }
+
+                    if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                        document.getElementById('valida_comp').innerHTML = '<span class="text-danger">' + XMLHttpRequest.responseJSON +'</span>';
+                    }
+                }
+            }
+        });
+    }
+}
+
+function criarMovimentoFCC(mcc_id, mcc_fcc_id, mcc_tipo, mcc_tipo_id, mcc_movimento, mcc_data, mcc_descricao, mcc_valor) {
+    let mcc = {
+        mcc_id: mcc_id,
+        mcc_fcc_id: mcc_fcc_id,
+        mcc_tipo: mcc_tipo,
+        mcc_tipo_id: mcc_tipo_id,
+        mcc_movimento: mcc_movimento,
+        mcc_data: mcc_data,
+        mcc_descricao: mcc_descricao,
+        mcc_valor: mcc_valor,
+    };
+
+    return mcc;
+}
+
+function ajustesFCC(fcc) {
+    for (let i = 0; i < fcc.fcc_movimentos.length; i++) {
+        fcc.fcc_movimentos[i].mcc_valor = convertDoubleString(fcc.fcc_movimentos[i].mcc_valor);
+    }
+
+    return fcc;
+}
+
+
 
 
 

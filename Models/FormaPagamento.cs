@@ -45,10 +45,10 @@ namespace gestaoContadorcomvc.Models
         //objeto de log para uso nos métodos
         Log log = new Log();
 
-        //Listar forma de pagamento
-        public List<Vm_forma_pagamento> listFormasPagamento(int conta_id, int usuario_id)
+        //Listar forma de pagamento por meio pgto
+        public List<FormaPagamento> listFormasPagamentoPorMeioPgto(int conta_id, int usuario_id, int meio_pgto)
         {
-            List<Vm_forma_pagamento> fps = new List<Vm_forma_pagamento>();
+            List<FormaPagamento> fps = new List<FormaPagamento>();
 
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
@@ -59,8 +59,9 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT * from forma_pagamento where fp_conta_id = @conta_id and fp_status = 'Ativo';";
+                comando.CommandText = "SELECT * from forma_pagamento as fp where fp.fp_conta_id = @conta_id and fp.fp_identificacao = 'Pagamento' and fp.fp_meio_pgto_nfe = @meio_pgto ORDER by fp.fp_status asc, fp.fp_nome ASC;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@meio_pgto", meio_pgto);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -70,7 +71,7 @@ namespace gestaoContadorcomvc.Models
                 {
                     while (leitor.Read())
                     {
-                        Vm_forma_pagamento fp = new Vm_forma_pagamento();
+                        FormaPagamento fp = new FormaPagamento();
 
                         if (DBNull.Value != leitor["fp_id"])
                         {
