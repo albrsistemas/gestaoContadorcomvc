@@ -307,8 +307,6 @@ namespace gestaoContadorcomvc.Models
                     dr_1.Close();
 
 
-
-
                     if (id_fcc == 0) //Criar o fcc e depois o movimento
                     {
                         //Criando fcc                                                            
@@ -332,7 +330,9 @@ namespace gestaoContadorcomvc.Models
                         }
                         myReader.Close();
 
-                        if(fcc.fcc_movimentos[0].mcc_id == 0)
+                        int id_mcc = 0;
+
+                        if (fcc.fcc_movimentos[0].mcc_id == 0)
                         {
                             //Criando o movimento de fcc
                             comando.CommandText = "INSERT into movimentos_cartao_credito (mcc_fcc_id, mcc_tipo, mcc_tipo_id, mcc_data, mcc_descricao, mcc_valor, mcc_movimento) values (@mcc_fcc_id, @mcc_tipo, @mcc_tipo_id, @mcc_data, @mcc_descricao, @mcc_valor, @mcc_movimento);";
@@ -344,6 +344,15 @@ namespace gestaoContadorcomvc.Models
                             comando.Parameters.AddWithValue("mcc_valor", fcc.fcc_movimentos[0].mcc_valor);
                             comando.Parameters.AddWithValue("mcc_movimento", fcc.fcc_movimentos[0].mcc_movimento);
                             comando.ExecuteNonQuery();
+
+                            MySqlDataReader reader_mcc;
+                            comando.CommandText = "SELECT LAST_INSERT_ID();";
+                            reader_mcc = comando.ExecuteReader();
+                            while (reader_mcc.Read())
+                            {
+                                id_mcc = reader_mcc.GetInt32(0);
+                            }
+                            reader_mcc.Close();
                         }
                         else
                         {
@@ -353,8 +362,9 @@ namespace gestaoContadorcomvc.Models
                         }                        
 
                         //Atualizando a parcela para informar o número da fatura que pertence
-                        comando.CommandText = "UPDATE op_parcelas set op_parcelas.op_parcelas_cartao = @id WHERE op_parcelas.op_parcela_id = @tipo_id;";
+                        comando.CommandText = "UPDATE op_parcelas set op_parcelas.op_parcelas_cartao = @id, op_parcelas_cartao_mcc_tipo_id = @id_mcc WHERE op_parcelas.op_parcela_id = @tipo_id;";
                         comando.Parameters.AddWithValue("id", id);
+                        comando.Parameters.AddWithValue("id_mcc", id_mcc);
                         comando.Parameters.AddWithValue("tipo_id", fcc.fcc_movimentos[0].mcc_tipo_id);
                         comando.ExecuteNonQuery();
 
@@ -363,6 +373,8 @@ namespace gestaoContadorcomvc.Models
                     {
                         if (fcc.fcc_movimentos[0].mcc_tipo == "op_parcelas")
                         {
+                            int id_mcc = 0;
+
                             //Criando o movimento de fcc
                             comando.CommandText = "INSERT into movimentos_cartao_credito (mcc_fcc_id, mcc_tipo, mcc_tipo_id, mcc_data, mcc_descricao, mcc_valor, mcc_movimento) values (@mcc_fcc_id, @mcc_tipo, @mcc_tipo_id, @mcc_data, @mcc_descricao, @mcc_valor, @mcc_movimento);";
                             comando.Parameters.AddWithValue("mcc_fcc_id", id_fcc);
@@ -374,9 +386,19 @@ namespace gestaoContadorcomvc.Models
                             comando.Parameters.AddWithValue("mcc_movimento", fcc.fcc_movimentos[0].mcc_movimento);
                             comando.ExecuteNonQuery();
 
+                            MySqlDataReader reader_mcc;
+                            comando.CommandText = "SELECT LAST_INSERT_ID();";
+                            reader_mcc = comando.ExecuteReader();
+                            while (reader_mcc.Read())
+                            {
+                                id_mcc = reader_mcc.GetInt32(0);
+                            }
+                            reader_mcc.Close();
+
                             //Atualizando a parcela para informar o número da fatura que pertence
-                            comando.CommandText = "UPDATE op_parcelas set op_parcelas.op_parcelas_cartao = @id WHERE op_parcelas.op_parcela_id = @tipo_id;";
+                            comando.CommandText = "UPDATE op_parcelas set op_parcelas.op_parcelas_cartao = @id, op_parcelas_cartao_mcc_tipo_id = @id_mcc WHERE op_parcelas.op_parcela_id = @tipo_id;";
                             comando.Parameters.AddWithValue("id", id_fcc);
+                            comando.Parameters.AddWithValue("id_mcc", id_mcc);
                             comando.Parameters.AddWithValue("tipo_id", fcc.fcc_movimentos[0].mcc_tipo_id);
                             comando.ExecuteNonQuery();
                         }
@@ -386,6 +408,12 @@ namespace gestaoContadorcomvc.Models
                             comando.CommandText = "UPDATE movimentos_cartao_credito set movimentos_cartao_credito.mcc_fcc_id = @id_fcc WHERE movimentos_cartao_credito.mcc_id = @mcc_id;";
                             comando.Parameters.AddWithValue("id_fcc", id_fcc);
                             comando.Parameters.AddWithValue("mcc_id", fcc.fcc_movimentos[0].mcc_id);
+                            comando.ExecuteNonQuery();
+
+                            //Atualizando a parcela para informar o número da fatura que pertence
+                            comando.CommandText = "UPDATE op_parcelas set op_parcelas.op_parcelas_cartao = @id WHERE op_parcelas.op_parcela_id = @tipo_id;";
+                            comando.Parameters.AddWithValue("id", id_fcc);                            
+                            comando.Parameters.AddWithValue("tipo_id", fcc.fcc_movimentos[0].mcc_tipo_id);
                             comando.ExecuteNonQuery();
                         }
                     }
@@ -409,7 +437,254 @@ namespace gestaoContadorcomvc.Models
             return retorno;
         }
 
+        public AjustaParcelasCartao ajustaParcelasCartao_pesquisa (int conta_id, int usuario_id, string mcc_tipo, int mcc_tipo_id)
+        {
+            AjustaParcelasCartao apc = new AjustaParcelasCartao();
+            apc.parcelas = new List<AjustaParcelasCartao_Parcelas>();
+            apc.mcc_tipo = mcc_tipo;
+            apc.mcc_tipo_id = mcc_tipo_id;
 
 
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT op.op_id, t.op_totais_total_op, p.op_parcela_id as 'parcela_id', p.op_parcela_vencimento as 'parcela_data', op.op_data as 'parcela_data_operacao', p.op_parcelas_cartao_mcc_tipo_id as 'parcela_fatura_cartao_mcc_tipo_id', p.op_parcela_valor as 'parcela_valor', p.op_parcelas_cartao as 'parcela_fatura_cartao', COALESCE(f.fcc_situacao,'Sem Fatura') as 'parcela_fatura_status', (p.op_parcela_ret_pis + p.op_parcela_ret_cofins + p.op_parcela_ret_csll + p.op_parcela_ret_inss + p.op_parcela_ret_issqn + p.op_parcela_ret_irrf) as 'parcela_retencoes', (0) as 'baixas', p.op_parcela_numero, p.op_parcela_numero_total from op_parcelas as p left JOIN operacao as op on op.op_id = p.op_parcela_op_id LEFT JOIN op_totais as t on t.op_totais_op_id = op.op_id LEFT JOIN fatura_cartao_credito as f on f.fcc_id = p.op_parcelas_cartao WHERE op.op_conta_id = @conta_id and p.op_parcela_op_id = (SELECT op_parcelas.op_parcela_op_id from op_parcelas WHERE op_parcelas.op_parcela_id = @parcela_id) order BY p.op_parcela_vencimento ASC;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@parcela_id", mcc_tipo_id);
+                comando.ExecuteNonQuery();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        AjustaParcelasCartao_Parcelas apcp = new AjustaParcelasCartao_Parcelas();
+
+                        if (DBNull.Value != leitor["parcela_id"])
+                        {
+                            apcp.parcela_id = Convert.ToInt32(leitor["parcela_id"]);
+                        }
+                        else
+                        {
+                            apcp.parcela_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["parcela_fatura_cartao"])
+                        {
+                            apcp.parcela_fatura_cartao = Convert.ToInt32(leitor["parcela_fatura_cartao"]);
+                        }
+                        else
+                        {
+                            apcp.parcela_fatura_cartao = 0;
+                        }
+                        
+                        if (DBNull.Value != leitor["parcela_fatura_cartao_mcc_tipo_id"])
+                        {
+                            apcp.parcela_fatura_cartao_mcc_tipo_id = Convert.ToInt32(leitor["parcela_fatura_cartao_mcc_tipo_id"]);
+                        }
+                        else
+                        {
+                            apcp.parcela_fatura_cartao_mcc_tipo_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["parcela_data"])
+                        {
+                            apcp.parcela_data = Convert.ToDateTime(leitor["parcela_data"]);
+                        }
+                        else
+                        {
+                            apcp.parcela_data = new DateTime();
+                        }
+
+                        if (DBNull.Value != leitor["parcela_data_operacao"])
+                        {
+                            apcp.parcela_data_operacao = Convert.ToDateTime(leitor["parcela_data_operacao"]);
+                        }
+                        else
+                        {
+                            apcp.parcela_data_operacao = new DateTime();
+                        }
+
+                        if (DBNull.Value != leitor["parcela_valor"])
+                        {
+                            apcp.parcela_valor = Convert.ToDecimal(leitor["parcela_valor"]);
+                        }
+                        else
+                        {
+                            apcp.parcela_valor = 0;
+                        }
+
+                        if (DBNull.Value != leitor["parcela_retencoes"])
+                        {
+                            apcp.parcela_retencoes = Convert.ToDecimal(leitor["parcela_retencoes"]);
+                        }
+                        else
+                        {
+                            apcp.parcela_retencoes = 0;
+                        }
+
+                        if (DBNull.Value != leitor["baixas"])
+                        {
+                            apcp.parcela_baixas = Convert.ToDecimal(leitor["baixas"]);
+                        }
+                        else
+                        {
+                            apcp.parcela_baixas = 0;
+                        }
+
+                        apcp.parcela_fatura_status = leitor["parcela_fatura_status"].ToString();
+                        apc.parcelas.Add(apcp);
+
+                        //Dados da operação
+                        if (DBNull.Value != leitor["op_id"])
+                        {
+                            apc.operacao_id = Convert.ToInt32(leitor["op_id"]);
+                        }
+                        else
+                        {
+                            apc.operacao_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["op_totais_total_op"])
+                        {
+                            apc.operacao_valor_total = Convert.ToDecimal(leitor["op_totais_total_op"]);
+                        }
+                        else
+                        {
+                            apc.operacao_valor_total = 0;
+                        }
+
+                        if (DBNull.Value != leitor["op_parcela_numero"])
+                        {
+                            apcp.op_parcela_numero = Convert.ToInt32(leitor["op_parcela_numero"]);
+                        }
+                        else
+                        {
+                            apcp.op_parcela_numero = 0;
+                        }
+
+                        if (DBNull.Value != leitor["op_parcela_numero_total"])
+                        {
+                            apcp.op_parcela_numero_total = Convert.ToInt32(leitor["op_parcela_numero_total"]);
+                        }
+                        else
+                        {
+                            apcp.op_parcela_numero_total = 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message.Substring(0, 300);
+                log.log("FaturaCartaoCredito", "ajustaParcelasCartao_pesquisa", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return apc;
+        }
+
+        public List<string> ajustaParcelasCartao_gravar(AjustaParcelasCartao apc, int usuario_id, int conta_id)
+        {
+            List<string> retorno = new List<string>();
+            string ids = "";
+            Log logando = new Log();
+
+            Decimal retencoes = 0;
+            for (var i = 0; i < apc.parcelas.Count; i++)
+            {
+                retencoes += apc.parcelas[i].parcela_retencoes;
+                ids += apc.parcelas[i].parcela_id.ToString() + " ";
+            }
+
+            if(retencoes > 0)
+            {
+                retorno.Add("Conjunto de parcelas possui retenções. Não pode ser alterado.");                
+            }
+            else
+            {
+                try
+                {
+                    conn.Open();
+                    MySqlTransaction Transacao;
+                    Transacao = conn.BeginTransaction();
+
+                    for (var i = 0; i < apc.parcelas.Count; i++)
+                    {
+                        MySqlCommand cmd = conn.CreateCommand();
+                        cmd.Connection = conn;
+                        cmd.Transaction = Transacao;
+
+                        cmd.CommandText = "UPDATE op_parcelas set op_parcelas.op_parcela_valor = @op_parcela_valor, op_parcelas.op_parcela_valor_bruto = @op_parcela_valor WHERE op_parcelas.op_parcela_id = @op_parcela_id;";
+                        cmd.Parameters.AddWithValue("@op_parcela_valor", apc.parcelas[i].parcela_valor);
+                        cmd.Parameters.AddWithValue("@op_parcela_id", apc.parcelas[i].parcela_id);
+                        cmd.ExecuteNonQuery();
+
+                        if (apc.parcelas[i].parcela_fatura_cartao_mcc_tipo_id > 0)
+                        {
+                            cmd.CommandText = "UPDATE movimentos_cartao_credito set movimentos_cartao_credito.mcc_valor = @valor WHERE movimentos_cartao_credito.mcc_id = @mcc_id;";
+                            cmd.Parameters.AddWithValue("@valor", apc.parcelas[i].parcela_valor);
+                            cmd.Parameters.AddWithValue("@mcc_id", apc.parcelas[i].parcela_fatura_cartao_mcc_tipo_id);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    Transacao.Commit();
+                    logando.log("FaturaCartaoCredito", "ajustaParcelasCartao_gravar", "Sucesso", "As parcelas com os ID´s: " + ids + " foi ajustados os valores com sucesso", conta_id, usuario_id);
+
+                }
+                catch (Exception e)
+                {
+                    logando.log("FaturaCartaoCredito", "ajustaParcelasCartao_gravar", "Erro", "As parcelas com os ID´s: " + ids + " retornou falha na tentativa de ajustar o valor", conta_id, usuario_id);                    
+                }
+                finally
+                {
+                    if (conn.State == System.Data.ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+                }
+            }
+
+            return retorno;
+        }
+    }
+
+    public class AjustaParcelasCartao
+    {
+        public string validacao { get; set; }
+        public List<String> retorno { get; set; }        
+        public int operacao_id { get; set; }
+        public Decimal operacao_valor_total { get; set; }
+        public string mcc_tipo { get; set; }
+        public int mcc_tipo_id { get; set; }
+        public List<AjustaParcelasCartao_Parcelas> parcelas { get; set; }
+    }
+    public class AjustaParcelasCartao_Parcelas
+    {
+        public int parcela_id { get; set; }
+        public DateTime parcela_data { get; set; }
+        public DateTime parcela_data_operacao { get; set; }
+        public Decimal parcela_valor { get; set; }
+        public int parcela_fatura_cartao { get; set; }
+        public int parcela_fatura_cartao_mcc_tipo_id { get; set; }
+        public int op_parcela_numero { get; set; }
+        public int op_parcela_numero_total { get; set; }
+        public string parcela_fatura_status { get; set; }
+        public Decimal parcela_retencoes { get; set; }
+        public Decimal parcela_baixas { get; set; }
     }
 }
+

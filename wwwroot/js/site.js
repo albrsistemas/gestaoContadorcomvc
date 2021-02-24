@@ -4363,7 +4363,8 @@ function modal_sobre_modal_open(id){
     $(document).on('hidden.bs.modal', '.modal', function () {
         $('.modal:visible').length && $(document.body).addClass('modal-open');
     });
-    $("#" + id).modal({ backdrop: 'static', keyboard: false})
+    $("#" + id).modal({ backdrop: 'static' });
+    $("#" + id).modal({ keyboard: false });
     $("#" + id).modal('show');
 }
 
@@ -5173,6 +5174,10 @@ function gravarCCM_transferencia(escopo, contexto) {
         let valor = document.getElementById('valor').value;
         let memorando = document.getElementById('memorando').value;
         let data_digitada = document.getElementById('data').value;
+        let ccm_id = 0;
+        if (document.getElementById('ccm_id')) {
+            ccm_id = document.getElementById('ccm_id').value;
+        } 
 
         let data = (document.getElementById('data').value).split('/');
         let valida = [];
@@ -5195,13 +5200,7 @@ function gravarCCM_transferencia(escopo, contexto) {
         }
         if (de == para) {
             valida.push('De e Para não podem ser iguais');
-        }
-
-        console.log(valida);
-        console.log(de);
-        console.log(para);
-        console.log(valor);
-        console.log(memorando);            
+        }                 
         if (valida.length > 0) {            
             for (let i = 0; i < valida.length; i++) {
                 $('#validacao_transfer').append('<span class="text-danger">' + valida[i] + '</span></br>');
@@ -5215,7 +5214,8 @@ function gravarCCM_transferencia(escopo, contexto) {
                     valor: valor,
                     ccorrente_de: de,
                     ccorrente_para: para,
-                    memorando: memorando
+                    memorando: memorando,
+                    ccm_id: ccm_id,
                 },
                 type: 'POST',
                 dataType: 'json',
@@ -5287,7 +5287,8 @@ function rfm_gerar() {
                     saldo_inicial_total += rfm.vm_rfm_saldo_inicial_contas[i].conta_corrente_saldo;
                 }
                 c += '<tr class="rfm_si" style="font-weight:bold"><td colspan="2" style="text-align:left">' + 'Saldo Inicial Total' + '</td><td style="text-align:right">' + fomat_numeroToStringLocal(saldo_inicial_total) + '</td></tr>';
-                c += '<tr style="height: 30px;"><td colspan="3"></td></tr>';
+                c += '<tr class="rfm_si"><td colspan="2" style="text-align:left"></td><td style="text-align:right"></td></tr>';
+                //c += '<tr style="height: 30px;"><td colspan="3"></td></tr>';                
                 c += '<tr class="thead_title"><th style="text-align:left">Classificação</th><th style="text-align:left">Descrição</th><th style="text-align:right">Valor</th></tr>'
                 c += '</thead>';
                 c += '<tbody>';
@@ -5527,6 +5528,46 @@ function fatura_cartao_credito(contexto, cartao_id) {
         pesquisaFatura('previous', ajustesFCC(f));
     }
 
+    if (contexto == 'fechar' || contexto == 'abrir') {
+        $.ajax({
+            url: "/CartaoCredito/AjusteParcelasOperacaoGravar", //Parada
+            data: { __RequestVerificationToken: gettoken(), apc: apc },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                document.getElementById('valida_apc').innerHTML = '';
+                document.getElementById('canc_apo').disabled = true;
+                document.getElementById('sub_apo').disabled = true;
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('Erro no envio dos dados');
+                document.getElementById('canc_apo').disabled = false;
+                document.getElementById('sub_apo').disabled = false;
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                r = JSON.parse(data);
+                if (textStatus == 'error') {
+                    alert('Erro no envio dos dados');
+                    document.getElementById('canc_apo').disabled = false;
+                    document.getElementById('sub_apo').disabled = false;
+                }
+
+                if (textStatus == 'success') {
+                    if (r.length > 0) {
+                        for (let i = 0; i < r.length; i++) {
+                            $('#valida_apc').append(r[i]);
+                        }
+                    } else {
+                        alert('Ajustes nas parcelas gravado com sucesso');
+                        pesquisaFatura('reboot', fcc);
+                        $('#ajuste_p_op').modal('hide');
+                    }
+                }
+            }
+        });
+    }
+
+
 }
 
 function pesquisaFatura(contexto, f) {
@@ -5540,8 +5581,8 @@ function pesquisaFatura(contexto, f) {
             //Limpando tabela
             document.getElementById('table_movimentos_fatura_cartao').innerHTML = '';
             document.getElementById('fcc_valor_total').innerHTML = '';
-            document.getElementById('btn_fecharCartao').style.display = 'none';
-            document.getElementById('btn_reabrirCartao').style.display = 'none';
+            document.getElementById('btn_fatura').value = '';
+            document.getElementById('btn_fatura').innerHTML = '&nbsp';
             document.getElementById('fcc_mensagem').innerHTML = '<span class="text-info">Carregando dados da fatura do cartão de crédito, aguarde...</span>';            
             modal_sobre_modal_open('fcc_modal');
         },
@@ -5562,12 +5603,12 @@ function pesquisaFatura(contexto, f) {
                 document.getElementById('fcc_data_corte').value = convertData_DataSimples(fcc.fcc_data_corte);
                 document.getElementById('fcc_data_vencimento').value = convertData_DataSimples(fcc.fcc_data_vencimento);
                 if (fcc.fcc_situacao == 'Fechada') {
-                    document.getElementById('btn_reabrirCartao').style.display = 'bock';
-                    document.getElementById('btn_fecharCartao').style.display = 'none';
+                    document.getElementById('btn_fatura').value = 'abrir';
+                    document.getElementById('btn_fatura').innerHTML = 'Reabrir Fatura';
                 } else {
-                    document.getElementById('btn_reabrirCartao').style.display = 'none';
-                    document.getElementById('btn_fecharCartao').style.display = 'block';
-                }
+                    document.getElementById('btn_fatura').value = 'fechar';
+                    document.getElementById('btn_fatura').innerHTML = 'Fechar Fatura';
+                }                                
 
                 let valor_total = 0;
 
@@ -5577,12 +5618,12 @@ function pesquisaFatura(contexto, f) {
                 for (let i = 0; i < fcc.fcc_movimentos.length; i++) {
 
                     valor_total += fcc.fcc_movimentos[i].mcc_valor;
-
+                    
                     let t = '';
                     t += '<tr>';
                     t += '<td style="text-align:center">';
                     t += '<span style="cursor:pointer;margin-right:7px;" onclick="fatura_cartao_credito_edit_competencia(\'edit_competencia\',\'' + fcc.fcc_movimentos[i].mcc_tipo + '\',\'' + fcc.fcc_movimentos[i].mcc_tipo_id + '\')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16"><path fill - rule="evenodd" d = "M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/></svg></span>';
-                    t += '<span style="cursor:pointer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-data" viewBox="0 0 16 16"><path d = "M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0V9z" /><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" /><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" /></svg></span>';
+                    t += '<span style="cursor:pointer" onclick="Ajuste_parcelas_op(\'open\',\'' + fcc.fcc_movimentos[i].mcc_tipo + '\',\'' + fcc.fcc_movimentos[i].mcc_tipo_id + '\')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-data" viewBox="0 0 16 16"><path d = "M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0V9z" /><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" /><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" /></svg></span>';
                     t += '</td>';
                     t += '<td style="text-align:center">' + convertData_DataSimples(fcc.fcc_movimentos[i].mcc_data) + '</td>';
                     t += '<td style="text-align:center">' + fcc.fcc_movimentos[i].mcc_movimento + '</td>';
@@ -5603,6 +5644,11 @@ function pesquisaFatura(contexto, f) {
 
 function fatura_cartao_credito_edit_competencia(contexto, mcc_tipo, mcc_tipo_id) {
     if (contexto == 'edit_competencia') {
+        if (fcc.fcc_situacao == 'Fechada') {
+            alert('Fatura está fechada. Não permitido alocação de competência da parcela.');
+
+            return;
+        }
         document.getElementById('valida_comp').innerHTML = '';
         document.getElementById('mcc_tipo_selecionado').value = mcc_tipo;
         document.getElementById('mcc_tipo_id_selecionado').value = mcc_tipo_id;
@@ -5662,14 +5708,14 @@ function fatura_cartao_credito_edit_competencia(contexto, mcc_tipo, mcc_tipo_id)
                 document.getElementById('valida_comp').innerHTML = '<span class="text-danger">Erro ao se comunicar com o servidor</span>';
             },
             success: function (data, textStatus, XMLHttpRequest) {
-                fcc = JSON.parse(data);
+                ret = JSON.parse(data);
                 if (textStatus == 'error') {
                     document.getElementById('valida_comp').innerHTML = '<span class="text-danger">Erro ao se comunicar com o servidor</span>';
                 }
 
                 if (textStatus == 'success') {
                     if (XMLHttpRequest.responseJSON.includes('sucesso')) {
-                        pesquisaFatura('Não se aplica', f);
+                        pesquisaFatura('reboot', novoObjFCC(f.fcc_id, f.fcc_forma_pagamento_id, f.fcc_situacao, document.getElementById('fcc_data_corte').value, document.getElementById('fcc_data_vencimento').value,[]));
                         document.getElementById('valida_comp').innerHTML = '';
                         $('#alocacaoFcc').modal('hide');
                     }
@@ -5704,6 +5750,178 @@ function ajustesFCC(fcc) {
     }
 
     return fcc;
+}
+
+function Ajuste_parcelas_op(contexto, mcc_tipo, mcc_tipo_id) {
+    if (contexto == 'open') {
+        if (fcc.fcc_situacao == 'Fechada') {
+            alert('Fatura está fechada. Não permitido ajuste no valor desta parcela.');
+
+            return;
+        }
+        document.getElementById('valida_apc').innerHTML = '';
+        $.ajax({
+            url: "/CartaoCredito/AjusteParcelasOperacao",
+            data: { __RequestVerificationToken: gettoken(), mcc_tipo: mcc_tipo, mcc_tipo_id: mcc_tipo_id },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                document.getElementById('apo_vlr_operacao').innerHTML = '';
+                document.getElementById('apo_parcela_id').value = 0;
+                document.getElementById('apo_parcela_id_edit').value = 0;
+                document.getElementById('apo_tbody').innerHTML = '<span class="text-info">Buscando valores parcelas, aguarde...</span>';
+                document.getElementById('canc_apo').disabled = false;
+                document.getElementById('sub_apo').disabled = false;
+                modal_sobre_modal_open('ajuste_p_op');
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                document.getElementById('apo_tbody').innerHTML = '<span class="text-danger">Erro na busca dos dados da parcela!</span>';
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                apc = JSON.parse(data);
+                console.log(apc);
+                if (textStatus == 'error') {
+                    document.getElementById('apo_tbody').innerHTML = '<span class="text-danger">Erro na busca dos dados da parcela!</span>';
+                }
+
+                if (textStatus == 'success') {
+                    document.getElementById('apo_tbody').innerHTML = '';
+                    document.getElementById('apo_vlr_operacao').innerHTML = fomat_numeroToStringLocal(apc.operacao_valor_total);
+                    document.getElementById('apo_parcela_id').value = mcc_tipo_id;
+                    let retencoes = 0;
+                    for (let l = 0; l < apc.parcelas.length; l++) {
+                        retencoes += apc.parcela_retencoes;
+                    }
+
+                    if (retencoes > 0) {
+                        alert('As parcelas da operação possui retenções tributárias e não podem sofrer ajustes nos valores.');
+                    } else {
+                        for (let i = 0; i < apc.parcelas.length; i++) {
+                            apc.parcelas[i].parcela_valor = fomat_numeroToStringLocal(apc.parcelas[i].parcela_valor);
+                            apc.parcelas[i].parcela_data = convertData_DataSimples(apc.parcelas[i].parcela_data);
+                            apc.parcelas[i].parcela_data_operacao = convertData_DataSimples(apc.parcelas[i].parcela_data_operacao);
+
+                            let td = '<tr>';
+                            td += '<td>';
+                            if (apc.parcelas[i].parcela_baixas > 0) {
+                                td += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="cursor:pointer" onclick="Ajuste_parcelas_op(\'edit_negado\',\'op_parcelas\',\'' + apc.parcelas[i].parcela_id +'\')"><path d = "M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" /><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" /></svg >';
+                            } else {
+                                td += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="cursor:pointer" onclick="Ajuste_parcelas_op(\'edit\',\'op_parcelas\',\'' + apc.parcelas[i].parcela_id +'\')"><path d = "M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" /><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" /></svg >';
+                            }
+                            td += '</td>';
+                            td += '<td>' + apc.parcelas[i].op_parcela_numero + '/' + apc.parcelas[i].op_parcela_numero_total + '</td>';
+                            td += '<td>' + apc.parcelas[i].parcela_data + '</td>';
+                            td += '<td>' + apc.parcelas[i].parcela_valor + '</td>';
+                            td += '</tr>';
+                            $('#apo_tbody').append($(td));
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    if (contexto == 'edit') {
+        for (let i = 0; i < apc.parcelas.length; i++) {
+            if (apc.parcelas[i].parcela_id == mcc_tipo_id) {
+                if (apc.parcelas[i].parcela_fatura_status == 'Fechada') {
+                    alert('A fatura selecionada está incluída em uma fatura de cartão com situação fechada e não pode ser alterada.');
+                } else {
+                    document.getElementById('apo_parcela_data').value = apc.parcelas[i].parcela_data;
+                    document.getElementById('apo_parcela_valor').value = apc.parcelas[i].parcela_valor;
+                    document.getElementById('apo_parcela_id_edit').value = apc.parcelas[i].parcela_id;
+                }                
+                break;
+            }
+        }
+    }
+
+    if (contexto == 'edit_salvar') {
+        document.getElementById('apo_tbody').innerHTML = '';
+        let p = document.getElementById('apo_parcela_id_edit').value;
+        for (let i = 0; i < apc.parcelas.length; i++) {
+            if (apc.parcelas[i].parcela_id == p) {
+                //apc.parcelas[i].op_parcela_vencimento_alterado = document.getElementById('apo_parcela_data').value;
+                apc.parcelas[i].parcela_valor = document.getElementById('apo_parcela_valor').value;
+
+                document.getElementById('apo_parcela_data').value = '';
+                document.getElementById('apo_parcela_valor').value = '';
+            }
+
+            let td = '<tr>';
+            td += '<td>';
+            if (apc.parcelas[i].parcela_baixas > 0) {
+                td += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="cursor:pointer" onclick="Ajuste_parcelas_op(\'edit_negado\',\'op_parcelas\',\'' + apc.parcelas[i].parcela_id + '\')"><path d = "M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" /><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" /></svg >';
+            } else {
+                td += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="cursor:pointer" onclick="Ajuste_parcelas_op(\'edit\',\'op_parcelas\',\'' + apc.parcelas[i].parcela_id + '\')"><path d = "M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" /><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" /></svg >';
+            }
+            td += '</td>';
+            td += '<td>' + apc.parcelas[i].op_parcela_numero + '/' + apc.parcelas[i].op_parcela_numero_total + '</td>';
+            td += '<td>' + apc.parcelas[i].parcela_data + '</td>';
+            td += '<td>' + apc.parcelas[i].parcela_valor + '</td>';
+            td += '</tr>';
+            $('#apo_tbody').append($(td));
+        }
+    }
+
+    if (contexto == 'close') {
+        $('#ajuste_p_op').modal('hide');
+    }
+
+    if (contexto == 'edit_negado') {
+        alert('Esta parcela possui baixas e não pode ser alterada!');
+    }
+
+    if (contexto == 'gravar') {
+        let vlr_total = 0;
+        for (let i = 0; i < apc.parcelas.length; i++) {
+            vlr_total += convertStringDouble(apc.parcelas[i].parcela_valor);
+        }
+
+        vlr_total = vlr_total.toFixed(2);
+        let op = apc.operacao_valor_total.toFixed(2);
+
+        if (convertStringDouble(vlr_total) != convertStringDouble(op)) {
+            alert('Valor das parcelas é diferente do valor total da operação. \nValor Total Operação: ' + fomat_numeroToStringLocal(apc.operacao_valor_total) + '\nValor Total das Parcelas: ' + fomat_numeroToStringLocal(vlr_total));
+        } else {
+            $.ajax({
+                url: "/CartaoCredito/AjusteParcelasOperacaoGravar", //Parada
+                data: { __RequestVerificationToken: gettoken(), apc: apc },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    document.getElementById('valida_apc').innerHTML = '';
+                    document.getElementById('canc_apo').disabled = true;
+                    document.getElementById('sub_apo').disabled = true;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('Erro no envio dos dados');
+                    document.getElementById('canc_apo').disabled = false;
+                    document.getElementById('sub_apo').disabled = false;
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    r = JSON.parse(data);
+                    if (textStatus == 'error') {
+                        alert('Erro no envio dos dados');
+                        document.getElementById('canc_apo').disabled = false;
+                        document.getElementById('sub_apo').disabled = false;
+                    }
+
+                    if (textStatus == 'success') {
+                        if (r.length > 0) {
+                            for (let i = 0; i < r.length; i++) {
+                                $('#valida_apc').append(r[i]);
+                            }
+                        } else {
+                            alert('Ajustes nas parcelas gravado com sucesso');
+                            pesquisaFatura('reboot', fcc);
+                            $('#ajuste_p_op').modal('hide');
+                        }
+                    }
+                }
+            });
+        }
+    }
 }
 
 

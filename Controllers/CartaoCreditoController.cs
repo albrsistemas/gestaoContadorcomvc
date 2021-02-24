@@ -45,70 +45,7 @@ namespace gestaoContadorcomvc.Controllers
             vm_fcc = fcc.buscaFaturaCartao(user.conta.conta_id, user.usuario_id, contexto, fcc.fcc_id, fcc.fcc_data_corte, fcc.fcc_data_vencimento, fcc.fcc_forma_pagamento_id);
 
             return Json(JsonConvert.SerializeObject(vm_fcc));
-        }
-
-        // GET: CartaoCreditoController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: CartaoCreditoController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: CartaoCreditoController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: CartaoCreditoController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: CartaoCreditoController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: CartaoCreditoController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        }              
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -120,7 +57,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Usuario usuario = new Usuario();
                 Vm_usuario user = new Vm_usuario();
-                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);                
 
                 retorno = fcc.alocacaoCompetencia(user.conta.conta_id, user.usuario_id, fcc, competencia);
 
@@ -135,6 +72,71 @@ namespace gestaoContadorcomvc.Controllers
 
                 return Json(JsonConvert.SerializeObject(retorno));
             }
+        }
+
+        //Ajustes na composição dos valores das parcelas da operação
+        [Autoriza(permissao = "operacaoEdit")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult AjusteParcelasOperacao(string mcc_tipo, int mcc_tipo_id, IFormCollection collection)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            FaturaCartaoCredito f = new FaturaCartaoCredito();
+            AjustaParcelasCartao apc = new AjustaParcelasCartao();
+            apc = f.ajustaParcelasCartao_pesquisa(user.conta.conta_id, user.usuario_id, mcc_tipo, mcc_tipo_id);
+
+            return Json(JsonConvert.SerializeObject(apc));
+        }
+
+        [Autoriza(permissao = "operacaoEdit")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult AjusteParcelasOperacaoGravar(AjustaParcelasCartao apc)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            FaturaCartaoCredito f = new FaturaCartaoCredito();
+            List<string> retorno = new List<string>();
+            try
+            {
+                retorno = f.ajustaParcelasCartao_gravar(apc, user.usuario_id, user.conta.conta_id);
+            }
+            catch
+            {
+                retorno.Add("Catch-->  Ocorreu um erro no precossamento da solicitação.");                
+            }
+
+            return Json(JsonConvert.SerializeObject(retorno));
+        }
+
+        [Autoriza(permissao = "operacaoEdit")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult fechar_abrir_cartao(FaturaCartaoCredito fcc)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            //Parada
+
+            FaturaCartaoCredito f = new FaturaCartaoCredito();
+            List<string> retorno = new List<string>();
+            try
+            {
+                retorno = f.ajustaParcelasCartao_gravar(apc, user.usuario_id, user.conta.conta_id);
+            }
+            catch
+            {
+                retorno.Add("Catch-->  Ocorreu um erro no precossamento da solicitação.");
+            }
+
+            return Json(JsonConvert.SerializeObject(retorno));
         }
 
     }
