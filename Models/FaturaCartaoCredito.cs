@@ -757,10 +757,9 @@ namespace gestaoContadorcomvc.Models
                     myReader.Close();
                 }
 
-                comando.CommandText = "INSERT into movimentos_cartao_credito (mcc_tipo, mcc_tipo_id, mcc_fcc_id, mcc_data,mcc_descricao, mcc_valor, mcc_movimento) values ('Pagamento',0, @id_fcc, @dataPgto, concat('Pagamento realizado na fatura',@comp),@valorPgto,'C');";
+                comando.CommandText = "INSERT into movimentos_cartao_credito (mcc_tipo, mcc_tipo_id, mcc_fcc_id, mcc_data,mcc_descricao, mcc_valor, mcc_movimento) values ('Pagamento',0, @id_fcc, @dataPgto, concat('Pagamento realizado'),@valorPgto,'C');";
                 comando.Parameters.AddWithValue("id_fcc", id_fcc);
-                comando.Parameters.AddWithValue("dataPgto", dataPgto);
-                comando.Parameters.AddWithValue("comp", comp);
+                comando.Parameters.AddWithValue("dataPgto", dataPgto);                
                 comando.Parameters.AddWithValue("valorPgto", valorPgto);
                 comando.ExecuteNonQuery();
 
@@ -999,7 +998,9 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "DELETE FROM movimentos_cartao_credito WHERE movimentos_cartao_credito.mcc_id = @mcc_id;";
+                comando.CommandText = "DELETE FROM movimentos_cartao_credito WHERE movimentos_cartao_credito.mcc_id = @mcc_id1;";
+                comando.Parameters.AddWithValue("mcc_id1", mcc_id);
+                comando.ExecuteNonQuery();
                 comando.CommandText = "DELETE from conta_corrente_mov WHERE conta_corrente_mov.ccm_origem_id = @mcc_id";
                 comando.Parameters.AddWithValue("mcc_id", mcc_id);                
                 comando.ExecuteNonQuery();

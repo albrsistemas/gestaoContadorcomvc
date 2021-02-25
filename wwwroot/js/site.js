@@ -6044,20 +6044,20 @@ function cartaoCreditoPagamento(contexto, id) {
             type: 'POST',
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
-                document.getElementById('valida_pagamento').innerHTML = '<span class="text-info">Deletando pagamento, aguarde...</span>';                
+                document.getElementById('fcc_mensagem').innerHTML = '<span class="text-info">Deletando pagamento, aguarde...</span>';                
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                document.getElementById('valida_pagamento').innerHTML = '<span class="text-danger">Erro ao se comunicar com o servidor!</span>';                
+                document.getElementById('fcc_mensagem').innerHTML = '<span class="text-danger">Erro ao se comunicar com o servidor!</span>';                
             },
             success: function (data, textStatus, XMLHttpRequest) {
                 r = JSON.parse(data);
                 if (textStatus == 'error') {
-                    document.getElementById('valida_pagamento').innerHTML = '<span class="text-danger">Erro ao se comunicar com o servidor!</span>';                    
+                    document.getElementById('fcc_mensagem').innerHTML = '<span class="text-danger">Erro ao se comunicar com o servidor!</span>';                    
                 }
 
                 if (textStatus == 'success') {
                     if (r.includes('Erro')) {                        
-                        document.getElementById('valida_pagamento').innerHTML = '<span class="text-danger">' + r + '</span>';                        
+                        document.getElementById('fcc_mensagem').innerHTML = '<span class="text-danger">' + r + '</span>';                        
                     }
 
                     if (r.includes('sucesso')) {
