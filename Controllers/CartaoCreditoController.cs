@@ -9,6 +9,7 @@ using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
@@ -27,7 +28,10 @@ namespace gestaoContadorcomvc.Controllers
             Vm_cartao_credito vmcc = new Vm_cartao_credito();
             vmcc.cartoes = new List<FormaPagamento>();            
             vmcc.cartoes = fp.listFormasPagamentoPorMeioPgto(user.conta.conta_id, user.usuario_id, 03);
-            
+
+            Selects select = new Selects();
+            ViewBag.ccorrente = select.getContasCorrenteConta_id(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+
             return View(vmcc);
         }
 
@@ -42,7 +46,7 @@ namespace gestaoContadorcomvc.Controllers
             
             Vm_FaturaCartaoCredito vm_fcc = new Vm_FaturaCartaoCredito();
 
-            vm_fcc = fcc.buscaFaturaCartao(user.conta.conta_id, user.usuario_id, contexto, fcc.fcc_id, fcc.fcc_data_corte, fcc.fcc_data_vencimento, fcc.fcc_forma_pagamento_id);
+            vm_fcc = fcc.buscaFaturaCartao(user.conta.conta_id, user.usuario_id, contexto, fcc.fcc_id, fcc.fcc_data_corte, fcc.fcc_data_vencimento, fcc.fcc_forma_pagamento_id);            
 
             return Json(JsonConvert.SerializeObject(vm_fcc));
         }              
@@ -117,27 +121,84 @@ namespace gestaoContadorcomvc.Controllers
         [Autoriza(permissao = "operacaoEdit")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult fechar_abrir_cartao(FaturaCartaoCredito fcc)
+        public JsonResult fechar_abrir_cartao(FaturaCartaoCredito fcc, string contexto)
         {
             Usuario usuario = new Usuario();
             Vm_usuario user = new Vm_usuario();
             user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
-            //Parada
-
+            
             FaturaCartaoCredito f = new FaturaCartaoCredito();
-            List<string> retorno = new List<string>();
+            string retorno = "";
             try
             {
-                retorno = f.ajustaParcelasCartao_gravar(apc, user.usuario_id, user.conta.conta_id);
+                retorno = f.fechar_abrir_cartao(user.conta.conta_id, user.usuario_id, contexto, fcc);
             }
             catch
             {
-                retorno.Add("Catch-->  Ocorreu um erro no precossamento da solicitação.");
+                if(retorno == "")
+                {
+                    retorno = "Erro no processamento da solicitação de " + contexto + " a fatura do cartão de crédito!";
+                }
             }
 
             return Json(JsonConvert.SerializeObject(retorno));
         }
 
+        [Autoriza(permissao = "operacaoEdit")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult PagamentoFatura(IFormCollection d, Decimal valorPgto, DateTime dataPgto, int conta_corrente_Pgto, FaturaCartaoCredito fcc)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            FaturaCartaoCredito f = new FaturaCartaoCredito();
+
+            string retorno = "";
+
+            try
+            {
+                retorno = f.PagamentoFatura(user.conta.conta_id, user.usuario_id, valorPgto, dataPgto, conta_corrente_Pgto, fcc);
+            }
+            catch
+            {
+                if(retorno == "")
+                {
+                    retorno = "Catch-- > Ocorreu um erro no precossamento da solicitação.";
+                }
+            }
+
+            return Json(JsonConvert.SerializeObject(retorno));
+        }
+
+        [Autoriza(permissao = "operacaoEdit")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult DeletePagamento(int mcc_id)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            FaturaCartaoCredito f = new FaturaCartaoCredito();
+
+            string retorno = "";
+
+            try
+            {
+                retorno = f.deletePagamento(user.conta.conta_id, user.usuario_id, mcc_id);
+            }
+            catch
+            {
+                if (retorno == "")
+                {
+                    retorno = "Catch-- > Ocorreu um erro no precossamento da solicitação.";
+                }
+            }
+
+            return Json(JsonConvert.SerializeObject(retorno));
+        }
     }
 }

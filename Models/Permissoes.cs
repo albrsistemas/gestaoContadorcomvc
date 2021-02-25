@@ -531,6 +531,9 @@ namespace gestaoContadorcomvc.Models
                         permissao.SCI_ilc = Convert.ToBoolean(leitor["SCI_ilc"]);
                         permissao.SCI_id = Convert.ToBoolean(leitor["SCI_id"]);
                         permissao.area_empresa_contador = Convert.ToBoolean(leitor["area_empresa_contador"]);
+                        //24/02/2021
+                        permissao.rfm = Convert.ToBoolean(leitor["rfm"]);
+
                     }
                 }
             }

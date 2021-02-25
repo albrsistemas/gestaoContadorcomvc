@@ -88,7 +88,7 @@ namespace gestaoContadorcomvc.Models
                 MySqlCommand dr_1_c = conn.CreateCommand();
                 dr_1_c.Connection = conn;
                 dr_1_c.Transaction = Transacao;
-                dr_1_c.CommandText = "SELECT * from fatura_cartao_credito WHERE fatura_cartao_credito.fcc_forma_pagamento_id = @fcc_forma_pagamento_id and fatura_cartao_credito.fcc_competencia = @fcc_competencia and fatura_cartao_credito.fcc_conta_id = @conta_id;";
+                dr_1_c.CommandText = "SELECT fp.fp_nome, fatura_cartao_credito.* from fatura_cartao_credito LEFT JOIN forma_pagamento as fp on fp.fp_id = fatura_cartao_credito.fcc_forma_pagamento_id WHERE fatura_cartao_credito.fcc_forma_pagamento_id = @fcc_forma_pagamento_id and fatura_cartao_credito.fcc_competencia = @fcc_competencia and fatura_cartao_credito.fcc_conta_id = @conta_id;";
                 dr_1_c.Parameters.AddWithValue("conta_id", conta_id);
                 dr_1_c.Parameters.AddWithValue("fcc_competencia", comp);
                 dr_1_c.Parameters.AddWithValue("fcc_forma_pagamento_id", vm_fcc.fcc_forma_pagamento_id);
@@ -144,6 +144,7 @@ namespace gestaoContadorcomvc.Models
                         }
                         vm_fcc.fcc_situacao = dr_1["fcc_situacao"].ToString();
                         vm_fcc.fcc_competencia = dr_1["fcc_competencia"].ToString();
+                        vm_fcc.fcc_nome_cartao = dr_1["fp_nome"].ToString();
                     }
                 }
                 else
@@ -271,9 +272,9 @@ namespace gestaoContadorcomvc.Models
                 else
                 {
                     conn.Open();
-                    MySqlCommand comando = conn.CreateCommand();
                     MySqlTransaction Transacao;
                     Transacao = conn.BeginTransaction();
+                    MySqlCommand comando = conn.CreateCommand();
                     comando.Connection = conn;
                     comando.Transaction = Transacao;
                                         
@@ -454,7 +455,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT op.op_id, t.op_totais_total_op, p.op_parcela_id as 'parcela_id', p.op_parcela_vencimento as 'parcela_data', op.op_data as 'parcela_data_operacao', p.op_parcelas_cartao_mcc_tipo_id as 'parcela_fatura_cartao_mcc_tipo_id', p.op_parcela_valor as 'parcela_valor', p.op_parcelas_cartao as 'parcela_fatura_cartao', COALESCE(f.fcc_situacao,'Sem Fatura') as 'parcela_fatura_status', (p.op_parcela_ret_pis + p.op_parcela_ret_cofins + p.op_parcela_ret_csll + p.op_parcela_ret_inss + p.op_parcela_ret_issqn + p.op_parcela_ret_irrf) as 'parcela_retencoes', (0) as 'baixas', p.op_parcela_numero, p.op_parcela_numero_total from op_parcelas as p left JOIN operacao as op on op.op_id = p.op_parcela_op_id LEFT JOIN op_totais as t on t.op_totais_op_id = op.op_id LEFT JOIN fatura_cartao_credito as f on f.fcc_id = p.op_parcelas_cartao WHERE op.op_conta_id = @conta_id and p.op_parcela_op_id = (SELECT op_parcelas.op_parcela_op_id from op_parcelas WHERE op_parcelas.op_parcela_id = @parcela_id) order BY p.op_parcela_vencimento ASC;";
+                comando.CommandText = "SELECT op.op_id, COALESCE(cf.cf_valor_operacao,t.op_totais_total_op) as 'op_totais_total_op', p.op_parcela_id as 'parcela_id', p.op_parcela_vencimento as 'parcela_data', op.op_data as 'parcela_data_operacao', p.op_parcelas_cartao_mcc_tipo_id as 'parcela_fatura_cartao_mcc_tipo_id', p.op_parcela_valor as 'parcela_valor', p.op_parcelas_cartao as 'parcela_fatura_cartao', COALESCE(f.fcc_situacao,'Sem Fatura') as 'parcela_fatura_status', (p.op_parcela_ret_pis + p.op_parcela_ret_cofins + p.op_parcela_ret_csll + p.op_parcela_ret_inss + p.op_parcela_ret_issqn + p.op_parcela_ret_irrf) as 'parcela_retencoes', (0) as 'baixas', p.op_parcela_numero, p.op_parcela_numero_total from op_parcelas as p left JOIN operacao as op on op.op_id = p.op_parcela_op_id LEFT JOIN op_totais as t on t.op_totais_op_id = op.op_id LEFT JOIN fatura_cartao_credito as f on f.fcc_id = p.op_parcelas_cartao LEFT JOIN contas_financeiras as cf on cf.cf_op_id = op.op_id WHERE op.op_conta_id = @conta_id and p.op_parcela_op_id = (SELECT op_parcelas.op_parcela_op_id from op_parcelas WHERE op_parcelas.op_parcela_id = @parcela_id) order BY p.op_parcela_vencimento ASC;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@parcela_id", mcc_tipo_id);
                 comando.ExecuteNonQuery();
@@ -660,6 +661,371 @@ namespace gestaoContadorcomvc.Models
 
             return retorno;
         }
+
+        //Pagamento
+        public string PagamentoFatura(int conta_id, int usuario_id, Decimal valorPgto, DateTime dataPgto, int conta_corrente_Pgto, FaturaCartaoCredito fcc)
+        {
+            string retorno = "Pagamento realizado com sucesso";
+            Decimal debito = 0;
+            Decimal credito = 0;
+            for(var i = 0; i < fcc.fcc_movimentos.Count; i++)
+            {
+                if(fcc.fcc_movimentos[i].mcc_movimento == "D")
+                {
+                    debito += fcc.fcc_movimentos[i].mcc_valor;
+                }
+
+                if (fcc.fcc_movimentos[i].mcc_movimento == "C")
+                {
+                    credito += fcc.fcc_movimentos[i].mcc_valor;
+                }
+            }
+            bool d = true;
+            DateTime dataTemp;
+            d = DateTime.TryParse(dataPgto.ToShortDateString(), out dataTemp);
+
+            if(valorPgto > debito || valorPgto > (debito - credito) || valorPgto < 0 || d == false)
+            {
+                retorno = "Erro, valor do pagamento inválido. Não pode ser menor que zero ou maior que o débito ou saldo. ";
+                if(d == false)
+                {
+                    retorno += "Erro, data Inválida!";
+                }
+                
+                return retorno;
+            }
+
+            string comp = fcc.fcc_data_corte.Month.ToString().PadLeft(2, '0') + "/" + fcc.fcc_data_corte.Year.ToString();
+
+            try
+            {
+                conn.Open();
+                MySqlTransaction Transacao;
+                Transacao = conn.BeginTransaction();
+                MySqlCommand comando = conn.CreateCommand();
+                comando.Connection = conn;
+                comando.Transaction = Transacao;
+
+                //Verifica se fatura cartão existe                
+                MySqlDataReader dr_1;
+                MySqlCommand dr_1_c = conn.CreateCommand();
+                dr_1_c.Connection = conn;
+                dr_1_c.Transaction = Transacao;
+                dr_1_c.CommandText = "SELECT * from fatura_cartao_credito WHERE fatura_cartao_credito.fcc_forma_pagamento_id = @fcc_forma_pagamento_id and fatura_cartao_credito.fcc_competencia = @fcc_competencia and fatura_cartao_credito.fcc_conta_id = @conta_id;";
+                dr_1_c.Parameters.AddWithValue("conta_id", conta_id);
+                dr_1_c.Parameters.AddWithValue("fcc_competencia", comp);
+                dr_1_c.Parameters.AddWithValue("fcc_forma_pagamento_id", fcc.fcc_forma_pagamento_id);
+                dr_1 = dr_1_c.ExecuteReader();
+
+                int id_fcc = 0;
+
+                if (dr_1.HasRows)
+                {
+                    while (dr_1.Read())
+                    {
+                        if (DBNull.Value != dr_1["fcc_id"])
+                        {
+                            id_fcc = Convert.ToInt32(dr_1["fcc_id"]);
+                        }
+                        else
+                        {
+                            id_fcc = 0;
+                        }
+                    }
+                }
+                dr_1.Close();
+
+                if(id_fcc == 0)                {
+                    //Criando fcc                                                            
+                    comando.CommandText = "INSERT into fatura_cartao_credito (fcc_conta_id, fcc_forma_pagamento_id, fcc_competencia, fcc_situacao, fcc_data_corte, fcc_data_vencimento) VALUES (@fcc_conta_id, @fcc_forma_pagamento_id, @fcc_competencia, @fcc_situacao, @fcc_data_corte, @fcc_data_vencimento);";
+                    comando.Parameters.AddWithValue("fcc_conta_id", conta_id);
+                    comando.Parameters.AddWithValue("fcc_forma_pagamento_id", fcc.fcc_forma_pagamento_id);
+                    comando.Parameters.AddWithValue("fcc_competencia", comp);
+                    comando.Parameters.AddWithValue("fcc_situacao", "Aberta");
+                    comando.Parameters.AddWithValue("fcc_data_corte", fcc.fcc_data_corte);
+                    comando.Parameters.AddWithValue("fcc_data_vencimento", fcc.fcc_data_vencimento);
+                    comando.ExecuteNonQuery();
+
+                    //recuperando id da fcc                    
+                    MySqlDataReader myReader;
+                    comando.CommandText = "SELECT LAST_INSERT_ID();";
+                    myReader = comando.ExecuteReader();
+                    while (myReader.Read())
+                    {
+                        id_fcc = myReader.GetInt32(0);
+                    }
+                    myReader.Close();
+                }
+
+                comando.CommandText = "INSERT into movimentos_cartao_credito (mcc_tipo, mcc_tipo_id, mcc_fcc_id, mcc_data,mcc_descricao, mcc_valor, mcc_movimento) values ('Pagamento',0, @id_fcc, @dataPgto, concat('Pagamento realizado na fatura',@comp),@valorPgto,'C');";
+                comando.Parameters.AddWithValue("id_fcc", id_fcc);
+                comando.Parameters.AddWithValue("dataPgto", dataPgto);
+                comando.Parameters.AddWithValue("comp", comp);
+                comando.Parameters.AddWithValue("valorPgto", valorPgto);
+                comando.ExecuteNonQuery();
+
+                int id_mov = 0;
+                
+                //recuperando id do movimento                    
+                MySqlDataReader myReader2;
+                comando.CommandText = "SELECT LAST_INSERT_ID();";
+                myReader2 = comando.ExecuteReader();
+                while (myReader2.Read())
+                {
+                    id_mov = myReader2.GetInt32(0);
+                }
+                myReader2.Close();
+
+                if(id_mov > 0)
+                {
+                    //Cria movimento de caixa
+                    comando.CommandText = "INSERT into conta_corrente_mov (ccm_conta_id, ccm_ccorrente_id, ccm_movimento, ccm_contra_partida_tipo, ccm_contra_partida_id, ccm_data, ccm_data_competencia, ccm_valor, ccm_memorando, ccm_origem, ccm_origem_id) values (@conta_id_1, @ccm_ccorrente_id, 'S', 'Fatura Cartão', @ccm_contra_partida_id, @ccm_data, @ccm_data_competencia, @ccm_valor, concat('Pagamento fatura do cartão de crédito ref.: ', @comp_1),'Mov. Cartão', @ccm_origem_id);";
+                    comando.Parameters.AddWithValue("conta_id_1", conta_id);
+                    comando.Parameters.AddWithValue("ccm_ccorrente_id", conta_corrente_Pgto);
+                    comando.Parameters.AddWithValue("ccm_contra_partida_id", id_fcc);
+                    comando.Parameters.AddWithValue("ccm_data", dataPgto);
+                    comando.Parameters.AddWithValue("ccm_data_competencia", fcc.fcc_data_corte);
+                    comando.Parameters.AddWithValue("ccm_valor", valorPgto);
+                    comando.Parameters.AddWithValue("comp_1", comp);
+                    comando.Parameters.AddWithValue("ccm_origem_id", id_mov);
+                    comando.ExecuteNonQuery();
+                }
+
+                if (id_mov > 0 && id_fcc > 0)
+                {
+                    Transacao.Commit();
+                }
+                else
+                {
+                    retorno = "Erro na gravação dos dados no banco!";
+                }
+
+                
+                log.log("FaturaCartaoCredito", "PagamentoFatura", "Sucesso", "Pagamento da fatura: " + comp + " realizada com sucesso", conta_id, usuario_id);
+
+            }
+            catch (Exception e)
+            {
+                log.log("FaturaCartaoCredito", "PagamentoFatura", "Erro", "Pagamento da fatura: " + comp + " retornou falha", conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+            
+            return retorno;
+        }
+
+        public string fechar_abrir_cartao(int conta_id, int usuario_id, string contexto, FaturaCartaoCredito fcc)
+        {
+            string retorno = "";
+
+            string comp = fcc.fcc_data_corte.Month.ToString().PadLeft(2, '0') + "/" + fcc.fcc_data_corte.Year.ToString();
+
+            try
+            {
+                conn.Open();
+                MySqlTransaction Transacao;
+                Transacao = conn.BeginTransaction();
+                MySqlCommand comando = conn.CreateCommand();
+                comando.Connection = conn;
+                comando.Transaction = Transacao;
+
+                //Verifica se fatura cartão existe                
+                MySqlDataReader dr_1;
+                MySqlCommand dr_1_c = conn.CreateCommand();
+                dr_1_c.Connection = conn;
+                dr_1_c.Transaction = Transacao;
+                dr_1_c.CommandText = "SELECT * from fatura_cartao_credito WHERE fatura_cartao_credito.fcc_forma_pagamento_id = @fcc_forma_pagamento_id and fatura_cartao_credito.fcc_competencia = @fcc_competencia and fatura_cartao_credito.fcc_conta_id = @conta_id;";
+                dr_1_c.Parameters.AddWithValue("conta_id", conta_id);
+                dr_1_c.Parameters.AddWithValue("fcc_competencia", comp);
+                dr_1_c.Parameters.AddWithValue("fcc_forma_pagamento_id", fcc.fcc_forma_pagamento_id);
+                dr_1 = dr_1_c.ExecuteReader();
+
+                int id_fcc = 0;
+
+                if (dr_1.HasRows)
+                {
+                    while (dr_1.Read())
+                    {
+                        if (DBNull.Value != dr_1["fcc_id"])
+                        {
+                            id_fcc = Convert.ToInt32(dr_1["fcc_id"]);
+                        }
+                        else
+                        {
+                            id_fcc = 0;
+                        }
+                    }
+                }
+                dr_1.Close();
+
+                if (id_fcc == 0)
+                {
+                    //Criando fcc                                                            
+                    comando.CommandText = "INSERT into fatura_cartao_credito (fcc_conta_id, fcc_forma_pagamento_id, fcc_competencia, fcc_situacao, fcc_data_corte, fcc_data_vencimento) VALUES (@fcc_conta_id, @fcc_forma_pagamento_id1, @fcc_competencia1, @fcc_situacao, @fcc_data_corte, @fcc_data_vencimento);";
+                    comando.Parameters.AddWithValue("fcc_conta_id", conta_id);
+                    comando.Parameters.AddWithValue("fcc_forma_pagamento_id1", fcc.fcc_forma_pagamento_id);
+                    comando.Parameters.AddWithValue("fcc_competencia1", comp);
+                    comando.Parameters.AddWithValue("fcc_situacao", "Fechada");
+                    comando.Parameters.AddWithValue("fcc_data_corte", fcc.fcc_data_corte);
+                    comando.Parameters.AddWithValue("fcc_data_vencimento", fcc.fcc_data_vencimento);
+                    comando.ExecuteNonQuery();
+
+                    //recuperando id da fcc                    
+                    MySqlDataReader myReader;
+                    comando.CommandText = "SELECT LAST_INSERT_ID();";
+                    myReader = comando.ExecuteReader();
+                    while (myReader.Read())
+                    {
+                        id_fcc = myReader.GetInt32(0);
+                    }
+                    myReader.Close();
+                }
+
+                if (id_fcc > 0)
+                {
+                    if (contexto == "abrir")
+                    {
+                        comando.CommandText = "UPDATE fatura_cartao_credito set fatura_cartao_credito.fcc_situacao = 'Aberta' WHERE fatura_cartao_credito.fcc_id = @id_fcc and fatura_cartao_credito.fcc_conta_id = @conta_id_2;";
+                        comando.Parameters.AddWithValue("conta_id_2", conta_id);
+                        comando.Parameters.AddWithValue("id_fcc", id_fcc);
+                        comando.ExecuteNonQuery();
+
+                        retorno = "Fatura aberta com sucesso!";
+                    }
+
+                    if (contexto == "fechar")
+                    {
+                        for (var i = 0; i < fcc.fcc_movimentos.Count; i++)
+                        {
+                            MySqlCommand cmd = conn.CreateCommand();
+                            cmd.Connection = conn;
+                            cmd.Transaction = Transacao;
+
+                            if (fcc.fcc_movimentos[i].mcc_tipo == "op_parcelas")
+                            {
+                                int id_mcc = 0;
+
+                                //Criando o movimento de fcc
+                                cmd.CommandText = "INSERT into movimentos_cartao_credito (mcc_fcc_id, mcc_tipo, mcc_tipo_id, mcc_data, mcc_descricao, mcc_valor, mcc_movimento) values (@mcc_fcc_id1, @mcc_tipo, @mcc_tipo_id, @mcc_data, @mcc_descricao, @mcc_valor, @mcc_movimento);";
+                                cmd.Parameters.AddWithValue("mcc_fcc_id1", id_fcc);
+                                cmd.Parameters.AddWithValue("mcc_tipo", "mcc_op_parcelas");
+                                cmd.Parameters.AddWithValue("mcc_tipo_id", fcc.fcc_movimentos[i].mcc_tipo_id);
+                                cmd.Parameters.AddWithValue("mcc_data", fcc.fcc_movimentos[i].mcc_data);
+                                cmd.Parameters.AddWithValue("mcc_descricao", fcc.fcc_movimentos[i].mcc_descricao);
+                                cmd.Parameters.AddWithValue("mcc_valor", fcc.fcc_movimentos[i].mcc_valor);
+                                cmd.Parameters.AddWithValue("mcc_movimento", fcc.fcc_movimentos[i].mcc_movimento);
+                                cmd.ExecuteNonQuery();
+
+                                MySqlDataReader reader_mcc;
+                                cmd.CommandText = "SELECT LAST_INSERT_ID();";
+                                reader_mcc = cmd.ExecuteReader();
+                                while (reader_mcc.Read())
+                                {
+                                    id_mcc = reader_mcc.GetInt32(0);
+                                }
+                                reader_mcc.Close();
+
+                                //Atualizando a parcela para informar o número da fatura que pertence
+                                cmd.CommandText = "UPDATE op_parcelas set op_parcelas.op_parcelas_cartao = @id, op_parcelas_cartao_mcc_tipo_id = @id_mcc WHERE op_parcelas.op_parcela_id = @tipo_id;";
+                                cmd.Parameters.AddWithValue("id", id_fcc);
+                                cmd.Parameters.AddWithValue("id_mcc", id_mcc);
+                                cmd.Parameters.AddWithValue("tipo_id", fcc.fcc_movimentos[i].mcc_tipo_id);
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            if (fcc.fcc_movimentos[i].mcc_tipo == "mcc_op_parcelas")
+                            {
+                                cmd.CommandText = "UPDATE movimentos_cartao_credito set movimentos_cartao_credito.mcc_fcc_id = @id_fcc2 WHERE movimentos_cartao_credito.mcc_id = @mcc_id;";
+                                cmd.Parameters.AddWithValue("id_fcc2", id_fcc);
+                                cmd.Parameters.AddWithValue("mcc_id", fcc.fcc_movimentos[i].mcc_id);
+                                cmd.ExecuteNonQuery();
+
+                                //Atualizando a parcela para informar o número da fatura que pertence
+                                cmd.CommandText = "UPDATE op_parcelas set op_parcelas.op_parcelas_cartao = @id WHERE op_parcelas.op_parcela_id = @tipo_id1;";
+                                cmd.Parameters.AddWithValue("id", id_fcc);
+                                cmd.Parameters.AddWithValue("tipo_id1", fcc.fcc_movimentos[i].mcc_tipo_id);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+
+                        comando.CommandText = "UPDATE fatura_cartao_credito set fatura_cartao_credito.fcc_situacao = 'Fechada' WHERE fatura_cartao_credito.fcc_id = @id_fcc3 and fatura_cartao_credito.fcc_conta_id = @conta_id3;";
+                        comando.Parameters.AddWithValue("conta_id3", conta_id);
+                        comando.Parameters.AddWithValue("id_fcc3", id_fcc);
+                        comando.ExecuteNonQuery();
+
+                        retorno = "Fatura fechada com sucesso!";
+                    }
+
+                    Transacao.Commit();
+
+                    log.log("FaturaCartaoCredito", "fechar_abrir_cartao", "Sucessso", "Sucesso ao tentar: " + contexto + " a fatura do cartão de crédito ref.: " + comp, conta_id, usuario_id);
+                }
+                else
+                {
+                    retorno = "Erro na pesquisa da fatura. Fatura não localizada!";
+                }
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao processa a solicitação!" + e.Message;
+
+                log.log("FaturaCartaoCredito", "fechar_abrir_cartao", "Erro", "Falha ao tentar: " + contexto + " a fatura do cartão de crédito ref.: " + comp, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+            return retorno;
+        }
+
+        public string deletePagamento(int conta_id, int usuario_id, int mcc_id)
+        {
+            string retorno = "";
+
+            conn.Open();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            MySqlCommand comando = conn.CreateCommand();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "DELETE FROM movimentos_cartao_credito WHERE movimentos_cartao_credito.mcc_id = @mcc_id;";
+                comando.CommandText = "DELETE from conta_corrente_mov WHERE conta_corrente_mov.ccm_origem_id = @mcc_id";
+                comando.Parameters.AddWithValue("mcc_id", mcc_id);                
+                comando.ExecuteNonQuery();
+
+                Transacao.Commit();
+
+                retorno = "Pagamento excluído com sucesso!";
+
+                log.log("FaturaCartaoCredito", "deletePagamento", "Sucesso", "Pagamento ref. mcc_id: " + mcc_id + " excluído com sucesso.", conta_id, usuario_id);
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao escluir o pagamento. " + e.Message;
+
+                log.log("FaturaCartaoCredito", "deletePagamento", "Erro", "Falha ao tentar excluir o pagamento mcc_id: " + mcc_id, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+            return retorno;
+        }
+
     }
 
     public class AjustaParcelasCartao

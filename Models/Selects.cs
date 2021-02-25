@@ -1052,6 +1052,7 @@ namespace gestaoContadorcomvc.Models
             return selects;
         }
 
+        
         //Natureza contábil das contas
         public List<Selects> getNaturezaContabil()
         {

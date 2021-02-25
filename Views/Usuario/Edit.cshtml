@@ -348,36 +348,35 @@
 
         <!--Contas Financeiras-->
         <!--<div class="row">
-            <div class="col-12 col-md-3">
-                <div class="row">
-                    <div class="form-check">
-                        <input class="form-check-input" asp-for="_permissoes.contasFList" type="checkbox" id="contasFList" onclick="checkPermissoes(this.id)">
-                        <label class="form-check-label" for="contasFList">Contas Financeiras</label>
-                    </div>
+        <div class="col-12 col-md-3">
+            <div class="row">
+                <div class="form-check">
+                    <input class="form-check-input" asp-for="_permissoes.contasFList" type="checkbox" id="contasFList" onclick="checkPermissoes(this.id)">
+                    <label class="form-check-label" for="contasFList">Contas Financeiras</label>
                 </div>
             </div>
-            <div class="row" style="padding-left: 30px;">
-                <div class="col-md-4 col-12">
-                    <div class="form-check form-check-inline" style="width: 20%;">
-                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.contasFCreate" id="contasFCreate" onclick="checkPermissoes(this.id)">
-                        <label class="form-check-label" for="contasFCreate">Incluir</label>
-                    </div>
-                </div>
-                <div class="col-md-4 col-12">
-                    <div class="form-check form-check-inline" style="width: 20%;">
-                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.contasFEdit" id="contasFEdit" onclick="checkPermissoes(this.id)">
-                        <label class="form-check-label" for="contasFEdit">Alterar</label>
-                    </div>
-                </div>
-                <div class="col-md-4 col-12">
-                    <div class="form-check form-check-inline" style="width: 20%;">
-                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.contasFDelete" id="contasFDelete" onclick="checkPermissoes(this.id)">
-                        <label class="form-check-label" for="contasFDelete">Apagar</label>
-                    </div>
+        </div>
+        <div class="row" style="padding-left: 30px;">
+            <div class="col-md-4 col-12">
+                <div class="form-check form-check-inline" style="width: 20%;">
+                    <input class="form-check-input" type="checkbox" asp-for="_permissoes.contasFCreate" id="contasFCreate" onclick="checkPermissoes(this.id)">
+                    <label class="form-check-label" for="contasFCreate">Incluir</label>
                 </div>
             </div>
-        </div>-->
-
+            <div class="col-md-4 col-12">
+                <div class="form-check form-check-inline" style="width: 20%;">
+                    <input class="form-check-input" type="checkbox" asp-for="_permissoes.contasFEdit" id="contasFEdit" onclick="checkPermissoes(this.id)">
+                    <label class="form-check-label" for="contasFEdit">Alterar</label>
+                </div>
+            </div>
+            <div class="col-md-4 col-12">
+                <div class="form-check form-check-inline" style="width: 20%;">
+                    <input class="form-check-input" type="checkbox" asp-for="_permissoes.contasFDelete" id="contasFDelete" onclick="checkPermissoes(this.id)">
+                    <label class="form-check-label" for="contasFDelete">Apagar</label>
+                </div>
+            </div>
+        </div>
+    </div>-->
         <!--Controle-->
         <h6>Controle</h6>
         <hr class="hrLine" />
@@ -445,6 +444,17 @@
                     <div class="form-check">
                         <input class="form-check-input" asp-for="_permissoes.rCategoriasList" type="checkbox" id="rCategoriasList" onclick="checkPermissoes(this.id)">
                         <label class="form-check-label" for="rCategoriasList">Relatório por Categorias</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Relatório financiero por período-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.rfm" type="checkbox" id="rfm" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="rfm">Relatório Financeiro</label>
                     </div>
                 </div>
             </div>

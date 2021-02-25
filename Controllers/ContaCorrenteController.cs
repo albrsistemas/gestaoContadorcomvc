@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers
 {
@@ -192,6 +193,22 @@ namespace gestaoContadorcomvc.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult gerarContasCorrentes_ajax(string[] tipo)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            Selects select = new Selects();
+            List<Selects> lista = new List<Selects>();
+
+            lista = select.getContasCorrenteConta_id(user.conta.conta_id);
+
+            return Json(JsonConvert.SerializeObject(lista));
         }
     }
 }
