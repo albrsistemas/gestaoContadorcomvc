@@ -1,5 +1,6 @@
 ﻿using gestaoContadorcomvc.Models.SoftwareHouse;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
@@ -827,6 +828,22 @@ namespace gestaoContadorcomvc.Models
             }
 
             return categorias;
+        }
+
+        public bool validaFormulario(IFormCollection collection)
+        {
+            bool v = false;
+            if (collection["categoria_classificacao"].Count == 0 || collection["categoria_classificacao"] == "")
+            {
+                v = true;
+            }
+
+            if (collection["categoria_nome"].Count == 0 || collection["categoria_nome"] == "")
+            {
+                v = true;
+            }
+
+            return v;
         }
     }
 }

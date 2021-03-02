@@ -121,6 +121,20 @@
                     <span asp-validation-for="fp_dia_vencimento_cartao" class="text-danger"></span>
                 </div>
             </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label asp-for="fp_categoria_id_cartao" class="control-label">Categoria Cartão de Crédito</label>
+                    <select asp-items="@ViewBag.fp_categoria_id_cartao" value="@TempData["fp_categoria_id_cartao"]" id="fp_categoria_id_cartao" name="fp_categoria_id_cartao" class="form-control"></select>                    
+                    <span asp-validation-for="fp_categoria_id_cartao" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label asp-for="fp_categoria_id_cartao_pagamento" class="control-label">Categoria Pagamento Cartão Crédito</label>
+                    <select asp-items="@ViewBag.fp_categoria_id_cartao_pagamento" value="@TempData["fp_categoria_id_cartao_pagamento"]" id="fp_categoria_id_cartao_pagamento" name="fp_categoria_id_cartao_pagamento" class="form-control"></select>                    
+                    <span asp-validation-for="fp_categoria_id_cartao_pagamento" class="text-danger"></span>
+                </div>
+            </div>
         </div>
     </fieldset>
 

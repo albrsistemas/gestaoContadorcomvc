@@ -93,7 +93,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         @if (usuario.Role == "adm" || usuario._permissoes.rCategoriasList)
                         {
-                            <a class="dropdown-item" asp-controller="Categoria_opp" asp-action="Create">Por Categorias</a>
+                        <a class="dropdown-item" asp-controller="Categoria_opp" asp-action="Create">Relatório Financeiro Anual</a>
                         }
                         @if (usuario.Role == "adm" || usuario._permissoes.rfm)
                         {

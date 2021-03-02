@@ -241,7 +241,7 @@ namespace gestaoContadorcomvc.Components
                 //Relatórios
                 if (pagina.Contains("Categoria_opp/Create"))
                 {
-                    retorno = "Relatório por Categorias";
+                    retorno = "Relatório Financeiro Anual";
                 }
                 //Operação
                 if (pagina.Contains("Operacao/Index"))

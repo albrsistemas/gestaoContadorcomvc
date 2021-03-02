@@ -5980,7 +5980,7 @@ function cartaoCreditoPagamento(contexto, id) {
         } else {
             $.ajax({
                 url: "/CartaoCredito/PagamentoFatura",
-                data: { __RequestVerificationToken: gettoken(), valorPgto: convertDoubleString(valorPgto), fcc: fcc, dataPgto: dataPgto._i, conta_corrente_Pgto: conta_corrente_Pgto },
+                data: { __RequestVerificationToken: gettoken(), valorPgto: convertDoubleString(valorPgto), fcc: ajustesFCC(fcc), dataPgto: dataPgto._i, conta_corrente_Pgto: conta_corrente_Pgto },
                 type: 'POST',
                 dataType: 'json',
                 beforeSend: function (XMLHttpRequest) {
@@ -6111,6 +6111,25 @@ function gerarContasCorrentes() {
             */
         }
     });
+}
+
+function rfm_btns(contexto) {
+    if (contexto == 'next') {
+        let c = moment(document.getElementById('data_inicio').value, 'DD/MM/YYYY', 'pt', true);
+        let c_next = c.add(1, 'M').format('DD/MM/YYYY');
+        document.getElementById('data_inicio').value = c_next;
+
+        let v = moment(document.getElementById('data_fim').value, 'DD/MM/YYYY', 'pt', true);        
+        document.getElementById('data_fim').value = v.add(1, 'M').endOf('month').format('DD/MM/YYYY');
+    }
+    if (contexto == 'previous') {
+        let c = moment(document.getElementById('data_inicio').value, 'DD/MM/YYYY', 'pt', true);
+        let c_next = c.add(-1, 'M').format('DD/MM/YYYY');
+        document.getElementById('data_inicio').value = c_next;
+
+        let v = moment(document.getElementById('data_fim').value, 'DD/MM/YYYY', 'pt', true);        
+        document.getElementById('data_fim').value = v.add(-1, 'M').endOf('month').format('DD/MM/YYYY');
+    }
 }
 
 

@@ -48,6 +48,8 @@ namespace gestaoContadorcomvc.Controllers
             ViewBag.ccorrente = select.getContasCorrenteTipo(user.usuario_conta_id, "Caixa").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             ViewBag.IntegracaoCartao = select.getIntegracaoCartao().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             ViewBag.bandeiraCartao = select.getBandeirasCartao().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.fp_categoria_id_cartao = select.getCategoriasClienteComEscopo(user.conta.conta_id,true,true,false).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
+            ViewBag.fp_categoria_id_cartao_pagamento = select.getCategoriasClienteComEscopo(user.conta.conta_id,true,false,true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
 
             return View();
         }
@@ -70,6 +72,8 @@ namespace gestaoContadorcomvc.Controllers
             //ViewBag.ccorrente = select.getContasCorrente(user.usuario_conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == d["fp_vinc_conta_corrente"] });
             ViewBag.IntegracaoCartao = select.getIntegracaoCartao().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == d["fp_tipo_integracao_nfe"] });
             ViewBag.bandeiraCartao = select.getBandeirasCartao().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == d["fp_bandeira_cartao"] });
+            ViewBag.fp_categoria_id_cartao = select.getCategoriasClienteComEscopo(user.conta.conta_id, true, true, false).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == d["fp_categoria_id_cartao"] });
+            ViewBag.fp_categoria_id_cartao_pagamento = select.getCategoriasClienteComEscopo(user.conta.conta_id, true, false, true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == d["fp_categoria_id_cartao_pagamento"] });
 
             vm_fp.fp_nome = d["fp_nome"];
             vm_fp.fp_status = d["fp_status"];
@@ -83,7 +87,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 vm_fp.fp_tipo_integracao_nfe = d["fp_tipo_integracao_nfe"];
                 vm_fp.fp_bandeira_cartao = d["fp_bandeira_cartao"];
-                vm_fp.fp_cnpj_credenciadora_cartao = d["fp_cnpj_credenciadora_cartao"];
+                vm_fp.fp_cnpj_credenciadora_cartao = d["fp_cnpj_credenciadora_cartao"];                
             }
             else
             {
@@ -96,6 +100,8 @@ namespace gestaoContadorcomvc.Controllers
             {
                 vm_fp.fp_dia_fechamento_cartao = Convert.ToInt32(d["fp_dia_fechamento_cartao"]);
                 vm_fp.fp_dia_vencimento_cartao = Convert.ToInt32(d["fp_dia_vencimento_cartao"]);
+                vm_fp.fp_categoria_id_cartao = Convert.ToInt32(d["fp_categoria_id_cartao"]);
+                vm_fp.fp_categoria_id_cartao_pagamento = Convert.ToInt32(d["fp_categoria_id_cartao_pagamento"]);
             }
             else
             {
@@ -114,7 +120,7 @@ namespace gestaoContadorcomvc.Controllers
                     return View(vm_fp);
                 }
 
-                TempData["msgFp"] = fp.cadastraFormaPagamento(user.usuario_conta_id, user.usuario_id, vm_fp.fp_nome, vm_fp.fp_meio_pgto_nfe, vm_fp.fp_baixa_automatica, vm_fp.fp_vinc_conta_corrente, vm_fp.fp_identificacao, vm_fp.fp_tipo_integracao_nfe, vm_fp.fp_bandeira_cartao, vm_fp.fp_cnpj_credenciadora_cartao, vm_fp.fp_dia_fechamento_cartao, vm_fp.fp_dia_vencimento_cartao);
+                TempData["msgFp"] = fp.cadastraFormaPagamento(user.usuario_conta_id, user.usuario_id, vm_fp.fp_nome, vm_fp.fp_meio_pgto_nfe, vm_fp.fp_baixa_automatica, vm_fp.fp_vinc_conta_corrente, vm_fp.fp_identificacao, vm_fp.fp_tipo_integracao_nfe, vm_fp.fp_bandeira_cartao, vm_fp.fp_cnpj_credenciadora_cartao, vm_fp.fp_dia_fechamento_cartao, vm_fp.fp_dia_vencimento_cartao, vm_fp.fp_categoria_id_cartao, vm_fp.fp_categoria_id_cartao_pagamento);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -158,6 +164,8 @@ namespace gestaoContadorcomvc.Controllers
             ViewBag.IntegracaoCartao = select.getIntegracaoCartao().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_fp.fp_tipo_integracao_nfe });
             ViewBag.bandeiraCartao = select.getBandeirasCartao().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_fp.fp_bandeira_cartao });
             ViewBag.status = select.getStatus().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_fp.fp_status });
+            ViewBag.fp_categoria_id_cartao = select.getCategoriasClienteComEscopo(user.conta.conta_id, true, true, false).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_fp.fp_categoria_id_cartao.ToString() });
+            ViewBag.fp_categoria_id_cartao_pagamento = select.getCategoriasClienteComEscopo(user.conta.conta_id, true, false, true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_fp.fp_categoria_id_cartao_pagamento.ToString() });
 
             vm_fp.user = user;
 
@@ -201,6 +209,8 @@ namespace gestaoContadorcomvc.Controllers
             {
                 vm_fp.fp_dia_fechamento_cartao = Convert.ToInt32(d["fp_dia_fechamento_cartao"]);
                 vm_fp.fp_dia_vencimento_cartao = Convert.ToInt32(d["fp_dia_vencimento_cartao"]);
+                vm_fp.fp_categoria_id_cartao = Convert.ToInt32(d["fp_categoria_id_cartao"]);
+                vm_fp.fp_categoria_id_cartao_pagamento = Convert.ToInt32(d["fp_categoria_id_cartao_pagamento"]);
             }
             else
             {
@@ -217,7 +227,7 @@ namespace gestaoContadorcomvc.Controllers
                     return View(vm_fp);
                 }
 
-                TempData["msgFp"] = fp.alteraFormaPagamento(user.usuario_conta_id,user.usuario_id,vm_fp.fp_nome,vm_fp.fp_meio_pgto_nfe,fp_baixa_automatica,vm_fp.fp_vinc_conta_corrente,vm_fp.fp_identificacao,vm_fp.fp_tipo_integracao_nfe,vm_fp.fp_bandeira_cartao,vm_fp.fp_cnpj_credenciadora_cartao,vm_fp.fp_dia_fechamento_cartao,vm_fp.fp_dia_vencimento_cartao,vm_fp.fp_status,id);
+                TempData["msgFp"] = fp.alteraFormaPagamento(user.usuario_conta_id,user.usuario_id,vm_fp.fp_nome,vm_fp.fp_meio_pgto_nfe,fp_baixa_automatica,vm_fp.fp_vinc_conta_corrente,vm_fp.fp_identificacao,vm_fp.fp_tipo_integracao_nfe,vm_fp.fp_bandeira_cartao,vm_fp.fp_cnpj_credenciadora_cartao,vm_fp.fp_dia_fechamento_cartao,vm_fp.fp_dia_vencimento_cartao,vm_fp.fp_status,id, vm_fp.fp_categoria_id_cartao, vm_fp.fp_categoria_id_cartao_pagamento);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -320,5 +330,22 @@ namespace gestaoContadorcomvc.Controllers
 
             return Json(JsonConvert.SerializeObject(lista));
         }
+
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult getFormaPagamento(int fp_id)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            FormaPagamento fp = new FormaPagamento();
+            Vm_forma_pagamento vm_fp = new Vm_forma_pagamento();
+            vm_fp = fp.buscaFormasPagamento(user.conta.conta_id, user.usuario_id, fp_id);
+
+            return Json(JsonConvert.SerializeObject(vm_fp));
+        }
+        
     }
 }

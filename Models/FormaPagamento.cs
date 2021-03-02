@@ -25,6 +25,8 @@ namespace gestaoContadorcomvc.Models
         public string fp_status { get; set; }
         public int fp_dia_fechamento_cartao { get; set; }
         public int fp_dia_vencimento_cartao { get; set; }
+        public int fp_categoria_id_cartao { get; set; }
+        public int fp_categoria_id_cartao_pagamento { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -227,6 +229,24 @@ namespace gestaoContadorcomvc.Models
                         {
                             fp.fp_dia_vencimento_cartao = 0;
                         }
+
+                        if (DBNull.Value != leitor["fp_categoria_id_cartao"])
+                        {
+                            fp.fp_categoria_id_cartao = Convert.ToInt32(leitor["fp_categoria_id_cartao"]);
+                        }
+                        else
+                        {
+                            fp.fp_categoria_id_cartao = 0;
+                        }
+
+                        if (DBNull.Value != leitor["fp_categoria_id_cartao_pagamento"])
+                        {
+                            fp.fp_categoria_id_cartao_pagamento = Convert.ToInt32(leitor["fp_categoria_id_cartao_pagamento"]);
+                        }
+                        else
+                        {
+                            fp.fp_categoria_id_cartao_pagamento = 0;
+                        }
                     }
                 }
             }
@@ -259,7 +279,9 @@ namespace gestaoContadorcomvc.Models
             string fp_bandeira_cartao,
             string fp_cnpj_credenciadora_cartao,
             int fp_dia_fechamento_cartao,
-            int fp_dia_vencimento_cartao
+            int fp_dia_vencimento_cartao,
+            int fp_categoria_id_cartao,
+            int fp_categoria_id_cartao_pagamento
             )
         {
             string retorno = "Forma de pagamento cadastrada com sucesso!";
@@ -273,7 +295,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "INSERT into forma_pagamento (fp_nome, fp_meio_pgto_nfe, fp_baixa_automatica, fp_vinc_conta_corrente, fp_identificacao, fp_tipo_integracao_nfe, fp_bandeira_cartao, fp_cnpj_credenciadora_cartao, fp_conta_id, fp_dia_fechamento_cartao, fp_dia_vencimento_cartao) VALUES (@fp_nome, @fp_meio_pgto_nfe, @fp_baixa_automatica, @fp_vinc_conta_corrente, @fp_identificacao, @fp_tipo_integracao_nfe, @fp_bandeira_cartao, @fp_cnpj_credenciadora_cartao, @fp_conta_id, @fp_dia_fechamento_cartao, @fp_dia_vencimento_cartao);";
+                comando.CommandText = "INSERT into forma_pagamento (fp_nome, fp_meio_pgto_nfe, fp_baixa_automatica, fp_vinc_conta_corrente, fp_identificacao, fp_tipo_integracao_nfe, fp_bandeira_cartao, fp_cnpj_credenciadora_cartao, fp_conta_id, fp_dia_fechamento_cartao, fp_dia_vencimento_cartao, fp_categoria_id_cartao, fp_categoria_id_cartao_pagamento) VALUES (@fp_nome, @fp_meio_pgto_nfe, @fp_baixa_automatica, @fp_vinc_conta_corrente, @fp_identificacao, @fp_tipo_integracao_nfe, @fp_bandeira_cartao, @fp_cnpj_credenciadora_cartao, @fp_conta_id, @fp_dia_fechamento_cartao, @fp_dia_vencimento_cartao, @fp_categoria_id_cartao, @fp_categoria_id_cartao_pagamento);";
                 comando.Parameters.AddWithValue("@fp_nome", fp_nome);
                 comando.Parameters.AddWithValue("@fp_meio_pgto_nfe", fp_meio_pgto_nfe);
                 comando.Parameters.AddWithValue("@fp_baixa_automatica", fp_baixa_automatica);
@@ -285,6 +307,8 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@fp_conta_id", conta_id);
                 comando.Parameters.AddWithValue("@fp_dia_fechamento_cartao", fp_dia_fechamento_cartao);
                 comando.Parameters.AddWithValue("@fp_dia_vencimento_cartao", fp_dia_vencimento_cartao);
+                comando.Parameters.AddWithValue("@fp_categoria_id_cartao", fp_categoria_id_cartao);
+                comando.Parameters.AddWithValue("@fp_categoria_id_cartao_pagamento", fp_categoria_id_cartao_pagamento);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -326,7 +350,9 @@ namespace gestaoContadorcomvc.Models
            int fp_dia_fechamento_cartao,
            int fp_dia_vencimento_cartao,
            string fp_status,
-           int fp_id
+           int fp_id,
+           int fp_categoria_id_cartao,
+           int fp_categoria_id_cartao_pagamento
            )
         {
             string retorno = "Forma de pagamento alterada com sucesso!";
@@ -340,7 +366,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "update forma_pagamento set fp_nome = @fp_nome, fp_meio_pgto_nfe = @fp_meio_pgto_nfe, fp_baixa_automatica = @fp_baixa_automatica, fp_vinc_conta_corrente = @fp_vinc_conta_corrente, fp_identificacao = @fp_identificacao, fp_tipo_integracao_nfe = @fp_tipo_integracao_nfe, fp_bandeira_cartao = @fp_bandeira_cartao, fp_cnpj_credenciadora_cartao = @fp_cnpj_credenciadora_cartao, fp_dia_fechamento_cartao = @fp_dia_fechamento_cartao, fp_dia_vencimento_cartao = @fp_dia_vencimento_cartao, fp_status = @fp_status WHERE fp_conta_id = @conta_id and fp_id = @fp_id;";
+                comando.CommandText = "update forma_pagamento set fp_nome = @fp_nome, fp_meio_pgto_nfe = @fp_meio_pgto_nfe, fp_baixa_automatica = @fp_baixa_automatica, fp_vinc_conta_corrente = @fp_vinc_conta_corrente, fp_identificacao = @fp_identificacao, fp_tipo_integracao_nfe = @fp_tipo_integracao_nfe, fp_bandeira_cartao = @fp_bandeira_cartao, fp_cnpj_credenciadora_cartao = @fp_cnpj_credenciadora_cartao, fp_dia_fechamento_cartao = @fp_dia_fechamento_cartao, fp_dia_vencimento_cartao = @fp_dia_vencimento_cartao, fp_status = @fp_status, fp_categoria_id_cartao = @fp_categoria_id_cartao, fp_categoria_id_cartao_pagamento = @fp_categoria_id_cartao_pagamento WHERE fp_conta_id = @conta_id and fp_id = @fp_id;";
                 comando.Parameters.AddWithValue("@fp_nome", fp_nome);
                 comando.Parameters.AddWithValue("@fp_meio_pgto_nfe", fp_meio_pgto_nfe);
                 comando.Parameters.AddWithValue("@fp_baixa_automatica", fp_baixa_automatica);
@@ -354,6 +380,8 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@fp_status", fp_status);
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@fp_id", fp_id);
+                comando.Parameters.AddWithValue("@fp_categoria_id_cartao", fp_categoria_id_cartao);
+                comando.Parameters.AddWithValue("@fp_categoria_id_cartao_pagamento", fp_categoria_id_cartao_pagamento);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 

@@ -290,6 +290,7 @@ namespace gestaoContadorcomvc.Models
                     dr_1 = dr_1_c.ExecuteReader();
 
                     int id_fcc = 0;
+                    string situacao_fcc = "Aberta";
 
                     if (dr_1.HasRows)
                     {
@@ -303,10 +304,10 @@ namespace gestaoContadorcomvc.Models
                             {
                                 id_fcc = 0;
                             }
+                            situacao_fcc = dr_1["fcc_situacao"].ToString();
                         }
                     }                    
                     dr_1.Close();
-
 
                     if (id_fcc == 0) //Criar o fcc e depois o movimento
                     {
@@ -372,6 +373,12 @@ namespace gestaoContadorcomvc.Models
                     }
                     else //Se tipo for 'op_parcelas' então criar o movimento. Se for tipo 'mcc' então fazer update
                     {
+                        if (situacao_fcc == "Fechada")
+                        {
+                            retorno = "Erro. A fatura destino está fechada.";
+                            return retorno;
+                        }
+
                         if (fcc.fcc_movimentos[0].mcc_tipo == "op_parcelas")
                         {
                             int id_mcc = 0;

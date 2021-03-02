@@ -39,23 +39,34 @@
         <div class="form-group">
             <label class="control-label">Visão</label>
             <select asp-for="filtro.vm_rfm_filtros_visao" id="visao" class="form-control">
-                <option value="contas">Contas</option>
                 <option value="caixa">Caixa</option>
+                <option value="contas" disabled>Contas</option>
             </select>
         </div>
-    </div>
-    <div class="col-6">
-        <div class="form-group">
-            <label class="control-label">Data Inicial</label>
-            <input name="filtro.data_inicio" id="data_inicio" class="form-control form-control-sm datepicker" value="@Model.filtro.data_inicio.ToShortDateString()" />
+    </div>    
+    <div class="col-12">
+        <label class="control-label">Período</label>
+        <div class="form-group" style="user-select:none;">
+            <div class="input-group mb-3" style="text-align:right">
+                <input name="filtro.data_inicio" id="data_inicio" class="form-control form-control-sm datepicker" value="@Model.filtro.data_inicio.ToShortDateString()" />                
+                <input name="filtro.data_fim" id="data_fim" class="form-control form-control-sm datepicker" value="@Model.filtro.data_fim.ToShortDateString()" />
+                <div class="input-group-append" onclick="rfm_btns('previous')" style="cursor:pointer">
+                    <span class="input-group-text">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                        </svg>
+                    </span>
+                </div>
+                <div class="input-group-append" onclick="rfm_btns('next')" style="cursor:pointer">
+                    <span class="input-group-text">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                        </svg>
+                    </span>
+                </div>
+            </div>            
         </div>
-    </div>
-    <div class="col-6">
-        <div class="form-group">
-            <label class="control-label">Data Final</label>
-            <input name="filtro.data_fim" id="data_fim" class="form-control form-control-sm datepicker" value="@Model.filtro.data_fim.ToShortDateString()" />
-        </div>
-    </div>
+    </div>    
     <div class="col-12">
         <div class="custom-control custom-switch">
             <input type="checkbox" id="ignorarZeradas" asp-for="filtro.vm_rfm_ignorar_categorias_zeradas" class="custom-control-input" checked="checked" onchange="ignorarZeradasRelCat(this.id)">
@@ -71,3 +82,4 @@
 </div>
 <hr class="hrLine" />
 <div class="corpo_rfm" id="corpo_rfm"></div>
+<script src="~/js/moment.min.js" type="text/javascript"></script>

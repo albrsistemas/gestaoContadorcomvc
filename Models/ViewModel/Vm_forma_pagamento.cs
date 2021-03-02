@@ -58,5 +58,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string meioPgto { get; set; }
         public string ccorrente_tipo { get; set; }
         public string baixa_automatica { get; set; }
+        public int fp_categoria_id_cartao { get; set; }
+        public int fp_categoria_id_cartao_pagamento { get; set; }
     }
 }

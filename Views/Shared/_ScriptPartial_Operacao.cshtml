@@ -2122,5 +2122,53 @@
             }
         });
     }
+
+    function dadosFormaPgto(id, vlr) {
+        $.ajax({
+            url: "/FormaPagamento/getFormaPagamento",
+            data: { __RequestVerificationToken: gettoken(), fp_id: vlr },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                if (document.getElementById('btn_op_parcelas_gerar')) {
+                    document.getElementById('btn_op_parcelas_gerar').setAttribute("disabled", "disabled");
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("erro");
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                var results = JSON.parse(data);                
+                if (textStatus == 'success') {
+                    if (results.fp_meio_pgto_nfe == '03') {
+                        if (document.getElementById('btn_op_parcelas_gerar')) {
+                            document.getElementById('btn_op_parcelas_gerar').removeAttribute("disabled");
+                        }
+                        document.getElementById('parcela_forma_gerar').value = 3;
+                        document.getElementById('data_primeira_parcela').value = document.getElementById('op_data').value;
+                        document.getElementById('recorencia_n_parcelas').value = 'Mensal';
+                        document.getElementById('parcela_forma_gerar').setAttribute("disabled", "disabled");
+                        document.getElementById('data_primeira_parcela').setAttribute("disabled", "disabled");
+                        document.getElementById('recorencia_n_parcelas').setAttribute("disabled", "disabled");
+                        formaGerarParcelas('parcela_forma_gerar', 3);
+                        document.getElementById('parcela_numero').focus();
+                    } else {
+                        document.getElementById('parcela_forma_gerar').value = 1;
+                        document.getElementById('data_primeira_parcela').value = '';
+                        document.getElementById('recorencia_n_parcelas').value = 'Mensal';
+                        document.getElementById('parcela_forma_gerar').removeAttribute("disabled");
+                        document.getElementById('data_primeira_parcela').removeAttribute("disabled");
+                        document.getElementById('recorencia_n_parcelas').removeAttribute("disabled");
+                        formaGerarParcelas('parcela_forma_gerar', 1);
+                        document.getElementById('parcela_forma_gerar').focus();
+                    }
+                }
+
+                if (document.getElementById('btn_op_parcelas_gerar')) {
+                    document.getElementById('btn_op_parcelas_gerar').removeAttribute("disabled");
+                }
+            }
+        });
+    }
     
 </script>

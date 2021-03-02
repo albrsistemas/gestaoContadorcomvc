@@ -148,6 +148,13 @@ namespace gestaoContadorcomvc.Controllers
             {
                 Categoria categoria = new Categoria();
 
+                if(categoria.validaFormulario(collection))
+                {
+                    TempData["createCategoria"] = "Erro. Nome e Classificação são obrigatórios.";
+
+                    return RedirectToAction(nameof(Index));
+                }
+
                 if(categoria.classificacaoExistePorPlano(collection["categoria_classificacao"], user.usuario_conta_id, "Não"))
                 {
                     TempData["createCategoria"] = "Erro. Classifcação já existe!";

@@ -135,6 +135,13 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             {
                 Categoria categoria = new Categoria();
 
+                if (categoria.validaFormulario(collection))
+                {
+                    TempData["createCategoria"] = "Erro. Nome e Classificação são obrigatórios.";
+
+                    return RedirectToAction(nameof(Index));
+                }
+
                 TempData["createCategoria"] = categoria.cadastrarCategoria(collection["categoria_classificacao"], collection["categoria_nome"], collection["escopo"], contexto.conta_id, user.usuario_id, collection["categoria_conta_contabil"],"Não","0", categoria_categoria_fiscal, categoria_categoria_tributo);
 
                 return RedirectToAction(nameof(Index));
