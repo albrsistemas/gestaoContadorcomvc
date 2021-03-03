@@ -125,9 +125,10 @@ namespace gestaoContadorcomvc.Models
         //Relatório financeiro mensal RFM
         public bool rfm { get; set; }
         //Cartão Crédito
-        public bool cartaoCreditoList { get; set; }
-        public bool cartaoCreditoDetails { get; set; }
+        public bool cartaoCreditoList { get; set; }        
         public bool cartaoCreditoCreate { get; set; }
+        public bool cartaoCreditoEdit { get; set; }
+        public bool cartaoCreditoDelete { get; set; }
 
 
 
@@ -533,6 +534,11 @@ namespace gestaoContadorcomvc.Models
                         permissao.area_empresa_contador = Convert.ToBoolean(leitor["area_empresa_contador"]);
                         //24/02/2021
                         permissao.rfm = Convert.ToBoolean(leitor["rfm"]);
+                        //03/03/2021
+                        permissao.cartaoCreditoList = Convert.ToBoolean(leitor["cartaoCreditoList"]);
+                        permissao.cartaoCreditoCreate = Convert.ToBoolean(leitor["cartaoCreditoCreate"]);
+                        permissao.cartaoCreditoEdit = Convert.ToBoolean(leitor["cartaoCreditoEdit"]);
+                        permissao.cartaoCreditoDelete = Convert.ToBoolean(leitor["cartaoCreditoDelete"]);
 
                     }
                 }

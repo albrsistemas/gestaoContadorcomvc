@@ -291,6 +291,49 @@
     }
 
     function operacao_participante(contexto) {
+        if (contexto == 'open_input') {
+            //Limpar objeto participante
+            operacao.participante.controleEdit = '';
+            operacao.participante.existe = false;
+            operacao.participante.op_paisesIBGE_codigo = '1058';
+            operacao.participante.op_part_bairro = '';
+            operacao.participante.op_part_cep = '';
+            operacao.participante.op_part_cidade = '';
+            operacao.participante.op_part_cnpj_cpf = '';
+            operacao.participante.op_part_complemento = '';
+            operacao.participante.op_part_id = 0;
+            operacao.participante.op_part_logradouro = '';
+            operacao.participante.op_part_nome = '';
+            operacao.participante.op_part_numero = '';
+            operacao.participante.op_part_participante_id = 0;
+            operacao.participante.op_part_tipo = '1';
+            operacao.participante.op_uf_ibge_codigo = '35';
+            
+            //Limpar os campos
+            document.getElementById('nome').value = '';
+            document.getElementById('participante_tipoPessoa').value = 1;
+            document.getElementById('op_part_cnpj_cpf').value = '';
+            document.getElementById('cep').value = '';
+            document.getElementById('rua').value = '';
+            document.getElementById('numero').value = '';
+            document.getElementById('complemento').value = '';
+            document.getElementById('bairro').value = '';
+            document.getElementById('cidade').value = '';
+            document.getElementById('uf').value = 35;
+            document.getElementById('op_paisesIBGE_codigo').value = 1058;
+            document.getElementById('participante_tipoPessoa').value = 1;
+
+            //gravando informação que operação é sem participante
+            operacao.operacao.op_comParticipante = false;
+
+            //abrir para edição
+            document.getElementById('participante').value = '';
+            document.getElementById('participante').disabled = false;
+            document.getElementById('participante').focus();
+        }
+
+
+
         if (contexto == 'open') {
             if (document.getElementById('nome')) {
                 document.getElementById('nome').value = operacao.participante.op_part_nome;                
@@ -384,7 +427,23 @@
         }
 
         if (contexto == 'delete') {
-            operacao.participante = participante_default;
+            //Limpadno objeto
+            operacao.participante.controleEdit = '';
+            operacao.participante.existe = false;
+            operacao.participante.op_paisesIBGE_codigo = '1058';
+            operacao.participante.op_part_bairro = '';
+            operacao.participante.op_part_cep = '';
+            operacao.participante.op_part_cidade = '';
+            operacao.participante.op_part_cnpj_cpf = '';
+            operacao.participante.op_part_complemento = '';
+            operacao.participante.op_part_id = 0;
+            operacao.participante.op_part_logradouro = '';
+            operacao.participante.op_part_nome = '';
+            operacao.participante.op_part_numero = '';
+            operacao.participante.op_part_participante_id = 0;
+            operacao.participante.op_part_tipo = '';
+            operacao.participante.op_uf_ibge_codigo = 0;
+
             document.getElementById('participante').value = 'Não informado';
             //Limpa campos do modal
             document.getElementById('nome').value = '';

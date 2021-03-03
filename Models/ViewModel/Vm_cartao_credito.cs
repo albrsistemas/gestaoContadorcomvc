@@ -7,6 +7,6 @@ namespace gestaoContadorcomvc.Models.ViewModel
 {
     public class Vm_cartao_credito
     {
-        public List<FormaPagamento> cartoes { get; set; }
+        public List<FormaPagamento> cartoes { get; set; }        
     }
 }

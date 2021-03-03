@@ -109,6 +109,13 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
             string retorno = "";
 
+            if(id == user.usuario_id)
+            {
+                retorno = "Erro. Não pode ser alterado o próprio usuário.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
             try
             {
                 retorno =  usuario.alteraUsuario(dados["usuario_nome"], dados["usuario_dcto"], user.usuario_conta_id, dados["usuario_email"], dados["permissoes"], id, user.usuario_id, vm_user._permissoes);
@@ -121,7 +128,7 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
             {
                 if(retorno == "")
                 {
-                    retorno = "Erro ao cadastrar usuário, tente novamente. Se persistir entre em contato com o suporte!";
+                    retorno = "Erro ao alterar usuário, tente novamente. Se persistir entre em contato com o suporte!";
                 }
 
                 TempData["editUsuario"] = retorno;

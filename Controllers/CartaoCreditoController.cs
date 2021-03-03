@@ -35,7 +35,7 @@ namespace gestaoContadorcomvc.Controllers
             return View(vmcc);
         }
 
-        [Autoriza(permissao = "cartaoCreditoDetails")]
+        [Autoriza(permissao = "cartaoCreditoList")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult Details(string contexto, FaturaCartaoCredito fcc)
@@ -46,11 +46,13 @@ namespace gestaoContadorcomvc.Controllers
             
             Vm_FaturaCartaoCredito vm_fcc = new Vm_FaturaCartaoCredito();
 
-            vm_fcc = fcc.buscaFaturaCartao(user.conta.conta_id, user.usuario_id, contexto, fcc.fcc_id, fcc.fcc_data_corte, fcc.fcc_data_vencimento, fcc.fcc_forma_pagamento_id);            
+            vm_fcc = fcc.buscaFaturaCartao(user.conta.conta_id, user.usuario_id, contexto, fcc.fcc_id, fcc.fcc_data_corte, fcc.fcc_data_vencimento, fcc.fcc_forma_pagamento_id);
+            vm_fcc.user = user;
 
             return Json(JsonConvert.SerializeObject(vm_fcc));
-        }              
+        }
 
+        [Autoriza(permissao = "cartaoCreditoEdit")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult alocacaoCompetencia(FaturaCartaoCredito fcc, DateTime competencia)
@@ -118,7 +120,7 @@ namespace gestaoContadorcomvc.Controllers
             return Json(JsonConvert.SerializeObject(retorno));
         }
 
-        [Autoriza(permissao = "operacaoEdit")]
+        [Autoriza(permissao = "cartaoCreditoEdit")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult fechar_abrir_cartao(FaturaCartaoCredito fcc, string contexto)
@@ -145,7 +147,7 @@ namespace gestaoContadorcomvc.Controllers
             return Json(JsonConvert.SerializeObject(retorno));
         }
 
-        [Autoriza(permissao = "operacaoEdit")]
+        [Autoriza(permissao = "cartaoCreditoEdit")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult PagamentoFatura(IFormCollection d, Decimal valorPgto, DateTime dataPgto, int conta_corrente_Pgto, FaturaCartaoCredito fcc)
@@ -173,7 +175,7 @@ namespace gestaoContadorcomvc.Controllers
             return Json(JsonConvert.SerializeObject(retorno));
         }
 
-        [Autoriza(permissao = "operacaoEdit")]
+        [Autoriza(permissao = "cartaoCreditoDelete")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult DeletePagamento(int mcc_id)

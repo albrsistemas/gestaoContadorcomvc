@@ -125,22 +125,25 @@ namespace gestaoContadorcomvc.Models
                             vm_fcc.fcc_forma_pagamento_id = 0;
                         }
 
-                        if (DBNull.Value != dr_1["fcc_data_corte"])
+                        if(contexto == "open" || contexto == "previous" || contexto == "next")
                         {
-                            vm_fcc.fcc_data_corte = Convert.ToDateTime(dr_1["fcc_data_corte"]);
-                        }
-                        else
-                        {
-                            vm_fcc.fcc_data_corte = new DateTime();
-                        }
+                            if (DBNull.Value != dr_1["fcc_data_corte"])
+                            {
+                                vm_fcc.fcc_data_corte = Convert.ToDateTime(dr_1["fcc_data_corte"]);
+                            }
+                            else
+                            {
+                                vm_fcc.fcc_data_corte = new DateTime();
+                            }
 
-                        if (DBNull.Value != dr_1["fcc_data_vencimento"])
-                        {
-                            vm_fcc.fcc_data_vencimento = Convert.ToDateTime(dr_1["fcc_data_vencimento"]);
-                        }
-                        else
-                        {
-                            vm_fcc.fcc_data_vencimento = new DateTime();
+                            if (DBNull.Value != dr_1["fcc_data_vencimento"])
+                            {
+                                vm_fcc.fcc_data_vencimento = Convert.ToDateTime(dr_1["fcc_data_vencimento"]);
+                            }
+                            else
+                            {
+                                vm_fcc.fcc_data_vencimento = new DateTime();
+                            }
                         }
                         vm_fcc.fcc_situacao = dr_1["fcc_situacao"].ToString();
                         vm_fcc.fcc_competencia = dr_1["fcc_competencia"].ToString();
@@ -152,12 +155,46 @@ namespace gestaoContadorcomvc.Models
                     vm_fcc.fcc_situacao = "Aberta";
                 }
                 dr_1.Close();
-                
 
+                //Datas
                 DateTime corte_data_fim = vm_fcc.fcc_data_corte;
                 DateTime corte_data_inicio = vm_fcc.fcc_data_corte.AddDays(-30);
                 DateTime venc_data_fim = vm_fcc.fcc_data_vencimento;
                 DateTime venc_data_inicio = vm_fcc.fcc_data_vencimento.AddDays(-30);
+
+                //Pesquisando a data de corete fatura antetior
+                DateTime mes_anterior_corte = vm_fcc.fcc_data_corte.AddMonths(-1);
+                string comp_anter = mes_anterior_corte.Month.ToString().PadLeft(2, '0') + "/" + mes_anterior_corte.Year.ToString();
+                //Verifica se fatura cartão existe
+                MySqlDataReader dr_8;
+                MySqlCommand dr_8_c = conn.CreateCommand();
+                dr_8_c.Connection = conn;
+                dr_8_c.Transaction = Transacao;
+                dr_8_c.CommandText = "SELECT fp.fp_nome, fatura_cartao_credito.* from fatura_cartao_credito LEFT JOIN forma_pagamento as fp on fp.fp_id = fatura_cartao_credito.fcc_forma_pagamento_id WHERE fatura_cartao_credito.fcc_forma_pagamento_id = @fcc_forma_pagamento_id and fatura_cartao_credito.fcc_competencia = @fcc_competencia and fatura_cartao_credito.fcc_conta_id = @conta_id;";
+                dr_8_c.Parameters.AddWithValue("conta_id", conta_id);
+                dr_8_c.Parameters.AddWithValue("fcc_competencia", comp_anter);
+                dr_8_c.Parameters.AddWithValue("fcc_forma_pagamento_id", vm_fcc.fcc_forma_pagamento_id);
+                dr_8 = dr_8_c.ExecuteReader();
+
+                DateTime corte_mes_antetior = new DateTime();
+
+                if (dr_8.HasRows)
+                {
+                    while (dr_8.Read())
+                    {
+                        if (DBNull.Value != dr_8["fcc_data_corte"])
+                        {
+                            corte_mes_antetior = Convert.ToDateTime(dr_8["fcc_data_corte"]);
+                        }
+                        else
+                        {
+                            corte_mes_antetior = new DateTime();
+                        }
+
+                        corte_data_inicio = corte_mes_antetior.AddDays(1);
+                    }
+                }                
+                dr_8.Close();               
 
                 MySqlDataReader dr_2;
                 MySqlCommand dr_2_c = conn.CreateCommand();
@@ -896,9 +933,11 @@ namespace gestaoContadorcomvc.Models
                 {
                     if (contexto == "abrir")
                     {
-                        comando.CommandText = "UPDATE fatura_cartao_credito set fatura_cartao_credito.fcc_situacao = 'Aberta' WHERE fatura_cartao_credito.fcc_id = @id_fcc and fatura_cartao_credito.fcc_conta_id = @conta_id_2;";
+                        comando.CommandText = "UPDATE fatura_cartao_credito set fatura_cartao_credito.fcc_situacao = 'Aberta', fatura_cartao_credito.fcc_data_corte = @fcc_data_corte, fatura_cartao_credito.fcc_data_vencimento = @fcc_data_vencimento WHERE fatura_cartao_credito.fcc_id = @id_fcc and fatura_cartao_credito.fcc_conta_id = @conta_id_2;";
                         comando.Parameters.AddWithValue("conta_id_2", conta_id);
                         comando.Parameters.AddWithValue("id_fcc", id_fcc);
+                        comando.Parameters.AddWithValue("fcc_data_corte", fcc.fcc_data_corte);
+                        comando.Parameters.AddWithValue("fcc_data_vencimento", fcc.fcc_data_vencimento);
                         comando.ExecuteNonQuery();
 
                         retorno = "Fatura aberta com sucesso!";

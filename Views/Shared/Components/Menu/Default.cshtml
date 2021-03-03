@@ -78,7 +78,11 @@
                         @if (usuario.Role == "adm" || usuario._permissoes.ContasRList)
                         {
                             <a class="dropdown-item" asp-controller="ContasReceber" asp-action="Index">Contas a Receber</a>
-                        }                        
+                        }
+                        @if (usuario.Role == "adm" || usuario._permissoes.cartaoCreditoList)
+                        {
+                            <a class="dropdown-item" asp-controller="CartaoCredito" asp-action="Index">Cartão de Crédito</a>
+                        }
                     </div>
                 </li>
             }

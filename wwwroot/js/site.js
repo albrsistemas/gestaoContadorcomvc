@@ -1279,7 +1279,7 @@ function gettoken() {
 };
 
 //Autocomplete lista de participantes
-function consultaParticipante(id) {
+function consultaParticipante(id, contexto) {
     let id_campo = "#" + id;
     $(id_campo).autocomplete({
         source: function (request, response) {
@@ -1384,7 +1384,50 @@ function consultaParticipante(id) {
             }
 
             //Carregando dados do parcitipante no opjeto operação.
-            dadorParticipante('insert',ui.item.id);
+            dadorParticipante('insert', ui.item.id);
+
+            if (contexto == 'operacao') {
+                if (operacao.op_part_participante_id != 0) {
+                    if (document.getElementById('nome')) {
+                        operacao.participante.op_part_nome = document.getElementById('nome').value;
+                    }
+                    if (document.getElementById('participante_tipoPessoa')) {
+                        operacao.participante.op_part_tipo = document.getElementById('participante_tipoPessoa').value;
+                    }
+                    if (document.getElementById('op_part_cnpj_cpf')) {
+                        operacao.participante.op_part_cnpj_cpf = document.getElementById('op_part_cnpj_cpf').value;
+                    }
+                    if (document.getElementById('cep')) {
+                        operacao.participante.op_part_cep = document.getElementById('cep').value;
+                    }
+                    if (document.getElementById('rua')) {
+                        operacao.participante.op_part_logradouro = document.getElementById('rua').value;
+                    }
+                    if (document.getElementById('numero')) {
+                        operacao.participante.op_part_numero = document.getElementById('numero').value;
+                    }
+                    if (document.getElementById('complemento')) {
+                        operacao.participante.op_part_complemento = document.getElementById('complemento').value;
+                    }
+                    if (document.getElementById('bairro')) {
+                        operacao.participante.op_part_bairro = document.getElementById('bairro').value;
+                    }
+                    if (document.getElementById('cidade')) {
+                        operacao.participante.op_part_cidade = document.getElementById('cidade').value;
+                    }
+                    if (document.getElementById('uf')) {
+                        operacao.participante.op_uf_ibge_codigo = document.getElementById('uf').value;
+                    }
+                    if (document.getElementById('op_paisesIBGE_codigo')) {
+                        operacao.participante.op_paisesIBGE_codigo = document.getElementById('op_paisesIBGE_codigo').value;
+                    }
+
+                    document.getElementById('participante').disabled = true;
+
+                    //gravando informação que operação é com participante
+                    operacao.operacao.op_comParticipante = true;
+                }
+            }
             
         }
     });
@@ -5503,6 +5546,7 @@ function novoObjFCC(fcc_id, fcc_forma_pagamento_id, fcc_situacao, fcc_data_corte
 
 function fatura_cartao_credito(contexto, cartao_id) {
     if (contexto == 'open') {
+        let d = new Date();
         let f = novoObjFCC(0, cartao_id, '', '', '', []);       
 
         pesquisaFatura('open', ajustesFCC(f));
@@ -5565,6 +5609,24 @@ function fatura_cartao_credito(contexto, cartao_id) {
     }
 
 
+}
+
+function fatura_cartao_credito_edit_datas(contexto, id) {
+    if (contexto == 'open') {
+        document.getElementById(id).disabled = false;
+    }
+    if (contexto == 'gravar') {
+        let dc = moment(document.getElementById('fcc_data_corte').value, 'DD/MM/YYYY', 'pt', true);
+        let dv = moment(document.getElementById('fcc_data_vencimento').value, 'DD/MM/YYYY', 'pt', true);
+
+        if (!dc.isValid() || !dv.isValid()) {
+            alert('Data inválida!');
+            document.getElementById(id).disabled = true;
+        } else {
+            document.getElementById(id).disabled = true;
+            pesquisaFatura('reboot', novoObjFCC(fcc.fcc_id, fcc.fcc_forma_pagamento_id, fcc.fcc_situacao, dc._i, dv._i, []));
+        }
+    }    
 }
 
 function pesquisaFatura(contexto, f) {
@@ -5637,11 +5699,13 @@ function pesquisaFatura(contexto, f) {
                         t += '<tr>';
                     }                    
                     t += '<td style="text-align:center">';
-                    if (fcc.fcc_movimentos[i].mcc_movimento == 'D') {
-                        t += '<span style="cursor:pointer;margin-right:7px;" onclick="fatura_cartao_credito_edit_competencia(\'edit_competencia\',\'' + fcc.fcc_movimentos[i].mcc_tipo + '\',\'' + fcc.fcc_movimentos[i].mcc_tipo_id + '\')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16"><path fill - rule="evenodd" d = "M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/></svg></span>';
+                    if (fcc.fcc_movimentos[i].mcc_movimento == 'D' && (fcc.user.Role == 'adm' || fcc.user._permissoes.cartaoCreditoEdit)) {
+                        t += '<span style="cursor:pointer;margin-right:7px;" onclick="fatura_cartao_credito_edit_competencia(\'edit_competencia\',\'' + fcc.fcc_movimentos[i].mcc_tipo + '\',\'' + fcc.fcc_movimentos[i].mcc_tipo_id + '\')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16"><path fill - rule="evenodd" d = "M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/></svg></span>';                        
+                    }
+                    if (fcc.fcc_movimentos[i].mcc_movimento == 'D' && (fcc.user.Role == 'adm' || fcc.user._permissoes.operacaoEdit)) {                        
                         t += '<span style="cursor:pointer" onclick="Ajuste_parcelas_op(\'open\',\'' + fcc.fcc_movimentos[i].mcc_tipo + '\',\'' + fcc.fcc_movimentos[i].mcc_tipo_id + '\')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-data" viewBox="0 0 16 16"><path d = "M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0V9z" /><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" /><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" /></svg></span>';
-                    }                    
-                    if (fcc.fcc_movimentos[i].mcc_movimento == 'C') {
+                    }
+                    if (fcc.fcc_movimentos[i].mcc_movimento == 'C' && (fcc.user.Role == 'adm' || fcc.user._permissoes.cartaoCreditoDelete)) {
                         t += '<svg style="color:red;cursor:pointer;" onclick="cartaoCreditoPagamento(\'delete\',\'' + fcc.fcc_movimentos[i].mcc_id +'\')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"><path d = "M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" /><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" /></svg >';
                     }
                     t += '</td>';
@@ -5664,6 +5728,15 @@ function pesquisaFatura(contexto, f) {
                 let mes_ano = fcc.fcc_data_corte.substr(5, 2) + '/' + fcc.fcc_data_corte.substr(0, 4);
                 document.getElementById('fcc_competencia').innerHTML = ' ' + mes_ano;
                 document.getElementById('fcc_referencia').innerHTML = mes_ano;
+
+                //Permissões
+                if (fcc.user.Role != 'adm' && fcc.user._permissoes.cartaoCreditoEdit == false) {
+                    document.getElementById('btn_fatura').disabled = true;
+                    document.getElementById('btn_fatura_pgto').disabled = true;
+                } else {
+                    document.getElementById('btn_fatura').disabled = false;
+                    document.getElementById('btn_fatura_pgto').disabled = false;
+                }
             }
         }
     });
