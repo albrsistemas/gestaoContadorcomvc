@@ -570,9 +570,13 @@ input[type=number] {
 }
 
 @media print {
+    .container{
+        width: 100%;
+    }
+
     @page {
-        size: 330mm 427mm;
-        margin: 14mm;
+        size: 297mm 210mm;
+        margin: 6mm;
     }
 
     .no-printme {

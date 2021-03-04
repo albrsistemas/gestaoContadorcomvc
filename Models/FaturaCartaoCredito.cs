@@ -202,12 +202,13 @@ namespace gestaoContadorcomvc.Models
                 dr_2_c.Transaction = Transacao;
                 if (vm_fcc.fcc_situacao == "Fechada")
                 {
-                    dr_2_c.CommandText = "SELECT * from movimentos_cartao_credito as mcc WHERE mcc.mcc_fcc_id = @fcc_id ORDER by Date(mcc_data) ASC;";
+                    dr_2_c.CommandText = "SELECT * from movimentos_cartao_credito as mcc LEFT JOIN fatura_cartao_credito as f on f.fcc_id = mcc.mcc_fcc_id WHERE f.fcc_conta_id = @conta_id and mcc.mcc_fcc_id = @fcc_id ORDER by Date(mcc_data) ASC;";
+                    dr_2_c.Parameters.AddWithValue("conta_id", conta_id);
                     dr_2_c.Parameters.AddWithValue("fcc_id", vm_fcc.fcc_id);
                 }
                 else
                 {
-                    dr_2_c.CommandText = "SELECT (0) as 'mcc_id', ('op_parcelas') as 'mcc_tipo', p.op_parcela_id as 'mcc_tipo_id', (0) as 'mcc_fcc_id', op.op_data as 'mcc_data', SUBSTRING((case WHEN op.op_tipo = 'Contas Financeiras' THEN concat('Parcela ', p.op_parcela_numero, ' de ', p.op_parcela_numero_total, ' ref.: ', cf.cf_nome) WHEN op.op_tipo <> 'ContasFinanceiras' THEN concat('Parcela ', p.op_parcela_numero, ' de ', p.op_parcela_numero_total, ' ref.: ', op.op_obs)END),1,150) as 'mcc_descricao', p.op_parcela_valor as 'mcc_valor', ('D') as 'mcc_movimento' from op_parcelas as p LEFT JOIN operacao as op on op.op_id = p.op_parcela_op_id left JOIN categoria as c on c.categoria_id = op.op_categoria_id left JOIN forma_pagamento as fp on fp.fp_id = p.op_parcela_fp_id LEFT JOIN contas_financeiras as cf on cf.cf_op_id = op.op_id WHERE op.op_conta_id = @conta_id and fp.fp_id = @fp_id and fp.fp_identificacao = 'Pagamento' and p.op_parcelas_cartao = 0 and (op.op_data <= @corte_data_fim and p.op_parcela_vencimento BETWEEN @venc_data_inicio AND @venc_data_fim) UNION ALL SELECT * from movimentos_cartao_credito as mcc WHERE mcc.mcc_fcc_id = @fcc_id ORDER by Date(mcc_data) ASC;";
+                    dr_2_c.CommandText = "SELECT (0) as 'mcc_id', ('op_parcelas') as 'mcc_tipo', p.op_parcela_id as 'mcc_tipo_id', (0) as 'mcc_fcc_id', op.op_data as 'mcc_data', SUBSTRING((case WHEN op.op_tipo = 'Contas Financeiras' THEN concat('Parcela ', p.op_parcela_numero, ' de ', p.op_parcela_numero_total, ' ref.: ', cf.cf_nome) WHEN op.op_tipo <> 'ContasFinanceiras' THEN concat('Parcela ', p.op_parcela_numero, ' de ', p.op_parcela_numero_total, ' ref.: ', op.op_obs)END),1,150) as 'mcc_descricao', p.op_parcela_valor as 'mcc_valor', ('D') as 'mcc_movimento' from op_parcelas as p LEFT JOIN operacao as op on op.op_id = p.op_parcela_op_id left JOIN categoria as c on c.categoria_id = op.op_categoria_id left JOIN forma_pagamento as fp on fp.fp_id = p.op_parcela_fp_id LEFT JOIN contas_financeiras as cf on cf.cf_op_id = op.op_id WHERE op.op_conta_id = @conta_id and fp.fp_id = @fp_id and fp.fp_identificacao = 'Pagamento' and p.op_parcelas_cartao = 0 and (op.op_data <= @corte_data_fim and p.op_parcela_vencimento BETWEEN @venc_data_inicio AND @venc_data_fim) UNION ALL SELECT mcc.* from movimentos_cartao_credito as mcc LEFT JOIN fatura_cartao_credito as f on f.fcc_id = mcc.mcc_fcc_id WHERE f.fcc_conta_id = @conta_id AND mcc.mcc_fcc_id = @fcc_id ORDER by Date(mcc_data) ASC;";                    
                     dr_2_c.Parameters.AddWithValue("conta_id", conta_id);
                     dr_2_c.Parameters.AddWithValue("corte_data_fim", corte_data_fim);
                     dr_2_c.Parameters.AddWithValue("venc_data_inicio", corte_data_inicio);
@@ -395,8 +396,9 @@ namespace gestaoContadorcomvc.Models
                         }
                         else
                         {
-                            comando.CommandText = "UPDATE movimentos_cartao_credito set movimentos_cartao_credito.mcc_fcc_id = @mcc_fcc_id;";
+                            comando.CommandText = "UPDATE movimentos_cartao_credito set movimentos_cartao_credito.mcc_fcc_id = @mcc_fcc_id WHERE movimentos_cartao_credito.mcc_id = @mcc_id;"; 
                             comando.Parameters.AddWithValue("mcc_fcc_id", id);
+                            comando.Parameters.AddWithValue("mcc_id", fcc.fcc_movimentos[0].mcc_id);
                             comando.ExecuteNonQuery();
                         }                        
 

@@ -32,6 +32,11 @@ namespace gestaoContadorcomvc.Controllers
 
                 if(fc_existe == null)
                 {
+                    if(fc.fc_referencia != "12/2020" && fc.fc_referencia != "01/2021" && fc.fc_referencia != "02/2021")
+                    {
+                        return Json(JsonConvert.SerializeObject("Erro. Esta rotina foi descontinuada para as faturas posteriores a 02/2021!"));
+                    }
+
                     //cadastrar nova fatura
                     retorno = fc.cadastraFechamentoCartao(user.usuario_conta_id, user.usuario_id, fc,false,0,0);
                 }
@@ -78,6 +83,11 @@ namespace gestaoContadorcomvc.Controllers
 
             try
             {
+                if (fc_referencia != "12/2020" && fc_referencia != "01/2021" && fc_referencia != "02/2021")
+                {
+                    return Json(JsonConvert.SerializeObject("Erro. Esta rotina foi descontinuada para as faturas posteriores a 02/2021!"));
+                }
+
                 Fechamento_cartao fc_existe = new Fechamento_cartao();
                 
                 fc_existe = fc_existe.buscaPorRef(fc_forma_pagamento, fc_referencia);

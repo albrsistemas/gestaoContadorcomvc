@@ -3588,18 +3588,25 @@ function monthPicker(id, contexto, vlr) {
             },
             success: function (data, textStatus, XMLHttpRequest) {
                 var results = JSON.parse(data);
+                console.log(results);
                 if (results != null) {
-                    document.getElementById("retorno_fc_existe").innerHTML = "Já existe uma fatura para este cartão nesta competência. As parcelas selecionadas serão acrescentadas a esta fatura!";
-                    document.getElementById("retorno_fc_existe").style.display = 'block';
-                    document.getElementById("op_obs").innerHTML = '';
-                    document.getElementById("obs_fatura").style.display = 'none';
+                    if (results.includes('Erro')) {
+                        document.getElementById("retorno_fc_existe").innerHTML = results;
+                    } else {
+                        document.getElementById("retorno_fc_existe").innerHTML = "Já existe uma fatura para este cartão nesta competência. As parcelas selecionadas serão acrescentadas a esta fatura!";
+                        document.getElementById("retorno_fc_existe").style.display = 'block';
+                        document.getElementById("op_obs").innerHTML = '';
+                        document.getElementById("obs_fatura").style.display = 'none';
+                    }
                 } else {
                     document.getElementById("retorno_fc_existe").innerHTML = "";
                     document.getElementById("retorno_fc_existe").style.display = 'none';
                     document.getElementById("obs_fatura").style.display = 'block';
                 }
 
-                document.getElementById('gravar_fatura').removeAttribute("disabled");
+                if (!results.includes('Erro')) {
+                    document.getElementById('gravar_fatura').removeAttribute("disabled");
+                }
             }
         });
     }

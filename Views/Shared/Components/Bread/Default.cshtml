@@ -5,7 +5,7 @@
 
     if (ViewData["area"] != null && ViewData["area"].ToString().Equals("Contabilidade"))
     {
-        <div class="bread_page" id="bread_page">
+        <div class="bread_page no-printme" id="bread_page">
             <a class="SelectClient" style="cursor:pointer">@ViewData["bread"].ToString()</a>
         </div>
     }
@@ -14,7 +14,7 @@
     {
         if (ViewData["openNav"] != null && ViewData["openNav"].ToString().Equals("aberto"))
         {
-            <div class="bread_page" id="bread_page" style="width:100%;">
+            <div class="bread_page no-printme" id="bread_page" style="width:100%;">
                 <p onclick="openNav('fechado')">@ViewData["bread"].ToString()</p>
             </div>
 
@@ -38,7 +38,7 @@
         }
         else
         {
-            <div class="bread_page" id="bread_page">
+            <div class="bread_page no-printme" id="bread_page">
                 <p onclick="openNav('fechado')">@ViewData["bread"].ToString()</p>
             </div>
         }
