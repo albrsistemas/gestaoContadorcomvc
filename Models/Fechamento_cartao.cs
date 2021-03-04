@@ -27,6 +27,7 @@ namespace gestaoContadorcomvc.Models
         public string fc_matriz_parcelas_text { get; set; }
         public int fc_forma_pgto_boleto_fatura { get; set; }
         public string fc_op_obs { get; set; }
+        public string retorno { get; set; }        
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -254,11 +255,12 @@ namespace gestaoContadorcomvc.Models
                         fc.fc_referencia = leitor["fc_referencia"].ToString();
                         fc.fc_nome_cartao = leitor["fc_nome_cartão"].ToString();
                         fc.fc_matriz_parcelas_text = leitor["fc_matriz_parcelas"].ToString();
+                        fc.retorno = "Referência existe!";
                     }
                 }
                 else
                 {
-                    fc = null;
+                    fc.retorno = "Referência não existe!";
                 }
             }
             catch (Exception)

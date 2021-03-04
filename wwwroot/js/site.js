@@ -3418,7 +3418,7 @@ function fechamento_de_cartao(id) {
     }
 
     document.getElementById('somaParcela').innerHTML = (fechamento_cartao.fc_valor_total).toLocaleString("pt-BR", { style: "decimal", minimumFractionDigits: "2", maximumFractionDigits: "2" });
-    console.log(fechamento_cartao);
+    
 }
 
 function gravar_fatura_cartao(contexto) {
@@ -3587,26 +3587,28 @@ function monthPicker(id, contexto, vlr) {
                 alert("erro");
             },
             success: function (data, textStatus, XMLHttpRequest) {
-                var results = JSON.parse(data);
-                console.log(results);
-                if (results != null) {
-                    if (results.includes('Erro')) {
-                        document.getElementById("retorno_fc_existe").innerHTML = results;
-                    } else {
-                        document.getElementById("retorno_fc_existe").innerHTML = "Já existe uma fatura para este cartão nesta competência. As parcelas selecionadas serão acrescentadas a esta fatura!";
-                        document.getElementById("retorno_fc_existe").style.display = 'block';
-                        document.getElementById("op_obs").innerHTML = '';
-                        document.getElementById("obs_fatura").style.display = 'none';
-                    }
-                } else {
+                var results = JSON.parse(data);                
+                if (results.retorno.includes('Erro')) {
+                    document.getElementById("retorno_fc_existe").innerHTML = results.retorno;
+                    document.getElementById("retorno_fc_existe").style.display = 'block';                    
+
+                    return;
+                }
+
+                if (results.retorno.includes('Referência não existe!')) {
                     document.getElementById("retorno_fc_existe").innerHTML = "";
                     document.getElementById("retorno_fc_existe").style.display = 'none';
                     document.getElementById("obs_fatura").style.display = 'block';
                 }
 
-                if (!results.includes('Erro')) {
-                    document.getElementById('gravar_fatura').removeAttribute("disabled");
+                if (results.retorno.includes('Referência existe!')) {
+                    document.getElementById("retorno_fc_existe").innerHTML = "Já existe uma fatura para este cartão nesta competência. As parcelas selecionadas serão acrescentadas a esta fatura!";
+                    document.getElementById("retorno_fc_existe").style.display = 'block';
+                    document.getElementById("op_obs").innerHTML = '';
+                    document.getElementById("obs_fatura").style.display = 'none';
                 }
+
+                document.getElementById('gravar_fatura').removeAttribute("disabled");                
             }
         });
     }
@@ -5175,8 +5177,8 @@ function search_m_participante_select(id, nome, categoria_id, categoria_nome) {
 
                     $("#search_modal").modal('hide');
                     //Abre modal
-                    modal_sobre_modal_open('modal_participante');
-                    document.getElementById('nome').focus();
+                    //modal_sobre_modal_open('modal_participante'); ==> Alterado em 04/03/2021. Após fechar não abrirá a tela de participante.
+                    document.getElementById('btn_participante').focus();
                 }
             }
         });

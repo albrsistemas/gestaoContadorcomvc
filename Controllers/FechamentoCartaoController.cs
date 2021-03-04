@@ -34,9 +34,9 @@ namespace gestaoContadorcomvc.Controllers
                 {
                     if(fc.fc_referencia != "12/2020" && fc.fc_referencia != "01/2021" && fc.fc_referencia != "02/2021")
                     {
-                        return Json(JsonConvert.SerializeObject("Erro. Esta rotina foi descontinuada para as faturas posteriores a 02/2021!"));
-                    }
-
+                        retorno = "Erro. Esta rotina foi descontinuada para as faturas posteriores a 02/2021!";
+                        return Json(JsonConvert.SerializeObject(retorno));
+                    }                    
                     //cadastrar nova fatura
                     retorno = fc.cadastraFechamentoCartao(user.usuario_conta_id, user.usuario_id, fc,false,0,0);
                 }
@@ -79,16 +79,16 @@ namespace gestaoContadorcomvc.Controllers
             Vm_usuario user = new Vm_usuario();
             user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
-            string retorno = "";
+            Fechamento_cartao fc_existe = new Fechamento_cartao();
 
             try
             {
                 if (fc_referencia != "12/2020" && fc_referencia != "01/2021" && fc_referencia != "02/2021")
                 {
-                    return Json(JsonConvert.SerializeObject("Erro. Esta rotina foi descontinuada para as faturas posteriores a 02/2021!"));
-                }
-
-                Fechamento_cartao fc_existe = new Fechamento_cartao();
+                    fc_existe.retorno = "Erro. Esta rotina foi descontinuada para as faturas anteriores a 12/2020 e posteriores a 02/2021!";
+                    
+                    return Json(JsonConvert.SerializeObject(fc_existe));
+                }                
                 
                 fc_existe = fc_existe.buscaPorRef(fc_forma_pagamento, fc_referencia);
 
@@ -96,12 +96,9 @@ namespace gestaoContadorcomvc.Controllers
             }
             catch
             {
-                if (retorno == "")
-                {
-                    retorno = "Erro ao consultar cartão";
-                }
+                fc_existe.retorno = "Erro ao consultar cartão";
 
-                return Json(JsonConvert.SerializeObject(retorno));
+                return Json(JsonConvert.SerializeObject(fc_existe));
             }
         }
 
