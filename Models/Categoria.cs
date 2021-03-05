@@ -689,7 +689,8 @@ namespace gestaoContadorcomvc.Models
 
             try
             {   
-                comando.CommandText = "UPDATE categoria set categoria.categoria_padrao = null WHERE categoria.categoria_conta_id = @conta_id and categoria.categoria_padrao = @categoria_padrao;UPDATE categoria set categoria.categoria_padrao = @categoria_padrao WHERE categoria.categoria_conta_id = @conta_id and categoria.categoria_id = @categoria_id;";
+                //comando.CommandText = "UPDATE categoria set categoria.categoria_padrao = null WHERE categoria.categoria_conta_id = @conta_id and categoria.categoria_padrao = @categoria_padrao;UPDATE categoria set categoria.categoria_padrao = @categoria_padrao WHERE categoria.categoria_conta_id = @conta_id and categoria.categoria_id = @categoria_id;";
+                comando.CommandText = "call pr_definirPadraoCategoria(@conta_id,@categoria_padrao,@categoria_id)";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@categoria_padrao", padrao);                
                 comando.Parameters.AddWithValue("@categoria_id", categoria_id);                
