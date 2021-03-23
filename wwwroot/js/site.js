@@ -1,6 +1,8 @@
 ﻿//import * as saveAs from "./FileSaver";
 
 //Variaveis globais
+let rfm = {};
+
 let fcc = {
     fcc_id: 0,
     fcc_forma_pagamento_id: 0,
@@ -5163,6 +5165,9 @@ function search_m_participante_select(id, nome, categoria_id, categoria_nome) {
 
                     //Carregando dados do parcitipante no opjeto operação.
                     dadorParticipante('insert', p.participante_id);
+
+                    //gravando informação que operação é com participante
+                    operacao.operacao.op_comParticipante = true;
                     
                     //Atribuindo a categoria no select2
                     if (document.getElementById('cf_categoria_id')) {
@@ -5173,7 +5178,7 @@ function search_m_participante_select(id, nome, categoria_id, categoria_nome) {
                     if (document.getElementById('op_categoria_id')) {
                         $('#op_categoria_id').val(p.participante_categoria.toString());
                         $('#op_categoria_id').trigger('change');
-                    }
+                    }                    
 
                     $("#search_modal").modal('hide');
                     //Abre modal
@@ -5318,7 +5323,7 @@ function rfm_gerar() {
             document.getElementById('corpo_rfm').innerHTML = '<span class="text-danger">Erro no processamento do relatório</span>';
         },
         success: function (data, textStatus, XMLHttpRequest) {
-            var rfm = JSON.parse(data);            
+            rfm = JSON.parse(data);            
             if (textStatus == 'error') {
                 document.getElementById('corpo_rfm').innerHTML = '<span class="text-primary">error</span>';
             }
@@ -5348,7 +5353,7 @@ function rfm_gerar() {
                     if (rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao.length < 5) {
                         c += '<tr class="rfm_bloco" style="font-weight:bold"><td style="text-align:left">' + rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao + '</td><td style="text-align:left">' + rfm.vm_rfm_categorias[i].rfmc_categoria_descricao + '</td><td style="text-align:right">' + fomat_numeroToStringLocal(rfm.vm_rfm_categorias[i].rfmc_categoria_valor) + '</td></tr>';
                     } else {
-                        c += '<tr class="rfm_bloco"><td style="text-align:left">' + rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao + '</td><td style="text-align:left">' + rfm.vm_rfm_categorias[i].rfmc_categoria_descricao + '</td><td style="text-align:right">' + fomat_numeroToStringLocal(rfm.vm_rfm_categorias[i].rfmc_categoria_valor) + '</td></tr>';
+                        c += '<tr class="rfm_bloco" style="cursor:pointer" onclick="rfm_details_gerar(\'' + rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao + '\',\'' + rfm.vm_rfm_categorias[i].rfmc_categoria_descricao + '\')"><td style="text-align:left">' + rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao + '</td><td style="text-align:left">' + rfm.vm_rfm_categorias[i].rfmc_categoria_descricao + '</td><td style="text-align:right">' + fomat_numeroToStringLocal(rfm.vm_rfm_categorias[i].rfmc_categoria_valor) + '</td></tr>';
                     }
 
                     if (rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao.length == 1 && rfm.vm_rfm_categorias[i].rfmc_categoria_classificacao == "1") {
@@ -5372,11 +5377,67 @@ function rfm_gerar() {
                 c += '</tbody>';
                 c += '</table>';
                 c += '</div>';
-                console.log(rfm);
+                //console.log(rfm);
                 document.getElementById('corpo_rfm').innerHTML = c;
             }
         }
     });
+}
+
+function rfm_details_gerar(classificacao, nome) {
+    document.getElementById('categoria_selecionada').innerHTML = '';
+    document.getElementById('lista_lancamentos').innerHTML = '';
+
+    $.ajax({
+        url: "/RfmDetails/Create",
+        data: { __RequestVerificationToken: gettoken(), classificacao: classificacao, data_inicio: rfm.filtro.data_inicio, data_fim: rfm.filtro.data_fim },
+        type: 'POST',
+        dataType: 'json',
+        beforeSend: function (XMLHttpRequest) {
+            document.getElementById('categoria_selecionada').innerHTML = '<span class="text-info">Gerando detalhamento, aguarde...</span>';
+            modal_sobre_modal_open('m_details');
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            document.getElementById('categoria_selecionada').innerHTML = '<span class="text-danger">Erro no processamento das informações</span>';
+        },
+        success: function (data, textStatus, XMLHttpRequest) {
+            rfmd = JSON.parse(data);
+            console.log(rfmd);
+            if (textStatus == 'error') {
+                document.getElementById('categoria_selecionada').innerHTML = '<span class="text-primary">Erro na comunicação com o servidor</span>';
+            }
+
+            if (textStatus == 'success') {                
+                let vlr = 0;
+                document.getElementById('categoria_selecionada').innerHTML = '<span class="text-primary">' + classificacao + ' - ' + nome + '</span><hr class="hrLine" />';
+                let c = '<div class="table-responsive">';
+                c += '<table class="table table-sm">';
+                c += '<caption>Detalhamento</caption>';
+                c += '<thead>';
+                c += '<tr class="thead_title"><th style="text-align:center">Data</th><th style="text-align:center">Origem</th><th style="text-align:left">Memorando</th><th style="text-align:right">Valor</th></tr>'
+                c += '</thead>';
+                c += '<tbody>';
+                for (let i = 0; i < rfmd.length; i++) {
+                    c += '<tr>';
+                    c += '<td style="text-align:center">' + convertData_DataSimples(rfmd[i].data) + '</td>';
+                    c += '<td style="text-align:center">' + rfmd[i].origem + '</td>';
+                    c += '<td style="text-align:left">' + rfmd[i].memorando + '</td>';
+                    c += '<td style="text-align:right">' + convertDoubleString(rfmd[i].valor) + '</td>';
+                    c += '</tr>';
+                    vlr += rfmd[i].valor;
+                }
+                c += '<tr><td colspan="4" style="text-align:right;font-weight:bold">' + convertDoubleString(vlr) + '</td></tr>';
+                c += '</tbody>';
+                c += '</table>';
+                c += '</div>';                
+                document.getElementById('lista_lancamentos').innerHTML = c;                
+            }
+        }
+    });
+
+
+
+
 }
 
 function fomat_numeroToStringLocal(vlr, decimais) {
