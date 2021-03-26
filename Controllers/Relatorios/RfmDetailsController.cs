@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gestaoContadorcomvc.Filtros;
 using gestaoContadorcomvc.Models.Autenticacao;
 using gestaoContadorcomvc.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace gestaoContadorcomvc.Controllers.Relatorios
 {
+    [Authorize]
     public class RfmDetailsController : Controller
     {
+        [Autoriza(permissao = "rCategoriasList")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult Create(string classificacao, DateTime data_inicio, DateTime data_fim)

@@ -291,6 +291,11 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Relatório Financeiro por Período";
                 }
+                //Cartão de crédito
+                if (pagina.Contains("CartaoCredito/Index"))
+                {
+                    retorno = "Cartão de Crédito";
+                }
             }
 
             ViewData["openNav"] = openNav;

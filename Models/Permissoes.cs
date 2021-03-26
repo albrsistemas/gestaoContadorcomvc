@@ -129,6 +129,8 @@ namespace gestaoContadorcomvc.Models
         public bool cartaoCreditoCreate { get; set; }
         public bool cartaoCreditoEdit { get; set; }
         public bool cartaoCreditoDelete { get; set; }
+        //Relatório por participante
+        public bool rpList { get; set; }
 
 
 
@@ -539,7 +541,6 @@ namespace gestaoContadorcomvc.Models
                         permissao.cartaoCreditoCreate = Convert.ToBoolean(leitor["cartaoCreditoCreate"]);
                         permissao.cartaoCreditoEdit = Convert.ToBoolean(leitor["cartaoCreditoEdit"]);
                         permissao.cartaoCreditoDelete = Convert.ToBoolean(leitor["cartaoCreditoDelete"]);
-
                     }
                 }
             }
