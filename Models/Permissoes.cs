@@ -541,6 +541,8 @@ namespace gestaoContadorcomvc.Models
                         permissao.cartaoCreditoCreate = Convert.ToBoolean(leitor["cartaoCreditoCreate"]);
                         permissao.cartaoCreditoEdit = Convert.ToBoolean(leitor["cartaoCreditoEdit"]);
                         permissao.cartaoCreditoDelete = Convert.ToBoolean(leitor["cartaoCreditoDelete"]);
+                        //27/03/2021
+                        permissao.rpList = Convert.ToBoolean(leitor["rpList"]);
                     }
                 }
             }

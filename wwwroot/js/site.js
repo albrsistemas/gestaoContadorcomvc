@@ -5434,10 +5434,105 @@ function rfm_details_gerar(classificacao, nome) {
             }
         }
     });
+}
 
+function rp_gerar() {
+    let filtro = {
+        ano: document.getElementById('ano').value,
+        ignorar_zerados: document.getElementById('ignorar_zerados').value,        
+        ocultar_nomes: document.getElementById('ocultar_nomes').value        
+    };
 
+    $.ajax({
+        url: "/Rp/Create",
+        data: { __RequestVerificationToken: gettoken(), filtro: filtro },
+        type: 'POST',
+        dataType: 'json',
+        beforeSend: function (XMLHttpRequest) {
+            document.getElementById('corpo_rp').innerHTML = '<span class="text-info">Gerando relatório, aguarde...</span>';
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            document.getElementById('corpo_rp').innerHTML = '<span class="text-danger">Erro no processamento do relatório</span>';
+        },
+        success: function (data, textStatus, XMLHttpRequest) {
+            rp = JSON.parse(data);
+            if (textStatus == 'error') {
+                document.getElementById('corpo_rp').innerHTML = '<span class="text-primary">error</span>';
+            }
 
+            if (textStatus == 'success') {
+                if (rp.retorno.includes("Erro")) {
+                    document.getElementById('corpo_rp').innerHTML = '<span class="text-danger">Erro no processamento do relatório</span>';
 
+                    return;
+                }
+
+                let c = '<div class="table-responsive">';
+                c += '<table class="table table-sm">';
+                c += '<caption>Relatório Participante Anual</caption>';
+                c += '<thead>';      
+                c += '<tr>'
+                c += '<th style="text-align:center">Código</th>'
+                c += '<th style="text-align:left">Participante</th>'
+                c += '<th style="text-align:right">Janeiro</th>'
+                c += '<th style="text-align:right">Fevereiro</th>'
+                c += '<th style="text-align:right">Março</th>'
+                c += '<th style="text-align:right">Abril</th>'
+                c += '<th style="text-align:right">Maio</th>'
+                c += '<th style="text-align:right">Junho</th>'
+                c += '<th style="text-align:right">Julho</th>'
+                c += '<th style="text-align:right">Agosto</th>'
+                c += '<th style="text-align:right">Setembro</th>'
+                c += '<th style="text-align:right">Outubro</th>'
+                c += '<th style="text-align:right">Novembro</th>'
+                c += '<th style="text-align:right">Dezembro</th>'
+                c += '<th style="text-align:right">Total</th>'
+                c += '</tr>'
+                c += '</thead>';
+                c += '<tbody>';
+                for (let i = 0; i < rp.rps.length; i++) {
+                    c += '<tr>';
+                    c += '<td style="text-align:center">' + convertDoubleString(rp.rps[i].participante_codigo) + '</td>'
+                    c += '<td style="text-align:left" class="rp_col_nome">' + convertDoubleString(rp.rps[i].participante_nome) + '</td>'
+                    c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].jan) + '</td>'
+                    c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].fev) + '</td>'
+                    c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].marc) + '</td>'
+                    c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].abr) + '</td>'
+                    c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].mai) + '</td>'
+                    c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].jun) + '</td>'
+                    c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].jul) + '</td>'
+                    c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].ago) + '</td>'
+                    c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].sete) + '</td>'
+                    c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].outu) + '</td>'
+                    c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].nov) + '</td>'
+                    c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].dez) + '</td>'
+                    c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].total) + '</td>'
+                    c += '</tr>';
+                }
+                c += '<tr style="background-color: #ffe699;">';
+                c += '<th style="text-align:left" colspan="2">Total</th>'
+                c += '<th style="text-align:right">' + convertDoubleString(rp.total.jan) + '</th>'
+                c += '<th style="text-align:right">' + convertDoubleString(rp.total.fev) + '</th>'
+                c += '<th style="text-align:right">' + convertDoubleString(rp.total.marc) + '</th>'
+                c += '<th style="text-align:right">' + convertDoubleString(rp.total.abr) + '</th>'
+                c += '<th style="text-align:right">' + convertDoubleString(rp.total.mai) + '</th>'
+                c += '<th style="text-align:right">' + convertDoubleString(rp.total.jun) + '</th>'
+                c += '<th style="text-align:right">' + convertDoubleString(rp.total.jul) + '</th>'
+                c += '<th style="text-align:right">' + convertDoubleString(rp.total.ago) + '</th>'
+                c += '<th style="text-align:right">' + convertDoubleString(rp.total.sete) + '</th>'
+                c += '<th style="text-align:right">' + convertDoubleString(rp.total.outu) + '</th>'
+                c += '<th style="text-align:right">' + convertDoubleString(rp.total.nov) + '</th>'
+                c += '<th style="text-align:right">' + convertDoubleString(rp.total.dez) + '</th>'
+                c += '<th style="text-align:right">' + convertDoubleString(rp.total.total) + '</th>'
+                c += '</tr>';
+                c += '</tbody>';
+                c += '</table>';
+                c += '</div>';
+                //console.log(rfm);
+                document.getElementById('corpo_rp').innerHTML = c;
+            }
+        }
+    });
 }
 
 function fomat_numeroToStringLocal(vlr, decimais) {

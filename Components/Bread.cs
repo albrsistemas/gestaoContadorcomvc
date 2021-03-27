@@ -296,6 +296,11 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Cartão de Crédito";
                 }
+                //Relatório Participante
+                if (pagina.Contains("Rp/Create"))
+                {
+                    retorno = "Relatório Participante Anual";
+                }
             }
 
             ViewData["openNav"] = openNav;

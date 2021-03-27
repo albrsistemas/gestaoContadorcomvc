@@ -25,8 +25,7 @@ namespace gestaoContadorcomvc.Models.Relatorios
         public Decimal outu { get; set; }
         public Decimal nov { get; set; }
         public Decimal dez { get; set; }
-        public Decimal total { get; set; }
-        public Rp_filtro filtro { get; set; }
+        public Decimal total { get; set; }       
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -44,8 +43,10 @@ namespace gestaoContadorcomvc.Models.Relatorios
         }
 
         //MÉTODOS
-        public List<Rp> create(int conta_id, string ano, bool ignorar_zerados)
+        public Relatorio_participante create(int conta_id, string ano, bool ignorar_zerados, bool ocultar_nomes)
         {
+            Relatorio_participante relatorio_Participante = new Relatorio_participante();
+            Rp total = new Rp();
             List<Rp> rps = new List<Rp>();
 
             conn.Open();
@@ -70,7 +71,14 @@ namespace gestaoContadorcomvc.Models.Relatorios
 
                         rp.participante_id = Convert.ToInt32(dr_1["participante_id"]);
                         rp.participante_codigo = dr_1["participante_codigo"].ToString();
-                        rp.participante_nome = dr_1["participante_nome"].ToString();
+                        if (ocultar_nomes)
+                        {
+                            rp.participante_nome = "-";
+                        }
+                        else
+                        {
+                            rp.participante_nome = dr_1["participante_nome"].ToString();
+                        }                        
                         rp.jan = Convert.ToDecimal(dr_1["jan"]);
                         rp.fev = Convert.ToDecimal(dr_1["fev"]);
                         rp.marc = Convert.ToDecimal(dr_1["marc"]);
@@ -85,6 +93,20 @@ namespace gestaoContadorcomvc.Models.Relatorios
                         rp.dez = Convert.ToDecimal(dr_1["dez"]);
                         rp.total = rp.jan + rp.fev + rp.marc + rp.abr + rp.mai + rp.jun + rp.jul + rp.ago + rp.sete + rp.outu + rp.nov + rp.dez;
 
+                        total.jan += rp.jan;
+                        total.fev += rp.fev;
+                        total.marc += rp.marc;
+                        total.abr += rp.abr;
+                        total.mai += rp.mai;
+                        total.jun += rp.jun;
+                        total.jul += rp.jul;
+                        total.ago += rp.ago;
+                        total.sete += rp.sete;
+                        total.outu += rp.outu;
+                        total.nov += rp.nov;
+                        total.dez += rp.dez;
+                        total.total += rp.total;
+
                         if(ignorar_zerados)
                         {
                             if(rp.total > 0)
@@ -98,6 +120,8 @@ namespace gestaoContadorcomvc.Models.Relatorios
                         }
                     }
                 }
+                relatorio_Participante.rps = rps;
+                relatorio_Participante.total = total;
                 dr_1.Close();
             }
             catch (Exception)
@@ -112,7 +136,7 @@ namespace gestaoContadorcomvc.Models.Relatorios
                 }
             }
 
-            return rps;
+            return relatorio_Participante;
         }
     }
 
@@ -120,5 +144,14 @@ namespace gestaoContadorcomvc.Models.Relatorios
     {
         public string ano { get; set; }
         public bool ignorar_zerados { get; set; }
+        public bool ocultar_nomes { get; set; }
+    }
+
+    public class Relatorio_participante
+    {
+        public IEnumerable<Rp> rps { get; set; }
+        public Rp total { get; set; }
+        public Rp_filtro filtro { get; set; }
+        public string retorno { get; set; }
     }
 }

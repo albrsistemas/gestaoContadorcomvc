@@ -1,4 +1,4 @@
-﻿@model gestaoContadorcomvc.Models.Relatorios.Rp
+﻿@model gestaoContadorcomvc.Models.Relatorios.Relatorio_participante
 @{
     ViewData["Title"] = "Relatório Participantes Anual";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -7,6 +7,9 @@
 <style>
     .container{
         min-width: 100%;
+    }
+    .table > tbody > tr:hover {
+        background-color: #f5f4ba;
     }
 </style>
 
@@ -30,7 +33,7 @@
 
 <form asp-controller="Rp" asp-action="Create"></form>
 
-<div class="row">
+<div class="row no-printme">
     <div class="col-12">
         <div class="form-group">
             <label class="control-label">Ano</label>
@@ -40,15 +43,28 @@
     <div class="col-12">
         <div class="custom-control custom-switch">
             <input type="checkbox" id="ignorar_zerados" asp-for="filtro.ignorar_zerados" class="custom-control-input" checked="checked" onchange="ignorarZeradasRelCat(this.id)">
-            <label class="custom-control-label" for="ignorarZeradas">Ignorar participantes zerados</label>
+            <label class="custom-control-label" for="ignorar_zerados">Ignorar participantes zerados</label>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="custom-control custom-switch">
+            <input type="checkbox" id="ocultar_nomes" asp-for="filtro.ocultar_nomes" class="custom-control-input" onchange="ignorarZeradasRelCat(this.id)">
+            <label class="custom-control-label" for="ocultar_nomes">Ocultar nome dos participantes</label>
         </div>
     </div>
     <div class="col-12" style="margin-top: 10px;">
         <div class="form-group">
-            <button type="button" class="btn btn-info" id="btn_rfm_gerar" @*onclick="rfm_gerar()"*@>Gerar</button>
-            <span class="text-info" id="rfm_msg"></span>
+            <button type="button" class="btn btn-info" id="btn_rfm_gerar" onclick="rp_gerar()">Gerar</button>
+            <span class="text-info" id="rp_msg"></span>
         </div>
     </div>
 </div>
-<hr class="hrLine" />
+<hr class="hrLine no-printme" />
 <div class="corpo_rp" id="corpo_rp"></div>
+<script>
+    if (document.getElementById('ocultar_nomes').checked) {
+        document.getElementById('ocultar_nomes').value = 'true';
+    } else {
+        document.getElementById('ocultar_nomes').value = 'false';
+    }    
+</script>

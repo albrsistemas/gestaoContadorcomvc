@@ -31,7 +31,7 @@ namespace gestaoContadorcomvc.Filtros
                 context.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Conta" }, { "action", "login" } });
             }
 
-            if (user.conta.conta_tipo.ToUpper().Equals("CLIENTE"))
+            if (user.conta.conta_tipo.ToUpper() != "CONTABILIDADE")
             {
                 if(user.Role.ToUpper() != "ADM")
                 {  
