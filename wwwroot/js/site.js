@@ -5414,19 +5414,20 @@ function rfm_details_gerar(classificacao, nome) {
                 c += '<table class="table table-sm">';
                 c += '<caption>Detalhamento</caption>';
                 c += '<thead>';
-                c += '<tr class="thead_title"><th style="text-align:center">Data</th><th style="text-align:center">Origem</th><th style="text-align:left">Memorando</th><th style="text-align:right">Valor</th></tr>'
+                c += '<tr class="thead_title"><th style="text-align:center">Data</th><th style="text-align:center">Origem</th><th style="text-align:left">Participante</th><th style="text-align:left">Memorando</th><th style="text-align:right">Valor</th></tr>'
                 c += '</thead>';
                 c += '<tbody>';
                 for (let i = 0; i < rfmd.length; i++) {
                     c += '<tr>';
                     c += '<td style="text-align:center">' + convertData_DataSimples(rfmd[i].data) + '</td>';
                     c += '<td style="text-align:center">' + rfmd[i].origem + '</td>';
+                    c += '<td style="text-align:left">' + rfmd[i].participante + '</td>';
                     c += '<td style="text-align:left">' + rfmd[i].memorando + '</td>';
                     c += '<td style="text-align:right">' + convertDoubleString(rfmd[i].valor) + '</td>';
                     c += '</tr>';
                     vlr += rfmd[i].valor;
                 }
-                c += '<tr><td colspan="4" style="text-align:right;font-weight:bold">' + convertDoubleString(vlr) + '</td></tr>';
+                c += '<tr><td colspan="5" style="text-align:right;font-weight:bold">' + convertDoubleString(vlr) + '</td></tr>';
                 c += '</tbody>';
                 c += '</table>';
                 c += '</div>';                
