@@ -1928,21 +1928,46 @@
                     }
 
                     if (textStatus == 'success') {
-                        ajustatOperacao();
-                        carregaEdit_operacao();
+                        if (operacao != null) {
+                            ajustatOperacao();
+                            carregaEdit_operacao();
 
 
-                        $('#modal_mensagem').modal('hide');
+                            $('#modal_mensagem').modal('hide');
 
-                        //Abre modal
-                        modal_sobre_modal_open('modal_op_edit');
+                            //Abre modal
+                            modal_sobre_modal_open('modal_op_edit');
+                        } else {
+                            document.getElementById('conteudo').innerHTML = '<p class="text-danger">Erro ao processar a solicitação. Tente novamente!</p>';
+                            document.getElementById('rodape').innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>';
+                            modal_sobre_modal_open('modal_mensagem');
+                        }
+                        
                     }
                 }
             });
         }
     }    
 
-    function carregaEdit_operacao() {        
+    function carregaEdit_operacao() {
+
+        //Mensagem de verificação baixas fatura e fechamento cartão de crédito
+        //==> Limpaando mensagem_operação
+        document.getElementById('sub').disabled = false;
+        document.getElementById('mensagem_operacao').innerHTML = '';
+        document.getElementById('mensagem_operacao').style.display = 'none';
+        //==> Executando verificação
+        if (document.getElementById('mensagem_operacao') && operacao.mensagem != null) {
+            if (operacao.mensagem.length > 0) {
+                document.getElementById('sub').disabled = true;
+                document.getElementById('mensagem_operacao').innerHTML = operacao.mensagem;
+                document.getElementById('mensagem_operacao').style.display = 'block';                
+            } else {
+                document.getElementById('sub').disabled = false;
+                document.getElementById('mensagem_operacao').innerHTML = '';
+                document.getElementById('mensagem_operacao').style.display = 'none';                
+            }
+        }
         //operacaop
         document.getElementById('op_data').value = operacao.operacao.op_data;
         document.getElementById('op_obs').value = operacao.operacao.op_obs;

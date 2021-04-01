@@ -10,17 +10,35 @@
             </div>
             <form asp-controller="Operacao" asp-action="Delete">
                 <div class="modal-body">
-                    <p>Confirme a exclusão da operação:</p>
-                    <span><strong>Tipo: </strong>@Model.operacao.op_tipo</span><br>
-                    <span><strong>Data Operação: </strong>@Model.operacao.op_data.ToShortDateString()</span><br>                    
-                    <span><strong>Valor: </strong>@Model.totais.op_totais_total_op.ToString("N")</span><br>
+                    @{
+                        if (TempData["msgOP"] != null && TempData["msgOP"].ToString().Contains("Erro"))
+                        {
+                            <p>@TempData["msgOP"].ToString()</p>
+                        }
+                        else
+                        {
+                            <p>Confirme a exclusão da operação:</p>
+                            <span><strong>Tipo: </strong>@Model.operacao.op_tipo</span><br>
+                            <span><strong>Data Operação: </strong>@Model.operacao.op_data.ToShortDateString()</span><br>
+                            <span><strong>Valor: </strong>@Model.totais.op_totais_total_op.ToString("N")</span><br>
 
-                    <input type="hidden" name="op_id" value="@Model.operacao.op_id" />
-
+                            <input type="hidden" name="op_id" value="@Model.operacao.op_id" />
+                        }
+                    }
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger">Excluir</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    @{
+                        if (TempData["msgOP"] != null && TempData["msgOP"].ToString().Contains("Erro"))
+                        {
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        }
+                    }
+
                 </div>
             </form>
         </div><!-- /.modal-content -->

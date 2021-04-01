@@ -83,6 +83,14 @@ namespace gestaoContadorcomvc.Controllers
                 user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 Operacao operacao = new Operacao();
+
+                if (operacao.verificaPossuiParcelasComFaturaFechada(op.parcelas, user.conta.conta_id))
+                {
+                    retorno = "Erro. Operação possui parcela(s) em que a competência recai em fatura de cartão de crédito com situação 'Fechada'. Para incluir a operação todas as parcelas no cartão de crédito precisa estar em fatura aberta.";
+
+                    return Json(JsonConvert.SerializeObject(retorno));
+                }
+
                 retorno = operacao.create(user.usuario_id, user.usuario_conta_id, op);
 
                 return Json(JsonConvert.SerializeObject(retorno));
@@ -120,6 +128,18 @@ namespace gestaoContadorcomvc.Controllers
             ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             ViewBag.tipoNF = select.getTipoNF().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.nf.op_nf_tipo.ToString() });
 
+            //Verificando se parcela possui baixas ou parcela em fatura fechada e retornando para usuário aviso que não poderá ser alterada a operação.
+            if (op.baixasPorOperacao(id) > 0)
+            {
+                vm_op.mensagem = "Operação não pode ser alterada pois possui parcela(s) com baixa. Para alterar exclua as baixas.";
+                
+            }
+
+            if (op.verificaFaturaCartaoFechada(id, user.conta.conta_id))
+            {
+                vm_op.mensagem += "Operação não pode ser alterada pois existem parcelas em cartão de crédito com fatura fechada. Para alterar reabra a fatura do cartão!";
+            }
+
             return Json(JsonConvert.SerializeObject(vm_op));
         }
 
@@ -138,14 +158,21 @@ namespace gestaoContadorcomvc.Controllers
 
                 Operacao operacao = new Operacao();
 
-                if (operacao.baixasPorOperacao(id) > 0)
+                if (operacao.baixasPorOperacao(op.operacao.op_id) > 0)
                 {
                     retorno = "Erro. Operação possui baixas e não pode ser alterada. Primeiro deve-se excluir as baixas no movimento de conta corrente!";
+                    
+                    return Json(JsonConvert.SerializeObject(retorno));
                 }
-                else
+
+                if (operacao.verificaFaturaCartaoFechada(op.operacao.op_id, user.conta.conta_id))
                 {
-                    retorno = operacao.alterarOperacao(user.usuario_id, user.usuario_conta_id, op);
-                }                
+                    retorno = "Erro. Operação não pode ser alterada pois existem parcelas em cartão de crédito com fatura fechada. Para alterar reabra a fatura do cartão!";
+
+                    return Json(JsonConvert.SerializeObject(retorno));
+                }
+
+                retorno = operacao.alterarOperacao(user.usuario_id, user.usuario_conta_id, op);
 
                 return Json(JsonConvert.SerializeObject(retorno));
             }
@@ -153,7 +180,7 @@ namespace gestaoContadorcomvc.Controllers
             {
                 if (retorno == "")
                 {
-                    retorno = "Erro ao cadastrar a operação. Tente novamente, se persistir, entre em contato com o suporte!";
+                    retorno = "Erro ao alterar a operação. Tente novamente, se persistir, entre em contato com o suporte!";
                 }
 
                 return Json(JsonConvert.SerializeObject(retorno));
@@ -167,21 +194,28 @@ namespace gestaoContadorcomvc.Controllers
             Vm_usuario user = new Vm_usuario();
             user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
+            Vm_operacao vm_op = new Vm_operacao();
+
             Operacao op = new Operacao();
 
             if (op.baixasPorOperacao(id) > 0)
             {
                 TempData["msgOP"] = "Erro. Operação possui baixas e não pode ser excluído. Primeiro deve-se excluir as baixas no movimento de conta corrente!";
 
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {   
-                Vm_operacao vm_op = new Vm_operacao();
-                vm_op = op.buscaOperacao(user.usuario_id, user.usuario_conta_id, id);
-                
                 return View(vm_op);
             }
+
+            if (op.verificaFaturaCartaoFechada(id, user.conta.conta_id))
+            {
+                TempData["msgOP"] = "Erro. Operação possui parcelas no cartão com fatura fechada. Para excluir deve-se abrir a fatura do cartão!";
+
+                return View(vm_op);
+            }
+
+            
+            vm_op = op.buscaOperacao(user.usuario_id, user.usuario_conta_id, id);
+
+            return View(vm_op);
         }
 
         // POST: OperacaoController/Delete/5
@@ -199,6 +233,20 @@ namespace gestaoContadorcomvc.Controllers
 
             try
             {
+                if (op.baixasPorOperacao(op_id) > 0)
+                {
+                    TempData["msgOP"] = "Erro. Operação possui baixas e não pode ser excluído. Primeiro deve-se excluir as baixas no movimento de conta corrente!";
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                if (op.verificaFaturaCartaoFechada(op_id, user.conta.conta_id))
+                {
+                    TempData["msgOP"] = "Erro. Operação possui parcelas no cartão com fatura fechada. Para excluir deve-se abrir a fatura do cartão!";
+
+                    return RedirectToAction(nameof(Index));
+                }
+
                 retorno = op.delete(user.usuario_id, user.usuario_conta_id, op_id);
 
                 TempData["msgOP"] = retorno;

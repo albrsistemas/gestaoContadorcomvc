@@ -1588,8 +1588,12 @@ namespace gestaoContadorcomvc.Models
                     {
                         if (op.parcelas.Count > 0)
                         {
-                            //Deletenado todas as parcelas da operação gravadas no banco
+                            //Deletando movimento do cartão
+                            comando.CommandText = "DELETE from movimentos_cartao_credito WHERE movimentos_cartao_credito.mcc_tipo_id in ((SELECT p.op_parcela_id from op_parcelas as p LEFT JOIN operacao as op on op.op_id = p.op_parcela_op_id WHERE op.op_id = @op_id_2)) and movimentos_cartao_credito.mcc_tipo = 'mcc_op_parcelas';";
+                            comando.Parameters.AddWithValue("@op_id_2", op.operacao.op_id);
+                            comando.ExecuteNonQuery();
 
+                            //Deletenado todas as parcelas da operação gravadas no banco
                             comando.CommandText = "DELETE from op_parcelas WHERE op_parcelas.op_parcela_op_id = @operacao_id;";
                             comando.Parameters.AddWithValue("@operacao_id", op.operacao.op_id);
                             comando.ExecuteNonQuery();
@@ -2194,6 +2198,46 @@ namespace gestaoContadorcomvc.Models
             return baixas;
         }
 
+        public bool verificaFaturaCartaoFechada(int op_id, int conta_id)
+        {
+            bool retorno = false;
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT f.fcc_situacao as 'FaturaCartao' from movimentos_cartao_credito as m LEFT JOIN fatura_cartao_credito as f on f.fcc_id = m.mcc_fcc_id LEFT JOIN op_parcelas as p on p.op_parcela_id = m.mcc_tipo_id LEFT JOIN operacao as op on op.op_id = p.op_parcela_op_id WHERE op.op_conta_id = @conta_id and op.op_id = @op_id and f.fcc_situacao = 'Fechada';";
+                comando.Parameters.AddWithValue("@op_id", op_id);
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    retorno = true;
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
         public string delete(int usuario_id, int conta_id, int op_id)
         {
             string retorno = "Operação excluída com sucesso!";
@@ -2207,10 +2251,13 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
+                comando.CommandText = "DELETE from movimentos_cartao_credito WHERE movimentos_cartao_credito.mcc_tipo_id in ((SELECT p.op_parcela_id from op_parcelas as p LEFT JOIN operacao as op on op.op_id = p.op_parcela_op_id WHERE op.op_id = @op_id_2)) and movimentos_cartao_credito.mcc_tipo = 'mcc_op_parcelas';";
+                comando.Parameters.AddWithValue("@op_id_2", op_id);
+                comando.ExecuteNonQuery();
                 comando.CommandText = "DELETE from operacao WHERE operacao.op_id = @op_id and operacao.op_conta_id = @conta_id;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@op_id", op_id);
-                comando.ExecuteNonQuery();
+                comando.ExecuteNonQuery();                
                 Transacao.Commit();
 
                 string msg = "Exclusão da operação ID: " + op_id + " excluida com sucesso";
@@ -2756,6 +2803,54 @@ namespace gestaoContadorcomvc.Models
                 log.log("Operação", "ajuste_Parcelas_Operacao_gravar", "Erro", msg, conta_id, usuario_id);
 
                 retorno = "Erro ao processar os ajustes das parcelas no banco de dados.";
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
+        public bool verificaPossuiParcelasComFaturaFechada(List<Op_parcelas> parcelas, int conta_id)
+        {
+            bool retorno = false;
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                for (var i = 0; i < parcelas.Count; i++)
+                {
+                    string comp = parcelas[i].op_parcela_vencimento.Month.ToString().PadLeft(2, '0') + "/" +  parcelas[i].op_parcela_vencimento.Year.ToString();
+                    MySqlDataReader dr_1;
+                    MySqlCommand dr_1_c = conn.CreateCommand();
+                    dr_1_c.Connection = conn;
+                    dr_1_c.Transaction = Transacao;
+                    dr_1_c.CommandText = "SELECT f.fcc_id from fatura_cartao_credito as f WHERE f.fcc_forma_pagamento_id = @forma_pagamento and f.fcc_conta_id = @conta_id and f.fcc_competencia = @competencia and f.fcc_situacao = 'Fechada';";
+                    dr_1_c.Parameters.AddWithValue("conta_id", conta_id);
+                    dr_1_c.Parameters.AddWithValue("competencia", comp);                    
+                    dr_1_c.Parameters.AddWithValue("forma_pagamento", parcelas[i].op_parcela_fp_id);                    
+                    dr_1 = dr_1_c.ExecuteReader();
+
+                    if (dr_1.HasRows)
+                    {
+                        retorno = true;
+                        break;
+                    }
+                    dr_1.Close();
+                }
+            }
+            catch (Exception)
+            {
+                
             }
             finally
             {

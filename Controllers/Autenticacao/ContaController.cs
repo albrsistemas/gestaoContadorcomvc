@@ -78,6 +78,13 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
             Conta conta = new Conta();
             conta = conta.buscarConta(user.usuario_conta_id);
+
+
+            //retorno com erro temporário para manutenção.
+            //if(conta.conta_id != 5)
+            //{
+            //    return View(TempData["errorLogin"] = "Estamos em manutenção no banco de dados. Retorno dia 01/04/20121 às 12:00.");
+            //}
                         
             if (user != null && user.usuario_id > 0)
             {
