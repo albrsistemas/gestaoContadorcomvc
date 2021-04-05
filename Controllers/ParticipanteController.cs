@@ -79,7 +79,7 @@ namespace gestaoContadorcomvc.Controllers
                     Convert.ToInt32(d["participante_uf"]), Convert.ToInt32(d["participante_categoria"]),user.usuario_conta_id, Convert.ToInt32(d["participante_pais"]),
                     d["participante_cep"],d["participante_nome"],d["participante_logradouro"],d["participante_rg"],d["participante_orgaoEmissor"],d["participante_numero"],
                     d["participante_codigo"],d["participante_tipoPessoa"],d["participante_inscricaoEstadual"],d["participante_cnpj_cpf"],d["participante_complemento"],
-                    d["participante_obs"],d["participante_bairro"],d["participante_cidade"],d["participante_fantasia"],d["participante_insc_municipal"],Convert.ToInt32(d["participante_regime_tributario"]),d["participante_suframa"]);
+                    d["participante_obs"],d["participante_bairro"],d["participante_cidade"],d["participante_fantasia"],d["participante_insc_municipal"],Convert.ToInt32(d["participante_regime_tributario"]),d["participante_suframa"],d["participante_tipo"]);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -138,7 +138,7 @@ namespace gestaoContadorcomvc.Controllers
                     Convert.ToInt32(d["participante_uf"]), Convert.ToInt32(d["participante_categoria"]), Convert.ToInt32(d["participante_pais"]),
                     d["participante_cep"], d["participante_nome"], d["participante_logradouro"], d["participante_rg"], d["participante_orgaoEmissor"], d["participante_numero"],
                     d["participante_codigo"], d["participante_tipoPessoa"], d["participante_inscricaoEstadual"], d["participante_cnpj_cpf"], d["participante_complemento"],
-                    d["participante_obs"], d["participante_bairro"], d["participante_cidade"], d["participante_fantasia"], d["participante_status"], d["participante_insc_municipal"], Convert.ToInt32(d["participante_regime_tributario"]), d["participante_suframa"]);
+                    d["participante_obs"], d["participante_bairro"], d["participante_cidade"], d["participante_fantasia"], d["participante_status"], d["participante_insc_municipal"], Convert.ToInt32(d["participante_regime_tributario"]), d["participante_suframa"],d["participante_tipo"]);
 
                 return RedirectToAction(nameof(Index));
             }

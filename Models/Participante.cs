@@ -36,7 +36,8 @@ namespace gestaoContadorcomvc.Models
         public string participante_status { get; set; }
         public string participante_insc_municipal { get; set; }
         public int participante_regime_tributario { get; set; }
-        public string participante_suframa { get; set; }        
+        public string participante_suframa { get; set; }
+        public int participante_tipo { get; set; }
 
         /*--------------------------*/
         //Métodos para pegar a string de conexão do arquivo appsettings.json e gerar conexão no MySql.      
@@ -59,7 +60,7 @@ namespace gestaoContadorcomvc.Models
 
         //Listar participante
         public List<Vm_participante> listaParticipantes(int usuario_id, int conta_id)
-        {
+        {           
             List<Vm_participante> participantes = new List<Vm_participante>();
 
             conn.Open();
@@ -70,9 +71,9 @@ namespace gestaoContadorcomvc.Models
             comando.Transaction = Transacao;
 
             try
-            {                
+            {
                 comando.CommandText = "SELECT * from participante where participante_conta_id = @conta_id and participante_status = 'Ativo';";
-                comando.Parameters.AddWithValue("@conta_id", conta_id);                
+                comando.Parameters.AddWithValue("@conta_id", conta_id);                                 
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -211,7 +212,7 @@ namespace gestaoContadorcomvc.Models
             int participante_categoria, int participante_conta_id, int participante_pais, string participante_cep, string participante_nome, 
             string participante_logradouro, string participante_rg, string participante_orgaoEmissor, string participante_numero, string participante_codigo, 
             string participante_tipoPessoa, string participante_inscricaoEstadual, string participante_cnpj_cpf, string participante_complemento, 
-            string participante_obs, string participante_bairro, string participante_cidade, string participante_fantasia, string participante_insc_municipal, int participante_regime_tributario, string participante_suframa)
+            string participante_obs, string participante_bairro, string participante_cidade, string participante_fantasia, string participante_insc_municipal, int participante_regime_tributario, string participante_suframa, string participante_tipo)
         {
             string retorno = "Participante cadastrado com sucesso!";
 
@@ -225,9 +226,9 @@ namespace gestaoContadorcomvc.Models
             try
             {
                 comando.CommandText = "insert into participante " +
-                    "(participante_nome, participante_fantasia, participante_codigo, participante_tipoPessoa, participante_clienteDesde, participante_contribuinte, participante_inscricaoEstadual, participante_cnpj_cpf, participante_rg, participante_orgaoEmissor, participante_cep, participante_uf, participante_cidade, participante_bairro, participante_logradouro, participante_numero, participante_complemento, participante_categoria, participante_obs, participante_conta_id, participante_pais, participante_insc_municipal, participante_regime_tributario, participante_suframa) " +
+                    "(participante_nome, participante_fantasia, participante_codigo, participante_tipoPessoa, participante_clienteDesde, participante_contribuinte, participante_inscricaoEstadual, participante_cnpj_cpf, participante_rg, participante_orgaoEmissor, participante_cep, participante_uf, participante_cidade, participante_bairro, participante_logradouro, participante_numero, participante_complemento, participante_categoria, participante_obs, participante_conta_id, participante_pais, participante_insc_municipal, participante_regime_tributario, participante_suframa, participante_tipo) " +
                     "values (" +
-                    "@participante_nome, @participante_fantasia, @participante_codigo, @participante_tipoPessoa, @participante_clienteDesde, @participante_contribuinte, @participante_inscricaoEstadual, @participante_cnpj_cpf, @participante_rg, @participante_orgaoEmissor, @participante_cep, @participante_uf, @participante_cidade, @participante_bairro, @participante_logradouro, @participante_numero, @participante_complemento, @participante_categoria, @participante_obs, @participante_conta_id, @participante_pais, @participante_insc_municipal, @participante_regime_tributario, @participante_suframa);";
+                    "@participante_nome, @participante_fantasia, @participante_codigo, @participante_tipoPessoa, @participante_clienteDesde, @participante_contribuinte, @participante_inscricaoEstadual, @participante_cnpj_cpf, @participante_rg, @participante_orgaoEmissor, @participante_cep, @participante_uf, @participante_cidade, @participante_bairro, @participante_logradouro, @participante_numero, @participante_complemento, @participante_categoria, @participante_obs, @participante_conta_id, @participante_pais, @participante_insc_municipal, @participante_regime_tributario, @participante_suframa, @participante_tipo);";
                 comando.Parameters.AddWithValue("@participante_nome", participante_nome);
                 comando.Parameters.AddWithValue("@participante_fantasia", participante_fantasia);
                 comando.Parameters.AddWithValue("@participante_codigo", participante_codigo);
@@ -252,6 +253,7 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@participante_insc_municipal", participante_insc_municipal);
                 comando.Parameters.AddWithValue("@participante_regime_tributario", participante_regime_tributario);
                 comando.Parameters.AddWithValue("@participante_suframa", participante_suframa);
+                comando.Parameters.AddWithValue("@participante_tipo", participante_tipo);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -290,7 +292,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT * from participante where participante_conta_id = @conta_id and participante_id = @participante_id;";
+                comando.CommandText = "SELECT COALESCE(pt.pt_nome,'Não definido') as participante_tipo_nome, COALESCE(pt.pt_id,0) as participante_tipo, participante.* from participante LEFT JOIN participante_tipo as pt on pt.pt_id = participante.participante_tipo where participante_conta_id = @conta_id and participante_id = @participante_id;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@participante_id", participante_id);
                 comando.ExecuteNonQuery();
@@ -383,6 +385,15 @@ namespace gestaoContadorcomvc.Models
                             participante.participante_clienteDesde = new DateTime();
                         }
 
+                        if (DBNull.Value != leitor["participante_tipo"])
+                        {
+                            participante.participante_tipo = Convert.ToInt32(leitor["participante_tipo"]);
+                        }
+                        else
+                        {
+                            participante.participante_tipo = 0;
+                        }
+
                         participante.participante_nome = leitor["participante_nome"].ToString();
                         participante.participante_fantasia = leitor["participante_fantasia"].ToString();
                         participante.participante_codigo = leitor["participante_codigo"].ToString();
@@ -401,6 +412,7 @@ namespace gestaoContadorcomvc.Models
                         participante.participante_status = leitor["participante_status"].ToString();
                         participante.participante_insc_municipal = leitor["participante_insc_municipal"].ToString();
                         participante.participante_suframa = leitor["participante_suframa"].ToString();
+                        participante.participante_tipo_nome = leitor["participante_tipo_nome"].ToString();
 
                     }
                 }
@@ -427,7 +439,7 @@ namespace gestaoContadorcomvc.Models
             int participante_categoria, int participante_pais, string participante_cep, string participante_nome,
             string participante_logradouro, string participante_rg, string participante_orgaoEmissor, string participante_numero, string participante_codigo,
             string participante_tipoPessoa, string participante_inscricaoEstadual, string participante_cnpj_cpf, string participante_complemento,
-            string participante_obs, string participante_bairro, string participante_cidade, string participante_fantasia, string participante_status, string participante_insc_municipal, int participante_regime_tributario, string participante_suframa)
+            string participante_obs, string participante_bairro, string participante_cidade, string participante_fantasia, string participante_status, string participante_insc_municipal, int participante_regime_tributario, string participante_suframa, string participante_tipo)
         {
             string retorno = "Participante alterado com sucesso!";
 
@@ -440,7 +452,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "update participante set participante_nome = @participante_nome, participante_fantasia = @participante_fantasia, participante_codigo = @participante_codigo, participante_tipoPessoa = @participante_tipoPessoa, participante_clienteDesde = @participante_clienteDesde, participante_contribuinte = @participante_contribuinte, participante_inscricaoEstadual = @participante_inscricaoEstadual, participante_cnpj_cpf = @participante_cnpj_cpf, participante_rg = @participante_rg, participante_orgaoEmissor = @participante_orgaoEmissor, participante_cep = @participante_cep, participante_uf = @participante_uf, participante_cidade = @participante_cidade, participante_bairro = @participante_bairro, participante_logradouro = @participante_logradouro, participante_numero = @participante_numero, participante_complemento = @participante_complemento, participante_categoria = @participante_categoria, participante_obs = @participante_obs, participante_conta_id = @conta_id, participante_status = @participante_status, participante_pais = @participante_pais, participante_insc_municipal = @participante_insc_municipal, participante_regime_tributario = @participante_regime_tributario, participante_suframa = @participante_suframa where participante_conta_id = @conta_id and participante_id = @participante_id;";
+                comando.CommandText = "update participante set participante_nome = @participante_nome, participante_fantasia = @participante_fantasia, participante_codigo = @participante_codigo, participante_tipoPessoa = @participante_tipoPessoa, participante_clienteDesde = @participante_clienteDesde, participante_contribuinte = @participante_contribuinte, participante_inscricaoEstadual = @participante_inscricaoEstadual, participante_cnpj_cpf = @participante_cnpj_cpf, participante_rg = @participante_rg, participante_orgaoEmissor = @participante_orgaoEmissor, participante_cep = @participante_cep, participante_uf = @participante_uf, participante_cidade = @participante_cidade, participante_bairro = @participante_bairro, participante_logradouro = @participante_logradouro, participante_numero = @participante_numero, participante_complemento = @participante_complemento, participante_categoria = @participante_categoria, participante_obs = @participante_obs, participante_conta_id = @conta_id, participante_status = @participante_status, participante_pais = @participante_pais, participante_insc_municipal = @participante_insc_municipal, participante_regime_tributario = @participante_regime_tributario, participante_suframa = @participante_suframa, participante_tipo = @participante_tipo where participante_conta_id = @conta_id and participante_id = @participante_id;";
                 comando.Parameters.AddWithValue("@participante_nome", participante_nome);
                 comando.Parameters.AddWithValue("@participante_fantasia", participante_fantasia);
                 comando.Parameters.AddWithValue("@participante_codigo", participante_codigo);
@@ -467,6 +479,7 @@ namespace gestaoContadorcomvc.Models
                 comando.Parameters.AddWithValue("@participante_insc_municipal", participante_insc_municipal);
                 comando.Parameters.AddWithValue("@participante_regime_tributario", participante_regime_tributario);
                 comando.Parameters.AddWithValue("@participante_suframa", participante_suframa);
+                comando.Parameters.AddWithValue("@participante_tipo", participante_tipo);
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();

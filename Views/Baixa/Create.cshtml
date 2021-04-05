@@ -68,8 +68,15 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
-                                <label class="control-label">Memorando</label>
-                                <textarea asp-for="obs" id="parcela_obs" rows="3" class="form-control" onkeyup="tamanhoDigitado(this.id, this.value, '200','msg_obs')"></textarea>
+                                <label class="control-label">
+                                    Memorando
+                                    <span style="cursor:pointer" onclick="search_m('memorando','open')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                        </svg>
+                                    </span>
+                                </label>
+                                <textarea asp-for="obs" id="parcela_obs" rows="3" class="form-control" onkeyup="consultaMemorando(this.id, this.value, '150','msg_obs')"></textarea>
                                 <span class="text-info" id="msg_obs"></span>
                                 <span asp-validation-for="obs" class="text-danger"></span>
                             </div>
@@ -150,6 +157,28 @@
             </div>
             <div class="modal-footer" id="mensagem_retorno_rodape">
 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="search_modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="search_modal_label" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="search_modal_label"></h5>
+            </div>
+            <div class="modal-body" id="search_modal_body" style="text-align:left;">
+                <input type="text" id="search_modal_input_search" value="" placeholder="Pesquisa" class="form-control form-control-sm pesquisa" style="max-width:100%;margin-bottom: 20px;" />
+                <div class="table-responsive" style="max-height: 350px;">
+                    <table class="table table-sm" id="search_modal_table" style="width:100%">
+                        <thead id="search_modal_table_thead"></thead>
+                        <tbody id="search_modal_table_tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" id="search_modal_rodape">
+                <button type="button" class="btn btn-secondary" onclick="search_m('','close')">Fechar</button>
             </div>
         </div>
     </div>

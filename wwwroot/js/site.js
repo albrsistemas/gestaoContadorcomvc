@@ -1,6 +1,4 @@
-﻿//import * as saveAs from "./FileSaver";
-
-//Variaveis globais
+﻿//Variaveis globais
 let rfm = {};
 
 let fcc = {
@@ -1003,10 +1001,15 @@ function tamanhoDigitado(id, vlr, limit, msg) {
     }
 }
 
-function decimal(id, vlr, limit, alerta) {
+function decimal(id, vlr, limit, alerta) {    
+    if (vlr == 0 || vlr == '0' || vlr == '0.00' || vlr == '0,00' || isNaN(vlr.toString().replaceAll('.', '').replaceAll(',', '.') * 1)) {        
+        document.getElementById(id).value = (0).toFixed(2);
 
-    if (vlr == 0 || vlr == '0' || vlr == '0.00' || vlr == '0,00') {
-        document.getElementById(id).value = (0).toFixed(2);;
+        if (isNaN(vlr.toString().replaceAll('.', '').replaceAll(',', '.') * 1)) {
+            alert('O valor: ' + vlr + ' não é número. Digite um número separado por vírgula na decimal.');
+            document.getElementById(id).focus();
+        }
+
         return;
     }
 
@@ -1623,6 +1626,13 @@ function incluir_item() {
 }
 
 function ajusta_item(id, vlr) {
+    if (isNaN(vlr.toString().replaceAll('.', '').replaceAll(',', '.') * 1)) {
+        alert('O valor: ' + vlr + ' não é número. Digite um número separado por vírgula no decimal.');
+        document.getElementById(id).value = (0).toFixed(2);
+        document.getElementById(id).focus();
+        return;
+    }
+
     let qtd = document.getElementById('prod_quantidade').value;
     let vlrProd = document.getElementById('prod_valor').value;
     let total = qtd.toString().replace(".", "").replace(",", ".") * vlrProd.toString().replace(".", "").replace(",", ".");
@@ -1632,6 +1642,13 @@ function ajusta_item(id, vlr) {
 }
 
 function changeItens(id, vlr, inputTotalizador) {
+    if (isNaN(vlr.toString().replaceAll('.', '').replaceAll(',', '.') * 1)) {
+        alert('O valor: ' + vlr + ' não é número. Digite um número separado por vírgula no decimal.');
+        document.getElementById(id).value = (0).toFixed(2);
+        document.getElementById(id).focus();
+        return;
+    }
+
     let preco = document.getElementById('op_item_preco').value.toString().replace('.', '').replace(',', '.') * 1;
     let qtd = document.getElementById('op_item_qtd').value.toString().replace('.', '').replace(',', '.') * 1;
     let frete = document.getElementById('op_item_frete').value.toString().replace('.', '').replace(',', '.') * 1;
@@ -4428,7 +4445,14 @@ function modal_itemEspecifico() {
     $("#modal_item").modal('show');
 }
 
-function calculaTotalCCM(id,vlr) {    
+function calculaTotalCCM(id, vlr) {
+    if (isNaN(vlr.toString().replaceAll('.', '').replaceAll(',', '.') * 1)) {
+        alert('O valor: ' + vlr + ' não é número. Digite um número separado por vírgula no decimal.');
+        document.getElementById(id).value = (0).toFixed(2);
+        document.getElementById(id).focus();
+        return;
+    }
+
     let vPrincipal = document.getElementById('ccm_valor_principal').value.toString().replace('.', '').replace(',', '.') * 1;
     let vjuros = document.getElementById('ccm_multa').value.toString().replace('.', '').replace(',', '.') * 1;
     let vMulta = document.getElementById('ccm_juros').value.toString().replace('.', '').replace(',', '.') * 1;
@@ -4571,7 +4595,11 @@ function consultaMemorando(id,vlr,tamanho, id_input_msg) {
     }
     if (document.getElementById('op_obs')) {
         tamanhoDigitado('op_obs', vlr, tamanho, id_input_msg);
-    } 
+    }
+
+    if (document.getElementById('parcela_obs')) {
+        tamanhoDigitado('parcela_obs', vlr, tamanho, id_input_msg);
+    }
 
     let id_campo = "#" + id;
     $(id_campo).autocomplete({
@@ -5207,6 +5235,11 @@ function search_m_memorando_select(nome) {
 
     if (document.getElementById('memorando')) {
         document.getElementById('memorando').value = nome;
+        $("#search_modal").modal('hide');
+    }
+
+    if (document.getElementById('parcela_obs')) {
+        document.getElementById('parcela_obs').value = nome;
         $("#search_modal").modal('hide');
     }
 }
@@ -6368,6 +6401,244 @@ function rfm_btns(contexto) {
 
         let v = moment(document.getElementById('data_fim').value, 'DD/MM/YYYY', 'pt', true);        
         document.getElementById('data_fim').value = v.add(-1, 'M').endOf('month').format('DD/MM/YYYY');
+    }
+}
+
+function gestao_tipo_participante(id, vlr, contexto) {
+    document.getElementById('pt_index').innerHTML = '';
+    //let btn_pt_gravar = document.getElementById('btn_pt_gravar').value;
+
+    if (contexto == 'open' || contexto == 'reboot') {
+        $.ajax({
+            url: "/Participante_tipo/Index",
+            data: { __RequestVerificationToken: gettoken() },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {                                
+                if (contexto == 'open') {
+                    document.getElementById('pt_index').innerHTML = '<span class="text-info">Buscando tipos de participante, aguarde...</span>';
+                    modal_sobre_modal_open('p_tipo_modal');
+                }
+
+                if (contexto == 'reboot') {
+                    document.getElementById('pt_index').innerHTML = '<span class="text-info">Atualizando lista de tipos de participante, aguarde...</span>';
+                }
+                
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                document.getElementById('pt_index').innerHTML = '<span class="text-danger">Erro na busca dos dados!</span>';
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                let pt = JSON.parse(data);                
+                if (textStatus == 'error') {
+                    document.getElementById('pt_index').innerHTML = '<span class="text-danger">Erro na busca dos dados!</span>';
+                }
+
+                if (textStatus == 'success') {
+                    document.getElementById('pt_index').innerHTML = '';
+
+                    let c = '<div class="table-responsive">';
+                    c += '<table class="table table-sm" id="table_pt">';
+                    c += '<caption>Clique no nome para selecionar</caption>';
+                    c += '<thead>';
+                    c += '<tr><th style="text-align:left">Nome</th><th style="text-align:right">Ações</th></tr>';
+                    c += '</thead>';
+                    c += '<tbody>';
+                    for (let i = 0; i < pt.length; i++) {
+                        c += '<tr>';
+                        c += '<td style="text-align:left;cursor:pointer;" id="' + pt[i].pt_id + '" onclick="gestao_tipo_participante(\'' + pt[i].pt_id + '\', \'' + pt[i].pt_nome + '\',\'select\')">' + pt[i].pt_nome + '</td>';
+                        c += '<td style="text-align:right">';
+                        c += '<span style="cursor:pointer;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" onclick="gestao_tipo_participante(\'' + pt[i].pt_id + '\', \'' + pt[i].pt_nome + '\',\'edit\')"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" /><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" /></svg></span>';
+                        c += '<span style="cursor:pointer;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" onclick="gestao_tipo_participante(\'' + pt[i].pt_id + '\', \'' + pt[i].pt_nome + '\',\'delete\')"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" /><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" /></svg></span>';
+                        c += '</td>';
+                        c += '</tr>';
+                    }
+                    c += '</tbody>';
+                    c += '</table>';
+                    c += '</div>';
+                    document.getElementById('pt_index').innerHTML = c;
+                }
+            }
+        });
+
+        return
+    }
+
+    if (contexto == 'close') {
+        $("#p_tipo_modal").modal('hide');
+        return
+    }
+
+    if (contexto == 'close_cofirme') {
+        $("#p_tipo_confirm_confirm_modal").modal('hide');
+        return
+    }
+
+    if (contexto == 'gravar') {
+        let pt_nome = document.getElementById('pt_nome').value;
+
+        if (pt_nome.length == 0 || pt_nome)
+            if (pt_nome.length == 0 || pt_nome == null || pt_nome == "") {
+            alert('Preenche o nome para o tipo de participante!');
+        }else {
+            $.ajax({
+                url: "/Participante_tipo/Create",
+                data: { __RequestVerificationToken: gettoken(), pt_nome: pt_nome },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    document.getElementById('pt_index').innerHTML = '<span class="text-info">Gravando tipo de participante, aguarde...</span>';                    
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    document.getElementById('pt_index').innerHTML = '<span class="text-danger">Erro ao gravar o tipo de participante!</span>';
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    let pt = JSON.parse(data);                    
+                    if (textStatus == 'error') {
+                        document.getElementById('pt_index').innerHTML = '<span class="text-danger">Erro ao gravar o tipo de participante!</span>';
+                    }
+
+                    if (textStatus == 'success') {
+
+                        if (pt.includes('Erro')) {
+                            document.getElementById('pt_index').innerHTML = '<span class="text-danger">' + pt + '</span>';
+                        }
+
+                        if (pt.includes('sucesso')) {
+                            document.getElementById('pt_nome').value = '';
+                            document.getElementById('pt_nome').focus();
+                            alert('Tipo de participante gravado com sucesso!');                            
+                            gestao_tipo_participante('','','reboot');
+                        }
+                    }
+                }
+            });
+            }
+        return;
+    }
+
+    if (contexto == 'edit') {
+
+        let d = '<div class="row">';
+        d += '<div class="col-12">';
+        d += '<label class="control-label">Nome</label>';
+        d += '<div class="input-group mb-3">';
+        d += '<input type="text" class="form-control" aria-label="Gravar" value="' + vlr + '" aria-describedby="basic-addon15" id="pt_nome_edit">';
+        d += '<input type="hidden" id="pt_id_edit" value="' + id + '" />';
+        d += '<div class="input-group-append">';
+        d += '<button class="btn btn-outline-secondary" type="button" onclick="gestao_tipo_participante(this.id, this.value,\'edit_gravar\')">Gravar</button>';
+        d += '</div>';
+        d += '</div>';
+        d += '</div>';
+        d += '</div>';
+
+        document.getElementById('p_tipo_confirm_label').innerHTML = 'Alterar tipo de participante';
+        document.getElementById('p_tipo_confirm_body_conteudo').innerHTML = d;
+        modal_sobre_modal_open('p_tipo_confirm_confirm_modal');
+
+        return
+    }
+
+    if (contexto == 'edit_gravar') {
+        let pt_nome = document.getElementById('pt_nome_edit').value;
+        let pt_id = document.getElementById('pt_id_edit').value;
+
+        if (pt_nome.length == 0 || pt_nome)
+            if (pt_nome.length == 0 || pt_nome == null || pt_nome == "") {
+                alert('Preenche o nome para o tipo de participante!');
+            } else {
+                $.ajax({
+                    url: "/Participante_tipo/Edit",
+                    data: { __RequestVerificationToken: gettoken(), id: pt_id, pt_nome: pt_nome },
+                    type: 'POST',
+                    dataType: 'json',
+                    beforeSend: function (XMLHttpRequest) {
+                        document.getElementById('p_tipo_confirm_body_msg').innerHTML = '<span class="text-info">Gravando tipo de participante, aguarde...</span>';
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        document.getElementById('p_tipo_confirm_body_msg').innerHTML = '<span class="text-danger">Erro ao gravar o tipo de participante!</span>';
+                    },
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        let pt_2 = JSON.parse(data);
+                        if (textStatus == 'error') {
+                            document.getElementById('p_tipo_confirm_body_msg').innerHTML = '<span class="text-danger">Erro ao gravar o tipo de participante!</span>';
+                        }
+
+                        if (textStatus == 'success') {
+
+                            if (pt_2.includes('Erro')) {
+                                document.getElementById('p_tipo_confirm_body_msg').innerHTML = '<span class="text-danger">' + pt_2 + '</span>';
+                            }
+
+                            if (pt_2.includes('sucesso')) {
+                                document.getElementById('p_tipo_confirm_body_conteudo').innerHTML = '';
+                                document.getElementById('p_tipo_confirm_body_msg').innerHTML = '';                                
+                                alert(pt_2);
+                                $("#p_tipo_confirm_confirm_modal").modal('hide');
+                                gestao_tipo_participante('', '', 'reboot');
+                            }
+                        }
+                    }
+                });
+            }
+        return;
+    }
+
+    if (contexto == 'delete') {
+
+        let d = '<p>Confirma a exclusão do tipo de participante: ' + vlr  + '</p>';
+        d += '<button type="button" class="btn btn-danger" onclick="gestao_tipo_participante(\'' + id + '\',\'' + vlr + '\',\'delete_confirma\')">Confirmo</button>';
+        
+        document.getElementById('p_tipo_confirm_label').innerHTML = 'Exclusão de tipo de participante';
+        document.getElementById('p_tipo_confirm_body_conteudo').innerHTML = d;
+        modal_sobre_modal_open('p_tipo_confirm_confirm_modal');
+
+        return
+    }
+
+    if (contexto == 'delete_confirma') {
+        $.ajax({
+            url: "/Participante_tipo/Delete",
+            data: { __RequestVerificationToken: gettoken(), id: id },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                document.getElementById('p_tipo_confirm_body_msg').innerHTML = '<span class="text-info">Excluindo tipo de participante, aguarde...</span>';
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                document.getElementById('p_tipo_confirm_body_msg').innerHTML = '<span class="text-danger">Erro ao excluir o tipo de participante!</span>';
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                let pt_2 = JSON.parse(data);
+                if (textStatus == 'error') {
+                    document.getElementById('p_tipo_confirm_body_msg').innerHTML = '<span class="text-danger">Erro ao excluir o tipo de participante!</span>';
+                }
+
+                if (textStatus == 'success') {
+
+                    if (pt_2.includes('Erro')) {
+                        document.getElementById('p_tipo_confirm_body_msg').innerHTML = '<span class="text-danger">' + pt_2 + '</span>';
+                    }
+
+                    if (pt_2.includes('sucesso')) {
+                        document.getElementById('p_tipo_confirm_body_conteudo').innerHTML = '';
+                        document.getElementById('p_tipo_confirm_body_msg').innerHTML = '';
+                        alert(pt_2);
+                        $("#p_tipo_confirm_confirm_modal").modal('hide');
+                        gestao_tipo_participante('', '', 'reboot');
+                    }
+                }
+            }
+        });
+
+        return
+    }
+
+    if (contexto == 'select') {
+        document.getElementById('participante_tipo').value = id;
+        document.getElementById('participante_tipo_nome').value = vlr;
+        $("#p_tipo_modal").modal('hide');
+        return
     }
 }
 

@@ -1456,6 +1456,13 @@
     }
 
     function edit_valores_parcela(id, vlr) {
+        if (isNaN(vlr.replaceAll('.', '').replaceAll(',', '.') * 1)) {
+            alert('O valor: ' + vlr + ' não é número. Digite um número separado por vírgula no decimal.');
+            document.getElementById(id).value = (0).toFixed(2);
+            document.getElementById(id).focus();
+            return;
+        }
+
         let valor_bruto = convertStringDouble(document.getElementById('op_parcela_valor_bruto').value);
         let inss = convertStringDouble(document.getElementById('op_parcela_ret_inss').value);
         let irrf = convertStringDouble(document.getElementById('op_parcela_ret_irrf').value);
@@ -1478,6 +1485,13 @@
     }
 
     function editRetencoes(id, vlr, contexto) {
+        if (isNaN(vlr.replaceAll('.', '').replaceAll(',', '.') * 1)) {
+            alert('O valor: ' + vlr + ' não é número. Digite um número separado por vírgula no decimal.');
+            document.getElementById(id).value = (0).toFixed(2);
+            document.getElementById(id).focus();
+            return;
+        }
+
         $('#modal_mensagem_retorno').modal('hide'); //Fechar modal se estiver aberto    
 
         if (operacao.parcelas.length > 0) {
@@ -1753,6 +1767,14 @@
     }    
 
     function valorOutrasOperacoes(id, vlr) {
+
+        if (isNaN(vlr.replaceAll('.', '').replaceAll(',', '.') * 1)) {
+            alert('O valor: ' + vlr + ' não é número. Digite um número separado por vírgula no decimal.');
+            document.getElementById(id).value = (0).toFixed(2);
+            document.getElementById(id).focus();
+            return;
+        }
+
         operacao.totais.op_totais_valor_outras_operacoes = convertDoubleString(vlr);
         operacao.totais.op_totais_total_op = convertDoubleString(vlr);
         decimal(id, convertDoubleString(vlr), '2', true)

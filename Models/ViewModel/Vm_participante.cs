@@ -93,5 +93,10 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public Vm_usuario user { get; set; }
         public IEnumerable<Vm_participante> participantes { get; set; }
         public string categoria_nome { get; set; }
+        
+        public int participante_tipo { get; set; }
+
+        [Display(Name = "Tipo Participante")]
+        public string participante_tipo_nome { get; set; }
     }
 }

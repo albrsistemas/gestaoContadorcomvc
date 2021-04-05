@@ -118,41 +118,57 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6">
                     <div class="form-group">
                         <label asp-for="participante_tipoPessoa" class="control-label"></label>
                         <select asp-items="@ViewBag.tipoPessoa" value="@TempData["participante_tipoPessoa"]" id="participante_tipoPessoa" name="participante_tipoPessoa" onchange="tipoPessoa(this.value)" class="form-control form-control-sm"></select>
                         <span asp-validation-for="participante_tipoPessoa" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6">
                     <div class="form-group">
                         <label asp-for="participante_cnpj_cpf" class="control-label" id="label_cnpj_cpf"></label>
                         <input asp-for="participante_cnpj_cpf" id="participante_cnpj_cpf" class="form-control form-control-sm" onkeyup="mascaraCNPJ_cpf(this.id, this.value)" />
                         <span asp-validation-for="participante_cnpj_cpf" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
-                    <div class="form-group">
-                        <label asp-for="participante_categoria" class="control-label"></label>
-                        <select asp-items="@ViewBag.categoria" value="@TempData["participante_categoria"]" id="participante_categoria" name="participante_categoria" class="form-control form-control-sm js_example_basic_single" style="width:100%"></select>
-                        <span asp-validation-for="participante_categoria" class="text-danger"></span>
-                    </div>
-                </div>
             </div>
             <div class="row">
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6">
                     <div class="form-group" id="grupo_rg">
                         <label asp-for="participante_rg" class="control-label"></label>
                         <input asp-for="participante_rg" class="form-control form-control-sm" />
                         <span asp-validation-for="participante_rg" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6">
                     <div class="form-group" id="grupo_orgaoEmissor">
                         <label asp-for="participante_orgaoEmissor" class="control-label"></label>
                         <input asp-for="participante_orgaoEmissor" class="form-control form-control-sm" />
                         <span asp-validation-for="participante_orgaoEmissor" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        <label asp-for="participante_categoria" class="control-label"></label>
+                        <select asp-items="@ViewBag.categoria" value="@TempData["participante_categoria"]" id="participante_categoria" name="participante_categoria" class="form-control form-control-sm js_example_basic_single" style="width:100%"></select>
+                        <span asp-validation-for="participante_categoria" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <label asp-for="participante_tipo_nome" class="control-label"></label>
+                    <div class="input-group input-group-sm mb-3">
+                        <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" asp-for="participante_tipo_nome" id="participante_tipo_nome" disabled>
+                        <input type="hidden" asp-for="participante_tipo" id="participante_tipo" />
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-sm" style="cursor:pointer;" onclick="gestao_tipo_participante(this.id, this.value, 'open')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                </svg>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -285,6 +301,63 @@
     <br /><span class="text-info" id="msg_blockSubmit"></span>
 
 </form>
+<!--Modal tipo participante-->
+<div class="modal fade" id="p_tipo_modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="p_tipo_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="p_tipo_label">Tipos de Participante</h5>
+            </div>
+            <div class="modal-body" id="p_tipo_body">
+                <div class="row">
+                    <div class="col-12">
+                        <label class="control-label">Nome</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" aria-label="Gravar" aria-describedby="basic-addon15" id="pt_nome">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" value="gravar" id="btn_pt_gravar" onclick="gestao_tipo_participante(this.id, this.value,'gravar')">Gravar Novo</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="hrLine" />
+                <div class="row">
+                    <div class="col-12" id="pt_index"></div>
+                </div>
+            </div>
+            <div class="modal-footer" id="p_tipo_rodape">
+                <button type="button" class="btn btn-secondary" onclick="gestao_tipo_participante('','','close')">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="p_tipo_confirm_confirm_modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="p_tipo_confirm_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="p_tipo_confirm_label"></h5>
+            </div>
+            <div class="modal-body" id="p_tipo_confirm_body">
+                <div class="row">
+                    <div class="col-12" id="p_tipo_confirm_body_conteudo">
+                        <p>Confirma a exclusão do tipo de participante: </p>
+                        <button type="button" class="btn btn-danger" onclick="gestao_tipo_participante('','','delete_confirma')">Confirmo</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12" id="p_tipo_confirm_body_msg">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="p_tipo_confirm_rodape">
+                <button type="button" class="btn btn-secondary" onclick="gestao_tipo_participante('','','close_cofirme')">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
