@@ -11,6 +11,9 @@
     .table > tbody > tr:hover {
         background-color: #f5f4ba;
     }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice{
+        margin-top: 0px;
+    }
 </style>
 
 <h4>Relatório Participantes Anual</h4>
@@ -37,7 +40,13 @@
     <div class="col-12">
         <div class="form-group">
             <label class="control-label">Ano</label>
-            <input asp-for="filtro.ano" id="ano" class="form-control" />
+            <input asp-for="filtro.ano" id="ano" class="form-control form-control-sm" />
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-group">
+            <label class="control-label">Tipo de Participante</label>
+            <select asp-items="@ViewBag.tipos_participante" value="@TempData["tipos_participante"]" id="tipos_participante" name="tipos_participante" class="form-control form-control-sm js_example_basic_single" style="width:100%" multiple></select>
         </div>
     </div>
     <div class="col-12">

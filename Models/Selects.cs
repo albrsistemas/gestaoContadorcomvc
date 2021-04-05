@@ -1745,6 +1745,55 @@ namespace gestaoContadorcomvc.Models
             return selects;
         }
 
+        //Lista tipos de participante
+        public List<Selects> getTipoParticipante(int conta_id)
+        {
+            List<Selects> selects = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from participante_tipo as p WHERE p.pt_conta_id = @conta_id;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects select = new Selects();
+
+                        select.value = leitor["pt_id"].ToString();
+                        select.text = leitor["pt_nome"].ToString();
+                        select.disabled = false;
+
+                        selects.Add(select);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return selects;
+        }
+
 
     }
 }

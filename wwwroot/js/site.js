@@ -5471,10 +5471,18 @@ function rfm_details_gerar(classificacao, nome) {
 }
 
 function rp_gerar() {
+    let d = $("#tipos_participante").select2('data');
+    let tipos_participantes = [];
+
+    for (let i = 0; i < d.length; i++) {
+        tipos_participantes.push(parseInt(d[i].id));
+    }
+
     let filtro = {
         ano: document.getElementById('ano').value,
         ignorar_zerados: document.getElementById('ignorar_zerados').value,        
-        ocultar_nomes: document.getElementById('ocultar_nomes').value        
+        ocultar_nomes: document.getElementById('ocultar_nomes').value,
+        tipos_participante: tipos_participantes
     };
 
     $.ajax({
