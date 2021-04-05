@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using gestaoContadorcomvc.Models;
 using gestaoContadorcomvc.Models.Autenticacao;
+using gestaoContadorcomvc.Models.ViewModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -148,10 +149,28 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
 
         [HttpGet]
         public async Task<IActionResult> Logout()
-        {   
+        {
+            bool login_default = true;
+
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+            if(user.usuario_conta_id_original != user.conta.conta_id)
+            {
+                login_default = false;
+            }
+
             await HttpContext.SignOutAsync();
 
-            return RedirectToAction("Login", "Conta");
+            if (login_default)
+            {
+                return RedirectToAction("Login", "Conta");
+            }
+            else
+            {
+                return RedirectToAction("Login", "LoginCliente");
+            }
         }
 
         [HttpGet]
