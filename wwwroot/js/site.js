@@ -622,8 +622,13 @@ $(document).ready(function () {
     $('.js_example_basic_single').select2({
         width: 'resolve',
         containerCssClass: ':all:',        
-    });    
+    });
+    $(".js_example_basic_single").select2({
+        "language": "pt-BR"
+    });
 });
+
+
 
 function contabilizacao(vlr) {
     let cb = document.getElementById("sw_ccc_pref_contabilizacao");   
