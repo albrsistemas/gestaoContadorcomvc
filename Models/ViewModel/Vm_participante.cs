@@ -93,7 +93,8 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public Vm_usuario user { get; set; }
         public IEnumerable<Vm_participante> participantes { get; set; }
         public string categoria_nome { get; set; }
-        
+
+        [Required(ErrorMessage = "Obrigatório informar um tipo para o participante.")]
         public int participante_tipo { get; set; }
 
         [Display(Name = "Tipo Participante")]

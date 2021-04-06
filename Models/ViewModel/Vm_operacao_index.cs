@@ -37,6 +37,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public string condicoes_pgto { get; set; }
         public Op_itens item { get; set; }
         public List<Vm_participante> participantes { get; set; } //autocomplete
+        public OperacaoFiltro filtro { get; set; }
 
     }
 }

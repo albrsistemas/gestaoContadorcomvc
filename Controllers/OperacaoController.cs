@@ -25,9 +25,47 @@ namespace gestaoContadorcomvc.Controllers
             user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Operacao op = new Operacao();
-            Vm_operacao_index vm_op = new Vm_operacao_index();
-            vm_op.lista = op.index(user.usuario_conta_id);
+            Vm_operacao_index vm_op = new Vm_operacao_index();            
             vm_op.user = user;
+
+            //Filtro
+            OperacaoFiltro filtro = new OperacaoFiltro();
+            DateTime data = DateTime.Today;
+            //DateTime com o primeiro dia do mês
+            filtro.data_inicio = new DateTime(data.Year, data.Month, 1);
+            //DateTime com o último dia do mês
+            filtro.data_fim = new DateTime(data.Year, data.Month, DateTime.DaysInMonth(data.Year, data.Month));
+            vm_op.filtro = filtro;
+
+            vm_op.lista = op.index(user.usuario_conta_id, filtro);
+
+
+            Selects select = new Selects();
+            //ViewBag.status = select.getStatus().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Ativo" });            
+            ViewBag.categoria = select.getCategoriasClienteComEscopo(user.usuario_conta_id, true, false, true).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.tipoPessoa = select.getTipoPessoa().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1" });
+            ViewBag.ufIbge = select.getUF_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "35" });
+            ViewBag.paisesIbge = select.getPaises_ibge().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "1058" });
+            ViewBag.operacoes = select.getOperacoes().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "OutrasDespesas" });
+            ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.tipoNF = select.getTipoNF().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+
+            return View(vm_op);
+        }
+
+        [HttpPost]        
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(OperacaoFiltro filtro)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);            
+
+            Operacao op = new Operacao();
+            Vm_operacao_index vm_op = new Vm_operacao_index();
+            vm_op.lista = op.index(user.usuario_conta_id, filtro);
+            vm_op.user = user;
+            vm_op.filtro = filtro;
 
             Selects select = new Selects();
             //ViewBag.status = select.getStatus().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "Ativo" });            

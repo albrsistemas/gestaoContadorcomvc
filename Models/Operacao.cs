@@ -2061,7 +2061,7 @@ namespace gestaoContadorcomvc.Models
 
         }
 
-        public List<Vm_operacao_index> index(int conta_id)
+        public List<Vm_operacao_index> index(int conta_id, OperacaoFiltro filtro)
         {
             List<Vm_operacao_index> i = new List<Vm_operacao_index>();
 
@@ -2074,8 +2074,11 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT operacao.op_id as id, (CASE WHEN operacao.op_tipo = 'ServicoPrestado' THEN 'Serviço Prestado' WHEN operacao.op_tipo = 'ServicoTomado' THEN 'Serviço Tomado' WHEN operacao.op_tipo = 'OutrasDespesas' THEN 'Outras Despesas' WHEN operacao.op_tipo = 'OutrasReceitas' THEN 'Outras Receitas' ELSE operacao.op_tipo END) as tipo, operacao.op_data as 'data', COALESCE(p.op_part_nome, 'Não Informado') as 'participante', COALESCE((SELECT categoria.categoria_nome from categoria WHERE categoria.categoria_id = operacao.op_categoria_id),'Não Informada') as 'categoria', operacao.op_obs as 'memorando', COALESCE(concat('Número: ', n.op_nf_numero, ' Série: ', n.op_nf_serie), 'Não Informado') as 'documento', t.op_totais_total_op as 'valor', (SELECT COALESCE(sum(op_parcelas_baixa.oppb_valor), 0) from op_parcelas_baixa WHERE op_parcelas_baixa.oppb_op_id = operacao.op_id) as baixas from operacao LEFT JOIN op_participante as p on p.op_id = operacao.op_id LEFT JOIN op_nf as n on n.op_nf_op_id = operacao.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = operacao.op_id WHERE operacao.op_conta_id = @conta_id and operacao.op_tipo in ('Compra', 'Venda', 'ServicoPrestado', 'ServicoTomado', 'OutrasDespesas', 'OutrasReceitas') ORDER BY operacao.op_data DESC;";
+                //comando.CommandText = "SELECT operacao.op_id as id, (CASE WHEN operacao.op_tipo = 'ServicoPrestado' THEN 'Serviço Prestado' WHEN operacao.op_tipo = 'ServicoTomado' THEN 'Serviço Tomado' WHEN operacao.op_tipo = 'OutrasDespesas' THEN 'Outras Despesas' WHEN operacao.op_tipo = 'OutrasReceitas' THEN 'Outras Receitas' ELSE operacao.op_tipo END) as tipo, operacao.op_data as 'data', COALESCE(p.op_part_nome, 'Não Informado') as 'participante', COALESCE((SELECT categoria.categoria_nome from categoria WHERE categoria.categoria_id = operacao.op_categoria_id),'Não Informada') as 'categoria', operacao.op_obs as 'memorando', COALESCE(concat('Número: ', n.op_nf_numero, ' Série: ', n.op_nf_serie), 'Não Informado') as 'documento', t.op_totais_total_op as 'valor', (SELECT COALESCE(sum(op_parcelas_baixa.oppb_valor), 0) from op_parcelas_baixa WHERE op_parcelas_baixa.oppb_op_id = operacao.op_id) as baixas from operacao LEFT JOIN op_participante as p on p.op_id = operacao.op_id LEFT JOIN op_nf as n on n.op_nf_op_id = operacao.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = operacao.op_id WHERE operacao.op_conta_id = @conta_id and operacao.op_tipo in ('Compra', 'Venda', 'ServicoPrestado', 'ServicoTomado', 'OutrasDespesas', 'OutrasReceitas') ORDER BY operacao.op_data DESC;";
+                comando.CommandText = "SELECT operacao.op_id as id, (CASE WHEN operacao.op_tipo = 'ServicoPrestado' THEN 'Serviço Prestado' WHEN operacao.op_tipo = 'ServicoTomado' THEN 'Serviço Tomado' WHEN operacao.op_tipo = 'OutrasDespesas' THEN 'Outras Despesas' WHEN operacao.op_tipo = 'OutrasReceitas' THEN 'Outras Receitas' ELSE operacao.op_tipo END) as tipo, operacao.op_data as 'data', COALESCE(p.op_part_nome, 'Não Informado') as 'participante', COALESCE((SELECT categoria.categoria_nome from categoria WHERE categoria.categoria_id = operacao.op_categoria_id),'Não Informada') as 'categoria', operacao.op_obs as 'memorando', COALESCE(concat('Número: ', n.op_nf_numero, ' Série: ', n.op_nf_serie), 'Não Informado') as 'documento', t.op_totais_total_op as 'valor', (SELECT COALESCE(sum(op_parcelas_baixa.oppb_valor), 0) from op_parcelas_baixa WHERE op_parcelas_baixa.oppb_op_id = operacao.op_id) as baixas from operacao LEFT JOIN op_participante as p on p.op_id = operacao.op_id LEFT JOIN op_nf as n on n.op_nf_op_id = operacao.op_id LEFT JOIN op_totais as t on t.op_totais_op_id = operacao.op_id WHERE operacao.op_conta_id = @conta_id and operacao.op_tipo in ('Compra', 'Venda', 'ServicoPrestado', 'ServicoTomado', 'OutrasDespesas', 'OutrasReceitas') and operacao.op_data BETWEEN @data_inicio and @data_fim ORDER BY operacao.op_data DESC;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);                
+                comando.Parameters.AddWithValue("@data_inicio", filtro.data_inicio);                
+                comando.Parameters.AddWithValue("@data_fim", filtro.data_fim);                
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
 
@@ -2865,4 +2868,11 @@ namespace gestaoContadorcomvc.Models
 
 
     }
+
+    public class OperacaoFiltro
+    {
+        public DateTime data_inicio { get; set; }
+        public DateTime data_fim { get; set; }
+    }
+
 }

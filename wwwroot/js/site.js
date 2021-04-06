@@ -3680,12 +3680,34 @@ function gravarLancamentoCCM(contexto) {
     validacao = true;
 
     if (document.getElementById('ccm_data')) {
-        let data = (document.getElementById('ccm_data').value).split('/');
+        dl = moment(document.getElementById('ccm_data').value, 'DD/MM/YYYY', 'pt', true);
+        if (!dl.isValid()) {
+            retorno += 'Data inválida.;';
+            validacao = false;
+        }
+
+        /*let data = (document.getElementById('ccm_data').value).split('/');
         let d = new Date(data[2], data[1], data[0]);
         if (data.length < 3 || d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1 || data == '' || data == null) {
             retorno += 'Data inválida.;';
             validacao = false;
-        }
+        }*/
+    }
+
+    //Data da competência
+    if (document.getElementById('ccm_data_competencia')) {
+        dc = moment(document.getElementById('ccm_data_competencia').value, 'DD/MM/YYYY', 'pt', true);
+        if (!dc.isValid()) {
+            retorno += 'Data da competência inválida.;';
+            validacao = false;
+        } 
+
+        /*let data = (document.getElementById('ccm_data_competencia').value).split('/');
+        let d = new Date(data[2], data[1], data[0]);
+        if (data.length < 3 || d == 'Invalid Date' || data[2].length < 4 || data[1] > 12 || data[1] < 1 || data[0] > 31 || data[0] < 1 || data == '' || data == null) {
+            retorno += 'Data da competência inválida.;';
+            validacao = false;
+        }*/
     }
 
     if (document.getElementById('ccm_valor')) {
