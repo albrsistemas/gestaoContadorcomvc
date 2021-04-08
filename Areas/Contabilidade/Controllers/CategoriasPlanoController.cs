@@ -120,7 +120,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
                     return RedirectToAction("Index", "CategoriasPlano", new { @pc_id = collection["planoCategorias_id"], @planoContas_id = collection["planoContas_id"] });
                 }
 
-                if (categoria.classificacaoExistePorPlano(collection["categoria_classificacao"], user.usuario_conta_id, "Não"))
+                if (categoria.classificacaoExistePorPlano(collection["categoria_classificacao"], user.usuario_conta_id, collection["planoCategorias_id"]))
                 {
                     TempData["createCategoria"] = "Erro. Classifcação já existe!";
 
@@ -280,7 +280,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Controllers
             {
                 Categoria categoria = new Categoria();
 
-                if (categoria.classificacaoExistePorPlano(collection["categoria_classificacao"], user.usuario_conta_id, "Não"))
+                if (categoria.classificacaoExistePorPlano(collection["categoria_classificacao"], user.usuario_conta_id, collection["planoCategorias_id"]))
                 {
                     TempData["createCategoria"] = "Erro. Classifcação já existe!";
 
