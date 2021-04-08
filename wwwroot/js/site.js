@@ -6683,13 +6683,6 @@ function gestao_tipo_participante(id, vlr, contexto) {
     }
 }
 
-function print_table(id,destino) {
-    let i = "#" + id;
-    let t = document.querySelectorAll(i);
-    document.getElementById(destino).innerHTML = t[0].outerHTML;
-
-}
-
 
 
 
