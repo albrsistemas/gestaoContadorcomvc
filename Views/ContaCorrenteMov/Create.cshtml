@@ -205,7 +205,7 @@
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-secondary" asp-controller="ContaCorrenteMov" asp-action="Index" asp-route-contacorrente_id="@Model.filtro.contacorrente_id" asp-route-dataInicio="@Model.filtro.dataInicio.ToString("yyyy-M-d")" asp-route-dataFim="@Model.filtro.dataFim.ToString("yyyy-M-d")">Fechar</a>
-                    <button type="button" onclick="gravarLancamentoCCM('Create')" class="btn btn-info">Gravar</button>
+                    <button type="button" onclick="gravarLancamentoCCM('Create')" class="btn btn-info" id="btn_gravar_ccm">Gravar</button>
                 </div>
             </form>
         </div><!-- /.modal-content -->
@@ -288,6 +288,7 @@
         document.getElementById('ccm_juros').value = "";
         document.getElementById('nf_ccm').checked = false;
         document.getElementById('box_nf').style.display = 'none';
+        document.getElementById('btn_gravar_ccm').disabled = false;
         $('#ccm_gravado_sucesso').modal('hide');
         $('#modal').on('shown.bs.modal', function () {
             $('#ccm_valor').focus();

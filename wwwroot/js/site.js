@@ -3680,6 +3680,7 @@ $(".detalhesParcela").click(function () {
 });
 
 function gravarLancamentoCCM(contexto) {
+    document.getElementById('btn_gravar_ccm').disabled = true; //bloqueia o botão para evitar duplo clique;
     document.getElementById('validaForm').innerHTML = '';
     retorno = '';
     validacao = true;
@@ -3807,31 +3808,34 @@ function gravarLancamentoCCM(contexto) {
             type: 'POST',
             dataType: 'json',
             beforeSend: function (XMLHttpRequest) {
-
+                document.getElementById('btn_gravar_ccm').disabled = true;
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 alert("erro");
+                document.getElementById('btn_gravar_ccm').disabled = false;
             },
             success: function (data, textStatus, XMLHttpRequest) {
                 var results = JSON.parse(data);
-                console.log(results);
+                //console.log(results);
 
-                if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                if (XMLHttpRequest.responseJSON.includes('Erro')) {                    
                     document.getElementById('msg_retorno').innerHTML = XMLHttpRequest.responseJSON;
                     $("#Esconder").fadeTo(4000, 500).slideUp(500, function () {
                         $("#Esconder").slideUp(500);
                     });                    
                     return;
                 }                
-                if (XMLHttpRequest.responseJSON.includes('cadastrado com sucesso!')) {                    
+                if (XMLHttpRequest.responseJSON.includes('cadastrado com sucesso!')) {                                        
                     $("#ccm_gravado_sucesso").modal('show');
+                    document.getElementById('btn_gravar_ccm').disabled = false;
                     return;
                 }
 
-                if (XMLHttpRequest.responseJSON.includes('alterado com sucesso!')) {                    
+                if (XMLHttpRequest.responseJSON.includes('alterado com sucesso!')) { 
                     $("#ccm_alterado_sucesso").modal('show');
+                    document.getElementById('btn_gravar_ccm').disabled = false;
                     return;
-                }
+                }                
             }
         });
     }
@@ -5273,6 +5277,7 @@ function search_m_memorando_select(nome) {
 
 function gravarCCM_transferencia(escopo, contexto) {
     if (contexto == 'close') {
+        document.getElementById('sub_form').disabled = false;
         document.getElementById('valor').value = '';
         document.getElementById('memorando').value = '';
         $("#transferencia_sucesso").modal('hide');
@@ -5285,6 +5290,7 @@ function gravarCCM_transferencia(escopo, contexto) {
     }
 
     if (contexto == 'gravar') {
+        document.getElementById('sub_form').disabled = true;
         document.getElementById('validacao_transfer').innerHTML = '';
         let de = document.getElementById('ccorrente_de').value;
         let para = document.getElementById('ccorrente_para').value;
@@ -5537,12 +5543,12 @@ function rp_gerar() {
                 }
 
                 let c = '<div class="table-responsive">';
-                c += '<table class="table table-sm">';
-                c += '<caption>Relatório Participante Anual</caption>';
+                c += '<table class="table table-sm" id="table_part">';
+                //c += '<caption>Relatório Participante Anual</caption>';
                 c += '<thead>';      
                 c += '<tr>'
                 c += '<th style="text-align:center">Código</th>'
-                c += '<th style="text-align:left">Participante</th>'
+                c += '<th style="text-align:left;white-space:nowrap;">Participante</th>'
                 c += '<th style="text-align:right">Janeiro</th>'
                 c += '<th style="text-align:right">Fevereiro</th>'
                 c += '<th style="text-align:right">Março</th>'
@@ -5562,7 +5568,7 @@ function rp_gerar() {
                 for (let i = 0; i < rp.rps.length; i++) {
                     c += '<tr>';
                     c += '<td style="text-align:center">' + convertDoubleString(rp.rps[i].participante_codigo) + '</td>'
-                    c += '<td style="text-align:left" class="rp_col_nome">' + convertDoubleString(rp.rps[i].participante_nome) + '</td>'
+                    c += '<td style="text-align:left;white-space:nowrap;" class="rp_col_nome">' + convertDoubleString(rp.rps[i].participante_nome) + '</td>'
                     c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].jan) + '</td>'
                     c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].fev) + '</td>'
                     c += '<td style="text-align:right">' + convertDoubleString(rp.rps[i].marc) + '</td>'
@@ -6675,6 +6681,13 @@ function gestao_tipo_participante(id, vlr, contexto) {
         $("#p_tipo_modal").modal('hide');
         return
     }
+}
+
+function print_table(id,destino) {
+    let i = "#" + id;
+    let t = document.querySelectorAll(i);
+    document.getElementById(destino).innerHTML = t[0].outerHTML;
+
 }
 
 

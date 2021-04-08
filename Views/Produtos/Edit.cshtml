@@ -35,11 +35,18 @@
     <fieldset>
         <legend>Dados gerais</legend>
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 col-md-9">
                 <div class="form-group">
                     <label asp-for="produtos_nome" class="control-label"></label>
                     <input asp-for="produtos_nome" class="form-control" />
                     <span asp-validation-for="produtos_nome" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="form-group">
+                    <label asp-for="produtos_codigo" class="control-label"></label>
+                    <input asp-for="produtos_codigo" class="form-control" />
+                    <span asp-validation-for="produtos_codigo" class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -64,7 +71,7 @@
                     <div class="col-12 col-md-4">
                         <div class="form-group">
                             <label asp-for="produtos_preco_venda" class="control-label">Valor</label>
-                            <input type="text" value='@Model.produtos_preco_venda.ToString("N6")' name="produtos_preco_venda" id="produtos_preco_venda" class="form-control" onblur="decimal(this.id, this.value, '6')" />
+                            <input type="text" value='@Model.produtos_preco_venda.ToString("N6")' name="produtos_preco_venda" id="produtos_preco_venda" class="form-control" onblur="decimal(this.id, this.value, '6', true)" />
                             <span asp-validation-for="produtos_preco_venda" class="text-danger"></span>
                         </div>
                     </div>
@@ -75,22 +82,15 @@
 
             if (Model.user.conta.conta_tipo == "Empresa")
             {
-                <div class="row">
-                    <div class="col-6 col-md-4">
-                        <div class="form-group">
-                            <label asp-for="produtos_codigo" class="control-label"></label>
-                            <input asp-for="produtos_codigo" class="form-control" />
-                            <span asp-validation-for="produtos_codigo" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-4">
+                <div class="row">                    
+                    <div class="col-6 col-md-6">
                         <div class="form-group">
                             <label asp-for="produtos_formato" class="control-label"></label>
                             <input asp-for="produtos_formato" class="form-control" value="Simples" readonly="readonly" />
                             <span asp-validation-for="produtos_formato" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="col-6 col-md-4">
+                    <div class="col-6 col-md-6">
                         <div class="form-group">
                             <label asp-for="produtos_status" class="control-label"></label>
                             <select asp-items="@ViewBag.status" value="@TempData["produtos_status"]" id="produtos_status" name="produtos_status" class="form-control"></select>
@@ -109,7 +109,7 @@
                     <div class="col-6">
                         <div class="form-group">
                             <label asp-for="produtos_preco_venda" class="control-label"></label>
-                            <input type="text" value='@Model.produtos_preco_venda.ToString("N6")' name="produtos_preco_venda" id="produtos_preco_venda" class="form-control" onblur="decimal(this.id, this.value, '6')" />
+                            <input type="text" value='@Model.produtos_preco_venda.ToString("N6")' name="produtos_preco_venda" id="produtos_preco_venda" class="form-control" onblur="decimal(this.id, this.value, '6', true)" />
                             <span asp-validation-for="produtos_preco_venda" class="text-danger"></span>
                         </div>
                     </div>
@@ -137,14 +137,14 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label asp-for="produtos_estoque_min" class="control-label"></label>
-                                <input value='@Model.produtos_estoque_min.ToString("N6")' name="produtos_estoque_min" id="produtos_estoque_min" class="form-control" onblur="decimal(this.id, this.value, '6')" />
+                                <input value='@Model.produtos_estoque_min.ToString("N6")' name="produtos_estoque_min" id="produtos_estoque_min" class="form-control" onblur="decimal(this.id, this.value, '6', true)" />
                                 <span asp-validation-for="produtos_estoque_min" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label asp-for="produtos_estoque_max" class="control-label"></label>
-                                <input value='@Model.produtos_estoque_max.ToString("N6")' name="produtos_estoque_max" id="produtos_estoque_max" class="form-control" onblur="decimal(this.id, this.value, '6')" />
+                                <input value='@Model.produtos_estoque_max.ToString("N6")' name="produtos_estoque_max" id="produtos_estoque_max" class="form-control" onblur="decimal(this.id, this.value, '6',true)" />
                                 <span asp-validation-for="produtos_estoque_max" class="text-danger"></span>
                             </div>
                         </div>
@@ -153,21 +153,21 @@
                         <div class="col-6 col-md-4">
                             <div class="form-group">
                                 <label asp-for="produtos_estoque_qtd_inicial" class="control-label"></label>
-                                <input value='@Model.produtos_estoque_qtd_inicial.ToString("N6")' name="produtos_estoque_qtd_inicial" id="produtos_estoque_qtd_inicial" class="form-control" onblur="decimal(this.id, this.value, '6')" />
+                                <input value='@Model.produtos_estoque_qtd_inicial.ToString("N6")' name="produtos_estoque_qtd_inicial" id="produtos_estoque_qtd_inicial" class="form-control" onblur="decimal(this.id, this.value, '6',true)" />
                                 <span asp-validation-for="produtos_estoque_qtd_inicial" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="form-group">
                                 <label asp-for="produtos_estoque_preco_compra" class="control-label"></label>
-                                <input value='@Model.produtos_estoque_preco_compra.ToString("N6")' name="produtos_estoque_preco_compra" id="produtos_estoque_preco_compra" class="form-control" onblur="decimal(this.id, this.value, '6')" />
+                                <input value='@Model.produtos_estoque_preco_compra.ToString("N6")' name="produtos_estoque_preco_compra" id="produtos_estoque_preco_compra" class="form-control" onblur="decimal(this.id, this.value, '6',true)" />
                                 <span asp-validation-for="produtos_estoque_preco_compra" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="form-group">
                                 <label asp-for="produtos_estoque_custo_compra" class="control-label"></label>
-                                <input value='@Model.produtos_estoque_custo_compra.ToString("N6")' name="produtos_estoque_custo_compra" id="produtos_estoque_custo_compra" class="form-control" onblur="decimal(this.id, this.value, '6')" />
+                                <input value='@Model.produtos_estoque_custo_compra.ToString("N6")' name="produtos_estoque_custo_compra" id="produtos_estoque_custo_compra" class="form-control" onblur="decimal(this.id, this.value, '6',true)" />
                                 <span asp-validation-for="produtos_estoque_custo_compra" class="text-danger"></span>
                             </div>
                         </div>
@@ -209,7 +209,7 @@
                         <div class="col-12 col-md-6">
                             <div class="form-group">
                                 <label asp-for="produtos_perc_tributos" class="control-label"></label>
-                                <input value='@Model.produtos_perc_tributos.ToString("N6")' name="produtos_perc_tributos" id="produtos_perc_tributos" class="form-control" onblur="decimal(this.id, this.value, '6')" />
+                                <input value='@Model.produtos_perc_tributos.ToString("N6")' name="produtos_perc_tributos" id="produtos_perc_tributos" class="form-control" onblur="decimal(this.id, this.value, '6',true)" />
                                 <span asp-validation-for="produtos_perc_tributos" class="text-danger"></span>
                             </div>
                         </div>

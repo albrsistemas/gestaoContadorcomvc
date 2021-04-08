@@ -16,8 +16,8 @@
     }
 </style>
 
-<h4>Relatório Participantes Anual</h4>
-<div class="btn-tools" no-printme>
+<h4 class="no-printme">Relatório Participantes Anual</h4>
+<div class="btn-tools no-printme">
     <div class="row">
         <div class="coluna_1" style="text-align:left;width:calc(100% - 100px);user-select:none;padding-left: 15px;">
             <a class="btn btn-sm btn-info" onClick="window.print()">
@@ -65,11 +65,14 @@
         <div class="form-group">
             <button type="button" class="btn btn-info" id="btn_rfm_gerar" onclick="rp_gerar()">Gerar</button>
             <span class="text-info" id="rp_msg"></span>
-        </div>
+        </div>        
     </div>
 </div>
 <hr class="hrLine no-printme" />
-<div class="corpo_rp" id="corpo_rp"></div>
+<div class="corpo_rp no-printme" id="corpo_rp"></div>
+<div class="printme" id="table_print">
+
+</div>
 <script>
     if (document.getElementById('ocultar_nomes').checked) {
         document.getElementById('ocultar_nomes').value = 'true';

@@ -72,24 +72,44 @@ namespace gestaoContadorcomvc.Controllers
                 user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
                 
                 vm_prod.produtos_nome = d["produtos_nome"];
-                vm_prod.produtos_codigo = d["produtos_codigo"];
-                vm_prod.produtos_formato = d["produtos_formato"];
                 vm_prod.produtos_status = d["produtos_status"];
                 vm_prod.produtos_unidade = d["produtos_unidade"];
-                vm_prod.produtos_preco_venda = Convert.ToDecimal(d["produtos_preco_venda"].ToString().Replace(".", ","));
-                vm_prod.produtos_gtin_ean = d["produtos_gtin_ean"];
-                vm_prod.produtos_gtin_ean_trib = d["produtos_gtin_ean_trib"];
-                vm_prod.produtos_estoque_min = Convert.ToDecimal(d["produtos_estoque_min"].ToString().Replace(".",","));
-                vm_prod.produtos_estoque_max = Convert.ToDecimal(d["produtos_estoque_max"].ToString().Replace(".", ","));
-                vm_prod.produtos_estoque_qtd_inicial = Convert.ToDecimal(d["produtos_estoque_qtd_inicial"].ToString().Replace(".", ","));
-                vm_prod.produtos_estoque_preco_compra = Convert.ToDecimal(d["produtos_estoque_preco_compra"].ToString().Replace(".", ","));
-                vm_prod.produtos_estoque_custo_compra = Convert.ToDecimal(d["produtos_estoque_custo_compra"].ToString().Replace(".", ","));
-                vm_prod.produtos_origem = Convert.ToInt32(d["produtos_origem"]);
-                vm_prod.produtos_ncm = d["produtos_ncm"];
-                vm_prod.produtos_cest = d["produtos_cest"];
-                vm_prod.produtos_tipo_item = d["produtos_tipo_item"];
-                vm_prod.produtos_perc_tributos = Convert.ToDecimal(d["produtos_perc_tributos"].ToString().Replace(".", ","));
+                vm_prod.produtos_preco_venda = Convert.ToDecimal(d["produtos_preco_venda"].ToString().Replace(".", ""));
                 vm_prod.produtos_obs = d["produtos_obs"];
+                vm_prod.produtos_codigo = d["produtos_codigo"];
+
+                if (user.conta.conta_tipo != "Entidade")
+                {   
+                    vm_prod.produtos_formato = d["produtos_formato"];
+                    vm_prod.produtos_gtin_ean = d["produtos_gtin_ean"];
+                    vm_prod.produtos_gtin_ean_trib = d["produtos_gtin_ean_trib"];
+                    vm_prod.produtos_estoque_min = Convert.ToDecimal(d["produtos_estoque_min"].ToString().Replace(".", ""));
+                    vm_prod.produtos_estoque_max = Convert.ToDecimal(d["produtos_estoque_max"].ToString().Replace(".", ","));
+                    vm_prod.produtos_estoque_qtd_inicial = Convert.ToDecimal(d["produtos_estoque_qtd_inicial"].ToString().Replace(".", ""));
+                    vm_prod.produtos_estoque_preco_compra = Convert.ToDecimal(d["produtos_estoque_preco_compra"].ToString().Replace(".", ""));
+                    vm_prod.produtos_estoque_custo_compra = Convert.ToDecimal(d["produtos_estoque_custo_compra"].ToString().Replace(".", ""));
+                    vm_prod.produtos_origem = Convert.ToInt32(d["produtos_origem"]);
+                    vm_prod.produtos_ncm = d["produtos_ncm"];
+                    vm_prod.produtos_cest = d["produtos_cest"];
+                    vm_prod.produtos_tipo_item = d["produtos_tipo_item"];
+                    vm_prod.produtos_perc_tributos = Convert.ToDecimal(d["produtos_perc_tributos"].ToString().Replace(".", ""));
+                }
+                else
+                {   
+                    vm_prod.produtos_formato = "Simples";
+                    vm_prod.produtos_gtin_ean = "";
+                    vm_prod.produtos_gtin_ean_trib = "";
+                    vm_prod.produtos_estoque_min = 0;
+                    vm_prod.produtos_estoque_max = 0;
+                    vm_prod.produtos_estoque_qtd_inicial = 0;
+                    vm_prod.produtos_estoque_preco_compra = 0;
+                    vm_prod.produtos_estoque_custo_compra = 0;
+                    vm_prod.produtos_origem = 0;
+                    vm_prod.produtos_ncm = "";
+                    vm_prod.produtos_cest = "";
+                    vm_prod.produtos_tipo_item = "99";
+                    vm_prod.produtos_perc_tributos = 0;
+                }                               
 
                 if (!ModelState.IsValid)
                 {
@@ -152,25 +172,47 @@ namespace gestaoContadorcomvc.Controllers
                 user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
                 vm_prod.produtos_nome = d["produtos_nome"];
-                vm_prod.produtos_codigo = d["produtos_codigo"];
-                vm_prod.produtos_formato = d["produtos_formato"];
                 vm_prod.produtos_status = d["produtos_status"];
                 vm_prod.produtos_unidade = d["produtos_unidade"];
-                vm_prod.produtos_preco_venda = Convert.ToDecimal(d["produtos_preco_venda"].ToString().Replace(".", ","));
-                vm_prod.produtos_gtin_ean = d["produtos_gtin_ean"];
-                vm_prod.produtos_gtin_ean_trib = d["produtos_gtin_ean_trib"];
-                vm_prod.produtos_estoque_min = Convert.ToDecimal(d["produtos_estoque_min"].ToString().Replace(".", ","));
-                vm_prod.produtos_estoque_max = Convert.ToDecimal(d["produtos_estoque_max"].ToString().Replace(".", ","));
-                vm_prod.produtos_estoque_qtd_inicial = Convert.ToDecimal(d["produtos_estoque_qtd_inicial"].ToString().Replace(".", ","));
-                vm_prod.produtos_estoque_preco_compra = Convert.ToDecimal(d["produtos_estoque_preco_compra"].ToString().Replace(".", ","));
-                vm_prod.produtos_estoque_custo_compra = Convert.ToDecimal(d["produtos_estoque_custo_compra"].ToString().Replace(".", ","));
-                vm_prod.produtos_origem = Convert.ToInt32(d["produtos_origem"]);
-                vm_prod.produtos_ncm = d["produtos_ncm"];
-                vm_prod.produtos_cest = d["produtos_cest"];
-                vm_prod.produtos_tipo_item = d["produtos_tipo_item"];
-                vm_prod.produtos_perc_tributos = Convert.ToDecimal(d["produtos_perc_tributos"].ToString().Replace(".", ","));
+                vm_prod.produtos_preco_venda = Convert.ToDecimal(d["produtos_preco_venda"].ToString().Replace(".", ""));
                 vm_prod.produtos_obs = d["produtos_obs"];
                 vm_prod.produtos_id = Convert.ToInt32(d["produtos_id"]);
+                vm_prod.produtos_codigo = d["produtos_codigo"];
+
+                if (user.conta.conta_tipo != "Entidade")
+                {   
+                    vm_prod.produtos_formato = d["produtos_formato"];                    
+                    vm_prod.produtos_gtin_ean = d["produtos_gtin_ean"];
+                    vm_prod.produtos_gtin_ean_trib = d["produtos_gtin_ean_trib"];
+                    vm_prod.produtos_estoque_min = Convert.ToDecimal(d["produtos_estoque_min"].ToString().Replace(".", ""));
+                    vm_prod.produtos_estoque_max = Convert.ToDecimal(d["produtos_estoque_max"].ToString().Replace(".", ""));
+                    vm_prod.produtos_estoque_qtd_inicial = Convert.ToDecimal(d["produtos_estoque_qtd_inicial"].ToString().Replace(".", ""));
+                    vm_prod.produtos_estoque_preco_compra = Convert.ToDecimal(d["produtos_estoque_preco_compra"].ToString().Replace(".", ""));
+                    vm_prod.produtos_estoque_custo_compra = Convert.ToDecimal(d["produtos_estoque_custo_compra"].ToString().Replace(".", ""));
+                    vm_prod.produtos_origem = Convert.ToInt32(d["produtos_origem"]);
+                    vm_prod.produtos_ncm = d["produtos_ncm"];
+                    vm_prod.produtos_cest = d["produtos_cest"];
+                    vm_prod.produtos_tipo_item = d["produtos_tipo_item"];
+                    vm_prod.produtos_perc_tributos = Convert.ToDecimal(d["produtos_perc_tributos"].ToString().Replace(".", ""));                    
+                    
+                }
+                else
+                {   
+                    vm_prod.produtos_formato = "Simples";
+                    vm_prod.produtos_gtin_ean = "";
+                    vm_prod.produtos_gtin_ean_trib = "";
+                    vm_prod.produtos_estoque_min = 0;
+                    vm_prod.produtos_estoque_max = 0;
+                    vm_prod.produtos_estoque_qtd_inicial = 0;
+                    vm_prod.produtos_estoque_preco_compra = 0;
+                    vm_prod.produtos_estoque_custo_compra = 0;
+                    vm_prod.produtos_origem = 0;
+                    vm_prod.produtos_ncm = "";
+                    vm_prod.produtos_cest = "";
+                    vm_prod.produtos_tipo_item = "99";
+                    vm_prod.produtos_perc_tributos = 0;
+                }
+
 
                 if (!ModelState.IsValid)
                 {
