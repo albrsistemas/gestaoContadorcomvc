@@ -35,6 +35,7 @@ namespace gestaoContadorcomvc.Controllers.Relatorios
             
             Selects select = new Selects();
             ViewBag.tipos_participante = select.getTipoParticipante(user.conta.conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.categorias = select.getCategoriasCliente(user.conta.conta_id,false).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
 
             return View(rp);
         }
@@ -53,7 +54,7 @@ namespace gestaoContadorcomvc.Controllers.Relatorios
                 Vm_usuario user = new Vm_usuario();
                 user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
                 
-                relatorio_p = rp.create(user.conta.conta_id, filtro.ano, filtro.ignorar_zerados, filtro.ocultar_nomes, filtro.tipos_participante);
+                relatorio_p = rp.create(user.conta.conta_id, filtro.ano, filtro.ignorar_zerados, filtro.ocultar_nomes, filtro.tipos_participante, filtro.categorias);
                 relatorio_p.filtro = filtro;
                 relatorio_p.retorno = "Sucesso";
 

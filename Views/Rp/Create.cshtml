@@ -5,14 +5,16 @@
 }
 
 <style>
-    .container{
+    .container {
         min-width: 100%;
     }
+
     .table > tbody > tr:hover {
         background-color: #f5f4ba;
     }
-    .select2-container--default .select2-selection--multiple .select2-selection__choice{
-        margin-top: 0px;
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        margin-top: 5px;
     }
 </style>
 
@@ -50,6 +52,12 @@
         </div>
     </div>
     <div class="col-12">
+        <div class="form-group">
+            <label class="control-label">Categoria</label>
+            <select asp-items="@ViewBag.categorias" value="@TempData["categorias"]" id="categorias" name="categorias" class="form-control form-control-sm js_example_basic_single" style="width:100%" multiple></select>
+        </div>
+    </div>
+    <div class="col-12">
         <div class="custom-control custom-switch">
             <input type="checkbox" id="ignorar_zerados" asp-for="filtro.ignorar_zerados" class="custom-control-input" checked="checked" onchange="ignorarZeradasRelCat(this.id)">
             <label class="custom-control-label" for="ignorar_zerados">Ignorar participantes zerados</label>
@@ -65,7 +73,7 @@
         <div class="form-group">
             <button type="button" class="btn btn-info" id="btn_rfm_gerar" onclick="rp_gerar()">Gerar</button>
             <span class="text-info" id="rp_msg"></span>
-        </div>        
+        </div>
     </div>
 </div>
 <hr class="hrLine no-printme" />
@@ -75,5 +83,39 @@
         document.getElementById('ocultar_nomes').value = 'true';
     } else {
         document.getElementById('ocultar_nomes').value = 'false';
-    }    
+    }
 </script>
+
+<!--
+<div class="dt-buttons">
+    <button class="dt-button buttons-copy buttons-html5" tabindex="0" aria-controls="example" type="button">
+        <span>
+            <font style="vertical-align: inherit;">
+                <font style="vertical-align: inherit;">cópia de</font>
+            </font>
+        </span>
+    </button>
+    <button class="dt-button buttons-excel buttons-html5" tabindex="0" aria-controls="example" type="button">
+        <span>
+            <font style="vertical-align: inherit;">
+                <font style="vertical-align: inherit;">Excel</font>
+            </font>
+        </span>
+    </button>
+    <button class="dt-button buttons-csv buttons-html5" tabindex="0" aria-controls="example" type="button">
+        <span>
+            <font style="vertical-align: inherit;">
+                <font style="vertical-align: inherit;">CSV</font>
+            </font>
+        </span>
+    </button>
+    <button class="dt-button buttons-pdf buttons-html5" tabindex="0" aria-controls="example" type="button">
+        <span>
+            <font style="vertical-align: inherit;">
+                <font style="vertical-align: inherit;">PDF</font>
+            </font>
+        </span>
+    </button>
+</div>
+
+<--https://datatables.net/extensions/buttons/examples/html5/simple.html-->

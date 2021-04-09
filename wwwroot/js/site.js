@@ -5511,11 +5511,19 @@ function rp_gerar() {
         tipos_participantes.push(parseInt(d[i].id));
     }
 
+    let c = $("#categorias").select2('data');
+    let categorias = [];
+
+    for (let i = 0; i < c.length; i++) {
+        categorias.push(parseInt(c[i].id));
+    }
+
     let filtro = {
         ano: document.getElementById('ano').value,
         ignorar_zerados: document.getElementById('ignorar_zerados').value,        
         ocultar_nomes: document.getElementById('ocultar_nomes').value,
-        tipos_participante: tipos_participantes
+        tipos_participante: tipos_participantes,
+        categorias: categorias
     };
 
     $.ajax({
