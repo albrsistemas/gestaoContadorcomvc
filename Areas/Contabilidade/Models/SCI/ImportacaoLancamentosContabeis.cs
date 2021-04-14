@@ -64,7 +64,7 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
             Ilcs ilcs = new Ilcs();
             List<ImportacaoLancamentosContabeis> list_ilc = new List<ImportacaoLancamentosContabeis>();
             CategoriasPadrao cp = new CategoriasPadrao();
-            cp = cp.categoria_padrao(cliente_id);            
+            cp = cp.categoria_padrao(cliente_id);
 
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
@@ -367,58 +367,64 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                 reader_ccm.Close();
                 //FIM ==> Conta corrente movimento origem CCM
 
+
                 //INIIO ==> Conta corrente movimento orgiem Transferências
-                MySqlDataReader reader_ccm_t;
-                MySqlCommand comand_ccm_t = conn.CreateCommand();
-                comand_ccm_t.Connection = conn;
-                comand_ccm_t.Transaction = Transacao;
+                if (gerar_lancamentos_ccm)
+                {                    
+                    MySqlDataReader reader_ccm_t;
+                    MySqlCommand comand_ccm_t = conn.CreateCommand();
+                    comand_ccm_t.Connection = conn;
+                    comand_ccm_t.Transaction = Transacao;
 
-                comand_ccm_t.CommandText = "SELECT de.ccm_id, COALESCE(ccde.ccorrente_masc_contabil,'Sem Conta Contabil') as 'masc_de', COALESCE(ccpara.ccorrente_masc_contabil, 'Sem Conta Contabil') as 'masc_para', de.ccm_valor, de.ccm_data, de.ccm_memorando from conta_corrente_mov as de LEFT JOIN conta_corrente_mov as para on para.ccm_origem_id = de.ccm_id LEFT JOIN conta_corrente as ccde on ccde.ccorrente_id = de.ccm_ccorrente_id LEFT JOIN conta_corrente as ccpara on ccpara.ccorrente_id = para.ccm_ccorrente_id WHERE de.ccm_origem = 'Transferencia' and de.ccm_movimento = 'S' and de.ccm_conta_id = @cliente_id and de.ccm_data BETWEEN @data_inicial and @data_final;";
-                comand_ccm_t.Parameters.AddWithValue("@cliente_id", cliente_id);
-                comand_ccm_t.Parameters.AddWithValue("@data_inicial", data_inicial);
-                comand_ccm_t.Parameters.AddWithValue("@data_final", data_final);
+                    comand_ccm_t.CommandText = "SELECT de.ccm_id, COALESCE(ccde.ccorrente_masc_contabil,'Sem Conta Contabil') as 'masc_de', COALESCE(ccpara.ccorrente_masc_contabil, 'Sem Conta Contabil') as 'masc_para', de.ccm_valor, de.ccm_data, de.ccm_memorando from conta_corrente_mov as de LEFT JOIN conta_corrente_mov as para on para.ccm_origem_id = de.ccm_id LEFT JOIN conta_corrente as ccde on ccde.ccorrente_id = de.ccm_ccorrente_id LEFT JOIN conta_corrente as ccpara on ccpara.ccorrente_id = para.ccm_ccorrente_id WHERE de.ccm_origem = 'Transferencia' and de.ccm_movimento = 'S' and de.ccm_conta_id = @cliente_id and de.ccm_data BETWEEN @data_inicial and @data_final;";
+                    comand_ccm_t.Parameters.AddWithValue("@cliente_id", cliente_id);
+                    comand_ccm_t.Parameters.AddWithValue("@data_inicial", data_inicial);
+                    comand_ccm_t.Parameters.AddWithValue("@data_final", data_final);
 
-                reader_ccm_t = comand_ccm_t.ExecuteReader();
+                    reader_ccm_t = comand_ccm_t.ExecuteReader();
 
-                if (reader_ccm_t.HasRows)
-                {
-                    while (reader_ccm_t.Read())
+                    if (reader_ccm_t.HasRows)
                     {
-                        ImportacaoLancamentosContabeis ilc = new ImportacaoLancamentosContabeis();
-
-                        //start no status como regular
-                        ilc.status = "OK";
-                        ilc.mensagem += "";
-                        ilc.origem += "CCMT";
-                        ilc.tipo = "Transferência";
-
-                        if(reader_ccm_t["masc_de"].ToString() == "Sem Conta Contabil" || reader_ccm_t["masc_para"].ToString() == "Sem Conta Contabil")
+                        while (reader_ccm_t.Read())
                         {
-                            ilcs.qunatidade_erros += 1;
-                            ilc.status = "Erro";
-                            ilc.mensagem += "Conta corrente sem conta contábil; ";
+                            ImportacaoLancamentosContabeis ilc = new ImportacaoLancamentosContabeis();
+
+                            //start no status como regular
+                            ilc.status = "OK";
+                            ilc.mensagem += "";
+                            ilc.origem += "CCMT";
+                            ilc.tipo = "Transferência";
+
+                            if (reader_ccm_t["masc_de"].ToString() == "Sem Conta Contabil" || reader_ccm_t["masc_para"].ToString() == "Sem Conta Contabil" || reader_ccm_t["masc_de"].ToString() == "" || reader_ccm_t["masc_para"].ToString() == "")
+                            {
+                                ilcs.qunatidade_erros += 1;
+                                ilc.status = "Erro";
+                                ilc.mensagem += "Conta corrente sem conta contábil; ";
+                            }
+
+                            ilc.ilc_data_lancamento = Convert.ToDateTime(reader_ccm_t["ccm_data"]);
+                            ilc.ilc_conta_debito = reader_ccm_t["masc_para"].ToString();
+                            ilc.ilc_conta_credito = reader_ccm_t["masc_de"].ToString();
+                            ilc.ilc_valor_lancamento = Convert.ToDecimal(reader_ccm_t["ccm_valor"]);
+                            ilc.ilc_codigo_historico = "";
+                            ilc.ilc_complemento_historico = reader_ccm_t["ccm_memorando"].ToString();
+                            ilc.ilc_numero_documento = "DCTO";
+                            ilc.ilc_lote_lancamento = "";
+                            ilc.ilc_contabilizacao_ifrs = "A";
+                            ilc.ilc_transacao_sped = "";
+                            ilc.ilc_indicador_conciliacao = "";
+                            ilc.ilc_indicador_pendencia_concialiacao = "";
+                            ilc.ilc_obs_conciliacao_credito = "";
+                            ilc.ilc_obs_conciliacao_debito = "";
+                            ilc.ilc_cnpj_cpf_credito = "";
+                            ilc.ilc_cnpj_cpf_debito = "";
+
+                            list_ilc.Add(ilc);
                         }
-
-                        ilc.ilc_data_lancamento = Convert.ToDateTime(reader_ccm_t["ccm_data"]);
-                        ilc.ilc_conta_debito = reader_ccm_t["masc_para"].ToString();
-                        ilc.ilc_conta_credito = reader_ccm_t["masc_de"].ToString();
-                        ilc.ilc_valor_lancamento = Convert.ToDecimal(reader_ccm_t["ccm_valor"]);
-                        ilc.ilc_codigo_historico = "";
-                        ilc.ilc_complemento_historico = reader_ccm_t["ccm_memorando"].ToString();
-                        ilc.ilc_numero_documento = "DCTO";
-                        ilc.ilc_lote_lancamento = "";
-                        ilc.ilc_contabilizacao_ifrs = "A";
-                        ilc.ilc_transacao_sped = "";
-                        ilc.ilc_indicador_conciliacao = "";
-                        ilc.ilc_indicador_pendencia_concialiacao = "";
-                        ilc.ilc_obs_conciliacao_credito = "";
-                        ilc.ilc_obs_conciliacao_debito = "";
-
-                        list_ilc.Add(ilc);
                     }
+                    reader_ccm_t.Close();
+                    //FIm ==> Conta corrente movimento orgiem Transferências
                 }
-                reader_ccm_t.Close();
-                //FIm ==> Conta corrente movimento orgiem Transferências
 
                 //INICIO ==> Conta corrente movimento orgiem Baixas
                 if (gerar_lancamentos_baixas)
@@ -573,6 +579,10 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
             }
             catch (Exception e)
             {
+                ilcs.status = "Erro";
+                list_ilc = null;
+                ilcs.list_ilc = list_ilc;
+
                 string msg = e.Message.Substring(0, 250);
                 log.log("Memorando", "listMemorando", "Erro", msg, conta_id, usuario_id);
             }

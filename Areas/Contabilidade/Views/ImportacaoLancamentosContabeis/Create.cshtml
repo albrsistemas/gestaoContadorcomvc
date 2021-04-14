@@ -194,108 +194,142 @@
     </div>
 </form>
 <hr class="hrLine" />
-
-<input type="text" id="myInput" value="" placeholder="Pesquisa" class="form-control form-control-sm pesquisa" style="max-width:100%;margin-bottom: 20px;" />
-<div class="table-responsive" style="max-height: 350px;">
-    <table class="table table-sm">
-        <caption>SCI - Importação de Lançamentos Contábeis</caption>
-        <thead>
-            <tr>
-                <th scope="col">Status</th>
-                <th scope="col" style="min-width:300px;">Retorno</th>
-                <th scope="col">Origem</th>
-                <th scope="col">Tipo</th>
-                <th scope="col">Sequência</th>
-                <th scope="col" style="white-space:nowrap">Data Lançamento</th>
-                <th scope="col">Debito</th>
-                <th scope="col">Crédito</th>
-                <th scope="col" style="white-space:nowrap;text-align:right">Valor Lançamento</th>
-                <th scope="col" style="white-space:nowrap;min-width:300px;text-align:left;">Complemento Histórico</th>
-                <th scope="col" style="white-space:nowrap">Número Documento</th>
-                <th scope="col" style="white-space:nowrap">CNPJ/CPF Participante</th>
-                <th scope="col">IFRS</th>
-            </tr>
-        </thead>
-        <tbody id="myTable">
-            @{
-                if (Model.list_ilc != null)
-                {
-                    int s = 1;
-                    foreach (var item in Model.list_ilc)
-                    {
-                        <tr>
-                            <td>@item.status</td>
-                            <td>@item.mensagem</td>
-                            <td>@item.origem</td>
-                            <td>@item.tipo</td>
-                            <td>@s.ToString().PadLeft(6, '0')</td>
-                            <td>@item.ilc_data_lancamento.ToShortDateString()</td>
-                            <td>@item.ilc_conta_debito</td>
-                            <td>@item.ilc_conta_credito</td>
-                            <td style="text-align: right">@item.ilc_valor_lancamento.ToString("N")</td>
-                            <td style="text-align: left;">@item.ilc_complemento_historico</td>
-                            <td>@item.ilc_numero_documento</td>
-                            <td>@item.ilc_cnpj_cpf_credito@item.ilc_cnpj_cpf_debito</td>
-                            <td>@item.ilc_contabilizacao_ifrs</td>
-                        </tr>
-
-                        s += 1;
-                    }
-                }
-            }
-
-        </tbody>
-    </table>
-</div>
-
-<!--Modais-->
-<!--mensagem retorno-->
-<div class="modal fade" id="modal_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="mensagem_retorno_label"></h5>
-            </div>
-            <div class="modal-body" id="mensagem_retorno_conteudo" style="text-align:center;">
-
-            </div>
-            <div class="modal-footer" id="mensagem_retorno_rodape">
-
+@{
+    if (Model.status == "Erro")
+    {
+        <div class="row">
+            <div class="col-12">
+                <span class="text-danger">Erro no processamento</span>
             </div>
         </div>
-    </div>
-</div>
+    }
+    else
+    {
+        <input type="text" id="myInput" value="" placeholder="Pesquisa" class="form-control form-control-sm pesquisa" style="max-width:100%;margin-bottom: 20px;" />
+        <div class="table-responsive" style="max-height: 350px;">
+            <table class="table table-sm">
+                <caption>SCI - Importação de Lançamentos Contábeis</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Status</th>
+                        <th scope="col" style="min-width:300px;">Retorno</th>
+                        <th scope="col">Origem</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Sequência</th>
+                        <th scope="col" style="white-space:nowrap">Data Lançamento</th>
+                        <th scope="col">Debito</th>
+                        <th scope="col">Crédito</th>
+                        <th scope="col" style="white-space:nowrap;text-align:right">Valor Lançamento</th>
+                        <th scope="col" style="white-space:nowrap;min-width:300px;text-align:left;">Complemento Histórico</th>
+                        <th scope="col" style="white-space:nowrap">Número Documento</th>
+                        <th scope="col" style="white-space:nowrap">CNPJ/CPF Participante</th>
+                        <th scope="col">IFRS</th>
+                    </tr>
+                </thead>
+                <tbody id="myTable">
+                    @{
+                        if (Model.list_ilc != null)
+                        {
+                            int s = 1;
+                            foreach (var item in Model.list_ilc)
+                            {
+                                <tr>
+                                    <td>@item.status</td>
+                                    <td>@item.mensagem</td>
+                                    <td>@item.origem</td>
+                                    <td>@item.tipo</td>
+                                    <td>@s.ToString().PadLeft(6, '0')</td>
+                                    <td>@item.ilc_data_lancamento.ToShortDateString()</td>
+                                    <td>@item.ilc_conta_debito</td>
+                                    <td>@item.ilc_conta_credito</td>
+                                    <td style="text-align: right">@item.ilc_valor_lancamento.ToString("N")</td>
+                                    <td style="text-align: left;">@item.ilc_complemento_historico</td>
+                                    <td>@item.ilc_numero_documento</td>
+                                    <td>@item.ilc_cnpj_cpf_credito@item.ilc_cnpj_cpf_debito</td>
+                                    <td>@item.ilc_contabilizacao_ifrs</td>
+                                </tr>
 
-<!--Modal arquivo texto sci-->
-<div class="modal fade" id="sci_id" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="sci_id_label" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="sci_id_label">Arquivo Texto SCI Importação Lançamentos Contábeis</h5>
-            </div>
-            <div class="modal-body" id="sci_id_body" style="text-align:left;">
-                @{
-                    if (Model.list_ilc != null)
-                    {
-                        int s = 1;
-                        <div class="table-responsive" style="max-height: 350px;">
-                            @{
-                                foreach (var item in Model.list_ilc)
-                                {
-                                    <span class="sci_id_line" style="white-space:nowrap">@s.ToString().PadLeft(6, '0'),"@item.ilc_data_lancamento.Year@item.ilc_data_lancamento.Month.ToString().PadLeft(2, '0')@item.ilc_data_lancamento.Day.ToString().PadLeft(2, '0')","@item.ilc_conta_debito","@item.ilc_conta_credito",@item.ilc_valor_lancamento.ToString("N").Replace(".", "").Replace(",", "."),,"@item.ilc_complemento_historico.Trim()","@item.ilc_numero_documento",,"@item.ilc_cnpj_cpf_debito.Replace(".", "").Replace("/", "").Replace("-", "")","@item.ilc_cnpj_cpf_credito.Replace(".", "").Replace("/", "").Replace("-", "")","@item.ilc_contabilizacao_ifrs",,,,,</span><br />
-                                    s = s + 1;
-                                }
+                                s += 1;
                             }
-                        </div>
+                        }
                     }
-                }
-            </div>
-            <div class="modal-footer" id="sci_id_rodape">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-info" onclick="gerar_sci_ilc()">Salvar</button>
+
+                </tbody>
+            </table>
+        </div>
+
+        <!--Modais-->
+        <!--mensagem retorno-->
+        <div class="modal fade" id="modal_retorno" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="mensagem_retorno_label" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="mensagem_retorno_label"></h5>
+                    </div>
+                    <div class="modal-body" id="mensagem_retorno_conteudo" style="text-align:center;">
+
+                    </div>
+                    <div class="modal-footer" id="mensagem_retorno_rodape">
+
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
+        <!--Modal arquivo texto sci-->
+        <div class="modal fade" id="sci_id" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="sci_id_label" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="sci_id_label">Arquivo Texto SCI Importação Lançamentos Contábeis</h5>
+                    </div>
+                    <div class="modal-body" id="sci_id_body" style="text-align:left;">
+                        @{
+                            if (Model.list_ilc != null)
+                            {
+                                int s = 1;
+                                <div class="table-responsive" style="max-height: 350px;">
+                                    @{
+                                        foreach (var item in Model.list_ilc)
+                                        {
+                                            string debito = "";
+                                            if(item.ilc_conta_debito != null)
+                                            {
+                                                debito = item.ilc_conta_debito;
+                                            }
+
+                                            string credito = "";
+                                            if (item.ilc_conta_credito != null)
+                                            {
+                                                credito = item.ilc_conta_credito;
+                                            }
+                                            //string cnpj_debito = "";
+                                            //string cnpj_credito = "";
+                                            //if(item.ilc_cnpj_cpf_debito != null)
+                                            //{
+                                            //    cnpj_debito = item.ilc_cnpj_cpf_debito;
+                                            //}
+                                            //if(item.ilc_cnpj_cpf_credito != null)
+                                            //{
+                                            //    cnpj_credito = item.ilc_cnpj_cpf_credito;
+                                            //}
+
+
+                                            <span class="sci_id_line" style="white-space:nowrap">@s.ToString().PadLeft(6, '0'),"@item.ilc_data_lancamento.Year@item.ilc_data_lancamento.Month.ToString().PadLeft(2, '0')@item.ilc_data_lancamento.Day.ToString().PadLeft(2, '0')","@debito","@credito",@item.ilc_valor_lancamento.ToString("N").Replace(".", "").Replace(",", "."),,"@item.ilc_complemento_historico.Trim()","@item.ilc_numero_documento",,"@item.ilc_cnpj_cpf_debito.Replace(".", "").Replace("/", "").Replace("-", "")","@item.ilc_cnpj_cpf_credito.Replace(".", "").Replace("/", "").Replace("-", "")","@item.ilc_contabilizacao_ifrs",,,,,</span><br />
+                                            s = s + 1;
+                                        }
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div class="modal-footer" id="sci_id_rodape">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-info" onclick="gerar_sci_ilc()">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
 <script src="~/js/FileSaver.js" type="text/javascript"></script>
