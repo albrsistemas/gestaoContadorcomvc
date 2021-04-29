@@ -5402,7 +5402,7 @@ function rfm_gerar() {
 
 
                 let c = '<div class="table-responsive">';
-                c += '<table class="table table-sm">';
+                c += '<table class="table table-sm" id="rfm_table">';
                 c += '<caption>Relatório financeiro por período</caption>';
                 c += '<thead>';
                 for (let i = 0; i < rfm.vm_rfm_saldo_inicial_contas.length; i++) {
@@ -5445,6 +5445,10 @@ function rfm_gerar() {
                 c += '</div>';
                 //console.log(rfm);
                 document.getElementById('corpo_rfm').innerHTML = c;
+                //Se chegou até aqui gera o botão gerar pdf
+                if (document.getElementById('btn_imprimir') == null) {
+                    document.getElementById('gr_btn').innerHTML += '<button type="button" class="btn btn-info" id=\'btn_imprimir\' onclick="gerarPDF(\'rfm_table\')">Imprimir</button>';
+                }
             }
         }
     });
@@ -6689,6 +6693,32 @@ function gestao_tipo_participante(id, vlr, contexto) {
         $("#p_tipo_modal").modal('hide');
         return
     }
+}
+
+function gerarPDF(id) {
+    if (document.getElementById(id) == null) {
+        alert('Favor gerar primeiramente o relatório para ser impresso!');
+
+        return;
+    }
+
+    var minhaTabela = document.getElementById(id).outerHTML;
+    var style = "<style>";
+    style = style + "table {width: 100%;font: 20px Calibri;}";
+    style = style + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;";
+    style = style + "padding: 2px 3px;text-align: center;}";
+    style = style + "</style>";
+    // CRIA UM OBJETO WINDOW
+    var win = window.open('', '', 'height=700,width=700');
+    win.document.write('<html><head>');
+    win.document.write('<title>Empregados</title>');   // <title> CABEÇALHO DO PDF.
+    win.document.write(style);                                     // INCLUI UM ESTILO NA TAB HEAD
+    win.document.write('</head>');
+    win.document.write('<body>');
+    win.document.write(minhaTabela);                          // O CONTEUDO DA TABELA DENTRO DA TAG BODY
+    win.document.write('</body></html>');
+    win.document.close(); 	                                         // FECHA A JANELA
+    win.print(); 
 }
 
 

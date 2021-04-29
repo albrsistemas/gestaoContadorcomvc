@@ -16,7 +16,7 @@
 </style>
 
 <h4>Relatório financeiro por período</h4>
-<div class="btn-tools" no-printme>
+@*<div class="btn-tools" no-printme>
     <div class="row">
         <div class="coluna_1" style="text-align:left;width:calc(100% - 100px);user-select:none;padding-left: 15px;">
             <a class="btn btn-sm btn-info" onClick="window.print()">
@@ -31,7 +31,7 @@
             <p id="somaParcela" style="font-weight:bold;padding-left: 20px;"></p>
         </div>
     </div>
-</div>
+</div>*@
 
 <form asp-controller="Rfm" asp-action="Create"></form>
 <div class="row">
@@ -74,9 +74,9 @@
         </div>
     </div>
     <div class="col-12" style="margin-top: 10px;">
-        <div class="form-group">
+        <div class="form-group" id="gr_btn">
             <button type="button" class="btn btn-info" id="btn_rfm_gerar" onclick="rfm_gerar()">Gerar</button>
-            <span class="text-info" id="rfm_msg"></span>
+            <span class="text-info" id="rfm_msg"></span>            
         </div>
     </div>
 </div>
