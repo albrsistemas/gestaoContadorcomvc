@@ -301,6 +301,37 @@
                 </div>
             </div>
         </div>
+        <!--Cadastro Centro de Custo-->
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="_permissoes.centro_custoList" type="checkbox" id="centro_custoList" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="centro_custoList">Centro de Custo</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 30px;">
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.centro_custoCreate" id="centro_custoCreate" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="centro_custoCreate">Incluir</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.centro_custoEdit" id="centro_custoEdit" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="centro_custoEdit">Alterar</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-check form-check-inline" style="width: 20%;">
+                        <input class="form-check-input" type="checkbox" asp-for="_permissoes.centro_custoDelete" id="centro_custoDelete" onclick="checkPermissoes(this.id)">
+                        <label class="form-check-label" for="centro_custoDelete">Apagar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!--Lançamento-->
         <h6>Lançamento</h6>
         <hr class="hrLine" />

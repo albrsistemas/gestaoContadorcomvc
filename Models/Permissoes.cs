@@ -131,6 +131,11 @@ namespace gestaoContadorcomvc.Models
         public bool cartaoCreditoDelete { get; set; }
         //Relatório por participante
         public bool rpList { get; set; }
+        //Centro de custo
+        public bool centro_custoList { get; set; }
+        public bool centro_custoCreate { get; set; }
+        public bool centro_custoEdit { get; set; }
+        public bool centro_custoDelete { get; set; }
 
 
 
@@ -543,6 +548,11 @@ namespace gestaoContadorcomvc.Models
                         permissao.cartaoCreditoDelete = Convert.ToBoolean(leitor["cartaoCreditoDelete"]);
                         //27/03/2021
                         permissao.rpList = Convert.ToBoolean(leitor["rpList"]);
+                        //29/04/2021
+                        permissao.centro_custoCreate = Convert.ToBoolean(leitor["centro_custoCreate"]);
+                        permissao.centro_custoDelete = Convert.ToBoolean(leitor["centro_custoDelete"]);
+                        permissao.centro_custoEdit = Convert.ToBoolean(leitor["centro_custoEdit"]);
+                        permissao.centro_custoList = Convert.ToBoolean(leitor["centro_custoList"]);
                     }
                 }
             }

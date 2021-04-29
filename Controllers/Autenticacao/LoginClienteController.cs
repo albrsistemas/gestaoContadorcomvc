@@ -46,8 +46,10 @@ namespace gestaoContadorcomvc.Controllers.Autenticacao
                 return View(TempData["errorLogin"] = "Área exclusiva para contador!");
             }
 
+            string c = collection["conta_dcto"].ToString().Replace(".", "").Replace("/", "").Replace("-", "");
+
             Conta conta_cliente = new Conta();
-            conta_cliente = conta_cliente.buscarContaPorDcto(collection["conta_dcto"]);
+            conta_cliente = conta_cliente.buscarContaPorDcto(c);
 
             if (conta.conta_id != conta_cliente.contador_id)
             {

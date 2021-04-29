@@ -1,0 +1,25 @@
+﻿@model gestaoContadorcomvc.Models.Centro_custo
+@{
+    Layout = null;
+}
+
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirmação de Exclusão</h4>
+            </div>
+            <div class="modal-body">
+                <p>Confirme a exclusão do centro de custo: <strong>@Model.centro_custo_nome</strong></p>                
+            </div>
+            <div class="modal-footer">                
+                <form asp-controller="CentroCusto" asp-action="Delete" id="form">
+                    <input type="hidden" asp-for="centro_custo_id" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger" id="sub_form" onclick="blockSubmit(this.id,'form')">Apagar</button>
+                    <br /><span class="text-info" id="msg_blockSubmit"></span>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>

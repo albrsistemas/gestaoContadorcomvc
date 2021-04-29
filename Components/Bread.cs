@@ -301,6 +301,19 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Relatório Participante Anual";
                 }
+                //Centro de custo
+                if (pagina.Contains("CentroCusto/Index"))
+                {
+                    retorno = "Centro de Custo";
+                }
+                if (pagina.Contains("CentroCusto/Create"))
+                {
+                    retorno = "Incluir Centro de Custo";
+                }
+                if (pagina.Contains("CentroCusto/Edit"))
+                {
+                    retorno = "Alterar Centro de Custo";
+                }
             }
 
             ViewData["openNav"] = openNav;

@@ -264,7 +264,7 @@ namespace gestaoContadorcomvc.Models
             }
             catch (Exception e)
             {
-                retorno = "Erro ao alterar o memorandi. Tente novamente. Se persistir, entre em contato com o suporte!";
+                retorno = "Erro ao alterar o memorando. Tente novamente. Se persistir, entre em contato com o suporte!";
 
                 string msg = e.Message.Substring(0, 300);
                 log.log("Memorando", "alteraMemorando", "Erro", msg, conta_id, usuario_id);
@@ -306,12 +306,12 @@ namespace gestaoContadorcomvc.Models
                 Transacao.Commit();
 
                 string msg = "Exclusão do memorando ID: " + memorando_id + " Excluído com sucesso";
-                log.log("ContaCorrente", "deleteMemorando", "Sucesso", msg, conta_id, usuario_id);
+                log.log("Memorando", "deleteMemorando", "Sucesso", msg, conta_id, usuario_id);
 
             }
             catch (Exception e)
             {
-                retorno = "Erro ao excluir a conta corrente. Tente novamente. Se persistir, entre em contato com o suporte!";
+                retorno = "Erro ao excluir o memorando. Tente novamente. Se persistir, entre em contato com o suporte!";
 
                 string msg = e.Message.Substring(0, 300);
                 log.log("Memorando", "deleteMemorando", "Erro", msg, conta_id, usuario_id);

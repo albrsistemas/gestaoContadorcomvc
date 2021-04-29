@@ -6711,7 +6711,7 @@ function gerarPDF(id) {
     // CRIA UM OBJETO WINDOW
     var win = window.open('', '', 'height=700,width=700');
     win.document.write('<html><head>');
-    win.document.write('<title>Empregados</title>');   // <title> CABEÇALHO DO PDF.
+    win.document.write('<title></title>');   // <title> CABEÇALHO DO PDF.
     win.document.write(style);                                     // INCLUI UM ESTILO NA TAB HEAD
     win.document.write('</head>');
     win.document.write('<body>');

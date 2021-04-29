@@ -30,6 +30,8 @@
                         {<a class="dropdown-item" asp-controller='Participante' asp-action='Index'>Participante</a>}
                         @if (usuario.Role == "adm" || usuario._permissoes.produtosList)
                         {<a class="dropdown-item" asp-controller='Produtos' asp-action='Index'>Produtos</a>}
+                        @if (usuario.Role == "adm" || usuario._permissoes.centro_custoList)
+                        {<a class="dropdown-item" asp-controller='CentroCusto' asp-action='Index'>Centro de Custo</a>}
                     </div>
                 </li>
             }

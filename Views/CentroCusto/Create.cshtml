@@ -1,0 +1,28 @@
+﻿@model gestaoContadorcomvc.Models.Centro_custo
+
+@{
+    ViewData["Title"] = "Centro de Custo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Novo Centro de Custo</h2>
+<hr class="hrLine" />
+
+<form asp-controller="CentroCusto" asp-action="Create" id="form">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">       
+        <div class="col-12">
+            <div class="form-group">
+                <label asp-for="centro_custo_nome" class="control-label"></label>
+                <input asp-for="centro_custo_nome" class="form-control" />
+                <span asp-validation-for="centro_custo_nome" class="text-danger"></span>
+            </div>
+        </div>
+    </div>   
+
+    <br />
+
+    <button type="submit" class="btn btn-info" id="sub_form" onclick="blockSubmit(this.id,'form')">Gravar</button>
+    <a class="btn btn-secondary" asp-controller="CentroCusto" asp-action="Index">Cancelar</a>
+    <br /><span class="text-info" id="msg_blockSubmit"></span>
+</form>
