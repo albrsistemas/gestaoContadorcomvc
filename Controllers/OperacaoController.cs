@@ -49,6 +49,9 @@ namespace gestaoContadorcomvc.Controllers
             ViewBag.operacoes = select.getOperacoes().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "OutrasDespesas" });
             ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             ViewBag.tipoNF = select.getTipoNF().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.centroCusto = select.getCentroCusto(user.conta.conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.origem = select.getOrigemMercadoria().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.cstICMS = select.getCstICMS().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
 
             return View(vm_op);
         }
@@ -76,6 +79,9 @@ namespace gestaoContadorcomvc.Controllers
             ViewBag.operacoes = select.getOperacoes().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "OutrasDespesas" });
             ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             ViewBag.tipoNF = select.getTipoNF().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.centroCusto = select.getCentroCusto(user.conta.conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.origem = select.getOrigemMercadoria().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.cstICMS = select.getCstICMS().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
 
             return View(vm_op);
         }
@@ -102,7 +108,9 @@ namespace gestaoContadorcomvc.Controllers
             ViewBag.operacoes = select.getOperacoes().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "OutrasDespesas" });
             ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id,"Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             ViewBag.tipoNF = select.getTipoNF().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
-
+            ViewBag.centroCusto = select.getCentroCusto(user.conta.conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.origem = select.getOrigemMercadoria().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.cstICMS = select.getCstICMS().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             return View();
         }
 
@@ -165,6 +173,9 @@ namespace gestaoContadorcomvc.Controllers
             ViewBag.operacoes = select.getOperacoes().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.text == vm_op.operacao.op_tipo });
             ViewBag.formaPgto = select.getFormaPgto(user.usuario_conta_id, "Pagamento").Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
             ViewBag.tipoNF = select.getTipoNF().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == vm_op.nf.op_nf_tipo.ToString() });
+            ViewBag.centroCusto = select.getCentroCusto(user.conta.conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.origem = select.getOrigemMercadoria().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
+            ViewBag.cstICMS = select.getCstICMS().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
 
             //Verificando se parcela possui baixas ou parcela em fatura fechada e retornando para usuário aviso que não poderá ser alterada a operação.
             if (op.baixasPorOperacao(id) > 0)

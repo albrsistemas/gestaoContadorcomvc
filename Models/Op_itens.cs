@@ -57,6 +57,31 @@ namespace gestaoContadorcomvc.Models
 
         [Display(Name = "Código do Fornecedor")]
         public string op_item_cod_fornecedor { get; set; } //Código do produto no fornecedor
+
+        [Display(Name = "Centro de Custo")]
+        public int op_itens_centro_custo { get; set; }
+
+        [Display(Name = "NCM")]
+        public string op_item_ncm { get; set; }
+
+        [Display(Name = "CEST")]
+        public string op_item_cest { get; set; }
+
+        [Display(Name = "Origem")]
+        public int op_item_origem { get; set; }
+
+        [Display(Name = "CST ICMS")]
+        public int op_item_cst { get; set; }
+
+        [Display(Name = "CFOP")]
+        public string op_item_cfop { get; set; }
+
+        [Display(Name = "% IPI")]
+        public Decimal op_item_pIPI { get; set; }
+        
         public string controleEdit { get; set; } //Campo criado para controle edição. Não consta no banco de dados.
+
+        [Display(Name = "Centro de Custo")]
+        public string op_itens_centro_custo_nome { get; set; }
     }
 }

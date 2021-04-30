@@ -662,6 +662,34 @@ namespace gestaoContadorcomvc.Models
             return origem;
         }
 
+        //Metodo para lista de CST´s ICMS
+        public List<Selects> getCstICMS()
+        {
+            List<Selects> origem = new List<Selects>();
+            origem.Add(new Selects { value = "00", text = "00 - Tributada integralmente" });
+            origem.Add(new Selects { value = "10", text = "10 - Tributada e com cobrança do ICMS por substituição tributária" });
+            origem.Add(new Selects { value = "20", text = "20 - Com redução de base de cálculo" });
+            origem.Add(new Selects { value = "30", text = "30 - Isenta ou não-tributada e com cobrança do ICMS por substituição tributária" });
+            origem.Add(new Selects { value = "40", text = "40 - Isenta" });
+            origem.Add(new Selects { value = "50", text = "50 - Suspensão" });
+            origem.Add(new Selects { value = "51", text = "51 - Diferimento" });
+            origem.Add(new Selects { value = "60", text = "60 - ICMS cobrado anteriormente por substituição tributária" });
+            origem.Add(new Selects { value = "70", text = "70 - Com redução de base de cálculo e cobrança do ICMS por substituição tributária" });
+            origem.Add(new Selects { value = "90", text = "90 - Outras" });
+            origem.Add(new Selects { value = "101", text = "101 - Tributada pelo Simples Nacional com permissão de crédito" });
+            origem.Add(new Selects { value = "102", text = "102 - Tributada pelo Simples Nacional sem permissão de crédito" });
+            origem.Add(new Selects { value = "103", text = "103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta" });
+            origem.Add(new Selects { value = "201", text = "201 - Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária" });
+            origem.Add(new Selects { value = "202", text = "202 - Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária" });
+            origem.Add(new Selects { value = "203", text = "203 - Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária" });
+            origem.Add(new Selects { value = "300", text = "300 - Imune" });
+            origem.Add(new Selects { value = "400", text = "400 - Não tributada pelo Simples Nacional" });
+            origem.Add(new Selects { value = "500", text = "500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação" });
+            origem.Add(new Selects { value = "900", text = "900 - Outros" });
+
+            return origem;
+        }
+
         //Tipo item
         public List<Selects> getTipoItem()
         {
@@ -1774,6 +1802,60 @@ namespace gestaoContadorcomvc.Models
 
                         select.value = leitor["pt_id"].ToString();
                         select.text = leitor["pt_nome"].ToString();
+                        select.disabled = false;
+
+                        selects.Add(select);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return selects;
+        }
+
+        //Lista de centros de custo
+        public List<Selects> getCentroCusto(int conta_id)
+        {
+            List<Selects> selects = new List<Selects>();
+            selects.Add(new Selects
+            {
+                value = "0",
+                text = "Não Informado"
+            });
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from centro_custo WHERE centro_custo.centro_custo_conta_id = @conta_id;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects select = new Selects();
+
+                        select.value = leitor["centro_custo_id"].ToString();
+                        select.text = leitor["centro_custo_nome"].ToString();
                         select.disabled = false;
 
                         selects.Add(select);

@@ -557,6 +557,14 @@
                         op_item_valor_total: prod_valorTotal,
                         controleEdit: 'insert',
                         op_item_id_banco: 0,
+                        op_itens_centro_custo: 0,
+                        op_itens_centro_custo_nome: 'Não Informado',
+                        op_item_ncm: produto_op_selecionado.ncm,
+                        op_item_cest: produto_op_selecionado.cest,
+                        op_item_origem: produto_op_selecionado.origem,
+                        op_item_cst: -1,
+                        op_item_cfop: '',
+                        op_item_pIPI: 0
                     };
                     operacao.itens.push(item_produto);
                                         
@@ -602,6 +610,15 @@
             decimal('op_item_desconto', item.op_item_desconto.toString().replace('.', ''), '6', true);
             decimal('op_item_vlr_ipi', item.op_item_vlr_ipi.toString().replace('.', ''), '6', true);
             decimal('op_item_vlr_icms_st', item.op_item_vlr_icms_st.toString().replace('.', ''), '6', true);
+
+            decimal('op_item_pIPI', item.op_item_pIPI.toString().replace('.', ''), '2', true);
+            document.getElementById('op_item_ncm').value = item.op_item_ncm;
+            document.getElementById('op_item_cest').value = item.op_item_cest;
+            document.getElementById('op_item_cfop').value = item.op_item_cfop;
+            document.getElementById('op_item_origem').value = item.op_item_origem;
+            document.getElementById('op_item_cst').value = item.op_item_cst;
+            document.getElementById('op_itens_centro_custo').value = item.op_itens_centro_custo;
+
 
             //Abrir modal
             modal_sobre_modal_open('modal_item');
@@ -655,6 +672,22 @@
                     operacao.itens[i].op_item_vlr_icms_st = document.getElementById('op_item_vlr_icms_st').value;
                     operacao.itens[i].op_item_cod_fornecedor = document.getElementById('op_item_cod_fornecedor').value;
                     operacao.itens[i].op_item_valor_total = document.getElementById('item_valor_total').value;
+
+                    operacao.itens[i].op_item_ncm = document.getElementById('op_item_ncm').value;
+                    operacao.itens[i].op_item_cest = document.getElementById('op_item_cest').value;
+                    operacao.itens[i].op_item_origem = document.getElementById('op_item_origem').value;
+                    operacao.itens[i].op_item_cst = document.getElementById('op_item_cst').value;
+                    operacao.itens[i].op_item_cfop = document.getElementById('op_item_cfop').value;
+                    operacao.itens[i].op_item_pIPI = document.getElementById('op_item_pIPI').value;                    
+                    operacao.itens[i].op_itens_centro_custo = document.getElementById('op_itens_centro_custo').value;
+                    let s = document.getElementById('op_itens_centro_custo');
+                    for (let x = 0; x < s.length; x++) {
+                        if (s.options[x].value == operacao.itens[i].op_itens_centro_custo.toString()) {
+                            operacao.itens[i].op_itens_centro_custo_nome = s.options[x].text;
+                            break;
+                        }
+                    }
+
                     //Atualiza tabela de itens
                     atualizaViewItens();
                     //calcula os totais
@@ -694,8 +727,18 @@
                 item += '<td>' + operacao.itens[i].op_item_qtd + '</td>';
                 item += '<td>' + operacao.itens[i].op_item_preco + '</td>';
                 item += '<td>' + operacao.itens[i].op_item_valor_total + '</td>';
-                item += '<td>' + 'NCM' + '</td>';
-                item += '<td>' + 'CEST' + '</td>';
+                item += '<td>' + operacao.itens[i].op_item_origem + '</td>';
+                if (operacao.itens[i].op_item_cst == -1) {
+                    item += '<td>' + '' + '</td>';
+                } else {
+                    item += '<td>' + operacao.itens[i].op_item_cst + '</td>';
+                }                
+                item += '<td>' + operacao.itens[i].op_item_cfop + '</td>';
+                item += '<td>' + operacao.itens[i].op_item_ncm + '</td>';
+                item += '<td>' + operacao.itens[i].op_item_cest + '</td>';
+                item += '<td>' + operacao.itens[i].op_item_pIPI + '</td>';
+                item += '<td>' + operacao.itens[i].op_item_vlr_ipi + '</td>';
+                item += '<td>' + operacao.itens[i].op_itens_centro_custo_nome + '</td>';
                 item += '</tr>';
                 $('#tbody_itens').append(item);
             }

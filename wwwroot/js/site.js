@@ -1,6 +1,8 @@
 ﻿//Variaveis globais
 let rfm = {};
 
+let produto_op_selecionado = {};
+
 let fcc = {
     fcc_id: 0,
     fcc_forma_pagamento_id: 0,
@@ -1499,6 +1501,9 @@ function consultaProdutos(id, contexto) {
                             valorCompra: results[i].produtos_estoque_preco_compra,
                             valorVenda: results[i].produtos_preco_venda,
                             unidade: results[i].produtos_unidade,
+                            origem: results[i].produtos_origem,
+                            ncm: results[i].produtos_ncm,
+                            cest: results[i].produtos_cest,
                         };
                         autocompleteObjects.push(object);
                     }
@@ -1512,7 +1517,9 @@ function consultaProdutos(id, contexto) {
             });
         },
         minLength: 3,
-        select: function (event, ui) {              
+        select: function (event, ui) {
+            produto_op_selecionado = ui.item;
+
             if (document.getElementById('produto_id')) {
                 document.getElementById('produto_id').value = ui.item.id;
             }

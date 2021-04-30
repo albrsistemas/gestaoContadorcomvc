@@ -588,7 +588,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT produtos.produtos_unidade, produtos.produtos_id, produtos.produtos_codigo, produtos.produtos_nome, produtos.produtos_estoque_preco_compra, produtos.produtos_preco_venda from produtos where produtos_conta_id = @conta_id and produtos_status = 'Ativo' and (produtos.produtos_nome LIKE concat(@termo,'%') or produtos.produtos_codigo LIKE concat(@termo,'%'));";
+                comando.CommandText = "SELECT produtos.produtos_unidade, produtos.produtos_id, produtos.produtos_codigo, produtos.produtos_nome, produtos.produtos_estoque_preco_compra, produtos.produtos_preco_venda, produtos.produtos_origem, produtos.produtos_ncm, produtos.produtos_cest from produtos where produtos_conta_id = @conta_id and produtos_status = 'Ativo' and (produtos.produtos_nome LIKE concat(@termo,'%') or produtos.produtos_codigo LIKE concat(@termo,'%'));";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@termo", termo);
                 comando.ExecuteNonQuery();
@@ -627,10 +627,20 @@ namespace gestaoContadorcomvc.Models
                         {
                             produto.produtos_estoque_preco_compra = 0;
                         }
+                        if (DBNull.Value != leitor["produtos_origem"])
+                        {
+                            produto.produtos_origem = Convert.ToInt32(leitor["produtos_origem"]);
+                        }
+                        else
+                        {
+                            produto.produtos_origem = 0;
+                        }
 
                         produto.produtos_codigo = leitor["produtos_codigo"].ToString();
                         produto.produtos_nome = leitor["produtos_nome"].ToString();                        
                         produto.produtos_unidade = leitor["produtos_unidade"].ToString();                        
+                        produto.produtos_ncm = leitor["produtos_ncm"].ToString();                        
+                        produto.produtos_cest = leitor["produtos_cest"].ToString();                        
 
                         produtos.Add(produto);
                     }

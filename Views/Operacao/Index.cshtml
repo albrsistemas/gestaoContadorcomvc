@@ -665,16 +665,71 @@
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
+                                <label asp-for="item.op_item_ncm" class="control-label"></label>
+                                <input asp-for="item.op_item_ncm" id="op_item_ncm" class="form-control form-control-sm" />
+                                <span asp-validation-for="item.op_item_ncm" class="text-danger"></span>
+                            </div>                            
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_cest" class="control-label"></label>
+                                <input asp-for="item.op_item_cest" id="op_item_cest" class="form-control form-control-sm" />
+                                <span asp-validation-for="item.op_item_cest" class="text-danger"></span>
+                            </div>                            
+                        </div>
+                        </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_origem" class="control-label"></label>
+                                <select asp-items="@ViewBag.origem" value="@TempData["op_item_origem"]" id="op_item_origem" name="op_item_origem" class="form-control form-control-sm"></select>
+                            </div>                            
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_cst" class="control-label"></label>
+                                <select asp-items="@ViewBag.cstICMS" value="@TempData["op_item_cst"]" id="op_item_cst" name="op_item_cst" class="form-control form-control-sm"></select>
+                            </div>                            
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_cfop" class="control-label"></label>
+                                <input asp-for="item.op_item_cfop" id="op_item_cfop" class="form-control form-control-sm" />
+                                <span asp-validation-for="item.op_item_cfop" class="text-danger"></span>
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label asp-for="item.op_item_pIPI" class="control-label"></label>
+                                <input asp-for="item.op_item_pIPI" id="op_item_pIPI" class="form-control form-control-sm" onchange="decimal(this.id, this.value, '6')" />
+                                <span asp-validation-for="item.op_item_pIPI" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
                                 <label asp-for="item.op_item_vlr_ipi" class="control-label"></label>
                                 <input asp-for="item.op_item_vlr_ipi" id="op_item_vlr_ipi" class="form-control form-control-sm" onchange="decimal(this.id, this.value, '6')" />
                                 <span asp-validation-for="item.op_item_vlr_ipi" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
                             <div class="form-group">
                                 <label asp-for="item.op_item_vlr_icms_st" class="control-label"></label>
                                 <input asp-for="item.op_item_vlr_icms_st" id="op_item_vlr_icms_st" class="form-control form-control-sm" onchange="decimal(this.id, this.value, '6')" />
                                 <span asp-validation-for="item.op_item_vlr_icms_st" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Outras</legend>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="item.op_itens_centro_custo" class="control-label"></label>
+                                <select asp-items="@ViewBag.centroCusto" value="@TempData["op_itens_centro_custo"]" id="op_itens_centro_custo" name="op_itens_centro_custo" class="form-control form-control-sm"></select>
                             </div>
                         </div>
                     </div>
@@ -787,8 +842,14 @@
                                 <th scope="col">Quantidade</th>
                                 <th scope="col">Valor Unitário</th>
                                 <th scope="col">Valor Total</th>
+                                <th scope="col">Origem</th>
+                                <th scope="col">CST ICMS</th>
+                                <th scope="col">CFOP</th>
                                 <th scope="col">NCM</th>
                                 <th scope="col">CEST</th>
+                                <th scope="col">% IPI</th>
+                                <th scope="col">IPI</th>
+                                <th scope="col">Centro de Custo</th>
                             </tr>
                         </thead>
                         <tbody id="tbody_itens" style="font-size:13px"></tbody>

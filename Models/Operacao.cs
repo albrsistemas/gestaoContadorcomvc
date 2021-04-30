@@ -1028,7 +1028,7 @@ namespace gestaoContadorcomvc.Models
 
                 List<Op_itens> itens = new List<Op_itens>();
 
-                cmd.CommandText = "SELECT * from op_itens WHERE op_itens.op_item_op_id = @op_id_2;";
+                cmd.CommandText = "SELECT op_itens.*, c.centro_custo_nome as 'op_itens_centro_custo_nome' from op_itens LEFT JOIN centro_custo as c on c.centro_custo_id = op_itens.op_itens_centro_custo WHERE op_itens.op_item_op_id = @op_id_2;";
                 cmd.Parameters.AddWithValue("@op_id_2", op.operacao.op_id);
 
                 leitor_2 = cmd.ExecuteReader();
@@ -1064,6 +1064,34 @@ namespace gestaoContadorcomvc.Models
                         {
                             item.op_item_produto_id = 0;
                         }
+
+                        if (DBNull.Value != leitor_2["op_item_origem"])
+                        {
+                            item.op_item_origem = Convert.ToInt32(leitor_2["op_item_origem"]);
+                        }
+                        else
+                        {
+                            item.op_item_origem = -1;
+                        }
+
+                        if (DBNull.Value != leitor_2["op_item_cst"])
+                        {
+                            item.op_item_cst = Convert.ToInt32(leitor_2["op_item_cst"]);
+                        }
+                        else
+                        {
+                            item.op_item_cst = -1;
+                        }
+
+                        if (DBNull.Value != leitor_2["op_itens_centro_custo"])
+                        {
+                            item.op_itens_centro_custo = Convert.ToInt32(leitor_2["op_itens_centro_custo"]);
+                        }
+                        else
+                        {
+                            item.op_itens_centro_custo = 0;
+                        }
+
                         //decimais
                         if (DBNull.Value != leitor_2["op_item_preco"])
                         {
@@ -1146,6 +1174,15 @@ namespace gestaoContadorcomvc.Models
                             item.op_item_valor_total = 0;
                         }
 
+                        if (DBNull.Value != leitor_2["op_item_pIPI"])
+                        {
+                            item.op_item_pIPI = Convert.ToDecimal(leitor_2["op_item_pIPI"]);
+                        }
+                        else
+                        {
+                            item.op_item_pIPI = 0;
+                        }                        
+
                         item.op_item_nome = leitor_2["op_item_nome"].ToString();
                         item.op_item_obs = leitor_2["op_item_obs"].ToString();
                         item.op_item_codigo = leitor_2["op_item_codigo"].ToString();
@@ -1153,8 +1190,20 @@ namespace gestaoContadorcomvc.Models
                         item.op_item_gtin_ean_trib = leitor_2["op_item_gtin_ean_trib"].ToString();
                         item.op_item_cod_fornecedor = leitor_2["op_item_cod_fornecedor"].ToString();
                         item.op_item_unidade = leitor_2["op_item_unidade"].ToString();
-                        item.controleEdit = "update";
+                        item.op_item_ncm = leitor_2["op_item_ncm"].ToString();
+                        item.op_item_cest = leitor_2["op_item_cest"].ToString();
+                        item.op_item_cfop = leitor_2["op_item_cfop"].ToString();
 
+                        if(item.op_itens_centro_custo == 0)
+                        {
+                            item.op_itens_centro_custo_nome = "Não Informado";
+                        }
+                        else
+                        {
+                            item.op_itens_centro_custo_nome = leitor_2["op_itens_centro_custo_nome"].ToString();
+                        }                        
+                        item.controleEdit = "update";
+                        
                         itens.Add(item);
                     }                                      
                 }
@@ -1471,7 +1520,7 @@ namespace gestaoContadorcomvc.Models
 
                                 if (op.itens[i].controleEdit == "insert")
                                 {
-                                    cmd.CommandText = "insert into op_itens (op_item_codigo, op_item_nome, op_item_unidade, op_item_preco, op_item_gtin_ean, op_item_gtin_ean_trib, op_item_obs, op_item_qtd, op_item_frete, op_item_seguros, op_item_desp_aces, op_item_desconto, op_item_op_id, op_item_vlr_ipi, op_item_vlr_icms_st, op_item_cod_fornecedor, op_item_produto_id, op_item_valor_total) values (@op_item_codigo, @op_item_nome, @op_item_unidade, @op_item_preco, @op_item_gtin_ean, @op_item_gtin_ean_trib, @op_item_obs, @op_item_qtd, @op_item_frete, @op_item_seguros, @op_item_desp_aces, @op_item_desconto, @op_item_op_id, @op_item_vlr_ipi, @op_item_vlr_icms_st, @op_item_cod_fornecedor, @op_item_produto_id, @op_item_valor_total);";
+                                    cmd.CommandText = "insert into op_itens (op_item_codigo, op_item_nome, op_item_unidade, op_item_preco, op_item_gtin_ean, op_item_gtin_ean_trib, op_item_obs, op_item_qtd, op_item_frete, op_item_seguros, op_item_desp_aces, op_item_desconto, op_item_op_id, op_item_vlr_ipi, op_item_vlr_icms_st, op_item_cod_fornecedor, op_item_produto_id, op_item_valor_total, op_itens_centro_custo, op_item_ncm, op_item_cest, op_item_origem, op_item_cst, op_item_cfop, op_item_pIPI) values (@op_item_codigo, @op_item_nome, @op_item_unidade, @op_item_preco, @op_item_gtin_ean, @op_item_gtin_ean_trib, @op_item_obs, @op_item_qtd, @op_item_frete, @op_item_seguros, @op_item_desp_aces, @op_item_desconto, @op_item_op_id, @op_item_vlr_ipi, @op_item_vlr_icms_st, @op_item_cod_fornecedor, @op_item_produto_id, @op_item_valor_total, @op_itens_centro_custo, @op_item_ncm, @op_item_cest, @op_item_origem, @op_item_cst, @op_item_cfop, @op_item_pIPI);";
                                     cmd.Parameters.AddWithValue("@op_item_op_id", op.operacao.op_id);
                                     cmd.Parameters.AddWithValue("@op_item_codigo", op.itens[i].op_item_codigo);
                                     cmd.Parameters.AddWithValue("@op_item_nome", op.itens[i].op_item_nome);
@@ -1490,13 +1539,21 @@ namespace gestaoContadorcomvc.Models
                                     cmd.Parameters.AddWithValue("@op_item_cod_fornecedor", op.itens[i].op_item_cod_fornecedor);
                                     cmd.Parameters.AddWithValue("@op_item_produto_id", op.itens[i].op_item_produto_id);
                                     cmd.Parameters.AddWithValue("@op_item_valor_total", op.itens[i].op_item_valor_total);
+                                    cmd.Parameters.AddWithValue("@op_itens_centro_custo", op.itens[i].op_itens_centro_custo);
+                                    cmd.Parameters.AddWithValue("@op_item_ncm", op.itens[i].op_item_ncm);
+                                    cmd.Parameters.AddWithValue("@op_item_cest", op.itens[i].op_item_cest);
+                                    cmd.Parameters.AddWithValue("@op_item_origem", op.itens[i].op_item_origem);
+                                    cmd.Parameters.AddWithValue("@op_item_cst", op.itens[i].op_item_cst);
+                                    cmd.Parameters.AddWithValue("@op_item_cfop", op.itens[i].op_item_cfop);
+                                    cmd.Parameters.AddWithValue("@op_item_pIPI", op.itens[i].op_item_pIPI);
+
                                     cmd.ExecuteNonQuery();
 
                                 }
 
                                 if (op.itens[i].controleEdit == "update")
                                 {
-                                    cmd.CommandText = "UPDATE op_itens set op_item_preco = @op_item_preco, op_item_qtd = @op_item_qtd, op_item_frete = @op_item_frete, op_item_seguros = @op_item_seguros, op_item_desp_aces = @op_item_desp_aces, op_item_desconto = @op_item_desconto, op_item_vlr_ipi = @op_item_vlr_ipi, op_item_vlr_icms_st = @op_item_vlr_icms_st, op_item_valor_total = @op_item_valor_total, op_item_produto_id = @op_item_produto_id, op_item_unidade = @op_item_unidade, op_item_nome = @op_item_nome, op_item_obs = @op_item_obs, op_item_codigo = @op_item_codigo, op_item_gtin_ean = @op_item_gtin_ean, op_item_gtin_ean_trib = @op_item_gtin_ean_trib, op_item_cod_fornecedor = @op_item_cod_fornecedor where op_itens.op_item_id = @op_item_id;";
+                                    cmd.CommandText = "UPDATE op_itens set op_item_preco = @op_item_preco, op_item_qtd = @op_item_qtd, op_item_frete = @op_item_frete, op_item_seguros = @op_item_seguros, op_item_desp_aces = @op_item_desp_aces, op_item_desconto = @op_item_desconto, op_item_vlr_ipi = @op_item_vlr_ipi, op_item_vlr_icms_st = @op_item_vlr_icms_st, op_item_valor_total = @op_item_valor_total, op_item_produto_id = @op_item_produto_id, op_item_unidade = @op_item_unidade, op_item_nome = @op_item_nome, op_item_obs = @op_item_obs, op_item_codigo = @op_item_codigo, op_item_gtin_ean = @op_item_gtin_ean, op_item_gtin_ean_trib = @op_item_gtin_ean_trib, op_item_cod_fornecedor = @op_item_cod_fornecedor, op_itens_centro_custo = @op_itens_centro_custo, op_item_ncm = @op_item_ncm, op_item_cest = @op_item_cest, op_item_origem = @op_item_origem, op_item_cst = @op_item_cst, op_item_cfop = @op_item_cfop, op_item_pIPI = @op_item_pIPI where op_itens.op_item_id = @op_item_id;";
                                     cmd.Parameters.AddWithValue("@op_item_codigo", op.itens[i].op_item_codigo);
                                     cmd.Parameters.AddWithValue("@op_item_nome", op.itens[i].op_item_nome);
                                     cmd.Parameters.AddWithValue("@op_item_unidade", op.itens[i].op_item_unidade);
@@ -1515,6 +1572,14 @@ namespace gestaoContadorcomvc.Models
                                     cmd.Parameters.AddWithValue("@op_item_produto_id", op.itens[i].op_item_produto_id);
                                     cmd.Parameters.AddWithValue("@op_item_valor_total", op.itens[i].op_item_valor_total);
                                     cmd.Parameters.AddWithValue("@op_item_id", op.itens[i].op_item_id);
+                                    cmd.Parameters.AddWithValue("@op_itens_centro_custo", op.itens[i].op_itens_centro_custo);
+                                    cmd.Parameters.AddWithValue("@op_item_ncm", op.itens[i].op_item_ncm);
+                                    cmd.Parameters.AddWithValue("@op_item_cest", op.itens[i].op_item_cest);
+                                    cmd.Parameters.AddWithValue("@op_item_origem", op.itens[i].op_item_origem);
+                                    cmd.Parameters.AddWithValue("@op_item_cst", op.itens[i].op_item_cst);
+                                    cmd.Parameters.AddWithValue("@op_item_cfop", op.itens[i].op_item_cfop);
+                                    cmd.Parameters.AddWithValue("@op_item_pIPI", op.itens[i].op_item_pIPI);
+
                                     cmd.ExecuteNonQuery();
                                 }
 
@@ -1888,7 +1953,7 @@ namespace gestaoContadorcomvc.Models
                             cmd.Connection = conn;
                             cmd.Transaction = Transacao;
 
-                            cmd.CommandText = "insert into op_itens (op_item_codigo, op_item_nome, op_item_unidade, op_item_preco, op_item_gtin_ean, op_item_gtin_ean_trib, op_item_obs, op_item_qtd, op_item_frete, op_item_seguros, op_item_desp_aces, op_item_desconto, op_item_op_id, op_item_vlr_ipi, op_item_vlr_icms_st, op_item_cod_fornecedor, op_item_produto_id, op_item_valor_total) values (@op_item_codigo, @op_item_nome, @op_item_unidade, @op_item_preco, @op_item_gtin_ean, @op_item_gtin_ean_trib, @op_item_obs, @op_item_qtd, @op_item_frete, @op_item_seguros, @op_item_desp_aces, @op_item_desconto, @op_item_op_id, @op_item_vlr_ipi, @op_item_vlr_icms_st, @op_item_cod_fornecedor, @op_item_produto_id, @op_item_valor_total);";
+                            cmd.CommandText = "insert into op_itens (op_item_codigo, op_item_nome, op_item_unidade, op_item_preco, op_item_gtin_ean, op_item_gtin_ean_trib, op_item_obs, op_item_qtd, op_item_frete, op_item_seguros, op_item_desp_aces, op_item_desconto, op_item_op_id, op_item_vlr_ipi, op_item_vlr_icms_st, op_item_cod_fornecedor, op_item_produto_id, op_item_valor_total, op_itens_centro_custo, op_item_ncm, op_item_cest, op_item_origem, op_item_cst, op_item_cfop, op_item_pIPI) values (@op_item_codigo, @op_item_nome, @op_item_unidade, @op_item_preco, @op_item_gtin_ean, @op_item_gtin_ean_trib, @op_item_obs, @op_item_qtd, @op_item_frete, @op_item_seguros, @op_item_desp_aces, @op_item_desconto, @op_item_op_id, @op_item_vlr_ipi, @op_item_vlr_icms_st, @op_item_cod_fornecedor, @op_item_produto_id, @op_item_valor_total, @op_itens_centro_custo, @op_item_ncm, @op_item_cest, @op_item_origem, @op_item_cst, @op_item_cfop, @op_item_pIPI);";
                             cmd.Parameters.AddWithValue("@op_item_op_id", id);
                             cmd.Parameters.AddWithValue("@op_item_codigo", op.itens[i].op_item_codigo);
                             cmd.Parameters.AddWithValue("@op_item_nome", op.itens[i].op_item_nome);
@@ -1907,6 +1972,13 @@ namespace gestaoContadorcomvc.Models
                             cmd.Parameters.AddWithValue("@op_item_cod_fornecedor", op.itens[i].op_item_cod_fornecedor);
                             cmd.Parameters.AddWithValue("@op_item_produto_id", op.itens[i].op_item_produto_id);
                             cmd.Parameters.AddWithValue("@op_item_valor_total", op.itens[i].op_item_valor_total);
+                            cmd.Parameters.AddWithValue("@op_itens_centro_custo", op.itens[i].op_itens_centro_custo);
+                            cmd.Parameters.AddWithValue("@op_item_ncm", op.itens[i].op_item_ncm);
+                            cmd.Parameters.AddWithValue("@op_item_cest", op.itens[i].op_item_cest);
+                            cmd.Parameters.AddWithValue("@op_item_origem", op.itens[i].op_item_origem);
+                            cmd.Parameters.AddWithValue("@op_item_cst", op.itens[i].op_item_cst);
+                            cmd.Parameters.AddWithValue("@op_item_cfop", op.itens[i].op_item_cfop);
+                            cmd.Parameters.AddWithValue("@op_item_pIPI", op.itens[i].op_item_pIPI);
                             cmd.ExecuteNonQuery();
                         }
                     }
