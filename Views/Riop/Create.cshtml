@@ -1,0 +1,232 @@
+﻿@model gestaoContadorcomvc.Models.Relatorios.Riop
+@{
+    ViewData["Title"] = "Relatório Itens Operação";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    legend{
+        font-size: 15px;
+    }
+    form{
+        padding: 5px;
+    }
+    .container {
+        min-width: 100%;
+    }
+    .table > thead > tr > th {
+        white-space: nowrap;
+    }
+    .table > tbody > tr > td{
+        white-space: nowrap;
+    }
+        .table > tbody > tr > td:hover {
+            background-color: #e6e654;
+        }
+    .table > tbody > tr:hover {
+        background-color: #f5f4ba;
+    }
+</style>
+
+<h4 class="no-printme">Relatório Itens Operação</h4>
+<div class="btn-tools no-printme">
+    <div class="row">
+        <div class="coluna_1" style="text-align:left;width:calc(100% - 75px);user-select:none;">
+            <p id="somaParcela" style="font-weight:bold;padding-left: 20px;"></p>
+        </div>
+        <div class="coluna_1" style="text-align:right;width: 75px;user-select:none;">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-funnel" fill="currentColor" xmlns="http://www.w3.org/2000/svg" onclick="openNav('aberto')" style="cursor:pointer" id="filter">
+                <path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z" />
+            </svg>
+            <a onClick="window.print()">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-printer" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11 2H5a1 1 0 0 0-1 1v2H3V3a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2h-1V3a1 1 0 0 0-1-1zm3 4H2a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1v1H2a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1z" />
+                    <path fill-rule="evenodd" d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1zM5 8a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H5z" />
+                    <path d="M3 7.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</div>
+<hr class="hrLine" />
+<div class="table-responsive">
+    <table class="table table-sm" id="table_riop">
+        <thead>
+            <tr>
+                <th scope="col">Data Operação</th>
+                <th scope="col">Operação</th>
+                <th scope="col">Data Emissão NF</th>
+                <th scope="col">Dat Ent/Saí NF</th>
+                <th scope="col">Nº NF</th>
+                <th scope="col">Código</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Chave de Acesso NF</th>
+                <th scope="col">NCM</th>
+                <th scope="col">CST</th>
+                <th scope="col">CFOP</th>
+                <th scope="col">Participante</th>
+                <th scope="col">CNPJ/CPF</th>
+                <th scope="col">Quantidade</th>
+                <th scope="col">Unidade</th>
+                <th scope="col">Valor Unitário</th>
+                <th scope="col">Desconto</th>
+                <th scope="col">Frete</th>
+                <th scope="col">Seguros</th>
+                <th scope="col">Despesa Acessória</th>
+                <th scope="col">% IPI</th>
+                <th scope="col">Valor IPI</th>
+                <th scope="col">Valor ICMS-ST</th>
+                <th scope="col">Valor Total</th>
+                <th scope="col">Centro de Custo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ 
+                if(Model.lista != null)
+                {
+                    foreach(var item in Model.lista)
+                    {
+                        <tr>
+                            <td>@item.operacao_data.ToShortDateString()</td>
+                            <td>@item.operacao_tipo</td>
+                            <td>@item.nf_data_emissao.ToShortDateString()</td>
+                            <td>@item.nf_data_ent_sai.ToShortDateString()</td>
+                            <td>@item.nf_numero</td>
+                            <td>@item.item_codigo</td>
+                            <td>@item.item_descricao</td>
+                            <td>@item.nf_chave_acesso</td>
+                            <td>@item.item_ncm</td>
+                            <td>@item.item_cst</td>
+                            <td>@item.item_cfop</td>
+                            <td>@item.participante_nome</td>
+                            <td>@item.participante_cnpj_cpf</td>
+                            <td>@item.item_quantidade.ToString("N")</td>
+                            <td>@item.item_unidade</td>
+                            <td>@item.item_valor_unitario.ToString("N")</td>
+                            <td>@item.item_desconto.ToString("N")</td>
+                            <td>@item.item_frete.ToString("N")</td>
+                            <td>@item.item_seguros.ToString("N")</td>
+                            <td>@item.item_desp_acessorias.ToString("N")</td>
+                            <td>@item.item_pIPI.ToString("N")</td>
+                            <td>@item.item_vIPI.ToString("N")</td>
+                            <td>@item.item_icms_st.ToString("N")</td>
+                            <td>@item.item_valor_total.ToString("N")</td>
+                            <td>@item.item_centro_de_custo_nome</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+
+<!--Sidbar-->
+<div id="mySidenav" class="sidenav" style="transition: 0.0s;border-top:2px solid #ff4400;overflow:scroll;padding-bottom:80px;">
+    <h3>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-funnel" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z" />
+        </svg>
+        Filtros
+    </h3>
+    <form asp-controller="Riop" asp-action="Create">
+        <fieldset>
+            <legend>Data Emissão Documento</legend>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <input type="text" asp-for="filtro.data_emissao_inicio" class="form-control form-control-sm datepicker" placeholder="Início" autocomplete="off" />
+                        <span asp-validation-for="filtro.data_emissao_inicio" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <input type="text" asp-for="filtro.data_emissao_final" class="form-control form-control-sm datepicker" placeholder="Fim" autocomplete="off"/>
+                        <span asp-validation-for="filtro.data_emissao_final" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Data Ent/Saí Documento</legend>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <input type="text" asp-for="filtro.data_ent_sai_inicio" class="form-control form-control-sm datepicker" placeholder="Início" autocomplete="off"/>
+                        <span asp-validation-for="filtro.data_ent_sai_inicio" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <input type="text" asp-for="filtro.data_ent_sai_fim" class="form-control form-control-sm datepicker" placeholder="Fim" autocomplete="off"/>
+                        <span asp-validation-for="filtro.data_ent_sai_fim" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Número Documento</legend>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <input type="text" asp-for="filtro.nf_numero" class="form-control form-control-sm" placeholder="Número NF" />
+                        <span asp-validation-for="filtro.nf_numero" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Operação</legend>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <select asp-items="@ViewBag.operacao" value="@TempData["filtro.operacao_tipo"]" id="operacao_tipo" name="filtro.operacao_tipo" class="form-control form-control-sm"></select>
+                        <span asp-validation-for="filtro.operacao_tipo" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Centro de Custo</legend>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <select asp-items="@ViewBag.centroCusto" value="@TempData["filtro.centro_custo"]" id="centro_custo" name="filtro.centro_custo" class="form-control form-control-sm js_example_basic_single" style="width:100%" multiple></select>
+                        <span asp-validation-for="filtro.centro_custo" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Participante</legend>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <select multiple asp-items="@ViewBag.participantes" value="@TempData["filtro.participante"]" id="participante" name="filtro.participante" class="form-control form-control-sm js_example_basic_single" style="width:100%" ></select>
+                        <span asp-validation-for="filtro.participante" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Produto</legend>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <select asp-items="@ViewBag.produtos" value="@TempData["filtro.item"]" id="item" name="filtro.item" class="form-control form-control-sm js_example_basic_single" style="width:100%" multiple></select>
+                        <span asp-validation-for="filtro.item" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <button class="btn btn-sm btn-info" type="submit" style="width:100%;margin-bottom:15px">Gerar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

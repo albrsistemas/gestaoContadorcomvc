@@ -1822,6 +1822,104 @@ namespace gestaoContadorcomvc.Models
             return selects;
         }
 
+        //Lista participantes
+        public List<Selects> getParticipantes(int conta_id)
+        {
+            List<Selects> selects = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT p.participante_id, p.participante_nome from participante as p WHERE p.participante_conta_id = @conta_id and p.participante_status = 'Ativo';";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects select = new Selects();
+
+                        select.value = leitor["participante_id"].ToString();
+                        select.text = leitor["participante_nome"].ToString();
+                        select.disabled = false;
+
+                        selects.Add(select);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return selects;
+        }
+
+        //Lista participantes
+        public List<Selects> getProdutos(int conta_id)
+        {
+            List<Selects> selects = new List<Selects>();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT p.produtos_id, p.produtos_nome from produtos as p WHERE p.produtos_conta_id = @conta_id and p.produtos_status = 'Ativo';";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        Selects select = new Selects();
+
+                        select.value = leitor["produtos_id"].ToString();
+                        select.text = leitor["produtos_nome"].ToString();
+                        select.disabled = false;
+
+                        selects.Add(select);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return selects;
+        }
+
         //Lista de centros de custo
         public List<Selects> getCentroCusto(int conta_id)
         {

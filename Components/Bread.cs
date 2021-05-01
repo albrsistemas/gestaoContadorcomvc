@@ -314,6 +314,12 @@ namespace gestaoContadorcomvc.Components
                 {
                     retorno = "Alterar Centro de Custo";
                 }
+                //Relatório itens operação
+                if (pagina.Contains("Riop/Create"))
+                {
+                    retorno = "Relatório Itens da Operação";
+                    openNav = "aberto";
+                }
             }
 
             ViewData["openNav"] = openNav;
