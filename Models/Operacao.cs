@@ -1198,7 +1198,7 @@ namespace gestaoContadorcomvc.Models
 
                         if(item.op_itens_centro_custo == 0)
                         {
-                            item.op_itens_centro_custo_nome = "Não Informado";
+                            item.op_itens_centro_custo_nome = "Geral";
                         }
                         else
                         {

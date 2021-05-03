@@ -1927,7 +1927,7 @@ namespace gestaoContadorcomvc.Models
             selects.Add(new Selects
             {
                 value = "0",
-                text = "Não Informado"
+                text = "Geral"
             });
 
             conn.Open();

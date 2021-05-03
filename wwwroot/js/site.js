@@ -6728,6 +6728,9 @@ function gerarPDF(id) {
     win.print(); 
 }
 
+function gerarExcel() {
+    
+}
 
 
 
