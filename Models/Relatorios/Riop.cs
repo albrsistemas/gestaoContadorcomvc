@@ -88,8 +88,6 @@ namespace gestaoContadorcomvc.Models.Relatorios
                 }
             }
 
-
-
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
             MySqlTransaction Transacao;
@@ -99,12 +97,12 @@ namespace gestaoContadorcomvc.Models.Relatorios
 
             try
             {
-                comando.CommandText = "SELECT op.op_data, op.op_tipo, now() as 'nf_data_ent_sai', nf.op_nf_data_emissao, nf.op_nf_numero, i.op_item_codigo, i.op_item_nome, nf.op_nf_chave, i.op_item_ncm, concat(i.op_item_origem,i.op_item_cst) as 'cst', i.op_item_cfop, part.op_part_nome, part.op_part_cnpj_cpf, i.op_item_qtd, i.op_item_unidade, i.op_item_preco, i.op_item_desconto, i.op_item_frete, i.op_item_seguros, i.op_item_desp_aces, i.op_item_valor_total, i.op_item_pIPI, i.op_item_vlr_ipi, i.op_item_vlr_icms_st, (i.op_item_valor_total + i.op_item_vlr_ipi + i.op_item_vlr_icms_st) as 'total', i.op_itens_centro_custo, (case WHEN i.op_itens_centro_custo = 0 THEN 'Geral' else cc.centro_custo_nome END) as 'centro_custo_nome'  from op_itens as i LEFT JOIN operacao as op on op.op_id = i.op_item_op_id LEFT JOIN op_nf as nf on nf.op_nf_op_id = op.op_id left JOIN op_participante as part on op.op_id = part.op_id left JOIN centro_custo as cc on cc.centro_custo_id = i.op_itens_centro_custo WHERE op.op_conta_id = @conta_id and (case WHEN @data_emissao_inicio <> '' THEN nf.op_nf_data_emissao BETWEEN @data_emissao_inicio and @data_emissao_final else true END) and (case WHEN @nf_numero <> '' THEN nf.op_nf_numero = @nf_numero ELSE true END) and (case WHEN @participante <> '' THEN FIND_IN_SET(part.op_part_participante_id, @participante) else true END) and (case WHEN @operacao_tipo = '1' THEN op.op_tipo = 'compra' WHEN @operacao_tipo = '2' THEN op.op_tipo = 'venda' else true END) and (case WHEN @item <> '' THEN FIND_IN_SET(i.op_item_produto_id, @item) else true END) and (case WHEN @centro_custo <> '' THEN FIND_IN_SET(i.op_itens_centro_custo, @centro_custo) else true END) ORDER BY op.op_id asc, op.op_data ASC;";
+                comando.CommandText = "SELECT op.op_data, op.op_tipo, nf.op_nf_data_entrada_saida as 'nf_data_ent_sai', nf.op_nf_data_emissao, nf.op_nf_numero, i.op_item_codigo, i.op_item_nome, nf.op_nf_chave, i.op_item_ncm, concat(IF(i.op_item_origem = '-1','',i.op_item_origem),IF(i.op_item_cst = '-1','',i.op_item_cst)) as 'cst', i.op_item_cfop, part.op_part_nome, part.op_part_cnpj_cpf, i.op_item_qtd, i.op_item_unidade, i.op_item_preco, i.op_item_desconto, i.op_item_frete, i.op_item_seguros, i.op_item_desp_aces, i.op_item_valor_total, i.op_item_pIPI, i.op_item_vlr_ipi, i.op_item_vlr_icms_st, (i.op_item_valor_total + i.op_item_vlr_ipi + i.op_item_vlr_icms_st) as 'total', i.op_itens_centro_custo, (case WHEN i.op_itens_centro_custo = 0 THEN 'Geral' else cc.centro_custo_nome END) as 'centro_custo_nome'  from op_itens as i LEFT JOIN operacao as op on op.op_id = i.op_item_op_id LEFT JOIN op_nf as nf on nf.op_nf_op_id = op.op_id left JOIN op_participante as part on op.op_id = part.op_id left JOIN centro_custo as cc on cc.centro_custo_id = i.op_itens_centro_custo WHERE op.op_conta_id = @conta_id and (case WHEN @data_emissao_inicio <> '' THEN nf.op_nf_data_emissao BETWEEN @data_emissao_inicio and @data_emissao_final else true END) and (case WHEN @nf_numero <> '' THEN nf.op_nf_numero = @nf_numero ELSE true END) and (case WHEN @participante <> '' THEN FIND_IN_SET(part.op_part_participante_id, @participante) else true END) and (case WHEN @operacao_tipo = '1' THEN op.op_tipo = 'compra' WHEN @operacao_tipo = '2' THEN op.op_tipo = 'venda' else op.op_tipo = 'compra' or op.op_tipo = 'venda' END) and (case WHEN @item <> '' THEN FIND_IN_SET(i.op_item_produto_id, @item) else true END) and (case WHEN @centro_custo <> '' THEN FIND_IN_SET(i.op_itens_centro_custo, @centro_custo) else true END) ORDER BY op.op_data ASC;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
-                comando.Parameters.AddWithValue("@data_emissao_inicio", filtro.data_emissao_inicio);
-                comando.Parameters.AddWithValue("@data_emissao_final", filtro.data_emissao_final);
-                comando.Parameters.AddWithValue("@data_ent_sai_inicio", filtro.data_ent_sai_inicio);
-                comando.Parameters.AddWithValue("@data_ent_sai_fim", filtro.data_ent_sai_fim);
+                comando.Parameters.AddWithValue("@data_emissao_inicio", convertData(filtro.data_emissao_inicio));
+                comando.Parameters.AddWithValue("@data_emissao_final", convertData(filtro.data_emissao_final));
+                comando.Parameters.AddWithValue("@data_ent_sai_inicio", convertData(filtro.data_ent_sai_inicio));
+                comando.Parameters.AddWithValue("@data_ent_sai_fim", convertData(filtro.data_ent_sai_fim));
                 comando.Parameters.AddWithValue("@nf_numero", filtro.nf_numero);
                 comando.Parameters.AddWithValue("@participante", p);
                 comando.Parameters.AddWithValue("@operacao_tipo", filtro.operacao_tipo);
@@ -278,6 +276,21 @@ namespace gestaoContadorcomvc.Models.Relatorios
             }
 
             return riop;
+        }
+
+        //Retorno data 
+        public string convertData(string data)
+        {
+            string d = "";
+
+            if(data == null)
+            {
+                return d;
+            }
+
+            d += data.Substring(6, 4) + "-" + data.Substring(3, 2).PadLeft(2,'0') + "-" + data.Substring(0, 2).PadLeft(2, '0');
+
+            return d;
         }
 
 

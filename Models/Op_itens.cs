@@ -71,7 +71,7 @@ namespace gestaoContadorcomvc.Models
         public int op_item_origem { get; set; }
 
         [Display(Name = "CST ICMS")]
-        public int op_item_cst { get; set; }
+        public string op_item_cst { get; set; }
 
         [Display(Name = "CFOP")]
         public string op_item_cfop { get; set; }

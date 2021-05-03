@@ -1063,7 +1063,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-12 col-md-6">
+                        <div class="col-12">
                             <div class="form-group">
                                 <div class="form-group">
                                     <label asp-for="nf.op_nf_tipo" class="control-label linha_itens">Tipo Documento</label>
@@ -1072,10 +1072,18 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="form-group">
                                 <label asp-for="nf.op_nf_data_emissao" class="control-label linha_itens">Data de Emissão</label>
                                 <input type="text" asp-for="nf.op_nf_data_emissao" id="op_nf_data_emissao" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="nf.op_nf_data_entrada_saida" class="control-label linha_itens">Data Entrada/Saída</label>
+                                <input type="text" asp-for="nf.op_nf_data_entrada_saida" id="op_nf_data_entrada_saida" autocomplete="off" class="form-control form-control-sm linha_itens datepicker" />
                             </div>
                         </div>
                     </div>

@@ -915,6 +915,15 @@ namespace gestaoContadorcomvc.Models
                             op.nf.op_nf_op_id = 0;
                         }
 
+                        if (DBNull.Value != leitor["op_nf_tipo"])
+                        {
+                            op.nf.op_nf_tipo = Convert.ToInt32(leitor["op_nf_tipo"]);
+                        }
+                        else
+                        {
+                            op.nf.op_nf_tipo = 0;
+                        }
+
                         if (DBNull.Value != leitor["op_nf_data_emissao"])
                         {
                             op.nf.op_nf_data_emissao = Convert.ToDateTime(leitor["op_nf_data_emissao"]);
@@ -1072,16 +1081,7 @@ namespace gestaoContadorcomvc.Models
                         else
                         {
                             item.op_item_origem = -1;
-                        }
-
-                        if (DBNull.Value != leitor_2["op_item_cst"])
-                        {
-                            item.op_item_cst = Convert.ToInt32(leitor_2["op_item_cst"]);
-                        }
-                        else
-                        {
-                            item.op_item_cst = -1;
-                        }
+                        }                        
 
                         if (DBNull.Value != leitor_2["op_itens_centro_custo"])
                         {
@@ -1181,7 +1181,8 @@ namespace gestaoContadorcomvc.Models
                         else
                         {
                             item.op_item_pIPI = 0;
-                        }                        
+                        }
+                        
 
                         item.op_item_nome = leitor_2["op_item_nome"].ToString();
                         item.op_item_obs = leitor_2["op_item_obs"].ToString();
@@ -1193,6 +1194,7 @@ namespace gestaoContadorcomvc.Models
                         item.op_item_ncm = leitor_2["op_item_ncm"].ToString();
                         item.op_item_cest = leitor_2["op_item_cest"].ToString();
                         item.op_item_cfop = leitor_2["op_item_cfop"].ToString();
+                        item.op_item_cst = leitor_2["op_item_cst"].ToString();
 
                         if(item.op_itens_centro_custo == 0)
                         {
@@ -1753,24 +1755,26 @@ namespace gestaoContadorcomvc.Models
                     {
                         if (op.nf.existe)
                         {
-                            comando.CommandText = "UPDATE op_nf set op_nf_chave = @op_nf_chave, op_nf_data_emissao = @op_nf_data_emissao, op_nf_data_entrada_saida = @op_nf_data_entrada_saida, op_nf_serie = @op_nf_serie, op_nf_numero = @op_nf_numero where op_nf.op_nf_id = @op_nf_id;";
+                            comando.CommandText = "UPDATE op_nf set op_nf_chave = @op_nf_chave, op_nf_data_emissao = @op_nf_data_emissao, op_nf_data_entrada_saida = @op_nf_data_entrada_saida, op_nf_serie = @op_nf_serie, op_nf_numero = @op_nf_numero, op_nf_tipo = @op_nf_tipo where op_nf.op_nf_id = @op_nf_id;";
                             comando.Parameters.AddWithValue("@op_nf_id", op.nf.op_nf_id);
                             comando.Parameters.AddWithValue("@op_nf_chave", op.nf.op_nf_chave);
                             comando.Parameters.AddWithValue("@op_nf_data_emissao", op.nf.op_nf_data_emissao);
                             comando.Parameters.AddWithValue("@op_nf_data_entrada_saida", op.nf.op_nf_data_entrada_saida);
                             comando.Parameters.AddWithValue("@op_nf_serie", op.nf.op_nf_serie);
                             comando.Parameters.AddWithValue("@op_nf_numero", op.nf.op_nf_numero);
+                            comando.Parameters.AddWithValue("@op_nf_tipo", op.nf.op_nf_tipo);
                             comando.ExecuteNonQuery();
                         }
                         else
                         {
-                            comando.CommandText = "insert into op_nf (op_nf_op_id, op_nf_chave, op_nf_data_emissao, op_nf_data_entrada_saida, op_nf_serie, op_nf_numero) values (@op_nf_op_id, @op_nf_chave, @op_nf_data_emissao, @op_nf_data_entrada_saida, @op_nf_serie, @op_nf_numero);";
+                            comando.CommandText = "insert into op_nf (op_nf_op_id, op_nf_chave, op_nf_data_emissao, op_nf_data_entrada_saida, op_nf_serie, op_nf_numero, op_nf_tipo) values (@op_nf_op_id, @op_nf_chave, @op_nf_data_emissao, @op_nf_data_entrada_saida, @op_nf_serie, @op_nf_numero, @op_nf_tipo);";
                             comando.Parameters.AddWithValue("@op_nf_op_id", op.operacao.op_id);
                             comando.Parameters.AddWithValue("@op_nf_chave", op.nf.op_nf_chave);
                             comando.Parameters.AddWithValue("@op_nf_data_emissao", op.nf.op_nf_data_emissao);
                             comando.Parameters.AddWithValue("@op_nf_data_entrada_saida", op.nf.op_nf_data_entrada_saida);
                             comando.Parameters.AddWithValue("@op_nf_serie", op.nf.op_nf_serie);
                             comando.Parameters.AddWithValue("@op_nf_numero", op.nf.op_nf_numero);
+                            comando.Parameters.AddWithValue("@op_nf_tipo", op.nf.op_nf_tipo);
                             comando.ExecuteNonQuery();
                         }
                     }
@@ -2084,13 +2088,14 @@ namespace gestaoContadorcomvc.Models
                 if (op.operacao.op_comNF != 0)
                 {
                     //nota fiscal
-                    comando.CommandText = "insert into op_nf (op_nf_op_id, op_nf_chave, op_nf_data_emissao, op_nf_data_entrada_saida, op_nf_serie, op_nf_numero) values (@op_nf_op_id, @op_nf_chave, @op_nf_data_emissao, @op_nf_data_entrada_saida, @op_nf_serie, @op_nf_numero);";
+                    comando.CommandText = "insert into op_nf (op_nf_op_id, op_nf_chave, op_nf_data_emissao, op_nf_data_entrada_saida, op_nf_serie, op_nf_numero, op_nf_tipo) values (@op_nf_op_id, @op_nf_chave, @op_nf_data_emissao, @op_nf_data_entrada_saida, @op_nf_serie, @op_nf_numero, @op_nf_tipo);";
                     comando.Parameters.AddWithValue("@op_nf_op_id", id);
                     comando.Parameters.AddWithValue("@op_nf_chave", op.nf.op_nf_chave);
                     comando.Parameters.AddWithValue("@op_nf_data_emissao", op.nf.op_nf_data_emissao);
                     comando.Parameters.AddWithValue("@op_nf_data_entrada_saida", op.nf.op_nf_data_entrada_saida);
                     comando.Parameters.AddWithValue("@op_nf_serie", op.nf.op_nf_serie);
                     comando.Parameters.AddWithValue("@op_nf_numero", op.nf.op_nf_numero);
+                    comando.Parameters.AddWithValue("@op_nf_tipo", op.nf.op_nf_tipo);
                     comando.ExecuteNonQuery();
                 }
 

@@ -17,7 +17,7 @@ namespace gestaoContadorcomvc.Controllers.Relatorios
     [Authorize]
     public class RiopController : Controller
     {
-        //[Autoriza(permissao = "rpList")]
+        [Autoriza(permissao = "riopList")]
         public IActionResult Create()
         {
             Usuario usuario = new Usuario();
@@ -28,6 +28,11 @@ namespace gestaoContadorcomvc.Controllers.Relatorios
             List<Selects> ops = new List<Selects>();
             ops.Add(new Selects
             {
+                value = "3",
+                text = "Ambos"
+            });
+            ops.Add(new Selects
+            {
                 value = "1",
                 text = "Compra"
             });
@@ -35,12 +40,7 @@ namespace gestaoContadorcomvc.Controllers.Relatorios
             {
                 value = "2",
                 text = "Venda"
-            });
-            ops.Add(new Selects
-            {
-                value = "3",
-                text = "Ambos"
-            });
+            });            
 
             Selects select = new Selects();
             ViewBag.participantes = select.getParticipantes(user.conta.conta_id).Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled });
@@ -67,6 +67,11 @@ namespace gestaoContadorcomvc.Controllers.Relatorios
             List<Selects> ops = new List<Selects>();
             ops.Add(new Selects
             {
+                value = "3",
+                text = "Ambos"
+            });
+            ops.Add(new Selects
+            {
                 value = "1",
                 text = "Compra"
             });
@@ -74,12 +79,7 @@ namespace gestaoContadorcomvc.Controllers.Relatorios
             {
                 value = "2",
                 text = "Venda"
-            });
-            ops.Add(new Selects
-            {
-                value = "3",
-                text = "Ambos"
-            });
+            });            
 
             Selects select = new Selects();  
             if(filtro.participante != null && filtro.participante.Length > 0)

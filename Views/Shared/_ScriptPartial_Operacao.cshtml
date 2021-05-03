@@ -1701,6 +1701,7 @@
         if (contexto == 'open') {
             document.getElementById('op_nf_tipo').value = operacao.nf.op_nf_tipo;
             document.getElementById('op_nf_data_emissao').value = operacao.nf.op_nf_data_emissao;
+            document.getElementById('op_nf_data_entrada_saida').value = operacao.nf.op_nf_data_entrada_saida;
             document.getElementById('op_nf_serie').value = operacao.nf.op_nf_serie;
             document.getElementById('op_nf_numero').value = operacao.nf.op_nf_numero;
             document.getElementById('op_nf_chave').value = operacao.nf.op_nf_chave;
@@ -1714,6 +1715,7 @@
         if (contexto == 'save') {
             document.getElementById('box_valid').innerHTML = '';
             let op_nf_data_emissao = moment(document.getElementById('op_nf_data_emissao').value, 'DD/MM/YYYY', 'pt', true);
+            let op_nf_data_entrada_saida = moment(document.getElementById('op_nf_data_entrada_saida').value, 'DD/MM/YYYY', 'pt', true);
             let serie = document.getElementById('op_nf_serie').value;
             let numero = document.getElementById('op_nf_numero').value;
             let chave = document.getElementById('op_nf_chave').value;
@@ -1722,6 +1724,10 @@
 
             if (!op_nf_data_emissao.isValid()) {
                 str += 'Data de emissão inválida;';
+            }
+
+            if (!op_nf_data_entrada_saida.isValid()) {
+                str += 'Data de Entrada/Saída inválida;';
             }
 
             if (serie.length < 1) {
@@ -1745,6 +1751,7 @@
             } else {
                 operacao.nf.op_nf_tipo = document.getElementById('op_nf_tipo').value;
                 operacao.nf.op_nf_data_emissao = op_nf_data_emissao.format('DD/MM/YYYY');
+                operacao.nf.op_nf_data_entrada_saida = op_nf_data_entrada_saida.format('DD/MM/YYYY');
                 operacao.nf.op_nf_serie = serie;
                 operacao.nf.op_nf_numero = numero;
                 operacao.nf.op_nf_chave = chave;
@@ -1778,6 +1785,7 @@
             //Limpando objeto
             operacao.nf.op_nf_tipo = 0;
             operacao.nf.op_nf_data_emissao = '';
+            operacao.nf.op_nf_data_entrada_saida = '';
             operacao.nf.op_nf_serie = '';
             operacao.nf.op_nf_numero = '';
             operacao.nf.op_nf_chave = '';

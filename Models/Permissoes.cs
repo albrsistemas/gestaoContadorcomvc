@@ -136,6 +136,8 @@ namespace gestaoContadorcomvc.Models
         public bool centro_custoCreate { get; set; }
         public bool centro_custoEdit { get; set; }
         public bool centro_custoDelete { get; set; }
+        //Relatório RIOP
+        public bool riopList { get; set; }
 
 
 
@@ -552,7 +554,11 @@ namespace gestaoContadorcomvc.Models
                         permissao.centro_custoCreate = Convert.ToBoolean(leitor["centro_custoCreate"]);
                         permissao.centro_custoDelete = Convert.ToBoolean(leitor["centro_custoDelete"]);
                         permissao.centro_custoEdit = Convert.ToBoolean(leitor["centro_custoEdit"]);
-                        permissao.centro_custoList = Convert.ToBoolean(leitor["centro_custoList"]);
+                        permissao.centro_custoList = Convert.ToBoolean(leitor["centro_custoList"]);                        
+                        //03/05/2021
+                        permissao.centro_custoList = Convert.ToBoolean(leitor["riopList"]);
+                        
+
                     }
                 }
             }
