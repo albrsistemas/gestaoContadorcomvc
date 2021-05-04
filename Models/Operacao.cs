@@ -2908,29 +2908,62 @@ namespace gestaoContadorcomvc.Models
             try
             {
                 for (var i = 0; i < parcelas.Count; i++)
-                {
-                    string comp = parcelas[i].op_parcela_vencimento.Month.ToString().PadLeft(2, '0') + "/" +  parcelas[i].op_parcela_vencimento.Year.ToString();
+                {   
+                    int dia_vencimento_fatura = 0;
+                    int dia_corte_fatura_mes = 0;
+                    int dia_corte_fatura_mes_seguinte = 0;
+                    string fatura_mes_situacao = "";
+                    string fatura_mes_seguinte_situacao = "";
+                    
                     MySqlDataReader dr_1;
                     MySqlCommand dr_1_c = conn.CreateCommand();
                     dr_1_c.Connection = conn;
                     dr_1_c.Transaction = Transacao;
-                    dr_1_c.CommandText = "SELECT f.fcc_id from fatura_cartao_credito as f WHERE f.fcc_forma_pagamento_id = @forma_pagamento and f.fcc_conta_id = @conta_id and f.fcc_competencia = @competencia and f.fcc_situacao = 'Fechada';";
+                    dr_1_c.CommandText = "SELECT COALESCE(fp.fp_dia_fechamento_cartao,0) as fp_dia_fechamento_cartao, (SELECT COALESCE(DAY(f.fcc_data_corte),0) from fatura_cartao_credito as f WHERE f.fcc_forma_pagamento_id = @forma_pgto and f.fcc_competencia = concat(LPAD(MONTH(@data_parcela),2,'0'),'/',YEAR(@data_parcela))) as 'fatura_mes', (SELECT f.fcc_situacao from fatura_cartao_credito as f WHERE f.fcc_forma_pagamento_id = @forma_pgto and f.fcc_competencia = concat(LPAD(MONTH(@data_parcela),2,'0'),'/',YEAR(@data_parcela))) as 'fatura_mes_situacao', (SELECT COALESCE(DAY(f.fcc_data_corte),0) from fatura_cartao_credito as f WHERE f.fcc_forma_pagamento_id = @forma_pgto and f.fcc_competencia = concat(LPAD(MONTH(@data_parcela_avancada_um_mes),2,'0'),'/',YEAR(@data_parcela_avancada_um_mes))) as 'fatura_mes_seguinte', (SELECT f.fcc_situacao from fatura_cartao_credito as f WHERE f.fcc_forma_pagamento_id = @forma_pgto and f.fcc_competencia = concat(LPAD(MONTH(@data_parcela_avancada_um_mes),2,'0'),'/',YEAR(@data_parcela_avancada_um_mes))) as 'fatura_mes_seguinte_situacao' from forma_pagamento as fp WHERE fp.fp_id = @forma_pgto and fp.fp_conta_id = @conta_id;";
                     dr_1_c.Parameters.AddWithValue("conta_id", conta_id);
-                    dr_1_c.Parameters.AddWithValue("competencia", comp);                    
-                    dr_1_c.Parameters.AddWithValue("forma_pagamento", parcelas[i].op_parcela_fp_id);                    
+                    dr_1_c.Parameters.AddWithValue("data_parcela", parcelas[i].op_parcela_vencimento);
+                    dr_1_c.Parameters.AddWithValue("data_parcela_avancada_um_mes", parcelas[i].op_parcela_vencimento.AddMonths(1));
+                    dr_1_c.Parameters.AddWithValue("forma_pgto", parcelas[i].op_parcela_fp_id);
                     dr_1 = dr_1_c.ExecuteReader();
-
                     if (dr_1.HasRows)
                     {
-                        retorno = true;
-                        break;
+                        while (dr_1.Read())
+                        {
+                            dia_vencimento_fatura = Convert.ToInt32(dr_1["fp_dia_fechamento_cartao"]);
+                            dia_corte_fatura_mes = Convert.ToInt32(dr_1["fatura_mes"]);
+                            dia_corte_fatura_mes_seguinte = Convert.ToInt32(dr_1["fatura_mes_seguinte"]);
+                            fatura_mes_situacao = dr_1["fatura_mes_situacao"].ToString();
+                            fatura_mes_seguinte_situacao = dr_1["fatura_mes_seguinte_situacao"].ToString();
+                        }
+
+                        if(parcelas[i].op_parcela_vencimento.Day <= dia_corte_fatura_mes)
+                        {
+                            //Neste caso a parcela entra na fatura deste mês
+                            if(fatura_mes_situacao == "Fechada")
+                            {
+                                retorno = true;
+                            }
+                        }
+                        else
+                        {
+                            //Se não a parcela entra na fatura do próximo mês
+                            if (fatura_mes_seguinte_situacao == "Fechada")
+                            {
+                                retorno = true;
+                            }
+                        }
+
+                        if(retorno == true)
+                        {
+                            break;
+                        }
                     }
                     dr_1.Close();
                 }
             }
             catch (Exception)
             {
-                
+
             }
             finally
             {
