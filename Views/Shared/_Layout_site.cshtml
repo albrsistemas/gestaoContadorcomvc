@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Site2.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="~/lib/data-tables/dataTables.bootstrap4.min.css" /> 
+</head>
+<body id="body">
+    <header>
+        <div class="menu">            
+            <nav class="navbar navbar-expand-lg fixed-top navbar-light" style="background-color:white;">
+                <div class="container">
+                    <a class="navbar-brand" href="#">
+                        <strong class="logo_m"><span>Contador</span><span style="color: #ff4400;">com</span><span>você</span></strong>
+                        <div class="logo_escrito">
+                            <div class="cvc">
+                                <strong class="logo"><span>Contador</span><span style="color: #ff4400;">com</span><span>você</span></strong>
+                            </div>
+                            <div class="tema">
+                                <span>Gestão Financeira</span>
+                            </div>
+                        </div>
+                        <div class="barra">
+                            <div class="barra_azul"></div>
+                            <div class="barra_laranja"></div>
+                            <div class="barra_azul"></div>
+                        </div>
+                    </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent" style="font-size: 110%">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Planos</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Segmentos
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="#">Prestadores de Serviços</a>
+                                    <a class="dropdown-item" href="#">Empresas da Área de Saúde</a>
+                                    <a class="dropdown-item" href="#">Marketing/Publicidade</a>
+                                    <a class="dropdown-item" href="#">Desenvolvimento Sistemas</a>
+                                    <a class="dropdown-item" href="#">Academias/Pilates/Crossfit</a>
+                                    <a class="dropdown-item" href="#">Coaching</a>
+                                    <a class="dropdown-item" href="#">Engenheiros/Arquitetos</a>
+                                    <a class="dropdown-item" href="#">Corretora de Seguros</a>
+                                    <a class="dropdown-item" href="#">Escolas/Cursos</a>
+                                    <a class="dropdown-item" href="#">Representantes Comerciais</a>
+                                    @*<div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Something else here</a>*@
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Contato</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Área Restrita
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="#">Financeiro Contadorcomvocê</a>
+                                    <a class="dropdown-item" href="#">Conta Azul</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+    @*<div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>*@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/select2/js/select2.full.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-ui-1.12.1/jquery-ui.js"></script>
+    <script src="~/js/moment.min.js" type="text/javascript"></script>
+    <script src="~/lib/select2/js/i18n/pt-BR.js" type="text/javascript"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
