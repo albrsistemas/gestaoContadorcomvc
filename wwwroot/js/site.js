@@ -5885,6 +5885,41 @@ function fatura_cartao_credito_edit_datas(contexto, id) {
             document.getElementById(id).disabled = true;
             pesquisaFatura('reboot', novoObjFCC(fcc.fcc_id, fcc.fcc_forma_pagamento_id, fcc.fcc_situacao, dc._i, dv._i, []));
         }
+
+        if (fcc.fcc_movimentos.length == 0) {
+            alert("Fatura não possui movimentos. Para alterar precisa ter pelo menos um movimento.");
+            return;
+        } else {
+            //Ajax
+            $.ajax({
+                url: "/CartaoCredito/edit_datas_cartao",
+                data: { __RequestVerificationToken: gettoken(), data_fechamento: dc._i, data_vencimento: dv._i, fcc_id: fcc.fcc_id },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    document.getElementById('fcc_mensagem').innerHTML = '<span class="text-info">Gravando dados, aguarde...</span>';
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    document.getElementById('fcc_mensagem').innerHTML = '<span class="text-danger">Erro ao se comunicar com o servidor</span>';
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    ret = JSON.parse(data);
+                    if (textStatus == 'error') {
+                        document.getElementById('fcc_mensagem').innerHTML = '<span class="text-danger">Erro ao se comunicar com o servidor</span>';
+                    }
+
+                    if (textStatus == 'success') {
+                        if (XMLHttpRequest.responseJSON.includes('sucesso')) {
+                            document.getElementById('fcc_mensagem').innerHTML = '<span class="text-success">' + ret + '</span>';
+                        }
+
+                        if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                            document.getElementById('fcc_mensagem').innerHTML = '<span class="text-danger">' + ret + '</span>';
+                        }
+                    }
+                }
+            });
+        }
     }    
 }
 

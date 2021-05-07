@@ -59,6 +59,90 @@
     text-align: center;
     font-size: 68%;
 }
+.b_icon {
+    width: 60px;
+    color: rgb(6,0,64);
+}
+.b_titulo {
+    color: rgb(6,0,64);
+    font-weight:bold;
+    font-size: 20px;
+}
+#site_img_01{
+    height: 350px;
+}
+.s_box {
+    border: solid 1px rgb(255,68,0);
+    min-height: 250px;
+    margin: 10px;
+    padding: 10px;
+}
+.s_icon {    
+    color: rgb(6,0,64);
+    text-align: center;
+    width: 100%;
+}
+    .s_icon > svg {
+        width: 60px;
+    }
+.s_titulo {
+    color: rgb(6,0,64);
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+    width: 100%;
+}
+.s_texto {
+    text-align: center;
+    width: 100%;
+}
+.faixa_1 {
+    width: 100%;
+    height: auto;
+    background-color: rgb(246,248,249);
+    padding-top: 40px;
+    padding-bottom: 30px;
+}
+.faixa_2 {
+    width: 100%;
+    height: auto;
+    background-color: white;
+    padding-top: 40px;
+    padding-bottom: 30px;
+}
+.f_box{
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.f_box_icon{
+    width: 100px;
+    float: left;
+    text-align: center;
+}
+    .f_box_icon > svg {
+        width: 68px;
+    }
+.f_box_cont {
+    width: calc(100% - 100px);
+    float: left;
+    text-align: left;
+}
+.f_box_cont_titulo {
+    color: rgb(6,0,64);
+    font-weight: bold;
+    font-size: 20px;
+    padding-left: 10px;
+}
+.f_box_cont_texto{
+    padding-left: 10px;
+}
+
+@media (min-width: 768px) {
+    #site_img_01 {
+        height: 500px;
+    }
+}
 
 @media (min-width: 992px) {
     .logo_escrito {
@@ -81,8 +165,8 @@
         .navbar .nav > li > a {
             padding: 0 30px 0 30px;
         }
-}
 
-@media (min-width: 768px) {
-    
+    #site_img_01 {
+        height: 629px;
+    }
 }

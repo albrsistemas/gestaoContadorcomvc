@@ -56,7 +56,15 @@ namespace gestaoContadorcomvc.Models
                 DateTime hj = DateTime.Today;
                 vm_fcc.fcc_id = fcc_id;
                 vm_fcc.fcc_data_corte = new DateTime(hj.Year, hj.Month, vm_fp.fp_dia_fechamento_cartao);
-                vm_fcc.fcc_data_vencimento = new DateTime(hj.Year, hj.Month, vm_fp.fp_dia_vencimento_cartao);
+                if(vm_fp.fp_dia_fechamento_cartao > vm_fp.fp_dia_vencimento_cartao)
+                {
+                    vm_fcc.fcc_data_vencimento = new DateTime(hj.Year, hj.Month + 1, vm_fp.fp_dia_vencimento_cartao);
+                }
+                else
+                {
+                    vm_fcc.fcc_data_vencimento = new DateTime(hj.Year, hj.Month, vm_fp.fp_dia_vencimento_cartao);
+                }
+                
                 vm_fcc.fcc_forma_pagamento_id = fcc_forma_pagamento_id;
             }
 
@@ -1064,6 +1072,44 @@ namespace gestaoContadorcomvc.Models
                 retorno = "Erro ao escluir o pagamento. " + e.Message;
 
                 log.log("FaturaCartaoCredito", "deletePagamento", "Erro", "Falha ao tentar excluir o pagamento mcc_id: " + mcc_id, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+            return retorno;
+        }
+
+        public string edit_datas_cartao(DateTime data_fechamento, DateTime data_vencimento, int fcc_id, int conta_id)
+        {
+            string retorno = "";
+
+            conn.Open();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            MySqlCommand comando = conn.CreateCommand();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "UPDATE fatura_cartao_credito set fatura_cartao_credito.fcc_data_corte = @data_fechamento, fatura_cartao_credito.fcc_data_vencimento = @data_vencimento WHERE fatura_cartao_credito.fcc_conta_id = @conta_id and fatura_cartao_credito.fcc_id = @fcc_id;";
+                comando.Parameters.AddWithValue("data_fechamento", data_fechamento);                
+                comando.Parameters.AddWithValue("data_vencimento", data_vencimento);                
+                comando.Parameters.AddWithValue("conta_id", conta_id);                
+                comando.Parameters.AddWithValue("fcc_id", fcc_id);                
+                comando.ExecuteNonQuery();
+
+                Transacao.Commit();
+
+                retorno = "Data alterada com sucesso!";
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao alterar a data! ";
             }
             finally
             {

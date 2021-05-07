@@ -202,5 +202,32 @@ namespace gestaoContadorcomvc.Controllers
 
             return Json(JsonConvert.SerializeObject(retorno));
         }
+
+        [Autoriza(permissao = "cartaoCreditoEdit")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult edit_datas_cartao(DateTime data_fechamento, DateTime data_vencimento, int fcc_id)
+        {
+            Usuario usuario = new Usuario();
+            Vm_usuario user = new Vm_usuario();
+            user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+
+            FaturaCartaoCredito f = new FaturaCartaoCredito();
+            string retorno = "";
+            try
+            {
+                retorno = f.edit_datas_cartao(data_fechamento, data_vencimento, fcc_id, user.conta.conta_id);
+            }
+            catch
+            {
+                if (retorno == "")
+                {
+                    retorno = "Erro ao tentar alterar a data!";
+                }
+            }
+
+            return Json(JsonConvert.SerializeObject(retorno));
+        }
     }
 }
