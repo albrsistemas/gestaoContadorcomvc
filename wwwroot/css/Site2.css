@@ -2,6 +2,15 @@
     padding: 0px;
     margin: 0px;
 }
+.banner_1 {
+    margin-top: 80px;
+    background-image: url('/Imagens/imagem_6a.jpg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    height: 100vw;    
+}
+
+
 #carouselExampleControls__ {
     position: absolute;
     left: 0;
@@ -110,7 +119,22 @@
     padding-top: 40px;
     padding-bottom: 30px;
 }
-.f_box{
+.faixa_3 {
+    width: 100%;
+    height: auto;
+    background-color: rgb(217,217,217);
+    padding-top: 20px;
+    padding-bottom: 30px;
+    border-top: 1px solid rgb(6,0,64);
+}
+.faixa_4 {
+    width: 100%;
+    height: auto;
+    background-color: rgb(217,217,217);
+    border-top: 1px solid rgb(191,191,191);
+}
+
+.f_box {
     width: 100%;
     margin-top: 20px;
     margin-bottom: 20px;
@@ -137,10 +161,121 @@
 .f_box_cont_texto{
     padding-left: 10px;
 }
+.b_box {
+    width: 100%;
+    height: auto;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+.card-header{
+    background-color: rgb(255,230,153);
+}
+
+.pegunta_accordion_header {
+    cursor: pointer;
+    user-select: none;    
+}
+
+.pegunta_accordion_body {
+    user-select: none;
+}
+
+.pegunta_accordion {
+    color: black;
+    font-size: 17px;
+}
+
+.contato_box {
+    max-width: 500px;
+    height: auto;    
+    margin: 0 auto;
+}
+
+/*Rodapé*/
+.r_logo{
+    width: 100%;
+    height: 85px;
+}
+.r_logo_fx_1 {
+    width: 100%;
+    height: 40px;
+    text-align: center;
+}
+    .r_logo_fx_1 > strong{
+        font-size: 23px;
+    }
+
+.r_logo_fx_2 {
+    width: 100%;
+    height: 45px;
+    text-align: center;
+}
+    .r_logo_fx_2 > img{
+        width: 100px;
+    }
+
+.r_logo_txt {
+    width: 100%;
+    height: auto;
+    text-align: center;
+}
+
+.r_box_contato{
+    width: 100%;
+    text-align: center;
+}
+.r_box_titulo {
+    width: 100%;
+    font-weight: bold;
+    text-align: center;
+    color: rgb(6,0,64);
+}
+.r_box_icon > svg {
+    width: 30px;
+}
+.r_line {
+    border-top: 1px solid rgb(6,0,64);
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.r_nav ul {
+    padding: 0px;
+    margin: 0px;
+    list-style: none;
+}
+.r_nav ul li {
+    display: inline;
+    padding: 10px;
+    cursor: pointer;
+}
+    .r_nav ul li:hover {
+        color: rgb(255,68,0);
+    }
+.copyrigth {
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+}
 
 @media (min-width: 768px) {
     #site_img_01 {
-        height: 500px;
+    height: 500px;
+    }
+    /*Rodapé*/    
+    .r_logo_fx_1 {        
+        text-align: right;
+    }
+
+    .r_logo_fx_2 {
+        text-align: right;
+    }
+
+    .r_logo_txt {        
+        text-align: left;
+    }
+    .r_line{
+        border-top: 0px;        
     }
 }
 
