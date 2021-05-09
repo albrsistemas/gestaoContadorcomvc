@@ -12,5 +12,15 @@ namespace gestaoContadorcomvc.Controllers.Site
         {
             return View();
         }
+
+        public IActionResult PrestadorServico()
+        {
+            return View();
+        }
+
+        public IActionResult AreaSaude()
+        {
+            return View();
+        }
     }
 }

@@ -11,6 +11,7 @@
     <Content Remove="Views\Shared\_ValidationScriptsPartial - Cópia.cshtml" />
     <Content Remove="wwwroot\css\dataTables.bootstrap4.min.css.css" />
     <Content Remove="wwwroot\Imagens\logo_ozaki_comprimido.png" />
+    <Content Remove="wwwroot\Imagens\prestador_servico_01.png" />
   </ItemGroup>
 
   <ItemGroup>
