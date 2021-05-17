@@ -46,7 +46,7 @@ namespace gestaoContadorcomvc.Services
 
                 mail.Subject = "Contadorcomvc - " + subject;
                 mail.Body = message;
-                mail.IsBodyHtml = true;
+                mail.IsBodyHtml = false;
                 mail.Priority = MailPriority.High;
 
                 //outras opções
@@ -56,7 +56,7 @@ namespace gestaoContadorcomvc.Services
                 using (SmtpClient smtp = new SmtpClient(_emailSettings.PrimaryDomain, _emailSettings.PrimaryPort))
                 {
                     smtp.Credentials = new NetworkCredential(_emailSettings.UsernameEmail, _emailSettings.UsernamePassword);
-                    smtp.EnableSsl = true;
+                    smtp.EnableSsl = false;
                     await smtp.SendMailAsync(mail);
                 }
             }

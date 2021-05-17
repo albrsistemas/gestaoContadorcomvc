@@ -28,8 +28,9 @@
 
   <ItemGroup>
     <Folder Include="Areas\Contabilidade\Data\" />
-    <Folder Include="Models\Site\" />
     <Folder Include="wwwroot\lib\select2\" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

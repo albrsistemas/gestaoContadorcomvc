@@ -22,5 +22,45 @@ namespace gestaoContadorcomvc.Controllers.Site
         {
             return View();
         }
+
+        public IActionResult MarketingPublicidade()
+        {
+            return View();
+        }
+
+        public IActionResult DesenvSistemas()
+        {
+            return View();
+        }
+
+        public IActionResult Academias()
+        {
+            return View();
+        }
+
+        public IActionResult Coaching()
+        {
+            return View();
+        }
+
+        public IActionResult EngenheirosArquitetos()
+        {
+            return View();
+        }
+
+        public IActionResult SeguradorasCorretoras()
+        {
+            return View();
+        }
+
+        public IActionResult Escolas()
+        {
+            return View();
+        }
+
+        public IActionResult Representantes()
+        {
+            return View();
+        }
     }
 }

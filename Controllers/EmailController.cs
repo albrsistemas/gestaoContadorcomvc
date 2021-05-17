@@ -37,7 +37,8 @@ namespace gestaoContadorcomvc.Controllers
             {
                 try
                 {
-                    TesteEnvioEmail("albrsistemas@gmail.com", email.Assunto, msg).GetAwaiter();
+                    //TesteEnvioEmail("albrsistemas@gmail.com", email.Assunto, msg).GetAwaiter();
+                    TesteEnvioEmail("arielestevam@gmail.com", email.Assunto, msg).GetAwaiter();
                     return RedirectToAction("EmailEnviado");
                 }
                 catch (Exception)
