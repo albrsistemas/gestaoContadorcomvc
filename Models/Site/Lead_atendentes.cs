@@ -164,6 +164,162 @@ namespace gestaoContadorcomvc.Models.Site
             return atendentes_conta;
         }
 
+        public Lead_atendentes busca(int conta_id, int lead_atendentes_id)
+        {
+            Lead_atendentes atendente = new Lead_atendentes();
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "SELECT * from lead_atendentes as l WHERE l.lead_atendentes_id = @lead_atendentes_id and l.lead_atendentes_conta_id = @conta_id;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@lead_atendentes_id", lead_atendentes_id);
+                comando.ExecuteNonQuery();
+
+                var leitor = comando.ExecuteReader();
+
+                if (leitor.HasRows)
+                {
+                    while (leitor.Read())
+                    {
+                        if (DBNull.Value != leitor["lead_atendentes_id"])
+                        {
+                            atendente.lead_atendentes_id = Convert.ToInt32(leitor["lead_atendentes_id"]);
+                        }
+                        else
+                        {
+                            atendente.lead_atendentes_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["lead_atendentes_conta_id"])
+                        {
+                            atendente.lead_atendentes_conta_id = Convert.ToInt32(leitor["lead_atendentes_conta_id"]);
+                        }
+                        else
+                        {
+                            atendente.lead_atendentes_conta_id = 0;
+                        }
+
+                        if (DBNull.Value != leitor["lead_atendentes_filaUm"])
+                        {
+                            atendente.lead_atendentes_filaUm = Convert.ToInt32(leitor["lead_atendentes_filaUm"]);
+                        }
+                        else
+                        {
+                            atendente.lead_atendentes_filaUm = 0;
+                        }
+
+                        if (DBNull.Value != leitor["lead_atendentes_filaDois"])
+                        {
+                            atendente.lead_atendentes_filaDois = Convert.ToInt32(leitor["lead_atendentes_filaDois"]);
+                        }
+                        else
+                        {
+                            atendente.lead_atendentes_filaDois = 0;
+                        }
+
+                        atendente.lead_atendentes_atende_fila_um = Convert.ToBoolean(leitor["lead_atendentes_atende_fila_um"]);
+                        atendente.lead_atendentes_atende_fila_dois = Convert.ToBoolean(leitor["lead_atendentes_atende_fila_dois"]);
+                        atendente.lead_atendentes_nome = leitor["lead_atendentes_nome"].ToString();
+                        atendente.lead_atendentes_celular = leitor["lead_atendentes_celular"].ToString();
+                        atendente.lead_atendentes_email = leitor["lead_atendentes_email"].ToString();
+                    }
+                }                
+            }
+            catch (Exception)
+            {
+                
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return atendente;
+        }
+
+        public string edit(int lead_atendentes_id, string lead_atendentes_nome, string lead_atendentes_celular, string lead_atendentes_email, int lead_atendentes_conta_id, bool lead_atendentes_atende_fila_um, bool lead_atendentes_atende_fila_dois)
+        {
+            string retorno = "Atendente alterado com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "UPDATE lead_atendentes set lead_atendentes.lead_atendentes_nome = @lead_atendentes_nome, lead_atendentes.lead_atendentes_celular = @lead_atendentes_celular, lead_atendentes.lead_atendentes_email = @lead_atendentes_email, lead_atendentes.lead_atendentes_atende_fila_um = @lead_atendentes_atende_fila_um, lead_atendentes.lead_atendentes_atende_fila_dois = @lead_atendentes_atende_fila_dois WHERE lead_atendentes.lead_atendentes_conta_id = @conta_id and lead_atendentes.lead_atendentes_id = @lead_atendentes_id;";
+                comando.Parameters.AddWithValue("@lead_atendentes_nome", lead_atendentes_nome);
+                comando.Parameters.AddWithValue("@lead_atendentes_celular", lead_atendentes_celular);
+                comando.Parameters.AddWithValue("@lead_atendentes_email", lead_atendentes_email);
+                comando.Parameters.AddWithValue("@conta_id", lead_atendentes_conta_id);
+                comando.Parameters.AddWithValue("@lead_atendentes_id", lead_atendentes_id);
+                comando.Parameters.AddWithValue("@lead_atendentes_atende_fila_um", lead_atendentes_atende_fila_um);
+                comando.Parameters.AddWithValue("@lead_atendentes_atende_fila_dois", lead_atendentes_atende_fila_dois);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao altrerar o atendente!";
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
+        public string delete(int conta_id, int lead_atendentes_id)
+        {
+            string retorno = "Atendente excluído com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "DELETE from lead_atendentes WHERE lead_atendentes.lead_atendentes_id = @lead_atendentes_id and lead_atendentes.lead_atendentes_conta_id = @conta_id;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@lead_atendentes_id", lead_atendentes_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao excluir o atendente!";
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
 
     }
 }

@@ -7,7 +7,8 @@
     .tab-pane {
         padding-top: 15px;
     }
-    table > thead > tr > th{
+
+    table > thead > tr > th {
         white-space: nowrap;
     }
 </style>
@@ -18,14 +19,17 @@
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
-        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">LEAD</a>
+        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#lead" role="tab" aria-controls="lead" aria-selected="true">LEAD</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" onclick="lead_atendente('index')">Atendentes</a>
+        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#orcamento" role="tab" aria-controls="orcamento" aria-selected="false">Orçamento</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#atendente" role="tab" aria-controls="atendente" aria-selected="false" onclick="lead_atendente('index')">Atendentes</a>
     </li>
 </ul>
 <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    <div class="tab-pane fade show active" id="lead" role="tabpanel" aria-labelledby="lead-tab">
         <div class="btn-tools">
             <div class="row">
                 <div class="coluna_1" style="text-align:left;width:calc(100% - 100px);user-select:none;padding-left: 15px;">
@@ -40,7 +44,22 @@
         </div>
         <hr class="hrLine" />
     </div>
-    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+    <div class="tab-pane fade" id="orcamento" role="tabpanel" aria-labelledby="orcamento-tab">
+        <div class="btn-tools">
+            <div class="row">
+                <div class="coluna_1" style="text-align:left;width:calc(100% - 100px);user-select:none;padding-left: 15px;">
+                    @{
+                        <a class="btn btn-sm btn-info" style="cursor:pointer;color:white">Novo</a>
+                    }
+                </div>
+                <div class="coluna_1" style="text-align:right;width: 100px;user-select:none;">
+                    <p id="somaParcela" style="font-weight:bold;padding-left: 20px;"></p>
+                </div>
+            </div>
+        </div>
+        <hr class="hrLine" />
+    </div>
+    <div class="tab-pane fade" id="atendente" role="tabpanel" aria-labelledby="atendente-tab">
         <div class="btn-tools">
             <div class="row">
                 <div class="coluna_1" style="text-align:left;width:calc(100% - 100px);user-select:none;padding-left: 15px;">
@@ -53,6 +72,11 @@
                 </div>
             </div>
         </div>
+        <div class="row" style="height: 15px;">
+            <div class="col-12" id="lead_atendente_msg_2">
+
+            </div>
+        </div>
         <div class="conteudo_lead" id="conteudo_lead" style="margin-top: 15px;">
 
         </div>
@@ -60,7 +84,6 @@
 </div>
 
 <!--Modal-->
-
 <!--Novo Atendente-->
 <div class="modal fade" id="modal_lead_atendente" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modal_lead_atendente_titulo" aria-hidden="true">
     <div class="modal-dialog">
@@ -73,7 +96,7 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label class="control-label">Nome</label>
-                            <input type="text" id="lead_atendentes_nome" name="lead_atendentes_nome"  class="form-control form-control-sm" />
+                            <input type="text" id="lead_atendentes_nome" name="lead_atendentes_nome" class="form-control form-control-sm" />
                         </div>
                     </div>
                     <div class="col-12">
@@ -100,6 +123,7 @@
                             <label class="custom-control-label" for="lead_atendentes_atende_fila_dois">Atende Fila 2</label>
                         </div>
                     </div>
+                    <input type="hidden" id="lead_atendentes_id" name="lead_atendentes_id" value="0" />
                 </div>
                 <div class="row">
                     <div class="col-12" id="lead_atendente_msg">
@@ -108,7 +132,7 @@
                 </div>
             </div>
             <div class="modal-footer" id="modal_lead_atendente_rodape">
-                
+
             </div>
         </div>
     </div>
@@ -125,6 +149,25 @@
             </div>
             <div class="modal-footer" id="rodape">
 
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--mensagem confirmação exclusão dcto-->
+<div class="modal fade" id="modal_delete_atendente" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modal_delete_atendente_label" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmação Exclusão Atendente</h5>
+            </div>
+            <div class="modal-body" style="text-align:center;" id="modal_delete_atendente_body">
+                <p>Deseja realmente excluir o atendente: ?</p>
+            </div>
+            <input type="hidden" id="lead_atendentes_id_delete" name="lead_atendentes_id" value="0" />
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="lead_atendente('cancel')">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="lead_atendente('delete')">Excluir</button>
             </div>
         </div>
     </div>

@@ -32,18 +32,6 @@ namespace gestaoContadorcomvc.Controllers.Site
             return Json(JsonConvert.SerializeObject(lista));
         }
 
-        // GET: Lead_atendentesController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Lead_atendentesController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
         // POST: Lead_atendentesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -73,45 +61,85 @@ namespace gestaoContadorcomvc.Controllers.Site
             }
         }
 
-        // GET: Lead_atendentesController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Busca(int id)
         {
-            return View();
+            Lead_atendentes atendente = new Lead_atendentes();
+
+            try
+            {
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+                atendente = atendente.busca(user.conta.conta_id, id);
+
+                return Json(JsonConvert.SerializeObject(atendente));
+            }
+            catch
+            {
+                atendente.lead_atendentes_id = 0;
+
+                return Json(JsonConvert.SerializeObject(atendente));
+            }
         }
 
         // POST: Lead_atendentesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int lead_atendentes_id, IFormCollection collection)
         {
+            string retorno = "";
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+                Lead_atendentes atendente = new Lead_atendentes();
+
+                retorno = atendente.edit(lead_atendentes_id, collection["lead_atendentes_nome"], collection["lead_atendentes_celular"], collection["lead_atendentes_email"], user.conta.conta_id, Convert.ToBoolean(collection["lead_atendentes_atende_fila_um"]), Convert.ToBoolean(collection["lead_atendentes_atende_fila_dois"]));
+
+                return Json(JsonConvert.SerializeObject(retorno));
             }
             catch
             {
-                return View();
+                if (retorno == "")
+                {
+                    retorno = "Erro ao processar a alteração do atendente!!";
+                }
+                return Json(JsonConvert.SerializeObject(retorno));
             }
-        }
-
-        // GET: Lead_atendentesController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+        }        
 
         // POST: Lead_atendentesController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int lead_atendentes_id, IFormCollection collection)
         {
+            string retorno = "";
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                Usuario usuario = new Usuario();
+                Vm_usuario user = new Vm_usuario();
+                user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
+
+                Lead_atendentes atendente = new Lead_atendentes();
+
+                retorno = atendente.delete(user.conta.conta_id, lead_atendentes_id);
+
+                return Json(JsonConvert.SerializeObject(retorno));
             }
             catch
             {
-                return View();
+                if (retorno == "")
+                {
+                    retorno = "Erro ao processar a exclusão do atendente!!";
+                }
+                return Json(JsonConvert.SerializeObject(retorno));
             }
         }
     }

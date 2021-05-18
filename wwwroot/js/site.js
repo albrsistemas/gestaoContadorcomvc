@@ -6767,7 +6767,7 @@ function gerarExcel() {
     
 }
 
-function lead_atendente(contexto) {
+function lead_atendente(contexto, id) {
     if (contexto == 'index') {
         $.ajax({
             url: "/Lead_atendentes/Index",
@@ -6783,8 +6783,7 @@ function lead_atendente(contexto) {
                 console.log(errorThrown);
             },
             success: function (data, textStatus, XMLHttpRequest) {                
-                let retorno = JSON.parse(data);
-                console.log(retorno);
+                let retorno = JSON.parse(data);                
                 if (textStatus == 'error') {
                     document.getElementById('conteudo_lead').innerHTML = '<span class="text-danger">Erro na busca!!!</span>';
                     console.log(textStatus);
@@ -6816,11 +6815,19 @@ function lead_atendente(contexto) {
                             c += '<td style = "text-align:left">' + retorno.atendentes[i].lead_atendentes_nome + '</td>';
                             c += '<td>' + retorno.atendentes[i].lead_atendentes_celular + '</td>';
                             c += '<td>' + retorno.atendentes[i].lead_atendentes_email + '</td>';
-                            c += '<td>' + retorno.atendentes[i].lead_atendentes_filaUm + '</td>';
-                            c += '<td>' + retorno.atendentes[i].lead_atendentes_filaDois + '</td>';                            
+                            if (retorno.atendentes[i].lead_atendentes_atende_fila_um) {
+                                c += '<td>' + retorno.atendentes[i].lead_atendentes_filaUm + '</td>';
+                            } else {
+                                c += '<td>-</td>';
+                            }
+                            if (retorno.atendentes[i].lead_atendentes_atende_fila_dois) {
+                                c += '<td>' + retorno.atendentes[i].lead_atendentes_filaDois + '</td>';
+                            } else {
+                                c += '<td>-</td>';
+                            }                           
                             c += '<td style="text-align:right">';
-                            c += '<span style="cursor:pointer;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" onclick="gestao_tipo_participante(\'' + '' + '\', \'' + '' + '\',\'edit\')"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" /><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" /></svg></span>';
-                            c += '<span style="cursor:pointer;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" onclick="gestao_tipo_participante(\'' +  '' + '\', \'' + '' + '\',\'delete\')"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" /><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" /></svg></span>';
+                            c += '<span style="cursor:pointer;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" onclick="lead_atendente(\'edit_open\',\'' + retorno.atendentes[i].lead_atendentes_id +'\')"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" /><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" /></svg></span>';
+                            c += '<span style="cursor:pointer;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" onclick="lead_atendente(\'delete_open\',\'' + retorno.atendentes[i].lead_atendentes_id +'\')"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" /><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" /></svg></span>';
                             c += '</td>';
                             c += '</tr>';
                         }
@@ -6841,22 +6848,47 @@ function lead_atendente(contexto) {
         document.getElementById('lead_atendentes_atende_fila_um').value = false;
         document.getElementById('lead_atendentes_atende_fila_dois').value = false;
         document.getElementById('modal_lead_atendente_titulo').innerHTML = 'Inserir Novo Atendente'; 
-        document.getElementById('modal_lead_atendente_rodape').innerHTML = '<button type="button" class="btn btn-secondary" onclick="lead_atendente(\'cancel\')">Cancelar</button><button type="button" class="btn btn-info" id="lead_atendente_gravar" onclick="lead_atendente(\'create\')">Gravar</button>'; 
+        document.getElementById('modal_lead_atendente_rodape').innerHTML = '<button type="button" class="btn btn-secondary" onclick="lead_atendente(\'cancel\')">Cancelar</button><button type="button" class="btn btn-info" id="lead_atendente_gravar" onclick="lead_atendente(\'Create\')">Gravar</button>'; 
         modal_sobre_modal_open('modal_lead_atendente');
         document.getElementById('lead_atendentes_nome').focus();
     }
 
     if (contexto == 'cancel') {
-        document.getElementById('lead_atendentes_nome').value = '';
-        document.getElementById('lead_atendentes_celular').value = '';
-        document.getElementById('lead_atendentes_email').value = '';
-        document.getElementById('lead_atendentes_atende_fila_um').checked = false;
-        document.getElementById('lead_atendentes_atende_fila_dois').checked = false;
-        document.getElementById('modal_lead_atendente_titulo').innerHTML = '';
-        $("#modal_lead_atendente").modal('hide');
+        if (document.getElementById('lead_atendentes_nome')) {
+            document.getElementById('lead_atendentes_nome').value = '';
+        }
+        if (document.getElementById('lead_atendentes_celular')) {
+            document.getElementById('lead_atendentes_celular').value = '';
+        }
+        if (document.getElementById('lead_atendentes_email')) {
+            document.getElementById('lead_atendentes_email').value = '';
+        }
+        if (document.getElementById('lead_atendentes_atende_fila_um')) {
+            document.getElementById('lead_atendentes_atende_fila_um').checked = false;
+        }
+        if (document.getElementById('lead_atendentes_atende_fila_dois')) {
+            document.getElementById('lead_atendentes_atende_fila_dois').checked = false;
+        }
+        if (document.getElementById('modal_lead_atendente_titulo')) {
+            document.getElementById('modal_lead_atendente_titulo').innerHTML = '';
+        }
+
+        if ('lead_atendente_msg_2') {
+            document.getElementById('lead_atendente_msg_2').innerHTML = '';
+        }
+
+        if (document.getElementById('modal_lead_atendente')) {
+            $("#modal_lead_atendente").modal('hide');
+        }
+
+        if (document.getElementById('modal_delete_atendente')) {
+            $("#modal_delete_atendente").modal('hide');
+        }        
+        
     }
 
-    if (contexto == 'create') {
+    if (contexto == 'Create' || contexto == 'Edit') {
+        let lead_atendentes_id = document.getElementById('lead_atendentes_id').value;
         let nome = document.getElementById('lead_atendentes_nome').value;
         let celular = document.getElementById('lead_atendentes_celular').value.replaceAll('(','').replaceAll(')','').replaceAll('-','').replaceAll(' ','');
         let e_mail = document.getElementById('lead_atendentes_email').value;
@@ -6886,14 +6918,15 @@ function lead_atendente(contexto) {
             alert(mensagem);
         } else {
             $.ajax({
-                url: "/Lead_atendentes/Create",
+                url: "/Lead_atendentes/" + contexto,
                 data: {
                     __RequestVerificationToken: gettoken(),
                     lead_atendentes_nome: nome,
                     lead_atendentes_celular: celular,
                     lead_atendentes_email: e_mail,
                     lead_atendentes_atende_fila_um: fila_um,
-                    lead_atendentes_atende_fila_dois: fila_dois
+                    lead_atendentes_atende_fila_dois: fila_dois,
+                    lead_atendentes_id: lead_atendentes_id
                 },
                 type: 'POST',
                 dataType: 'json',
@@ -6901,12 +6934,22 @@ function lead_atendente(contexto) {
                     document.getElementById('lead_atendente_msg').innerHTML = '<span class="text-info">Gravando dados do atendente, aguarde...</span>';
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    document.getElementById('lead_atendente_msg').innerHTML = '<span class="text-danger">Erro ao cadatrar o atendente!!</span>';                    
+                    if (contexto == 'Create') {
+                        document.getElementById('lead_atendente_msg').innerHTML = '<span class="text-danger">Erro ao cadatrar o atendente!!</span>';
+                    }
+                    if (contexto == 'Edit') {
+                        document.getElementById('lead_atendente_msg').innerHTML = '<span class="text-danger">Erro ao alterar o atendente!!</span>';
+                    }                                        
                 },
                 success: function (data, textStatus, XMLHttpRequest) {
                     let retorno = JSON.parse(data);                    
                     if (textStatus == 'error') {
-                        document.getElementById('lead_atendente_msg').innerHTML = '<span class="text-danger">Erro ao cadatrar o atendente!!</span>';                        
+                        if (contexto == 'Create') {
+                            document.getElementById('lead_atendente_msg').innerHTML = '<span class="text-danger">Erro ao cadatrar o atendente!!</span>';
+                        }
+                        if (contexto == 'Edit') {
+                            document.getElementById('lead_atendente_msg').innerHTML = '<span class="text-danger">Erro ao alterar o atendente!!</span>';
+                        }
                     }
 
                     if (textStatus == 'success') {
@@ -6917,6 +6960,7 @@ function lead_atendente(contexto) {
 
                         if (retorno.includes('sucesso')) {
                             alert(retorno);
+                            document.getElementById('lead_atendente_msg').innerHTML = '';
                             lead_atendente('index');
                             lead_atendente('cancel');
                         }
@@ -6925,6 +6969,105 @@ function lead_atendente(contexto) {
             });
         }
     }
+
+    if (contexto == 'busca' || contexto == 'edit_open' || contexto == 'delete_open') {
+        $.ajax({
+            url: "/Lead_atendentes/Busca",
+            data: {
+                __RequestVerificationToken: gettoken(),
+                id: id
+            },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                document.getElementById('lead_atendente_msg_2').innerHTML = '<span class="text-info">Buscando dados do atendente, aguarde...</span>';
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                document.getElementById('lead_atendente_msg_2').innerHTML = '<span class="text-danger">Erro ao buscar os dados do atendente!!</span>';
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                let retorno = JSON.parse(data);                
+                if (textStatus == 'error') {
+                    document.getElementById('lead_atendente_msg_2').innerHTML = '<span class="text-danger">Erro ao buscar os dados do atendente!!</span>';
+                }
+
+                if (textStatus == 'success') {
+
+                    if (contexto == 'edit_open') {
+                        if (retorno.lead_atendentes_id == 0) {
+                            document.getElementById('lead_atendente_msg_2').innerHTML = '<span class="text-danger">Erro ao buscar os dados do atendente!!</span>';
+                        } else {
+                            document.getElementById('lead_atendentes_id').value = retorno.lead_atendentes_id;
+                            document.getElementById('lead_atendentes_nome').value = retorno.lead_atendentes_nome;
+                            document.getElementById('lead_atendentes_celular').value = retorno.lead_atendentes_celular;
+                            document.getElementById('lead_atendentes_email').value = retorno.lead_atendentes_email;
+                            document.getElementById('lead_atendentes_atende_fila_um').value = retorno.lead_atendentes_atende_fila_um;
+                            document.getElementById('lead_atendentes_atende_fila_dois').value = retorno.lead_atendentes_atende_fila_dois;
+                            document.getElementById('lead_atendentes_atende_fila_um').checked = retorno.lead_atendentes_atende_fila_um;
+                            document.getElementById('lead_atendentes_atende_fila_dois').checked = retorno.lead_atendentes_atende_fila_dois;
+                            document.getElementById('modal_lead_atendente_titulo').innerHTML = 'Alterar Atendente: ' + retorno.lead_atendentes_nome;
+                            document.getElementById('modal_lead_atendente_rodape').innerHTML = '<button type="button" class="btn btn-secondary" onclick="lead_atendente(\'cancel\')">Cancelar</button><button type="button" class="btn btn-info" id="lead_atendente_gravar" onclick="lead_atendente(\'Edit\')">Gravar</button>';
+                            document.getElementById('lead_atendentes_nome').focus();
+                            document.getElementById('lead_atendente_msg_2').innerHTML = '';
+                            modal_sobre_modal_open('modal_lead_atendente');
+                        }
+                    }
+
+                    if (contexto == 'delete_open') {
+                        if (retorno.lead_atendentes_id == 0) {
+                            document.getElementById('lead_atendente_msg_2').innerHTML = '<span class="text-danger">Erro ao buscar os dados do atendente!!</span>';
+                        } else {
+                            document.getElementById('modal_delete_atendente_body').innerHTML = '<p>Deseja realmente excluir o atendente: ' + retorno.lead_atendentes_nome + '?</p>';
+                            document.getElementById('lead_atendentes_id_delete').value = retorno.lead_atendentes_id;
+                            modal_sobre_modal_open('modal_delete_atendente');
+                        }
+                    }
+                }
+            }
+        });
+    }   
+
+    if (contexto == 'delete') {
+        let lead_atendentes_id = document.getElementById('lead_atendentes_id_delete').value;
+
+        $.ajax({
+            url: "/Lead_atendentes/Delete",
+            data: {
+                __RequestVerificationToken: gettoken(),                
+                lead_atendentes_id: lead_atendentes_id
+            },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('Erro ao tentar excluir o atendente!!');
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                let retorno = JSON.parse(data);
+                if (textStatus == 'error') {
+                    alert('Erro ao tentar excluir o atendente!!');
+                }
+
+                if (textStatus == 'success') {
+
+                    if (retorno.includes('Erro')) {
+                        alert(retorno);
+                    }
+
+                    if (retorno.includes('sucesso')) {
+                        alert(retorno);                        
+                        lead_atendente('index');
+                        lead_atendente('cancel');
+                    }
+                }
+            }
+        });
+    }
+
+   
+
 }
 
 
