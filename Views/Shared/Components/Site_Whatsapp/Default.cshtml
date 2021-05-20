@@ -1,38 +1,36 @@
-﻿<div class="whatsapp_icon">
-    @*<img src="~/Imagens/whatsapp.png" />*@
-    <img src="~/Imagens/whatsapp_gif.gif" />
+﻿<div class="whatsapp_icon">    
+    <img src="~/Imagens/whatsapp_gif.gif" onclick="whats('open')" />
 </div>
 
-<div class="w_box">
+<div class="w_box" id="w_box" style="display:none">
     <div class="w_faixa" style="text-align:right">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
+        <svg onclick="whats('close')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-square" viewBox="0 0 16 16" style="cursor:pointer;">
             <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
             <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
         </svg>
     </div>
-</div>
-
-
-
-
-
-
-<!--MODAL-->
-<!--mensagem confirmação formulário lead-->
-<div class="modal fade" id="modal_confirm_form_lead" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modal_confirm_form_lead_label" aria-hidden="true" style="margin-top: 100px;z-index:5000;">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal_confirm_form_lead_label"></h5>
-            </div>
-            <div class="modal-body" style="text-align:center;" id="modal_confirm_form_lead_body">
-                
-            </div>            
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>                
-            </div>
+    <div class="w_faixa_atendente">
+        <div class="w_faixa_atendente_img">
+            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#BFBFBF" overflow="hidden"><path d="M11 6C11 7.65685 9.65685 9 8 9 6.34315 9 5 7.65685 5 6 5 4.34315 6.34315 3 8 3 9.65685 3 11 4.34315 11 6Z" fill="#BFBFBF" /><path d="M0 8C-1.77636e-15 3.58172 3.58172 -8.88178e-16 8 -8.88178e-16 12.4183-2.66454e-15 16 3.58172 16 8 16 12.4183 12.4183 16 8 16 3.58172 16 -8.88178e-16 12.4183 -8.88178e-16 8ZM8 1C4.13401 1.00021 1.00017 4.13438 1.00037 8.00037 1.00046 9.58849 1.54056 11.1294 2.532 12.37 3.242 11.226 4.805 10 8 10 11.195 10 12.757 11.225 13.468 12.37 15.8815 9.3499 15.3897 4.94511 12.3696 2.53163 11.129 1.54019 9.58811 1.00008 8 1Z" fill="#BFBFBF" fill-rule="evenodd" /></svg>
         </div>
+        <div class="w_faixa_atendente_nome" id="w_faixa_atendente_nome">@TempData["nome"].ToString()</div>
     </div>
+
+    <div class="w_dialogo" id="w_dialogo">        
+        Olá, sou @TempData["nome"].ToString(), tudo bem?
+    </div>
+    <div class="w_dialogo" id="w_dialogo">
+        Me informe seu nome, e-mail e telefone para iniciarmos uma conversa sem compromisso.
+    </div>
+    <form class="w_form" id="w_form">
+        <input type="hidden" id="w_atendente" value="@TempData["codigo"].ToString()" />
+        <input type="hidden" id="w_link" value="@TempData["link"].ToString()" />
+        <input type="text" id="w_nome" placeholder="Nome" />
+        <input type="text" id="w_celular" placeholder="Celular" />
+        <input type="text" id="w_email" placeholder="E-mail" />
+        <button type="button" class="btn btn-info" onclick="whats('iniciar')">Enviar</button>
+    </form>
 </div>
+
 
 
