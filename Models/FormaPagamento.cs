@@ -61,7 +61,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "SELECT * from forma_pagamento as fp where fp.fp_conta_id = @conta_id and fp.fp_identificacao = 'Pagamento' and fp.fp_meio_pgto_nfe = @meio_pgto ORDER by fp.fp_status asc, fp.fp_nome ASC;";
+                comando.CommandText = "SELECT * from forma_pagamento as fp where fp.fp_status = 'Ativo' and fp.fp_conta_id = @conta_id and fp.fp_identificacao = 'Pagamento' and fp.fp_meio_pgto_nfe = @meio_pgto ORDER by fp.fp_status asc, fp.fp_nome ASC;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@meio_pgto", meio_pgto);
                 comando.ExecuteNonQuery();

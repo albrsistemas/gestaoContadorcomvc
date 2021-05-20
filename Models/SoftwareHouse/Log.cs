@@ -124,5 +124,14 @@ namespace gestaoContadorcomvc.Models.SoftwareHouse
 
             return logs;
         }
+
+        public void log_txt(string texto)
+        {
+            using (StreamWriter writer = new StreamWriter("log.txt"))
+            {
+                //writer.Write("Macoratti .net ");
+                writer.WriteLine("==> " + texto);
+            }
+        }
     }
 }

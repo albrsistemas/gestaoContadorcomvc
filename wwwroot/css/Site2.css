@@ -295,8 +295,29 @@
             height: 80px;
         }
 
+.w_box{
+    width: 220px;
+    height: auto;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid rgb(255,68,0);
+    background-color: white;
+    position: fixed;
+    border-bottom: 10px;
+    right: 10px;
+}
+.w_faixa{
+    width: 100%;
+    height: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
 @media (min-width: 768px) {
-            #site_img_01 {
+    #site_img_01 {
     height: 500px;
     }
     /*Rodapé*/    

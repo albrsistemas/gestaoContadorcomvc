@@ -5,6 +5,7 @@
         </div>
     </div>
     <div class="contato_box">
+        <form asp-controller="Site" asp-action="Create" id="form_contato"></form>
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
@@ -28,15 +29,36 @@
             </div>
             <div class="col-12">
                 <div class="form-group">
-                    <button class="btn btn-secondary">Enviar</button>
+                    <button class="btn btn-secondary" onclick="lead('create_site','')">Enviar</button>
                 </div>
             </div>
+            <input type="hidden" id="atendente_id" value="@TempData["msgParticipante"].ToString()" />
         </div>
     </div>
 </div>
 
-<div class="whatsapp_icon">
-    <img src="~/Imagens/whatsapp.png" />
+<!--<div class="whatsapp_icon">-->
+    @*<img src="~/Imagens/whatsapp.png" />*@
+    <!--<img src="~/Imagens/whatsapp_gif.gif" />
+</div>-->
+
+
+<!--MODAL-->
+<!--mensagem confirmação formulário lead-->
+<div class="modal fade" id="modal_confirm_form_lead" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modal_confirm_form_lead_label" aria-hidden="true" style="margin-top: 100px;z-index:5000;">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_confirm_form_lead_label"></h5>
+            </div>
+            <div class="modal-body" style="text-align:center;" id="modal_confirm_form_lead_body">
+                
+            </div>            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>                
+            </div>
+        </div>
+    </div>
 </div>
 
 

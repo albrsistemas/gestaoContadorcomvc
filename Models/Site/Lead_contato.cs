@@ -11,6 +11,7 @@ namespace gestaoContadorcomvc.Models.Site
         public DateTime lead_contato_data_hora { get; set; }
         public int lead_contato_lead_id { get; set; }
         public string lead_contato_tipo { get; set; }
-        public string lead_contato_msg { get; set; }        
+        public string lead_contato_msg { get; set; }
+        public bool lead_contato_lida { get; set; }
     }
 }

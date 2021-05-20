@@ -42,7 +42,14 @@
                 </div>
             </div>
         </div>
-        <hr class="hrLine" />
+        <div class="row" style="height: 15px;">
+            <div class="col-12" id="lead_msg">
+                
+            </div>
+        </div>
+        <div class="lead_bory" id="lead_body" style="margin-top: 15px;">
+
+        </div>
     </div>
     <div class="tab-pane fade" id="orcamento" role="tabpanel" aria-labelledby="orcamento-tab">
         <div class="btn-tools">
@@ -57,7 +64,7 @@
                 </div>
             </div>
         </div>
-        <hr class="hrLine" />
+        
     </div>
     <div class="tab-pane fade" id="atendente" role="tabpanel" aria-labelledby="atendente-tab">
         <div class="btn-tools">
@@ -111,16 +118,16 @@
                             <input type="text" id="lead_atendentes_email" name="lead_atendentes_email" class="form-control form-control-sm" />
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-12">
                         <div class="custom-control custom-switch">
                             <input type="checkbox" id="lead_atendentes_atende_fila_um" name="lead_atendentes_atende_fila_um" class="custom-control-input" onchange="switch_bootstrap(this.id,'')">
-                            <label class="custom-control-label" for="lead_atendentes_atende_fila_um">Atende Fila 1</label>
+                            <label class="custom-control-label" for="lead_atendentes_atende_fila_um">Atende Ozaki Contabilidade?</label>
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-12">
                         <div class="custom-control custom-switch">
                             <input type="checkbox" id="lead_atendentes_atende_fila_dois" name="lead_atendentes_atende_fila_dois" class="custom-control-input" onchange="switch_bootstrap(this.id,'')">
-                            <label class="custom-control-label" for="lead_atendentes_atende_fila_dois">Atende Fila 2</label>
+                            <label class="custom-control-label" for="lead_atendentes_atende_fila_dois">Atende Contadorcomvocê?</label>
                         </div>
                     </div>
                     <input type="hidden" id="lead_atendentes_id" name="lead_atendentes_id" value="0" />
@@ -172,3 +179,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ScriptPartial_Lead");}
+}

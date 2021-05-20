@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace gestaoContadorcomvc.Components
 {
-    public class Site_Contato : ViewComponent
+    public class Site_Whatsapp : ViewComponent
     {
         public IViewComponentResult Invoke(string user_id)
         {
