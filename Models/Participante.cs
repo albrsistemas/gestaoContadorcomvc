@@ -519,7 +519,7 @@ namespace gestaoContadorcomvc.Models
 
             try
             {
-                comando.CommandText = "update participante set participante_status = 'Deletado' where participante_conta_id = @conta_id and participante_id = @participante_id;";
+                comando.CommandText = "DELETE from participante WHERE participante.participante_id = @participante_id and participante.participante_conta_id = @conta_id;";
                 comando.Parameters.AddWithValue("@conta_id", conta_id);
                 comando.Parameters.AddWithValue("@participante_id", partecipante_id);                
                 comando.ExecuteNonQuery();

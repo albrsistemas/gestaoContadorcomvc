@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Contato";
+    Layout = "~/Views/Shared/_Layout_site.cshtml";
+}
+
+<div class="faixa_1" style="margin-top: 80px;text-align:center">
+    <div class="row">
+        <div class="col-12">
+            <p style="font-size:48px;color:orangered;">É um prazer poder atende-lo.</p>
+            <p style="font-size:29px;">Preencha o formulário abaixa com suas dúvidas e entraremos em contato para te ajudar no que precisar.</p>
+        </div>
+    </div>
+</div>
+<div class="faixa_2">
+    @await Component.InvokeAsync("Site_Contato", "4")
+</div>
+@await Component.InvokeAsync("Site_Whatsapp", "4")
