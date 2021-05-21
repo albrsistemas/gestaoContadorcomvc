@@ -71,6 +71,11 @@ namespace gestaoContadorcomvc.Controllers.Site
             return View();
         }
 
+        public IActionResult Planos()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult Create(IFormCollection collection)

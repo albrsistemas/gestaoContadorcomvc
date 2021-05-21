@@ -78,24 +78,8 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="accordion" id="myaccordion">
-                    @{
-                        for (var i = 0; i < 5; i++)
-                        {
-                            <div class="card">
-                                <div class="card-header pegunta_accordion_header" id="@("heading" + i)" data-toggle="collapse" data-target="@("#collapse" + i)" aria-expanded="true" aria-controls="@("collapse" + i)">
-                                    <span class="pegunta_accordion" type="button">
-                                        O contrato com a Contadorcomvocê tem fidelidade?
-                                    </span>
-                                </div>
-                                <div id="@("collapse" + i)" class="@(i == 0 ? "collapse show" : "collapse")" aria-labelledby="headingOne" data-parent="#myaccordion">
-                                    <div class="card-body pegunta_accordion_body">
-                                        Não, nosso contrato não possui fedelidade. Fique tranquilo, quando quiser encerrar o contrato basta nos comunicar por e-mail.
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
+                <div class="accordion" id="myaccordion">                    
+                    
                 </div>
             </div>
         </div>

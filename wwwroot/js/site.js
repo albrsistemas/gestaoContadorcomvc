@@ -1,4 +1,56 @@
 ﻿//Variaveis globais
+let perguntas_respostas = [
+    pergunta_resposta = {
+        pergunta: "Preciso passar as minhas senhas bancárias?",
+        resposta: "Não, precisamos de uma acesso limitado, apenas para consultar o extrato bancário."
+    },
+    pergunta_resposta = {
+        pergunta: "Quais são as responsabilidades do cliente?",
+        resposta: "Enviar as informações e validar os agendamentos de pagamentos no banco."
+    },
+    pergunta_resposta = {
+        pergunta: "Preciso enviar documentos físicos?",
+        resposta: "Não, para facilitar seu dia a dia pode nos enviar pelo whatsapp ou e-mail. Notas fiscais eletrônicas são fornecidas pela receita federal com acesso por certificado digital."
+    },
+    pergunta_resposta = {
+        pergunta: "Eu não tenho muito tempo, como será meu atendimento?",
+        resposta: "Sabemos como é corrido o dia a dia nas empresas para o empresário e por isso utilizamos da tecnologia para facilitar a sua vida. Nossa comunicação será pelo whatsapp ou e-mail."
+    },
+    pergunta_resposta = {
+        pergunta: "A Contadorcomvocê pode enviar meus documentos para a minha contabildade?",
+        resposta: "Sim, com a sua autoriazação enviaremos regularmente e organizada toda a documentação para a contabilidade."
+    },
+    pergunta_resposta = {
+        pergunta: "O contrato com a Contadorcomvocê possui fidelidade?",
+        resposta: "Não, fique tranquilo. Caso deseja encerrar o serviço basta nos comunicar por e-mail."
+    },
+];
+
+function perguntas() {
+    let p = '';   
+
+    for (let i = 0; i < perguntas_respostas.length; i++) {
+        p += '<div class="card">';
+        p += '<div class="card-header pegunta_accordion_header" id="heading' + i + '" data-toggle="collapse" data-target="#collapse' + i + '" aria-expanded="true" aria-controls="collapse' + i + '>;'
+        p += '<span class="pegunta_accordion" type="button">' + perguntas_respostas[i].pergunta + '</span></div>';
+        if (i == 0) {
+            p += '<div id="collapse' + i + '" class="collapse show" aria-labelledby="headingOne" data-parent="#myaccordion">';
+        } else {
+            p += '<div id="collapse' + i + '" class="collapse" aria-labelledby="headingOne" data-parent="#myaccordion">';
+        }
+        p += '<div class="card-body pegunta_accordion_body">' + perguntas_respostas[i].resposta + '</div></div></div>';
+    }
+
+    document.getElementById('myaccordion').innerHTML = p;
+}
+
+$(document).ready(function () {
+    if (document.getElementById('myaccordion')) {
+        perguntas();
+    }
+});
+
+
 let rfm = {};
 
 let produto_op_selecionado = {};
@@ -7295,8 +7347,6 @@ jQuery("input.telefone")
             element.mask("(99) 9999-99999");
         }
     });
-
-
 
 
 
