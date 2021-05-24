@@ -1,0 +1,122 @@
+﻿@{
+    ViewData["Title"] = "Contato";
+    Layout = "~/Views/Shared/_Layout_site.cshtml";
+}
+
+<div class="faixa_1" style="margin-top: 80px;text-align:center">
+        <p style="font-size:38px;color:black;">Nossos planos são flexíveis ao tamanho de sua empresa.</p>
+        <p style="font-size:25px;">Informe abaixo suas informações para montarmos o melhor plano para você.</p>
+    </div>
+
+<div class="faixa_2">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="po_box">
+                    <div class="po_box_item po_box_item_title">
+                        <span>Qual a sua atividade?</span>
+                    </div>
+                    <div class="po_box_item">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="customSwitch1" style="user-select: none;">
+                            <label class="custom-control-label" for="customSwitch1" style="user-select: none;">Prestação de Serviço</label>
+                        </div>
+                    </div>
+                    <div class="po_box_item">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="customSwitch2" style="user-select: none;">
+                            <label class="custom-control-label" for="customSwitch2" style="user-select: none;">Comércio</label>
+                        </div>
+                    </div>
+                    <div class="po_box_item">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="customSwitch3" style="user-select: none;">
+                            <label class="custom-control-label" for="customSwitch3" style="user-select: none;">Fabricação</label>
+                        </div>
+                    </div>
+                    <div class="po_box_item po_box_item_title">
+                        <span>Qual a quantidade de sócios + funcionários?</span>
+                    </div>
+                    <div class="po_box_item">
+                        <div class="input-group">
+                            <input type="text" class="form-control" aria-label="" id="qtd_socio_func" min="1" onblur="plano_contador('verifica')" value="1" style="user-select: none;">
+                            <span class="input-group-text" style="cursor:pointer" onclick="plano_contador('subtrai')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
+                                </svg>
+                            </span>
+                            <span class="input-group-text" style="cursor:pointer" onclick="plano_contador('soma')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="po_box_item po_box_item_title">
+                        <span>Qual o faturamento mensal?</span>
+                    </div>
+                    <div class="po_box_item">
+                        <select class="po_box_select" style="user-select: none;">
+                            <option value="1" selected>Até 15.000,00</option>
+                            <option value="2">De 15.000,00 até 50.000,00</option>
+                            <option value="3">De 50.000,00 até 100.000,00</option>
+                            <option value="4">De 100.000,00 até 200.000,00</option>
+                            <option value="5">De 200.000,00 até 400.000,00</option>
+                            <option value="6">Mais de 400.000,00</option>
+                        </select>
+                    </div>
+                    <div class="po_box_item po_box_item_title">
+                        <span>Tipo de Tributação?</span>
+                    </div>
+                    <div class="po_box_item">
+                        <select class="po_box_select" style="user-select: none;">
+                            <option value="1" selected>Simples Nacional</option>
+                            <option value="2">Lucro Presumido</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p_box_pai">
+                    <div class="p_box">
+                        <div class="p_box_title">Plano Ideal</div>
+                        <div class="p_box_conteudo">
+                            <div class="p_box_conteudo_item" style="text-align:center;margin-bottom: 25px;">
+                                <span class="p_box_conteudo_item_vlr">R$ </span>
+                                <span class="p_box_conteudo_item_vlr_hon">344,00</span>
+                            </div>
+                            <div class="p_box_conteudo_item">
+                                <div class="p_box_conteudo_item_itens_icons">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.431a1.473 1.473 0 0 1 2.104 2.062l-7.84 9.801a1.473 1.473 0 0 1-2.12.04L.431 8.138a1.473 1.473 0 0 1 2.084-2.083l4.111 4.112 6.82-8.69a.486.486 0 0 1 .04-.045z" />
+                                    </svg>
+                                </div>
+                                <div class="p_box_conteudo_item_itens_dados">
+                                    Contabilidade Completa
+                                </div>
+                            </div>
+                            <div class="p_box_conteudo_item">
+                                <div class="p_box_conteudo_item_itens_icons">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.431a1.473 1.473 0 0 1 2.104 2.062l-7.84 9.801a1.473 1.473 0 0 1-2.12.04L.431 8.138a1.473 1.473 0 0 1 2.084-2.083l4.111 4.112 6.82-8.69a.486.486 0 0 1 .04-.045z" />
+                                    </svg>
+                                </div>
+                                <div class="p_box_conteudo_item_itens_dados">
+                                    Contabilidade Completa
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="faixa_1">
+    @await Component.InvokeAsync("Site_Contato", "4")
+</div>
+
+

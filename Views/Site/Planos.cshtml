@@ -3,23 +3,127 @@
     Layout = "~/Views/Shared/_Layout_site.cshtml";
 }
 
-<div class="faixa_1" style="margin-top: 80px;text-align:center">
-    <p style="font-size:38px;color:black;">Nossos planos são flexíveis ao tamanho de sua empresa.</p>
-    <p style="font-size:25px;">Informe abaixo suas informações para montarmos o melhor plano para você.</p>
-</div>
+@*<div class="faixa_1" style="margin-top: 80px;text-align:center">
+        <p style="font-size:38px;color:black;">Nossos planos são flexíveis ao tamanho de sua empresa.</p>
+        <p style="font-size:25px;">Informe abaixo suas informações para montarmos o melhor plano para você.</p>
+    </div>*@
 
-<div class="faixa_2">
-    <div class="row">
-        <div class="col-md-6">
+@*<div class="faixa_2">
+        <div class="row">
+            <div class="col-md-6">
 
-        </div>
-        <div class="col-md-6">
-            <div class="p_box_pai">
-                <div class="p_box">
-                    <div class="p_box_title">Plano Ideal</div>
-                    <div class="p_box_conteudo"></div>
+            </div>
+            <div class="col-md-6">
+                <div class="p_box_pai">
+                    <div class="p_box">
+                        <div class="p_box_title">Plano Ideal</div>
+                        <div class="p_box_conteudo"></div>
+                    </div>
                 </div>
-            </div>            
+            </div>
+        </div>
+    </div>*@
+
+<div class="faixa_2" style="margin-top: 80px;text-align:center">
+    <p style="font-size:38px;color:rgb(255,68,0);">Nossos planos são flexíveis ao tamanho de sua empresa.</p>
+    <p style="font-size:25px;">Uma plano específico para cada fase de crescimento de sua empresa.</p>
+</div>
+<div class="faixa_1">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="plano_box">
+                    <div class="plano_titulo">
+                        <span>MEI</span>
+                    </div>
+                    <div class="planos_itens">
+                        50 Transações Mensais
+                    </div>
+                    <div class="planos_itens">
+                        15 Notas Fiscais por mês
+                    </div>
+                    <div class="planos_itens">
+                        01 Conta Bancária
+                    </div>
+                    <div class="planos_itens">
+                        01 Fatura de Cartão de Crédito
+                    </div>
+                    <div class="planos_itens" style="height: 50px;">
+                        <a href="#contato_site" class="btn btn-secondary scroll_inter">Quero este plano</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="plano_box">
+                    <div class="plano_titulo">
+                        <span>Controle</span>
+                    </div>
+                    <div class="planos_itens">
+                        100 Transações Mensais
+                    </div>
+                    <div class="planos_itens">
+                        30 Notas Fiscais por mês
+                    </div>
+                    <div class="planos_itens">
+                        02 Conta Bancária
+                    </div>
+                    <div class="planos_itens">
+                        01 Fatura de Cartão de Crédito
+                    </div>
+                    <div class="planos_itens" style="height: 50px;">
+                        <a href="#contato_site" class="btn btn-secondary scroll_inter">Quero este plano</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="plano_box">
+                    <div class="plano_titulo">
+                        <span>Avançado</span>
+                    </div>
+                    <div class="planos_itens">
+                        150 Transações Mensais
+                    </div>
+                    <div class="planos_itens">
+                        60 Notas Fiscais por mês
+                    </div>
+                    <div class="planos_itens">
+                        02 Conta Bancária
+                    </div>
+                    <div class="planos_itens">
+                        01 Fatura de Cartão de Crédito
+                    </div>
+                    <div class="planos_itens" style="height: 50px;">
+                        <a href="#contato_site" class="btn btn-secondary scroll_inter">Quero este plano</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="plano_box">
+                    <div class="plano_titulo">
+                        <span>Estendido</span>
+                    </div>
+                    <div class="planos_itens">
+                        200 Transações Mensais
+                    </div>
+                    <div class="planos_itens">
+                        100 Notas Fiscais por mês
+                    </div>
+                    <div class="planos_itens">
+                        02 Conta Bancária
+                    </div>
+                    <div class="planos_itens">
+                        01 Fatura de Cartão de Crédito
+                    </div>
+                    <div class="planos_itens" style="height: 50px;">
+                        <a href="#contato_site" class="btn btn-secondary scroll_inter">Quero este plano</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<div class="faixa_2">
+    @await Component.InvokeAsync("Site_Contato", "4")
+</div>
+
+

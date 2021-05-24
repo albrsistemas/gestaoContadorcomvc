@@ -21,6 +21,7 @@ namespace gestaoContadorcomvc.Models.Site
         public string lead_tipo { get; set; }
         public string lead_situacao { get; set; }
         public int lead_lead_atendentes_id { get; set; }
+        public string  lead_site_origem { get; set; }
         public IEnumerable<Lead_contato> contatos { get; set; }
         
         //Atributos left join
@@ -42,7 +43,7 @@ namespace gestaoContadorcomvc.Models.Site
             conn = new MySqlConnection(configuration.GetSection("ConnectionStrings").GetSection("conexaocvc").Value);
         }
 
-        public string create(int conta_id, int lead_lead_atendentes_id, string lead_nome, string lead_celular, string lead_email, string lead_tipo, string lead_situacao, string lead_contato_tipo, string lead_contato_msg)
+        public string create(int conta_id, int lead_lead_atendentes_id, string lead_nome, string lead_celular, string lead_email, string lead_tipo, string lead_situacao, string lead_contato_tipo, string lead_contato_msg, string lead_site_origem)
         {
             string retorno = "";
 
@@ -55,7 +56,7 @@ namespace gestaoContadorcomvc.Models.Site
 
             try
             {
-                comando.CommandText = "call pr_lead (@lead_conta_id, @lead_lead_atendentes_id, @lead_nome, @lead_celular, @lead_email, @lead_tipo, @lead_situacao, @lead_contato_tipo, @lead_contato_msg)";
+                comando.CommandText = "call pr_lead (@lead_conta_id, @lead_lead_atendentes_id, @lead_nome, @lead_celular, @lead_email, @lead_tipo, @lead_situacao, @lead_contato_tipo, @lead_contato_msg, @lead_site_origem)";
                 comando.Parameters.AddWithValue("@lead_conta_id", conta_id);
                 comando.Parameters.AddWithValue("@lead_lead_atendentes_id", lead_lead_atendentes_id);
                 comando.Parameters.AddWithValue("@lead_nome", lead_nome);
@@ -65,6 +66,7 @@ namespace gestaoContadorcomvc.Models.Site
                 comando.Parameters.AddWithValue("@lead_situacao", lead_situacao);
                 comando.Parameters.AddWithValue("@lead_contato_tipo", lead_contato_tipo);
                 comando.Parameters.AddWithValue("@lead_contato_msg", lead_contato_msg);
+                comando.Parameters.AddWithValue("@lead_site_origem", lead_site_origem);
                 comando.ExecuteNonQuery();
                 Transacao.Commit();
                 retorno = "Contato cadastrado com sucesso!!";
@@ -156,6 +158,7 @@ namespace gestaoContadorcomvc.Models.Site
 
                         lead.lead_atendentes_nome = leitor["lead_atendentes_nome"].ToString();
                         lead.lead_contato_nao_lida = Convert.ToInt32(leitor["lead_contato_nao_lida"]);
+                        lead.lead_site_origem = leitor["lead_site_origem"].ToString();
 
                         leads.Add(lead);
                     }

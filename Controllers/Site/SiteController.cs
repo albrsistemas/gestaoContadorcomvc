@@ -76,6 +76,11 @@ namespace gestaoContadorcomvc.Controllers.Site
             return View();
         }
 
+        public IActionResult Planos_ozaki()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult Create(IFormCollection collection)
@@ -94,7 +99,7 @@ namespace gestaoContadorcomvc.Controllers.Site
                 else
                 {
                     Lead l = new Lead();
-                    retorno = l.create(Convert.ToInt32(dados[1]), Convert.ToInt32(dados[0]), collection["lead_nome"], collection["lead_celular"], collection["lead_email"], collection["lead_tipo"], "Pendente", collection["lead_tipo"], collection["lead_contato_msg"]);
+                    retorno = l.create(Convert.ToInt32(dados[1]), Convert.ToInt32(dados[0]), collection["lead_nome"], collection["lead_celular"], collection["lead_email"], collection["lead_tipo"], "Pendente", collection["lead_tipo"], collection["lead_contato_msg"], "Contadorcomvocê");
                 }                
 
                 return Json(JsonConvert.SerializeObject(retorno));

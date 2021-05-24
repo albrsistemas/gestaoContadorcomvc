@@ -48,9 +48,18 @@ namespace gestaoContadorcomvc.Controllers
                 ViewBag.tipoOpercao = select.getTipoOperacaoCCM().Select(c => new SelectListItem() { Text = c.text, Value = c.value, Disabled = c.disabled, Selected = c.value == "0" });
 
                 DateTime today = DateTime.Today;
-                TempData["dataInicio"] = today.AddDays(-30).ToShortDateString();
+                //TempData["dataInicio"] = today.AddDays(-30).ToShortDateString();
+                DateTime ini = new DateTime(today.Year, today.Month, 1);
+                TempData["dataInicio"] = ini.ToShortDateString();
                 TempData["dataFim"] = today.ToShortDateString();
-                TempData["contacorrente_id"] = cc[0].value;
+                if(cc.Count == 0)
+                {
+                    TempData["contacorrente_id"] = 0;
+                }
+                else
+                {
+                    TempData["contacorrente_id"] = cc[0].value;
+                }                
             }            
             vm_fc.user = user;
 

@@ -7160,6 +7160,7 @@ function lead(contexto, id, tipo) {
                         c += '<th style="text-align:left" >Nome</th>';
                         c += '<th style="text-align:center" >Celular</th>';
                         c += '<th style="text-align:center" >E-mail</th>';
+                        c += '<th style="text-align:center" >Origem</th>';
                         c += '<th style="text-align:center" >Tipo</th>';
                         c += '<th style="text-align:center" >Situação</th>';
                         c += '<th style="text-align:center" >Atendente</th>';
@@ -7176,6 +7177,7 @@ function lead(contexto, id, tipo) {
                                 c += '<td style = "text-align:left">' + retorno.leads[i].lead_nome + '</td>';
                                 c += '<td>' + retorno.leads[i].lead_celular + '</td>';
                                 c += '<td>' + retorno.leads[i].lead_email + '</td>';
+                                c += '<td>' + retorno.leads[i].lead_site_origem + '</td>';
                                 c += '<td>' + retorno.leads[i].lead_tipo + '</td>';
                                 c += '<td>' + retorno.leads[i].lead_situacao + '</td>';
                                 c += '<td>' + retorno.leads[i].lead_atendentes_nome + '</td>';                                
@@ -7347,6 +7349,36 @@ jQuery("input.telefone")
             element.mask("(99) 9999-99999");
         }
     });
+
+function plano_contador(context) {
+    let vlr = convertStringDouble(document.getElementById('qtd_socio_func').value);
+    if (context == 'verifica') {
+        if (vlr < 0 || vlr == 0) {
+            document.getElementById('qtd_socio_func').value = 1;
+        }
+
+        return;
+    } 
+
+    if (context == 'subtrai') {
+        if (vlr != 0) {
+            vlr = (vlr - 1);
+        }        
+    }
+
+    if (context == 'soma') {
+        if (vlr != 0) {
+            vlr = (vlr + 1);
+        } 
+    }
+
+    if (vlr == 0 || vlr < 1) {
+        document.getElementById('qtd_socio_func').value = 1;
+    } else {
+        document.getElementById('qtd_socio_func').value = vlr;
+    }
+
+}
 
 
 
