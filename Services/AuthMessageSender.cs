@@ -42,11 +42,11 @@ namespace gestaoContadorcomvc.Services
                 };
 
                 mail.To.Add(new MailAddress(toEmail));
-                mail.CC.Add(new MailAddress(_emailSettings.CcEmail));
+                //mail.CC.Add(new MailAddress(_emailSettings.CcEmail));
 
                 mail.Subject = "Contadorcomvc - " + subject;
                 mail.Body = message;
-                mail.IsBodyHtml = false;
+                mail.IsBodyHtml = true;
                 mail.Priority = MailPriority.High;
 
                 //outras opções
@@ -56,7 +56,7 @@ namespace gestaoContadorcomvc.Services
                 using (SmtpClient smtp = new SmtpClient(_emailSettings.PrimaryDomain, _emailSettings.PrimaryPort))
                 {
                     smtp.Credentials = new NetworkCredential(_emailSettings.UsernameEmail, _emailSettings.UsernamePassword);
-                    smtp.EnableSsl = false;
+                    smtp.EnableSsl = true;
                     await smtp.SendMailAsync(mail);
                 }
             }

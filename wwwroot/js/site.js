@@ -18,7 +18,7 @@ let perguntas_respostas = [
     },
     pergunta_resposta = {
         pergunta: "A Contadorcomvocê pode enviar meus documentos para a minha contabildade?",
-        resposta: "Sim, com a sua autoriazação enviaremos regularmente e organizada toda a documentação para a contabilidade."
+        resposta: "Sim, com a sua autorização enviaremos regularmente e organizada toda a documentação para a contabilidade."
     },
     pergunta_resposta = {
         pergunta: "O contrato com a Contadorcomvocê possui fidelidade?",
@@ -7216,6 +7216,7 @@ function lead(contexto, id, tipo) {
         let lead_situacao = '';
         let lead_contato_tipo = '';
         let lead_contato_msg = '';
+        let lead_plano_selecionado = '';
 
         if (tipo == 'site') {
             document.getElementById('form_contato').preventDefault;
@@ -7224,7 +7225,8 @@ function lead(contexto, id, tipo) {
             lead_celular = document.getElementById('contato_telefone').value;
             lead_email = document.getElementById('contato_e_mail').value;
             lead_contato_msg = document.getElementById('contato_mensagem').value;
-            lead_tipo = 'Site';            
+            lead_tipo = 'Site';
+            lead_plano_selecionado = document.getElementById('plano_selecionado').value;
         }
 
         if (tipo == 'Whatsapp') {
@@ -7234,7 +7236,8 @@ function lead(contexto, id, tipo) {
             lead_celular = document.getElementById('w_celular').value;
             lead_email = document.getElementById('w_email').value;
             lead_contato_msg = '';
-            lead_tipo = 'Whatsapp';            
+            lead_tipo = 'Whatsapp';  
+            lead_plano_selecionado = 'Não se aplica - Whatsapp';
         }
 
         $.ajax({
@@ -7246,7 +7249,8 @@ function lead(contexto, id, tipo) {
                 lead_celular: lead_celular,
                 lead_email: lead_email,
                 lead_contato_msg: lead_contato_msg,
-                lead_tipo: lead_tipo
+                lead_tipo: lead_tipo,
+                lead_plano_selecionado: lead_plano_selecionado
             },
             type: 'POST',
             dataType: 'json',
@@ -7380,6 +7384,9 @@ function plano_contador(context) {
 
 }
 
+function planoSelect(plano) {
+    document.getElementById('plano_selecionado').value = plano;
+}
 
 
 

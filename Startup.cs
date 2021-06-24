@@ -128,7 +128,7 @@ namespace gestaoContadorcomvc
             {               
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Conta}/{action=Login}/{id?}");
+                    pattern: "{controller=Site}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute(
                    name: "Contabilidade",
                    pattern: "{Contabilidade}/{controller=Clientes}/{action=Index}/{id?}");
