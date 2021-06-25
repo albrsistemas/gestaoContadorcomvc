@@ -364,7 +364,7 @@
                                         @{
                                             if (item.categoria_classificacao.Length == 1)
                                             {
-                                                if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasCreate)
+                                                if (Model.user.Role == "adm" || Model.user._permissoes.categoriaCreate)
                                                 {
                                                     if (item.categoria_classificacao.Equals("1"))
                                                     {
@@ -389,7 +389,7 @@
                                             }
                                             if (item.categoria_classificacao.Length == 4)
                                             {
-                                                if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasCreate)
+                                                if (Model.user.Role == "adm" || Model.user._permissoes.categoriaCreate)
                                                 {
                                                     <a class="createCategoria" data-grupo="@item.categoria_classificacao" data-escopo="@item.categoria_escopo">
                                                         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="#ff4400" xmlns="http://www.w3.org/2000/svg">
@@ -397,7 +397,7 @@
                                                         </svg>
                                                     </a>
                                                 }
-                                                if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasEdit)
+                                                if (Model.user.Role == "adm" || Model.user._permissoes.categoriaEdit)
                                                 {
                                                     <a class="editCategoria" data-id="@item.categoria_id" data-tipo="@item.categoria_tipo">
                                                         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="#ff4400" xmlns="http://www.w3.org/2000/svg">
@@ -405,7 +405,7 @@
                                                         </svg>
                                                     </a>
                                                 }
-                                                if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasDelete)
+                                                if (Model.user.Role == "adm" || Model.user._permissoes.categoriaDelete)
                                                 {
                                                     <a class="deleteCategoria" data-id="@item.categoria_id" data-tipo="@item.categoria_tipo">
                                                         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="#ff4400" xmlns="http://www.w3.org/2000/svg">
@@ -417,7 +417,7 @@
                                             }
                                             if (item.categoria_classificacao.Length > 4)
                                             {
-                                                if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasEdit)
+                                                if (Model.user.Role == "adm" || Model.user._permissoes.categoriaEdit)
                                                 {
                                                     <a class="editCategoria" data-id="@item.categoria_id" data-tipo="@item.categoria_tipo">
                                                         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="#ff4400" xmlns="http://www.w3.org/2000/svg">
@@ -425,7 +425,7 @@
                                                         </svg>
                                                     </a>
                                                 }
-                                                if (Model.user.Role == "adm" || Model.user._permissoes.planoCategoriasDelete)
+                                                if (Model.user.Role == "adm" || Model.user._permissoes.categoriaDelete)
                                                 {
                                                     <a class="deleteCategoria" data-id="@item.categoria_id" data-tipo="@item.categoria_tipo">
                                                         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="#ff4400" xmlns="http://www.w3.org/2000/svg">
