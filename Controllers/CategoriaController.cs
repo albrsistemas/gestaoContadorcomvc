@@ -343,7 +343,19 @@ namespace gestaoContadorcomvc.Controllers
             user = usuario.BuscaUsuario(HttpContext.User.Identity.Name);
 
             Categoria c = new Categoria();
-            string retorno = c.definirPadraoCategoria(user.usuario_id, user.usuario_conta_id, padrao, categoria_id);
+            Vm_categoria v = new Vm_categoria();
+            v = c.buscaCategoria(categoria_id);
+
+            string retorno = "";
+
+            if(v.categoria_conta_id != user.conta.conta_id) //se for diferente está sendo acessado pelo contador
+            {
+                retorno = c.definirPadraoCategoria(user.usuario_id, Convert.ToInt32(user.usuario_ultimoCliente), padrao, categoria_id);
+            }
+            else
+            {
+                retorno = c.definirPadraoCategoria(user.usuario_id, user.usuario_conta_id, padrao, categoria_id);
+            }
 
             return Json(JsonConvert.SerializeObject(retorno));
         }
