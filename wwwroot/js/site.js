@@ -465,51 +465,58 @@ function boxAccordionToggle(id) {
 }
 
 $(".delete").click(function () {
-    var id = $(this).attr("data-id");    
-    $("#modal").load("Delete?id=" + id, function () {
+    let local = window.location + "/Delete?id=";
+    var id = $(this).attr("data-id");
+    $("#modal").load(local + id, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".EditPassword").click(function () {
+    let local = window.location + "/EditPassword?id=";
     var id = $(this).attr("data-id");
-    $("#modal").load("EditPassword?id=" + id, function () {
+    $("#modal").load(local + id, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".createBco").click(function () {
     //var id = $(this).attr("data-id");    
-    $("#modal").load("CreateCxBanco" , function () {
+    let local = window.location + "/CreateCxBanco";
+    $("#modal").load(local , function () {
         $("#modal").modal('show');
     })
 });
 
 $(".deleteBco").click(function () {
+    let local = window.location + "/DeleteCxBanco?id=";
     var id = $(this).attr("data-id");
     var descricao = $(this).attr("data-descricao");
-    $("#modal").load("DeleteCxBanco?id=" + id + "&descricao=" + encodeURIComponent(descricao), function () {
+    $("#modal").load(local + id + "&descricao=" + encodeURIComponent(descricao), function () {
         $("#modal").modal('show');
     })
 });
 
 $(".create").click(function () {
+    let local = window.location + "/Create?id=";
     var id = $(this).attr("data-id");
-    $("#modal").load("Create?id=" + id, function () {
+    $("#modal").load(local + id, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".edit").click(function () {
+    let local = window.location + "/Edit?id=";
     var id = $(this).attr("data-id");
-    $("#modal").load("Edit?id=" + id, function () {
+    $("#modal").load(local + id, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".createConta").click(function () {
+    let local = window.location + "/Create?id=";
     var id = $(this).attr("data-id");
-    $("#modal").load("Create?id=" + id, function () {
+    $("#modal").load(local + id, function () {
         $("#modal").modal('show');
     })
 });
@@ -521,38 +528,43 @@ $(document).ready(function () {
 
 //Categoria
 $(".createGrupoCategoria").click(function () {
+    let local = window.location + "/CreateGrupoCategoria?escopo=";
     var escopo = $(this).attr("data-escopo");
-    $("#modal").load("CreateGrupoCategoria?escopo=" + escopo, function () {
+    $("#modal").load(local + escopo, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".createCategoria").click(function () {
+    let local = window.location + "/Create?grupo=";
     var grupo = $(this).attr("data-grupo");
     var escopo = $(this).attr("data-escopo");
-    $("#modal").load("Create?grupo=" + grupo + "&escopo=" + escopo, function () {
+    $("#modal").load(local + grupo + "&escopo=" + escopo, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".editCategoria").click(function () {
+    let local = window.location + "/Edit?id=";
     var id = $(this).attr("data-id");
     var tipo = $(this).attr("data-tipo");
-    $("#modal").load("Edit?id=" + id + "&tipo=" + tipo, function () {
+    $("#modal").load(local + id + "&tipo=" + tipo, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".deleteCategoria").click(function () {
+    let local = window.location + "/Delete?id=";
     var id = $(this).attr("data-id");
     var tipo = $(this).attr("data-tipo");
-    $("#modal").load("Delete?id=" + id + "&tipo=" + tipo, function () {
+    $("#modal").load(local + id + "&tipo=" + tipo, function () {
         $("#modal").modal('show');
     })
 });
 
-$(".copiarPlanoCategorias").click(function () {    
-    $("#modal").load("copiarPlanoCategorias", function () {
+$(".copiarPlanoCategorias").click(function () { 
+    copiarPlanoCategorias
+    $("#modal").load(local, function () {
         $("#modal").modal('show');
     })
 });
@@ -607,8 +619,9 @@ function addCont() {
 function limpaValidacaoCNPJCont() {
     document.getElementById("labelCNPJCont").innerText = "";
 }
-$(".desvincularContador").click(function () {        
-    $("#modal").load("DeleteContabilidade", function () {        
+$(".desvincularContador").click(function () {
+    let local = window.location + "/DeleteContabilidade";
+    $("#modal").load(local, function () {        
         $("#modal").modal('show');
     })
 });
@@ -653,17 +666,19 @@ function removeDot(vlr) {
 }
 
 $(".editContaContabil").click(function () {
+    let local = window.location + "/Edit?ccontabil_id=";
     var ccontabil_id = $(this).attr("data-ccontabil_id");
     var plano_id = $(this).attr("data-plano_id");
-    $("#modal").load("Edit?ccontabil_id=" + ccontabil_id + "&plano_id=" + plano_id, function () {
+    $("#modal").load(local + ccontabil_id + "&plano_id=" + plano_id, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".deleteContaContabil").click(function () {
+    let local = window.location + "/Delete?ccontabil_id=";
     var ccontabil_id = $(this).attr("data-ccontabil_id");
     var plano_id = $(this).attr("data-plano_id");
-    $("#modal").load("Delete?ccontabil_id=" + ccontabil_id + "&plano_id=" + plano_id, function () {
+    $("#modal").load(local + ccontabil_id + "&plano_id=" + plano_id, function () {
         $("#modal").modal('show');
     })
 });
@@ -712,25 +727,28 @@ function contabilizacao(vlr) {
 
 //Vinculo conta on line categorias cliente visão contador
 $(".createCategoria_contaonline").click(function () {
+    let local_ = window.location + "/Contabilidade/CCO/Create?categoria_id=";
     var categoria_id = $(this).attr("data-categoria_id");
     var plano_id = $(this).attr("data-plano_id");
     var local = $(this).attr("data-local");
     console.log(plano_id);
-    $("#modal").load("/Contabilidade/CCO/Create?categoria_id=" + categoria_id + "&plano_id=" + plano_id + "&local=" + local, function () {
+    $("#modal").load(local_ + categoria_id + "&plano_id=" + plano_id + "&local=" + local, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".DetailsCCO").click(function () {
+    let local = window.location + "/Contabilidade/CCO/Details?id=";
     var id = $(this).attr("data-id");
-    $("#modal").load("/Contabilidade/CCO/Details?id=" + id, function () {
+    $("#modal").load(local + id, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".SelectPlano").click(function () {
+    let local = window.location + "/Contabilidade/CategoriasPlano/SelectPlano?pc_id=";
     var pc_id = $(this).attr("data-pc_id");
-    $("#modal").load("/Contabilidade/CategoriasPlano/SelectPlano?pc_id=" + pc_id, function () {
+    $("#modal").load(local + pc_id, function () {
         $("#modal").modal('show');
     })
 });
@@ -738,57 +756,63 @@ $(".SelectPlano").click(function () {
 
 //Plano de Categorias
 $(".createGrupoCategoriaPlano").click(function () {
+    let local = window.location + "/CreateGrupoCategoria?escopo=";
     var escopo = $(this).attr("data-escopo");
     var planoCategorias_id = $(this).attr("data-planoCategorias_id");
     var planoContas_id = $(this).attr("data-planoContas_id");
-    $("#modal").load("CreateGrupoCategoria?escopo=" + escopo + "&planoCategorias_id=" + planoCategorias_id + "&planoContas_id=" + planoContas_id, function () {
+    $("#modal").load(local + escopo + "&planoCategorias_id=" + planoCategorias_id + "&planoContas_id=" + planoContas_id, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".createCategoriaPlano").click(function () {
+    let local = window.location + "/Contabilidade/CategoriasPlano/Create?grupo=";
     var grupo = $(this).attr("data-grupo");
     var escopo = $(this).attr("data-escopo");
     var planoCategorias_id = $(this).attr("data-planoCategorias_id");
     var planoContas_id = $(this).attr("data-planoContas_id");
-    $("#modal").load("/Contabilidade/CategoriasPlano/Create?grupo=" + grupo + "&escopo=" + escopo + "&planoCategorias_id=" + planoCategorias_id + "&planoContas_id=" + planoContas_id, function () {
+    $("#modal").load(local + grupo + "&escopo=" + escopo + "&planoCategorias_id=" + planoCategorias_id + "&planoContas_id=" + planoContas_id, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".editCategoriaPlano").click(function () {
+    let local = window.location + "/Contabilidade/CategoriasPlano/Edit?id=";
     var id = $(this).attr("data-id");
     var tipo = $(this).attr("data-tipo");
     var planoCategorias_id = $(this).attr("data-planoCategorias_id");
     var planoContas_id = $(this).attr("data-planoContas_id");
-    $("#modal").load("/Contabilidade/CategoriasPlano/Edit?id=" + id + "&tipo=" + tipo + "&planoCategorias_id=" + planoCategorias_id + "&planoContas_id=" + planoContas_id, function () {
+    $("#modal").load(local + id + "&tipo=" + tipo + "&planoCategorias_id=" + planoCategorias_id + "&planoContas_id=" + planoContas_id, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".deleteCategoriaPlano").click(function () {
+    let local = window.location + "/Contabilidade/CategoriasPlano/Delete?id=";
     var id = $(this).attr("data-id");
     var tipo = $(this).attr("data-tipo");
     var planoCategorias_id = $(this).attr("data-planoCategorias_id");
     var planoContas_id = $(this).attr("data-planoContas_id");
-    $("#modal").load("/Contabilidade/CategoriasPlano/Delete?id=" + id + "&tipo=" + tipo + "&planoCategorias_id=" + planoCategorias_id + "&planoContas_id=" + planoContas_id, function () {
+    $("#modal").load(local + id + "&tipo=" + tipo + "&planoCategorias_id=" + planoCategorias_id + "&planoContas_id=" + planoContas_id, function () {
         $("#modal").modal('show');
     })
 });
 
 //Vinculo conta on line categorias cliente visão contador
 $(".createCategoria_contaonlinePlano").click(function () {
+    let local = window.location + "/Contabilidade/CCOPlanoCategorias/Create?categoria_id=";
     var categoria_id = $(this).attr("data-categoria_id");    
     var planoCategorias_id = $(this).attr("data-planoCategorias_id");
     var planoContas_id = $(this).attr("data-planoContas_id");    
-    $("#modal").load("/Contabilidade/CCOPlanoCategorias/Create?categoria_id=" + categoria_id + "&planoContas_id=" + planoContas_id + "&planoCategorias_id=" + planoCategorias_id, function () {
+    $("#modal").load(local + categoria_id + "&planoContas_id=" + planoContas_id + "&planoCategorias_id=" + planoCategorias_id, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".DetailsCCOPlano").click(function () {
+    let local = window.location + "/Contabilidade/CCOPlanoCategorias/Details?id=";
     var id = $(this).attr("data-id");
-    $("#modal").load("/Contabilidade/CCOPlanoCategorias/Details?id=" + id, function () {
+    $("#modal").load(local + id, function () {
         $("#modal").modal('show');
     })
 });
@@ -2977,14 +3001,16 @@ function gravarOperacao(contexto, tipo_operacao) {
 
 //Baixa contas a pgar
 $(".createBaixa").click(function () {
+    let local = window.location + "/Baixa/Create?parcela_id=";
     var parcela_id = $(this).attr("data-parcela_id");        
-    var contexto = $(this).attr("data-contexto");        
-    $("#modal").load("/Baixa/Create?parcela_id=" + parcela_id + "&contexto=" + contexto, function () {
+    var contexto = $(this).attr("data-contexto");
+    $("#modal").load(local + parcela_id + "&contexto=" + contexto, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".editBaixa").click(function () {
+    let local_ = window.location + "/Baixa/Edit?baixa_id=";
     var baixa_id = $(this).attr("data-baixa_id");
     var local = $(this).attr("data-local");
     var contacorrente_id = $(this).attr("data-contacorrente_id");
@@ -2995,7 +3021,7 @@ $(".editBaixa").click(function () {
     var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
     var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
 
-    $("#modal").load("/Baixa/Edit?baixa_id=" + baixa_id + "&local=" + local + "&contacorrente_id=" + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim, function () {
+    $("#modal").load(local_ + baixa_id + "&local=" + local + "&contacorrente_id=" + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim, function () {
         $("#modal").modal('show');
     })
 });
@@ -3194,19 +3220,21 @@ function filter_ccm() {
     }
 }
 
-$(".createTransferencia").click(function () {    
+$(".createTransferencia").click(function () {  
+    let local = window.location + "/Transferencia/Create?contacorrente_id=";
     var contacorrente_id = $(this).attr("data-contacorrente_id");    
     var dataInicio = $(this).attr("data-dataInicio");
     var dataFim = $(this).attr("data-dataFim");    
     var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
     var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
 
-    $("#modal").load("/Transferencia/Create?contacorrente_id=" + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim, function () {
+    $("#modal").load(local + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim, function () {
         $("#modal").modal('show');
     })
 });
 
-$(".createCCM").click(function () {    
+$(".createCCM").click(function () {
+    let local = window.location + "/ContaCorrenteMov/Create?contacorrente_id=";
     var contacorrente_id = $(this).attr("data-contacorrente_id");
     if (contacorrente_id == 0) {
         contacorrente_id = document.getElementById('contacorrente_id').value;
@@ -3216,12 +3244,13 @@ $(".createCCM").click(function () {
     var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
     var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
 
-    $("#modal").load("/ContaCorrenteMov/Create?contacorrente_id=" + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim, function () {
+    $("#modal").load(local + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".editCCM").click(function () {
+    let local = window.location + "/ContaCorrenteMov/Edit?contacorrente_id=";
     var ccm_id = $(this).attr("data-ccm_id");
     var contacorrente_id = $(this).attr("data-contacorrente_id");
     if (contacorrente_id == 0) {
@@ -3232,12 +3261,13 @@ $(".editCCM").click(function () {
     var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
     var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
 
-    $("#modal").load("/ContaCorrenteMov/Edit?contacorrente_id=" + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim + "&ccm_id=" + ccm_id, function () {
+    $("#modal").load(local + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim + "&ccm_id=" + ccm_id, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".editTransferencia").click(function () {
+    let local = window.location + "/Transferencia/Edit?contacorrente_id=";
     var ccm_id = $(this).attr("data-ccm_id");
     var contacorrente_id = $(this).attr("data-contacorrente_id");
     var dataInicio = $(this).attr("data-dataInicio");
@@ -3245,7 +3275,7 @@ $(".editTransferencia").click(function () {
     var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
     var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
 
-    $("#modal").load("/Transferencia/Edit?contacorrente_id=" + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim + "&ccm_id=" + ccm_id, function () {
+    $("#modal").load(local + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim + "&ccm_id=" + ccm_id, function () {
         $("#modal").modal('show');
     })
 });
@@ -3732,8 +3762,9 @@ function excluirFaturaCartao(parcela_id) {
 */
 
 $(".detalhesParcela").click(function () {
-    var parcela_id = $(this).attr("data-parcela_id");    
-    $("#modal_parcela").load("/Parcela/Index?parcela_id=" + parcela_id, function () {
+    let local = window.location + "/Parcela/Index?parcela_id=";
+    var parcela_id = $(this).attr("data-parcela_id");
+    $("#modal_parcela").load(local + parcela_id, function () {
         $("#modal_parcela").modal('show');
     })
 });
@@ -4485,10 +4516,11 @@ function visualizarParcelasCtasF() {
 
 //Realizar conta recorrente
 $(".CFR_realizacao").click(function () {
+    let local = window.location + "/ContasFinanceiras/CFR_realizacao?parcela_id=";
     modal_modal();
     var parcela_id = $(this).attr("data-parcela_id");    
     var contexto = $(this).attr("data-contexto");
-    $("#modal").load("/ContasFinanceiras/CFR_realizacao?parcela_id=" + parcela_id + '&contexto=' + contexto, function () {
+    $("#modal").load(local + parcela_id + '&contexto=' + contexto, function () {
         $("#modal").modal('show');
     })
 });
@@ -7339,20 +7371,20 @@ $('.scroll_inter').on('click', function (e) {
 
 //$("#contato_telefone").mask("(00) 0000-00009");
 
-jQuery("input.telefone")
-    .mask("(99) 9999-9999?9")
-    .focusout(function (event) {
-        var target, phone, element;
-        target = (event.currentTarget) ? event.currentTarget : event.srcElement;
-        phone = target.value.replace(/\D/g, '');
-        element = $(target);
-        element.unmask();
-        if (phone.length > 10) {
-            element.mask("(99) 99999-9999");
-        } else {
-            element.mask("(99) 9999-99999");
-        }
-    });
+//jQuery("input.telefone")
+//    .mask("(99) 9999-9999?9")
+//    .focusout(function (event) {
+//        var target, phone, element;
+//        target = (event.currentTarget) ? event.currentTarget : event.srcElement;
+//        phone = target.value.replace(/\D/g, '');
+//        element = $(target);
+//        element.unmask();
+//        if (phone.length > 10) {
+//            element.mask("(99) 99999-9999");
+//        } else {
+//            element.mask("(99) 9999-99999");
+//        }
+//    });
 
 function plano_contador(context) {
     let vlr = convertStringDouble(document.getElementById('qtd_socio_func').value);
@@ -7386,6 +7418,51 @@ function plano_contador(context) {
 
 function planoSelect(plano) {
     document.getElementById('plano_selecionado').value = plano;
+}
+
+function mask(o, f) {
+    setTimeout(function () {
+        var v = mphone(o.value);
+        if (v != o.value) {
+            o.value = v;
+        }
+    }, 1);
+}
+
+function mphone(v) {
+    var r = v.replace(/\D/g, "");
+    r = r.replace(/^0/, "");
+    if (r.length > 10) {
+        r = r.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3");
+    } else if (r.length > 5) {
+        r = r.replace(/^(\d\d)(\d{4})(\d{0,4}).*/, "($1) $2-$3");
+    } else if (r.length > 2) {
+        r = r.replace(/^(\d\d)(\d{0,5})/, "($1) $2");
+    } else {
+        r = r.replace(/^(\d*)/, "($1");
+    }
+    return r;
+}
+
+function validacaoEmail(field) {
+
+    if (field == '' || field == null) {
+        return false;
+    }
+
+    let usuario = field.substring(0, field.indexOf("@"));
+    let dominio = field.substring(field.indexOf("@") + 1, field.length);
+    if ((usuario.length >= 1) &&
+        (dominio.length >= 3) &&
+        (usuario.search("@") == -1) &&
+        (dominio.search("@") == -1) &&
+        (usuario.search(" ") == -1) &&
+        (dominio.search(" ") == -1) &&
+        (dominio.search(".") != -1) &&
+        (dominio.indexOf(".") >= 1) &&
+        (dominio.lastIndexOf(".") < dominio.length - 1)) {
+        return true;
+    }
 }
 
 
