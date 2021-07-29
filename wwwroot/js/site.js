@@ -465,7 +465,7 @@ function boxAccordionToggle(id) {
 }
 
 $(".delete").click(function () {
-    let local = window.location + "/Delete?id=";
+    let local = window.location.origin + window.location.pathname + "/Delete?id=";
     var id = $(this).attr("data-id");
     $("#modal").load(local + id, function () {
         $("#modal").modal('show');
@@ -473,7 +473,7 @@ $(".delete").click(function () {
 });
 
 $(".EditPassword").click(function () {
-    let local = window.location + "/EditPassword?id=";
+    let local = window.location.origin + window.location.pathname + "/EditPassword?id=";
     var id = $(this).attr("data-id");
     $("#modal").load(local + id, function () {
         $("#modal").modal('show');
@@ -482,14 +482,14 @@ $(".EditPassword").click(function () {
 
 $(".createBco").click(function () {
     //var id = $(this).attr("data-id");    
-    let local = window.location + "/CreateCxBanco";
+    let local = window.location.origin + window.location.pathname + "/CreateCxBanco";
     $("#modal").load(local , function () {
         $("#modal").modal('show');
     })
 });
 
 $(".deleteBco").click(function () {
-    let local = window.location + "/DeleteCxBanco?id=";
+    let local = window.location.origin + window.location.pathname + "/DeleteCxBanco?id=";
     var id = $(this).attr("data-id");
     var descricao = $(this).attr("data-descricao");
     $("#modal").load(local + id + "&descricao=" + encodeURIComponent(descricao), function () {
@@ -498,7 +498,7 @@ $(".deleteBco").click(function () {
 });
 
 $(".create").click(function () {
-    let local = window.location + "/Create?id=";
+    let local = window.location.origin + window.location.pathname + "/Create?id=";
     var id = $(this).attr("data-id");
     $("#modal").load(local + id, function () {
         $("#modal").modal('show');
@@ -506,7 +506,7 @@ $(".create").click(function () {
 });
 
 $(".edit").click(function () {
-    let local = window.location + "/Edit?id=";
+    let local = window.location.origin + window.location.pathname + "/Edit?id=";
     var id = $(this).attr("data-id");
     $("#modal").load(local + id, function () {
         $("#modal").modal('show');
@@ -514,7 +514,7 @@ $(".edit").click(function () {
 });
 
 $(".createConta").click(function () {
-    let local = window.location + "/Create?id=";
+    let local = window.location.origin + window.location.pathname + "/Create?id=";
     var id = $(this).attr("data-id");
     $("#modal").load(local + id, function () {
         $("#modal").modal('show');
@@ -528,7 +528,7 @@ $(document).ready(function () {
 
 //Categoria
 $(".createGrupoCategoria").click(function () {
-    let local = window.location + "/CreateGrupoCategoria?escopo=";
+    let local = window.location.origin + window.location.pathname + "/CreateGrupoCategoria?escopo=";
     var escopo = $(this).attr("data-escopo");
     $("#modal").load(local + escopo, function () {
         $("#modal").modal('show');
@@ -536,7 +536,7 @@ $(".createGrupoCategoria").click(function () {
 });
 
 $(".createCategoria").click(function () {
-    let local = window.location + "/Create?grupo=";
+    let local = window.location.origin + window.location.pathname + "/Create?grupo=";
     var grupo = $(this).attr("data-grupo");
     var escopo = $(this).attr("data-escopo");
     $("#modal").load(local + grupo + "&escopo=" + escopo, function () {
@@ -545,7 +545,7 @@ $(".createCategoria").click(function () {
 });
 
 $(".editCategoria").click(function () {
-    let local = window.location + "/Edit?id=";
+    let local = window.location.origin + window.location.pathname + "/Edit?id=";
     var id = $(this).attr("data-id");
     var tipo = $(this).attr("data-tipo");
     $("#modal").load(local + id + "&tipo=" + tipo, function () {
@@ -554,7 +554,7 @@ $(".editCategoria").click(function () {
 });
 
 $(".deleteCategoria").click(function () {
-    let local = window.location + "/Delete?id=";
+    let local = window.location.origin + window.location.pathname + "/Delete?id=";
     var id = $(this).attr("data-id");
     var tipo = $(this).attr("data-tipo");
     $("#modal").load(local + id + "&tipo=" + tipo, function () {
@@ -620,7 +620,7 @@ function limpaValidacaoCNPJCont() {
     document.getElementById("labelCNPJCont").innerText = "";
 }
 $(".desvincularContador").click(function () {
-    let local = window.location + "/DeleteContabilidade";
+    let local = window.location.origin + window.location.pathname + "/DeleteContabilidade";
     $("#modal").load(local, function () {        
         $("#modal").modal('show');
     })
@@ -666,7 +666,7 @@ function removeDot(vlr) {
 }
 
 $(".editContaContabil").click(function () {
-    let local = window.location + "/Edit?ccontabil_id=";
+    let local = window.location.origin + window.location.pathname + "/Edit?ccontabil_id=";
     var ccontabil_id = $(this).attr("data-ccontabil_id");
     var plano_id = $(this).attr("data-plano_id");
     $("#modal").load(local + ccontabil_id + "&plano_id=" + plano_id, function () {
@@ -675,7 +675,7 @@ $(".editContaContabil").click(function () {
 });
 
 $(".deleteContaContabil").click(function () {
-    let local = window.location + "/Delete?ccontabil_id=";
+    let local = window.location.origin + window.location.pathname + "/Delete?ccontabil_id=";
     var ccontabil_id = $(this).attr("data-ccontabil_id");
     var plano_id = $(this).attr("data-plano_id");
     $("#modal").load(local + ccontabil_id + "&plano_id=" + plano_id, function () {
@@ -727,7 +727,7 @@ function contabilizacao(vlr) {
 
 //Vinculo conta on line categorias cliente visão contador
 $(".createCategoria_contaonline").click(function () {
-    let local_ = window.location + "/Contabilidade/CCO/Create?categoria_id=";
+    let local_ = window.location.origin + "/Contabilidade/CCO/Create?categoria_id=";
     var categoria_id = $(this).attr("data-categoria_id");
     var plano_id = $(this).attr("data-plano_id");
     var local = $(this).attr("data-local");
@@ -738,7 +738,7 @@ $(".createCategoria_contaonline").click(function () {
 });
 
 $(".DetailsCCO").click(function () {
-    let local = window.location + "/Contabilidade/CCO/Details?id=";
+    let local = window.location.origin + "/Contabilidade/CCO/Details?id=";
     var id = $(this).attr("data-id");
     $("#modal").load(local + id, function () {
         $("#modal").modal('show');
@@ -746,7 +746,7 @@ $(".DetailsCCO").click(function () {
 });
 
 $(".SelectPlano").click(function () {
-    let local = window.location + "/Contabilidade/CategoriasPlano/SelectPlano?pc_id=";
+    let local = window.location.origin + "/Contabilidade/CategoriasPlano/SelectPlano?pc_id=";
     var pc_id = $(this).attr("data-pc_id");
     $("#modal").load(local + pc_id, function () {
         $("#modal").modal('show');
@@ -756,7 +756,7 @@ $(".SelectPlano").click(function () {
 
 //Plano de Categorias
 $(".createGrupoCategoriaPlano").click(function () {
-    let local = window.location + "/CreateGrupoCategoria?escopo=";
+    let local = window.location.origin + window.location.pathname + "/CreateGrupoCategoria?escopo=";
     var escopo = $(this).attr("data-escopo");
     var planoCategorias_id = $(this).attr("data-planoCategorias_id");
     var planoContas_id = $(this).attr("data-planoContas_id");
@@ -766,7 +766,7 @@ $(".createGrupoCategoriaPlano").click(function () {
 });
 
 $(".createCategoriaPlano").click(function () {
-    let local = window.location + "/Contabilidade/CategoriasPlano/Create?grupo=";
+    let local = window.location.origin + "/Contabilidade/CategoriasPlano/Create?grupo=";
     var grupo = $(this).attr("data-grupo");
     var escopo = $(this).attr("data-escopo");
     var planoCategorias_id = $(this).attr("data-planoCategorias_id");
@@ -777,7 +777,7 @@ $(".createCategoriaPlano").click(function () {
 });
 
 $(".editCategoriaPlano").click(function () {
-    let local = window.location + "/Contabilidade/CategoriasPlano/Edit?id=";
+    let local = window.location.origin + "/Contabilidade/CategoriasPlano/Edit?id=";
     var id = $(this).attr("data-id");
     var tipo = $(this).attr("data-tipo");
     var planoCategorias_id = $(this).attr("data-planoCategorias_id");
@@ -788,7 +788,7 @@ $(".editCategoriaPlano").click(function () {
 });
 
 $(".deleteCategoriaPlano").click(function () {
-    let local = window.location + "/Contabilidade/CategoriasPlano/Delete?id=";
+    let local = window.location.origin + "/Contabilidade/CategoriasPlano/Delete?id=";
     var id = $(this).attr("data-id");
     var tipo = $(this).attr("data-tipo");
     var planoCategorias_id = $(this).attr("data-planoCategorias_id");
@@ -800,7 +800,7 @@ $(".deleteCategoriaPlano").click(function () {
 
 //Vinculo conta on line categorias cliente visão contador
 $(".createCategoria_contaonlinePlano").click(function () {
-    let local = window.location + "/Contabilidade/CCOPlanoCategorias/Create?categoria_id=";
+    let local = window.location.origin + "/Contabilidade/CCOPlanoCategorias/Create?categoria_id=";
     var categoria_id = $(this).attr("data-categoria_id");    
     var planoCategorias_id = $(this).attr("data-planoCategorias_id");
     var planoContas_id = $(this).attr("data-planoContas_id");    
@@ -810,7 +810,7 @@ $(".createCategoria_contaonlinePlano").click(function () {
 });
 
 $(".DetailsCCOPlano").click(function () {
-    let local = window.location + "/Contabilidade/CCOPlanoCategorias/Details?id=";
+    let local = window.location.origin + "/Contabilidade/CCOPlanoCategorias/Details?id=";
     var id = $(this).attr("data-id");
     $("#modal").load(local + id, function () {
         $("#modal").modal('show');
@@ -3001,7 +3001,7 @@ function gravarOperacao(contexto, tipo_operacao) {
 
 //Baixa contas a pgar
 $(".createBaixa").click(function () {
-    let local = window.location + "/Baixa/Create?parcela_id=";
+    let local = window.location.origin + "/Baixa/Create?parcela_id=";
     var parcela_id = $(this).attr("data-parcela_id");        
     var contexto = $(this).attr("data-contexto");
     $("#modal").load(local + parcela_id + "&contexto=" + contexto, function () {
@@ -3010,7 +3010,7 @@ $(".createBaixa").click(function () {
 });
 
 $(".editBaixa").click(function () {
-    let local_ = window.location + "/Baixa/Edit?baixa_id=";
+    let local_ = window.location.origin + "/Baixa/Edit?baixa_id=";
     var baixa_id = $(this).attr("data-baixa_id");
     var local = $(this).attr("data-local");
     var contacorrente_id = $(this).attr("data-contacorrente_id");
@@ -3221,7 +3221,7 @@ function filter_ccm() {
 }
 
 $(".createTransferencia").click(function () {  
-    let local = window.location + "/Transferencia/Create?contacorrente_id=";
+    let local = window.location.origin + "/Transferencia/Create?contacorrente_id=";
     var contacorrente_id = $(this).attr("data-contacorrente_id");    
     var dataInicio = $(this).attr("data-dataInicio");
     var dataFim = $(this).attr("data-dataFim");    
@@ -3234,7 +3234,7 @@ $(".createTransferencia").click(function () {
 });
 
 $(".createCCM").click(function () {
-    let local = window.location + "/ContaCorrenteMov/Create?contacorrente_id=";
+    let local = window.location.origin + "/ContaCorrenteMov/Create?contacorrente_id=";
     var contacorrente_id = $(this).attr("data-contacorrente_id");
     if (contacorrente_id == 0) {
         contacorrente_id = document.getElementById('contacorrente_id').value;
@@ -3244,13 +3244,13 @@ $(".createCCM").click(function () {
     var ndataInicio = dataInicio.substr(6, 4) + '-' + dataInicio.substr(3, 2) + '-' + dataInicio.substr(0, 2);
     var ndataFim = dataFim.substr(6, 4) + '-' + dataFim.substr(3, 2) + '-' + dataFim.substr(0, 2);
 
-    $("#modal").load(local + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim, function () {
+    $("#modal").load("/ContaCorrenteMov/Create?contacorrente_id=" + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim, function () {
         $("#modal").modal('show');
     })
 });
 
 $(".editCCM").click(function () {
-    let local = window.location + "/ContaCorrenteMov/Edit?contacorrente_id=";
+    let local = window.location.origin + "/ContaCorrenteMov/Edit?contacorrente_id=";
     var ccm_id = $(this).attr("data-ccm_id");
     var contacorrente_id = $(this).attr("data-contacorrente_id");
     if (contacorrente_id == 0) {
@@ -3263,11 +3263,11 @@ $(".editCCM").click(function () {
 
     $("#modal").load(local + contacorrente_id + "&dataInicio=" + ndataInicio + "&dataFim=" + ndataFim + "&ccm_id=" + ccm_id, function () {
         $("#modal").modal('show');
-    })
+    });
 });
 
 $(".editTransferencia").click(function () {
-    let local = window.location + "/Transferencia/Edit?contacorrente_id=";
+    let local = window.location.origin + "/Transferencia/Edit?contacorrente_id=";
     var ccm_id = $(this).attr("data-ccm_id");
     var contacorrente_id = $(this).attr("data-contacorrente_id");
     var dataInicio = $(this).attr("data-dataInicio");
@@ -3762,7 +3762,7 @@ function excluirFaturaCartao(parcela_id) {
 */
 
 $(".detalhesParcela").click(function () {
-    let local = window.location + "/Parcela/Index?parcela_id=";
+    let local = window.location.origin + "/Parcela/Index?parcela_id=";
     var parcela_id = $(this).attr("data-parcela_id");
     $("#modal_parcela").load(local + parcela_id, function () {
         $("#modal_parcela").modal('show');
@@ -4516,7 +4516,7 @@ function visualizarParcelasCtasF() {
 
 //Realizar conta recorrente
 $(".CFR_realizacao").click(function () {
-    let local = window.location + "/ContasFinanceiras/CFR_realizacao?parcela_id=";
+    let local = window.location.origin + "/ContasFinanceiras/CFR_realizacao?parcela_id=";
     modal_modal();
     var parcela_id = $(this).attr("data-parcela_id");    
     var contexto = $(this).attr("data-contexto");
