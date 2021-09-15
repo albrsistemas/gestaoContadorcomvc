@@ -1,5 +1,4 @@
-﻿//Variaveis globais
-let perguntas_respostas = [
+﻿let perguntas_respostas = [
     pergunta_resposta = {
         pergunta: "Preciso passar as minhas senhas bancárias?",
         resposta: "Não, precisamos de uma acesso limitado, apenas para consultar o extrato bancário."
@@ -300,6 +299,11 @@ function Page() {
     //if (dp.length > 0) {
     //    execDatapicker();
     //}
+    if (document.getElementById('saldo_total')) {
+        document.getElementById('saldo_total').innerHTML = convertDoubleString(convertStringDouble(document.getElementById('input_saldo_total').value));
+        document.getElementById('total_original').innerHTML = convertDoubleString(convertStringDouble(document.getElementById('input_original_total').value));
+    }
+    
 }
 
 function carregarEdit(id) {   
@@ -6005,6 +6009,16 @@ function fatura_cartao_credito_edit_datas(contexto, id) {
             });
         }
     }    
+}
+
+function parcelamentoFatura(contexto) {
+    if (contexto == 'open') {
+        modal_sobre_modal_open('parcelamento_fatura');
+    }
+
+    if (contexto == 'close') {
+        $('#parcelamento_fatura').modal('hide');
+    }
 }
 
 function pesquisaFatura(contexto, f) {

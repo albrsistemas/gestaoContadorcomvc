@@ -15,6 +15,7 @@ namespace gestaoContadorcomvc.Models.ViewModel
         public DateTime fcc_data_corte { get; set; }
         public DateTime fcc_data_vencimento { get; set; }
         public List<MovimentosCartaoCredito> fcc_movimentos { get; set; }
+        public ParcelamentoFaturaCartaoCredito parcelamento { get; set; }
         public string fcc_nome_cartao { get; set; }
         public Vm_usuario user { get; set; }
     }

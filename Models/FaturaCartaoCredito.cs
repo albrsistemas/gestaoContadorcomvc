@@ -46,6 +46,7 @@ namespace gestaoContadorcomvc.Models
             vm_fcc.fcc_data_corte = fcc_data_corte;
             vm_fcc.fcc_data_vencimento = fcc_data_vencimento;
             vm_fcc.fcc_forma_pagamento_id = fcc_forma_pagamento_id;
+            ParcelamentoFaturaCartaoCredito parcelamento = new ParcelamentoFaturaCartaoCredito();
 
             if (contexto == "open")
             {
@@ -96,7 +97,7 @@ namespace gestaoContadorcomvc.Models
                 MySqlCommand dr_1_c = conn.CreateCommand();
                 dr_1_c.Connection = conn;
                 dr_1_c.Transaction = Transacao;
-                dr_1_c.CommandText = "SELECT fp.fp_nome, fatura_cartao_credito.* from fatura_cartao_credito LEFT JOIN forma_pagamento as fp on fp.fp_id = fatura_cartao_credito.fcc_forma_pagamento_id WHERE fatura_cartao_credito.fcc_forma_pagamento_id = @fcc_forma_pagamento_id and fatura_cartao_credito.fcc_competencia = @fcc_competencia and fatura_cartao_credito.fcc_conta_id = @conta_id;";
+                dr_1_c.CommandText = "SELECT fp.fp_nome, fatura_cartao_credito.*, COALESCE(p.pfcc_id,0) as 'parcelamento', p.* from fatura_cartao_credito LEFT JOIN forma_pagamento as fp on fp.fp_id = fatura_cartao_credito.fcc_forma_pagamento_id LEFT JOIN parcelamentofaturacartaocredito as p on p.pfcc_fcc_id = fatura_cartao_credito.fcc_id WHERE fatura_cartao_credito.fcc_forma_pagamento_id = @fcc_forma_pagamento_id and fatura_cartao_credito.fcc_competencia = @fcc_competencia and fatura_cartao_credito.fcc_conta_id = @conta_id;";
                 dr_1_c.Parameters.AddWithValue("conta_id", conta_id);
                 dr_1_c.Parameters.AddWithValue("fcc_competencia", comp);
                 dr_1_c.Parameters.AddWithValue("fcc_forma_pagamento_id", vm_fcc.fcc_forma_pagamento_id);
@@ -156,11 +157,88 @@ namespace gestaoContadorcomvc.Models
                         vm_fcc.fcc_situacao = dr_1["fcc_situacao"].ToString();
                         vm_fcc.fcc_competencia = dr_1["fcc_competencia"].ToString();
                         vm_fcc.fcc_nome_cartao = dr_1["fp_nome"].ToString();
+
+                        
+                        vm_fcc.parcelamento = parcelamento;
+
+                        if (DBNull.Value != dr_1["pfcc_id"])
+                        {
+                            vm_fcc.parcelamento.pfcc_id = Convert.ToInt32(dr_1["pfcc_id"]);
+                        }
+                        else
+                        {
+                            vm_fcc.parcelamento.pfcc_id = 0;
+                        }
+
+                        if (DBNull.Value != dr_1["pfcc_fcc_id"])
+                        {
+                            vm_fcc.parcelamento.pfcc_fcc_id = Convert.ToInt32(dr_1["pfcc_fcc_id"]);
+                        }
+                        else
+                        {
+                            vm_fcc.parcelamento.pfcc_fcc_id = 0;
+                        }
+
+                        if (DBNull.Value != dr_1["pfcc_categoria_id"])
+                        {
+                            vm_fcc.parcelamento.pfcc_categoria_id = Convert.ToInt32(dr_1["pfcc_categoria_id"]);
+                        }
+                        else
+                        {
+                            vm_fcc.parcelamento.pfcc_categoria_id = 0;
+                        }
+
+                        if (DBNull.Value != dr_1["pfcc_total_fatura"])
+                        {
+                            vm_fcc.parcelamento.pfcc_total_fatura = Convert.ToDecimal(dr_1["pfcc_total_fatura"]);
+                        }
+                        else
+                        {
+                            vm_fcc.parcelamento.pfcc_total_fatura = 0;
+                        }
+
+                        if (DBNull.Value != dr_1["pfcc_valor_parcelado"])
+                        {
+                            vm_fcc.parcelamento.pfcc_valor_parcelado = Convert.ToDecimal(dr_1["pfcc_valor_parcelado"]);
+                        }
+                        else
+                        {
+                            vm_fcc.parcelamento.pfcc_valor_parcelado = 0;
+                        }
+
+                        if (DBNull.Value != dr_1["pfcc_valor_parcela"])
+                        {
+                            vm_fcc.parcelamento.pfcc_valor_parcela = Convert.ToDecimal(dr_1["pfcc_valor_parcela"]);
+                        }
+                        else
+                        {
+                            vm_fcc.parcelamento.pfcc_valor_parcela = 0;
+                        }
+
+                        if (DBNull.Value != dr_1["pfcc_juros"])
+                        {
+                            vm_fcc.parcelamento.pfcc_juros = Convert.ToDecimal(dr_1["pfcc_juros"]);
+                        }
+                        else
+                        {
+                            vm_fcc.parcelamento.pfcc_juros = 0;
+                        }
+
+                        if (DBNull.Value != dr_1["pfcc_data_parcelamento"])
+                        {
+                            vm_fcc.parcelamento.pfcc_data_parcelamento = Convert.ToDateTime(dr_1["pfcc_data_parcelamento"]);
+                        }
+                        else
+                        {
+                            vm_fcc.parcelamento.pfcc_data_parcelamento = new DateTime();
+                        }
                     }
                 }
                 else
                 {
                     vm_fcc.fcc_situacao = "Aberta";
+                    vm_fcc.parcelamento = parcelamento;
+                    vm_fcc.parcelamento.pfcc_id = 0;
                 }
                 dr_1.Close();
 
