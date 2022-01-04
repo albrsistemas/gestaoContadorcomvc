@@ -47,12 +47,12 @@ namespace gestaoContadorcomvc.Components
             //Empresa
             if (area.Equals("Empresa"))
             {
-                if (pagina.Contains("Home/Index"))
+                if (pagina.Contains("Home"))
                 {
                     retorno = "Home Page";
                 }
                 //Usuário
-                if (pagina.Contains("Usuario/Index"))
+                if (pagina.Contains("Usuario"))
                 {
                     retorno = "Usuário";
                 }
@@ -66,11 +66,11 @@ namespace gestaoContadorcomvc.Components
                 }
 
                 //Categorias
-                if (pagina.Contains("Categoria/Index"))
+                if (pagina.Contains("Categoria"))
                 {
                     retorno = "Categorias";
                 }
-                if (pagina.Contains("Configuracoes/Index"))
+                if (pagina.Contains("Configuracoes"))
                 {
                     retorno = "Configurações";
                     openNav = "aberto";
@@ -80,7 +80,7 @@ namespace gestaoContadorcomvc.Components
                     retorno = "Configurações Contábeis";
                     openNav = "aberto";
                 }
-                if (pagina.Contains("Participante/Index"))
+                if (pagina.Contains("Participante"))
                 {
                     retorno = "Participantes";                    
                 }
@@ -93,7 +93,7 @@ namespace gestaoContadorcomvc.Components
                     retorno = "Alterar Participante";
                 }
                 //Produtos
-                if (pagina.Contains("Produtos/Index"))
+                if (pagina.Contains("Produtos"))
                 {
                     retorno = "Produtos";
                 }
@@ -106,7 +106,7 @@ namespace gestaoContadorcomvc.Components
                     retorno = "Alterar Produto";
                 }
                 //ContaCorrente
-                if (pagina.Contains("ContaCorrente/Index"))
+                if (pagina.Contains("ContaCorrente"))
                 {
                     retorno = "Conta Corrente";
                 }
@@ -119,7 +119,7 @@ namespace gestaoContadorcomvc.Components
                     retorno = "Alterar Conta Corrente";
                 }
                 //Forma de pagamento
-                if (pagina.Contains("FormaPagamento/Index"))
+                if (pagina.Contains("FormaPagamento"))
                 {
                     retorno = "Forma de Pagamento";
                 }
@@ -132,7 +132,7 @@ namespace gestaoContadorcomvc.Components
                     retorno = "Alterar Forma de Pagamento";
                 }
                 //Compras
-                if (pagina.Contains("Compra/Index"))
+                if (pagina.Contains("Compra"))
                 {
                     retorno = "Compras";
                 }
@@ -149,24 +149,24 @@ namespace gestaoContadorcomvc.Components
                     retorno = "Detelhes Compra";
                 }
                 //Contas a pagar
-                if (pagina.Contains("ContasPagar/Index"))
+                if (pagina.Contains("ContasPagar"))
                 {
                     retorno = "Contas a Pagar";
                     openNav = "aberto";
                 }
                 //Contas a receber
-                if (pagina.Contains("ContasReceber/Index"))
+                if (pagina.Contains("ContasReceber"))
                 {
                     retorno = "Contas a Receber";
                     openNav = "aberto";
                 }
                 //Conta Corrente
-                if (pagina.Contains("ContaCorrenteMov/Index"))
+                if (pagina.Contains("ContaCorrenteMov"))
                 {
                     retorno = "Conta Corrente Movimento";
                 }
                 //Venda
-                if (pagina.Contains("Venda/Index"))
+                if (pagina.Contains("Venda"))
                 {
                     retorno = "Vendas";
                 }
@@ -183,7 +183,7 @@ namespace gestaoContadorcomvc.Components
                     retorno = "Detelhes Venda";
                 }
                 //Serviço Prestado
-                if (pagina.Contains("ServicoPrestado/Index"))
+                if (pagina.Contains("ServicoPrestado"))
                 {
                     retorno = "Prestação de Serviços";
                 }
@@ -200,7 +200,7 @@ namespace gestaoContadorcomvc.Components
                     retorno = "Detelhes Serviço Prestado";
                 }
                 //Serviço Tomado
-                if (pagina.Contains("ServicoTomado/Index"))
+                if (pagina.Contains("ServicoTomado"))
                 {
                     retorno = "Serviços Tomados";
                 }
@@ -217,12 +217,12 @@ namespace gestaoContadorcomvc.Components
                     retorno = "Detelhes Serviço Tomado";
                 }
                 //Log
-                if (pagina.Contains("Log/Index"))
+                if (pagina.Contains("Log"))
                 {
                     retorno = "LOG";
                 }
                 //Contas Financeiras
-                if (pagina.Contains("ContasFinanceiras/Index"))
+                if (pagina.Contains("ContasFinanceiras"))
                 {
                     retorno = "Contas Financeiras";
                 }
@@ -244,7 +244,7 @@ namespace gestaoContadorcomvc.Components
                     retorno = "Relatório Financeiro Anual";
                 }
                 //Operação
-                if (pagina.Contains("Operacao/Index"))
+                if (pagina.Contains("Operacao"))
                 {
                     retorno = "Operação";
                 }
@@ -274,7 +274,7 @@ namespace gestaoContadorcomvc.Components
                     retorno = "E-mail Suporte - Falha";
                 }
                 //Memorando
-                if (pagina.Contains("Memorando/Index"))
+                if (pagina.Contains("Memorando"))
                 {
                     retorno = "Memorando";
                 }
@@ -292,7 +292,7 @@ namespace gestaoContadorcomvc.Components
                     retorno = "Relatório Financeiro por Período";
                 }
                 //Cartão de crédito
-                if (pagina.Contains("CartaoCredito/Index"))
+                if (pagina.Contains("CartaoCredito"))
                 {
                     retorno = "Cartão de Crédito";
                 }
@@ -302,7 +302,7 @@ namespace gestaoContadorcomvc.Components
                     retorno = "Relatório Participante Anual";
                 }
                 //Centro de custo
-                if (pagina.Contains("CentroCusto/Index"))
+                if (pagina.Contains("CentroCusto"))
                 {
                     retorno = "Centro de Custo";
                 }

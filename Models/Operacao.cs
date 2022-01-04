@@ -1876,9 +1876,11 @@ namespace gestaoContadorcomvc.Models
             return baixas;
         }
 
-        public string create (int usuario_id, int conta_id, Vm_operacao op)
+        public int create (int usuario_id, int conta_id, Vm_operacao op)
         {
-            string retorno = "Operação cadastrada com sucesso!";
+            // string retorno = "Operação cadastrada com sucesso!";
+            int retorno = 0;
+
 
             conn.Open();
             MySqlCommand comando = conn.CreateCommand();
@@ -1925,6 +1927,13 @@ namespace gestaoContadorcomvc.Models
                     id = myReader.GetInt32(0);
                 }
                 myReader.Close();
+
+                retorno = id;
+
+                if(retorno == 0)
+                {
+                    return retorno;
+                }
 
                 //participante
                 if (op.operacao.op_comParticipante)
@@ -2070,6 +2079,8 @@ namespace gestaoContadorcomvc.Models
                     }
                 }
 
+                
+
                 if (op.operacao.op_comTransportador)
                 {
                     //transportador
@@ -2121,7 +2132,11 @@ namespace gestaoContadorcomvc.Models
             }
             catch (Exception e)
             {
-                retorno = "Erro ao cadastrar a operação. Tente novamente. Se persistir, entre em contato com o suporte!";
+                //retorno = "Erro ao cadastrar a operação. Tente novamente. Se persistir, entre em contato com o suporte!";
+
+                delete_2(conta_id,retorno);
+
+                retorno = 0;
 
                 string msg = e.Message.Substring(0, 300);
                 log.log("Operacao", "create", "Erro", msg, conta_id, usuario_id);
@@ -2349,6 +2364,48 @@ namespace gestaoContadorcomvc.Models
 
                 string msg = e.Message.Substring(0, 300);
                 log.log("Operacao", "delete", "Erro", msg, conta_id, usuario_id);
+            }
+            finally
+            {
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return retorno;
+        }
+
+        //Criado em 15/12/2021 para otimizar processo de criação da operação. Deletar caso de algum erro no processo.
+        public string delete_2(int conta_id, int op_id)
+        {
+            string retorno = "Operação excluída com sucesso!";
+
+            conn.Open();
+            MySqlCommand comando = conn.CreateCommand();
+            MySqlTransaction Transacao;
+            Transacao = conn.BeginTransaction();
+            comando.Connection = conn;
+            comando.Transaction = Transacao;
+
+            try
+            {
+                comando.CommandText = "DELETE from movimentos_cartao_credito WHERE movimentos_cartao_credito.mcc_tipo = 'mcc_op_parcelas' and movimentos_cartao_credito.mcc_tipo_id in (SELECT p.op_parcela_id from op_parcelas as p WHERE p.op_parcela_op_id = @op_id_mcc);";
+                comando.Parameters.AddWithValue("@op_id_mcc", op_id);
+                comando.ExecuteNonQuery();
+                comando.CommandText = "DELETE from conta_corrente_mov WHERE conta_corrente_mov.ccm_origem = 'Baixa' and conta_corrente_mov.ccm_conta_id = @conta_id_ccm AND conta_corrente_mov.ccm_op_id = @op_id_ccm";
+                comando.Parameters.AddWithValue("@op_id_ccm", op_id);
+                comando.Parameters.AddWithValue("@conta_id_ccm", conta_id);
+                comando.ExecuteNonQuery();
+                comando.CommandText = "DELETE from operacao WHERE operacao.op_id = @op_id and operacao.op_conta_id = @conta_id;";
+                comando.Parameters.AddWithValue("@conta_id", conta_id);
+                comando.Parameters.AddWithValue("@op_id", op_id);
+                comando.ExecuteNonQuery();
+                Transacao.Commit();
+            }
+            catch (Exception e)
+            {
+                retorno = "Erro ao excluir a operacação. Tente novamente. Se persistir, entre em contato com o suporte => " + e.Message;                
             }
             finally
             {

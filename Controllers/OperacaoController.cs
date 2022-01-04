@@ -137,7 +137,12 @@ namespace gestaoContadorcomvc.Controllers
                     return Json(JsonConvert.SerializeObject(retorno));
                 }
 
-                retorno = operacao.create(user.usuario_id, user.usuario_conta_id, op);
+                int retorno_create_op = operacao.create(user.usuario_id, user.usuario_conta_id, op);
+
+                if(retorno_create_op == 0)
+                {
+                    retorno = "Erro ao cadastrar a operação. Tente novamente. Se persistir, entre em contato com o suporte!";
+                }
 
                 return Json(JsonConvert.SerializeObject(retorno));
             }

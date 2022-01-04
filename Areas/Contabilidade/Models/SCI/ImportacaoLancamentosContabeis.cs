@@ -162,8 +162,13 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                             valor_desconto = 0;
                         }
 
+                        bool categoria_tributo = false;
 
-                        bool categoria_tributo = Convert.ToBoolean(reader_ccm["categoria_categoria_tributo"]);
+                        if (DBNull.Value != reader_ccm["categoria_categoria_tributo"])
+                        {
+                            categoria_tributo = Convert.ToBoolean(reader_ccm["categoria_categoria_tributo"]);
+                        }
+                        
                         string conta_juros = cp.juros_pagos.categoria_conta_contabil;
                         string conta_multa = cp.multas_pagas.categoria_conta_contabil;
                         string conta_desconto = cp.descontos_obtidos.categoria_conta_contabil;
@@ -524,7 +529,15 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                             {
                                 dcto = "DCTO" + nota;
                             }
-                            bool categoria_tributo = Convert.ToBoolean(reader_baixas["categoria_categoria_tributo"]);
+
+
+                            bool categoria_tributo = false;
+
+                            if (DBNull.Value != reader_ccm["categoria_categoria_tributo"])
+                            {
+                                categoria_tributo = Convert.ToBoolean(reader_baixas["categoria_categoria_tributo"]);
+                            }
+                            
                             string conta_juros = cp.juros_pagos.categoria_conta_contabil;
                             string conta_multa = cp.multas_pagas.categoria_conta_contabil;
                             string conta_desconto = cp.descontos_obtidos.categoria_conta_contabil;
@@ -583,8 +596,14 @@ namespace gestaoContadorcomvc.Areas.Contabilidade.Models.SCI
                 list_ilc = null;
                 ilcs.list_ilc = list_ilc;
 
-                string msg = e.Message.Substring(0, 250);
-                log.log("Memorando", "listMemorando", "Erro", msg, conta_id, usuario_id);
+                if(e.StackTrace.ToString().Length > 0)
+                {
+                    log.log("ILC", "Create", "Erro", e.StackTrace.ToString().Substring(0,250), conta_id, usuario_id);
+                }
+                else
+                {
+                    log.log("ILC", "Create", "Erro", "Desconhecido", conta_id, usuario_id);
+                }
             }
             finally
             {

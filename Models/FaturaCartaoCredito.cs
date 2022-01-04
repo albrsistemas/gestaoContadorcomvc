@@ -55,11 +55,15 @@ namespace gestaoContadorcomvc.Models
                 vm_fp = fp.buscaFormasPagamento(conta_id, usuario_id, fcc_forma_pagamento_id);
 
                 DateTime hj = DateTime.Today;
-                vm_fcc.fcc_id = fcc_id;
+
+                vm_fcc.fcc_id = fcc_id;                
+
                 vm_fcc.fcc_data_corte = new DateTime(hj.Year, hj.Month, vm_fp.fp_dia_fechamento_cartao);
+                
                 if(vm_fp.fp_dia_fechamento_cartao > vm_fp.fp_dia_vencimento_cartao)
                 {
-                    vm_fcc.fcc_data_vencimento = new DateTime(hj.Year, hj.Month + 1, vm_fp.fp_dia_vencimento_cartao);
+                    DateTime v = new DateTime(hj.Year, hj.Month, vm_fp.fp_dia_vencimento_cartao);
+                    vm_fcc.fcc_data_vencimento = v.AddMonths(1);
                 }
                 else
                 {
@@ -97,7 +101,7 @@ namespace gestaoContadorcomvc.Models
                 MySqlCommand dr_1_c = conn.CreateCommand();
                 dr_1_c.Connection = conn;
                 dr_1_c.Transaction = Transacao;
-                dr_1_c.CommandText = "SELECT fp.fp_nome, fatura_cartao_credito.*, COALESCE(p.pfcc_id,0) as 'parcelamento', p.* from fatura_cartao_credito LEFT JOIN forma_pagamento as fp on fp.fp_id = fatura_cartao_credito.fcc_forma_pagamento_id LEFT JOIN parcelamentofaturacartaocredito as p on p.pfcc_fcc_id = fatura_cartao_credito.fcc_id WHERE fatura_cartao_credito.fcc_forma_pagamento_id = @fcc_forma_pagamento_id and fatura_cartao_credito.fcc_competencia = @fcc_competencia and fatura_cartao_credito.fcc_conta_id = @conta_id;";
+                dr_1_c.CommandText = "SELECT fp.fp_nome, fatura_cartao_credito.*, COALESCE(p.pfcc_id,0) as 'parcelamento', p.*, c.categoria_nome from fatura_cartao_credito LEFT JOIN forma_pagamento as fp on fp.fp_id = fatura_cartao_credito.fcc_forma_pagamento_id LEFT JOIN parcelamentofaturacartaocredito as p on p.pfcc_fcc_id = fatura_cartao_credito.fcc_id LEFT JOIN categoria as c on c.categoria_id = p.pfcc_categoria_id WHERE fatura_cartao_credito.fcc_forma_pagamento_id = @fcc_forma_pagamento_id and fatura_cartao_credito.fcc_competencia = @fcc_competencia and fatura_cartao_credito.fcc_conta_id = @conta_id;";
                 dr_1_c.Parameters.AddWithValue("conta_id", conta_id);
                 dr_1_c.Parameters.AddWithValue("fcc_competencia", comp);
                 dr_1_c.Parameters.AddWithValue("fcc_forma_pagamento_id", vm_fcc.fcc_forma_pagamento_id);
@@ -188,6 +192,15 @@ namespace gestaoContadorcomvc.Models
                             vm_fcc.parcelamento.pfcc_categoria_id = 0;
                         }
 
+                        if (DBNull.Value != dr_1["pfcc_numero_parcelas"])
+                        {
+                            vm_fcc.parcelamento.pfcc_numero_parcelas = Convert.ToInt32(dr_1["pfcc_numero_parcelas"]);
+                        }
+                        else
+                        {
+                            vm_fcc.parcelamento.pfcc_numero_parcelas = 0;
+                        }
+
                         if (DBNull.Value != dr_1["pfcc_total_fatura"])
                         {
                             vm_fcc.parcelamento.pfcc_total_fatura = Convert.ToDecimal(dr_1["pfcc_total_fatura"]);
@@ -232,6 +245,8 @@ namespace gestaoContadorcomvc.Models
                         {
                             vm_fcc.parcelamento.pfcc_data_parcelamento = new DateTime();
                         }
+
+                        vm_fcc.parcelamento.categoria_nome = dr_1["categoria_nome"].ToString();
                     }
                 }
                 else

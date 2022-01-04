@@ -6013,12 +6013,184 @@ function fatura_cartao_credito_edit_datas(contexto, id) {
 
 function parcelamentoFatura(contexto) {
     if (contexto == 'open') {
+        document.getElementById('msg_dialogo').innerHTML = "";
+        if (fcc.parcelamento.pfcc_id > 0) {
+            document.getElementById('btn_pfcc_delete').disabled = false;
+            document.getElementById('btn_pfcc_gravar').disabled = true;
+        } else {
+            document.getElementById('btn_pfcc_delete').disabled = true;
+            document.getElementById('btn_pfcc_gravar').disabled = false;
+        }
+        
         modal_sobre_modal_open('parcelamento_fatura');
     }
 
     if (contexto == 'close') {
+        pesquisaFatura('reboot', fcc);
         $('#parcelamento_fatura').modal('hide');
     }
+
+    if (contexto == 'gravar') {
+        let totalFatura = convertStringDouble(document.getElementById('pfcc_total_fatura').innerHTML);
+        let valorParcelado = convertStringDouble(document.getElementById('pfcc_valor_parcelado').value);
+        let numeroParcelas = parseInt(document.getElementById('pfcc_numero_parcelas').value);
+        let valorParcela = convertStringDouble(document.getElementById('pfcc_valor_parcela').value);
+        let valorJuros = convertStringDouble(document.getElementById('pfcc_juros').value);
+        let categoria_id = parseInt(document.getElementById('categoria_id_ccm').value);
+
+        let valida = [];
+
+        if (totalFatura <= 0) {
+            valida.push('Total da Fatura não pode ser inferior ou igual a zero');
+        }
+        if (valorParcelado <= 0) {
+            valida.push('Valor Parcelado não pode ser inferior ou igual a zero');
+        }
+        if (valorParcela <= 0) {
+            valida.push('Valor da Parcela não pode ser inferior ou igual a zero');
+        }
+        if (valorJuros <= 0) {
+            valida.push('Valor dos Juros não pode ser inferior ou igual a zero');
+        }
+        if (!categoria_id > 0) {
+            valida.push('Obrigatório informar a categoria dos juros');
+        }
+        
+        if (valida.length == 0) {
+            let competencias = gerarCompetenciasFaturaCartao(fcc.fcc_competencia, numeroParcelas);
+            $.ajax({
+                url: "/ParcelamentoFaturaCartaoCredito/Create",
+                data: {
+                    __RequestVerificationToken: gettoken(),
+                    pfcc_fcc_id: fcc.fcc_id,
+                    pfcc_total_fatura: document.getElementById('pfcc_total_fatura').innerHTML,
+                    pfcc_valor_parcelado: document.getElementById('pfcc_valor_parcelado').value,
+                    pfcc_numero_parcelas: numeroParcelas,
+                    pfcc_valor_parcela: document.getElementById('pfcc_valor_parcela').value,
+                    pfcc_juros: document.getElementById('pfcc_juros').value,
+                    pfcc_categoria_id: categoria_id,
+                    pfcc_data_parcelamento: document.getElementById('fcc_data_corte').value,
+                    competencias: competencias,
+                    competencia: fcc.fcc_competencia,
+                    fcc_forma_pagamento_id: fcc.fcc_forma_pagamento_id
+                },
+                type: 'POST',
+                dataType: 'json',
+                beforeSend: function (XMLHttpRequest) {
+                    document.getElementById('msg_dialogo').innerHTML += ('<p class="text-info">' + 'Gravando parcelamento, aguarde...' + '</p>');
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    document.getElementById('msg_dialogo').innerHTML += ('<p class="text-danger">' + 'Erro ao processar o parcelamento da fatura do cartão de crédito.' + '</p>');
+                },
+                success: function (data, textStatus, XMLHttpRequest) {
+                    ret = JSON.parse(data);
+                    if (textStatus == 'error') {
+                        document.getElementById('msg_dialogo').innerHTML += ('<p class="text-danger">' + 'Erro ao processar o parcelamento da fatura do cartão de crédito.' + '</p>');
+                    }
+
+                    if (textStatus == 'success') {
+                        if (XMLHttpRequest.responseJSON.includes('sucesso')) {
+                            document.getElementById('categoria').disabled = true;
+                            document.getElementById('pfcc_valor_parcelado').disabled = true;
+                            document.getElementById('pfcc_numero_parcelas').disabled = true;
+                            document.getElementById('pfcc_valor_parcela').disabled = true;
+                            document.getElementById('msg_dialogo').innerHTML = '<span class="text-success">' + ret + '</span>';
+
+                            document.getElementById('btn_pfcc_delete').disabled = false;
+                            document.getElementById('btn_pfcc_gravar').disabled = true;                              
+                        }
+
+                        if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                            document.getElementById('msg_dialogo').innerHTML = '<span class="text-danger">' + ret + '</span>';
+                        }
+                    }
+                }
+            });
+        } else {
+            for (let i = 0; i < valida.length; i++) {
+                document.getElementById('msg_dialogo').innerHTML += ('<p class="text-danger">' + valida[i] + '</p>');
+            }
+        }
+    }
+
+    if (contexto == 'delete_confirmar') {
+        modal_sobre_modal_open('modal_delete_dcto');
+    }
+
+    if (contexto == 'delete_confirmado') {
+        $.ajax({
+            url: "/ParcelamentoFaturaCartaoCredito/Delete",
+            data: {
+                __RequestVerificationToken: gettoken(),
+                pfcc_id: fcc.parcelamento.pfcc_id,               
+            },
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (XMLHttpRequest) {
+                document.getElementById('msg_dialogo').innerHTML += ('<p class="text-info">' + 'Excluindo parcelamento, aguarde...' + '</p>');
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                document.getElementById('msg_dialogo').innerHTML += ('<p class="text-danger">' + 'Erro ao processar a exclusão do parcelamento da fatura do cartão de crédito.' + '</p>');
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                ret = JSON.parse(data);
+                if (textStatus == 'error') {
+                    document.getElementById('msg_dialogo').innerHTML += ('<p class="text-danger">' + 'Erro ao processar a exclusão do parcelamento da fatura do cartão de crédito.' + '</p>');
+                }
+
+                if (textStatus == 'success') {
+                    if (XMLHttpRequest.responseJSON.includes('sucesso')) {
+                        document.getElementById('categoria').value = "";
+                        document.getElementById('pfcc_valor_parcelado').value = convertDoubleString(0);
+                        document.getElementById('pfcc_numero_parcelas').value = convertDoubleString(0);
+                        document.getElementById('pfcc_valor_parcela').value = convertDoubleString(0);
+                        document.getElementById('pfcc_juros').value = convertDoubleString(0);
+                        document.getElementById('categoria_id_ccm').value = convertDoubleString(0);
+
+                        document.getElementById('categoria').disabled = false;
+                        document.getElementById('pfcc_valor_parcelado').disabled = false;
+                        document.getElementById('pfcc_numero_parcelas').disabled = false;
+                        document.getElementById('pfcc_valor_parcela').disabled = false;
+                        document.getElementById('btn_pfcc_delete').disabled = true;
+                        document.getElementById('btn_pfcc_gravar').disabled = false;
+                        
+                        document.getElementById('msg_dialogo').innerHTML = '<span class="text-success">' + ret + '</span>';
+                        $('#modal_delete_dcto').modal('hide');
+                    }
+
+                    if (XMLHttpRequest.responseJSON.includes('Erro')) {
+                        document.getElementById('msg_dialogo').innerHTML = '<span class="text-danger">' + ret + '</span>';
+                    }
+                }
+            }
+        });
+    }
+
+}
+
+function gerarCompetenciasFaturaCartao(competencia, numeroParcelas) {
+    let m = competencia.substring(0, 2);
+    let a = competencia.substring(3, 8);
+    let dt = '01/' + m + '/' + a;
+    let v = moment(dt, 'DD/MM/YYYY', 'pt', true); 
+    let next = v;
+    let competencias = [];
+    
+
+    for (let i = 1; i <= numeroParcelas; i++) {
+        next = v.add(1, 'M');
+        competencias.push(next.format('MM/YYYY'));
+    }   
+
+    return competencias;
+}
+
+function calcularJurosParcelamentoCartao(id, vlr) {
+    let valorParcelado = convertStringDouble(document.getElementById('pfcc_valor_parcelado').value);
+    let numeroParcelas = parseInt(document.getElementById('pfcc_numero_parcelas').value);
+    let valorParcela = convertStringDouble(document.getElementById('pfcc_valor_parcela').value);
+
+    document.getElementById('pfcc_juros').value = convertDoubleString((valorParcela * numeroParcelas) - valorParcelado);
 }
 
 function pesquisaFatura(contexto, f) {
@@ -6038,7 +6210,7 @@ function pesquisaFatura(contexto, f) {
             //Estilo cabeçalho
             document.getElementById('fcc_header').style.backgroundColor = '';
             document.getElementById('fcc_header').style.color = 'white';            
-            modal_sobre_modal_open('fcc_modal');
+            modal_sobre_modal_open('fcc_modal');            
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             document.getElementById('fcc_mensagem').innerHTML = '<span class="text-danger">Erro ao se comunicar com o servidor!!</span>';
@@ -6089,16 +6261,20 @@ function pesquisaFatura(contexto, f) {
                         t += '<tr style="color: green">';
                     } else {
                         t += '<tr>';
-                    }                    
+                    }   
+
                     t += '<td style="text-align:center">';
-                    if (fcc.fcc_movimentos[i].mcc_movimento == 'D' && (fcc.user.Role == 'adm' || fcc.user._permissoes.cartaoCreditoEdit)) {
-                        t += '<span style="cursor:pointer;margin-right:7px;" onclick="fatura_cartao_credito_edit_competencia(\'edit_competencia\',\'' + fcc.fcc_movimentos[i].mcc_tipo + '\',\'' + fcc.fcc_movimentos[i].mcc_tipo_id + '\')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16"><path fill - rule="evenodd" d = "M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/></svg></span>';                        
-                    }
-                    if (fcc.fcc_movimentos[i].mcc_movimento == 'D' && (fcc.user.Role == 'adm' || fcc.user._permissoes.operacaoEdit)) {                        
-                        t += '<span style="cursor:pointer" onclick="Ajuste_parcelas_op(\'open\',\'' + fcc.fcc_movimentos[i].mcc_tipo + '\',\'' + fcc.fcc_movimentos[i].mcc_tipo_id + '\')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-data" viewBox="0 0 16 16"><path d = "M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0V9z" /><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" /><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" /></svg></span>';
-                    }
-                    if (fcc.fcc_movimentos[i].mcc_movimento == 'C' && (fcc.user.Role == 'adm' || fcc.user._permissoes.cartaoCreditoDelete)) {
-                        t += '<svg style="color:red;cursor:pointer;" onclick="cartaoCreditoPagamento(\'delete\',\'' + fcc.fcc_movimentos[i].mcc_id +'\')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"><path d = "M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" /><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" /></svg >';
+
+                    if (fcc.fcc_movimentos[i].mcc_tipo != 'Parcelamento' && fcc.fcc_movimentos[i].mcc_tipo != 'Crédito Parcelamento') {
+                        if (fcc.fcc_movimentos[i].mcc_movimento == 'D' && (fcc.user.Role == 'adm' || fcc.user._permissoes.cartaoCreditoEdit)) {
+                            t += '<span style="cursor:pointer;margin-right:7px;" onclick="fatura_cartao_credito_edit_competencia(\'edit_competencia\',\'' + fcc.fcc_movimentos[i].mcc_tipo + '\',\'' + fcc.fcc_movimentos[i].mcc_tipo_id + '\')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16"><path fill - rule="evenodd" d = "M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/></svg></span>';
+                        }
+                        if (fcc.fcc_movimentos[i].mcc_movimento == 'D' && (fcc.user.Role == 'adm' || fcc.user._permissoes.operacaoEdit)) {
+                            t += '<span style="cursor:pointer" onclick="Ajuste_parcelas_op(\'open\',\'' + fcc.fcc_movimentos[i].mcc_tipo + '\',\'' + fcc.fcc_movimentos[i].mcc_tipo_id + '\')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-data" viewBox="0 0 16 16"><path d = "M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0V9z" /><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" /><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" /></svg></span>';
+                        }
+                        if (fcc.fcc_movimentos[i].mcc_movimento == 'C' && (fcc.user.Role == 'adm' || fcc.user._permissoes.cartaoCreditoDelete)) {
+                            t += '<svg style="color:red;cursor:pointer;" onclick="cartaoCreditoPagamento(\'delete\',\'' + fcc.fcc_movimentos[i].mcc_id + '\')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"><path d = "M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" /><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" /></svg >';
+                        }
                     }
                     t += '</td>';
                     t += '<td style="text-align:center">' + convertData_DataSimples(fcc.fcc_movimentos[i].mcc_data) + '</td>';
@@ -6111,6 +6287,43 @@ function pesquisaFatura(contexto, f) {
                 }
 
                 let saldo = debito - credito;
+
+                //Verificando se fatura está parcelada e cria informações na tela.
+                if (fcc.parcelamento.pfcc_id != 0) { //Se houver parcelamento.
+                    document.getElementById('pfcc_total_fatura').innerHTML = convertDoubleString(debito);
+                    document.getElementById('pfcc_valor_parcelado').value = convertDoubleString(fcc.parcelamento.pfcc_valor_parcelado);
+                    document.getElementById('pfcc_numero_parcelas').value = convertDoubleString(fcc.parcelamento.pfcc_numero_parcelas);
+                    document.getElementById('pfcc_valor_parcela').value = convertDoubleString(fcc.parcelamento.pfcc_valor_parcela);
+                    document.getElementById('pfcc_juros').value = convertDoubleString(fcc.parcelamento.pfcc_juros);
+                    document.getElementById('categoria_id_ccm').value = fcc.parcelamento.pfcc_categoria_id;
+                    document.getElementById('categoria').value = fcc.parcelamento.categoria_nome;
+                    document.getElementById('categoria').disabled = true;
+                    document.getElementById('pfcc_valor_parcelado').disabled = true;
+                    document.getElementById('pfcc_numero_parcelas').disabled = true;
+                    document.getElementById('pfcc_valor_parcela').disabled = true;
+
+                    document.getElementById('btn_pfcc_gravar').disabled = true;
+                    document.getElementById('btn_pfcc_delete').disabled = false;
+                } else {
+                    document.getElementById('categoria').disabled = false;
+                    document.getElementById('pfcc_valor_parcelado').disabled = false;
+                    document.getElementById('pfcc_numero_parcelas').disabled = false;
+                    document.getElementById('pfcc_valor_parcela').disabled = false;
+
+                    document.getElementById('btn_pfcc_gravar').disabled = false;
+                    document.getElementById('btn_pfcc_delete').disabled = true;
+
+                    document.getElementById('pfcc_total_fatura').innerHTML = convertDoubleString(debito);
+                    document.getElementById('pfcc_valor_parcelado').value = convertDoubleString(0);
+                    document.getElementById('pfcc_numero_parcelas').value = convertDoubleString(0);
+                    document.getElementById('pfcc_valor_parcela').value = convertDoubleString(0);
+                    document.getElementById('pfcc_juros').value = convertDoubleString(0);
+                    document.getElementById('categoria_id_ccm').value = 0;
+                    document.getElementById('categoria').value = "";
+                }
+
+
+
 
                 document.getElementById('fcc_mensagem').innerHTML = '';
                 //document.getElementById('fcc_valor_total').innerHTML = convertDoubleString(valor_total);
